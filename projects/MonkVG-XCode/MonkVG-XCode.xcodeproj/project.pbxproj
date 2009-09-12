@@ -1,0 +1,304 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA0594360F51F575002A2F65 /* openvg.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594320F51F575002A2F65 /* openvg.h */; };
+		FA0594370F51F575002A2F65 /* vgext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594330F51F575002A2F65 /* vgext.h */; };
+		FA0594380F51F575002A2F65 /* vgplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594340F51F575002A2F65 /* vgplatform.h */; };
+		FA0594390F51F575002A2F65 /* vgu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594350F51F575002A2F65 /* vgu.h */; };
+		FA0594EE0F52063E002A2F65 /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594EB0F52063E002A2F65 /* mkCommon.h */; };
+		FA0594EF0F52063E002A2F65 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0594EC0F52063E002A2F65 /* mkVGU.cpp */; };
+		FA0594F00F52063E002A2F65 /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0594ED0F52063E002A2F65 /* mkContext.cpp */; };
+		FA0594F70F52066A002A2F65 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F20F52066A002A2F65 /* error.c */; };
+		FA0594F80F52066A002A2F65 /* glue.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F30F52066A002A2F65 /* glue.c */; };
+		FA0594F90F52066A002A2F65 /* gluint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594F40F52066A002A2F65 /* gluint.h */; };
+		FA0594FA0F52066A002A2F65 /* project.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F50F52066A002A2F65 /* project.c */; };
+		FA0594FB0F52066A002A2F65 /* registry.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F60F52066A002A2F65 /* registry.c */; };
+		FA0595070F520728002A2F65 /* glu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0595050F520728002A2F65 /* glu.h */; };
+		FA0595080F520728002A2F65 /* gluos.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0595060F520728002A2F65 /* gluos.h */; };
+		FA0595300F521136002A2F65 /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA05952F0F521136002A2F65 /* mkContext.h */; };
+		FA0595FD0F521C3E002A2F65 /* mkPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0595FB0F521C3E002A2F65 /* mkPath.h */; };
+		FA0595FE0F521C3E002A2F65 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0595FC0F521C3E002A2F65 /* mkPath.cpp */; };
+		FA05960F0F524CE8002A2F65 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA05960E0F524CE8002A2F65 /* mkParameter.cpp */; };
+		FA0596160F524DD9002A2F65 /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0596140F524DD9002A2F65 /* mkBaseObject.h */; };
+		FA0596170F524DD9002A2F65 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0596150F524DD9002A2F65 /* mkBaseObject.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D2AAC046055464E500DB518D /* libMonkVG-XCode.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMonkVG-XCode.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA0594320F51F575002A2F65 /* openvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openvg.h; path = ../../include/VG/openvg.h; sourceTree = SOURCE_ROOT; };
+		FA0594330F51F575002A2F65 /* vgext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgext.h; path = ../../include/VG/vgext.h; sourceTree = SOURCE_ROOT; };
+		FA0594340F51F575002A2F65 /* vgplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgplatform.h; path = ../../include/VG/vgplatform.h; sourceTree = SOURCE_ROOT; };
+		FA0594350F51F575002A2F65 /* vgu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgu.h; path = ../../include/VG/vgu.h; sourceTree = SOURCE_ROOT; };
+		FA0594EB0F52063E002A2F65 /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = ../../src/mkCommon.h; sourceTree = SOURCE_ROOT; };
+		FA0594EC0F52063E002A2F65 /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = ../../src/mkVGU.cpp; sourceTree = SOURCE_ROOT; };
+		FA0594ED0F52063E002A2F65 /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = ../../src/mkContext.cpp; sourceTree = SOURCE_ROOT; };
+		FA0594F20F52066A002A2F65 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../glu/libutil/error.c; sourceTree = SOURCE_ROOT; };
+		FA0594F30F52066A002A2F65 /* glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glue.c; path = ../../glu/libutil/glue.c; sourceTree = SOURCE_ROOT; };
+		FA0594F40F52066A002A2F65 /* gluint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gluint.h; path = ../../glu/libutil/gluint.h; sourceTree = SOURCE_ROOT; };
+		FA0594F50F52066A002A2F65 /* project.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project.c; path = ../../glu/libutil/project.c; sourceTree = SOURCE_ROOT; };
+		FA0594F60F52066A002A2F65 /* registry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = registry.c; path = ../../glu/libutil/registry.c; sourceTree = SOURCE_ROOT; };
+		FA0595050F520728002A2F65 /* glu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glu.h; path = ../../glu/include/glu.h; sourceTree = SOURCE_ROOT; };
+		FA0595060F520728002A2F65 /* gluos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gluos.h; path = ../../glu/include/gluos.h; sourceTree = SOURCE_ROOT; };
+		FA05952F0F521136002A2F65 /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = ../../src/mkContext.h; sourceTree = SOURCE_ROOT; };
+		FA0595FB0F521C3E002A2F65 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = ../../src/mkPath.h; sourceTree = SOURCE_ROOT; };
+		FA0595FC0F521C3E002A2F65 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = ../../src/mkPath.cpp; sourceTree = SOURCE_ROOT; };
+		FA05960E0F524CE8002A2F65 /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = ../../src/mkParameter.cpp; sourceTree = SOURCE_ROOT; };
+		FA0596140F524DD9002A2F65 /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = ../../src/mkBaseObject.h; sourceTree = SOURCE_ROOT; };
+		FA0596150F524DD9002A2F65 /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = ../../src/mkBaseObject.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* MonkVG-XCode */ = {
+			isa = PBXGroup;
+			children = (
+				FA0594300F51F542002A2F65 /* include */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = "MonkVG-XCode";
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FA0594F10F520644002A2F65 /* glu */,
+				FA0594EB0F52063E002A2F65 /* mkCommon.h */,
+				FA0594EC0F52063E002A2F65 /* mkVGU.cpp */,
+				FA0594ED0F52063E002A2F65 /* mkContext.cpp */,
+				FA05952F0F521136002A2F65 /* mkContext.h */,
+				FA0595FB0F521C3E002A2F65 /* mkPath.h */,
+				FA0595FC0F521C3E002A2F65 /* mkPath.cpp */,
+				FA05960E0F524CE8002A2F65 /* mkParameter.cpp */,
+				FA0596140F524DD9002A2F65 /* mkBaseObject.h */,
+				FA0596150F524DD9002A2F65 /* mkBaseObject.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC046055464E500DB518D /* libMonkVG-XCode.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		FA0594300F51F542002A2F65 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				FA0594310F51F54B002A2F65 /* VG */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		FA0594310F51F54B002A2F65 /* VG */ = {
+			isa = PBXGroup;
+			children = (
+				FA0594320F51F575002A2F65 /* openvg.h */,
+				FA0594330F51F575002A2F65 /* vgext.h */,
+				FA0594340F51F575002A2F65 /* vgplatform.h */,
+				FA0594350F51F575002A2F65 /* vgu.h */,
+			);
+			name = VG;
+			sourceTree = "<group>";
+		};
+		FA0594F10F520644002A2F65 /* glu */ = {
+			isa = PBXGroup;
+			children = (
+				FA0595050F520728002A2F65 /* glu.h */,
+				FA0595060F520728002A2F65 /* gluos.h */,
+				FA0594F20F52066A002A2F65 /* error.c */,
+				FA0594F30F52066A002A2F65 /* glue.c */,
+				FA0594F40F52066A002A2F65 /* gluint.h */,
+				FA0594F50F52066A002A2F65 /* project.c */,
+				FA0594F60F52066A002A2F65 /* registry.c */,
+			);
+			name = glu;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC043055464E500DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA0594360F51F575002A2F65 /* openvg.h in Headers */,
+				FA0594370F51F575002A2F65 /* vgext.h in Headers */,
+				FA0594380F51F575002A2F65 /* vgplatform.h in Headers */,
+				FA0594390F51F575002A2F65 /* vgu.h in Headers */,
+				FA0594EE0F52063E002A2F65 /* mkCommon.h in Headers */,
+				FA0594F90F52066A002A2F65 /* gluint.h in Headers */,
+				FA0595070F520728002A2F65 /* glu.h in Headers */,
+				FA0595080F520728002A2F65 /* gluos.h in Headers */,
+				FA0595300F521136002A2F65 /* mkContext.h in Headers */,
+				FA0595FD0F521C3E002A2F65 /* mkPath.h in Headers */,
+				FA0596160F524DD9002A2F65 /* mkBaseObject.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC045055464E500DB518D /* MonkVG-XCode */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-XCode" */;
+			buildPhases = (
+				D2AAC043055464E500DB518D /* Headers */,
+				D2AAC044055464E500DB518D /* Sources */,
+				D289987405E68DCB004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MonkVG-XCode";
+			productName = "MonkVG-XCode";
+			productReference = D2AAC046055464E500DB518D /* libMonkVG-XCode.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkVG-XCode" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* MonkVG-XCode */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC045055464E500DB518D /* MonkVG-XCode */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC044055464E500DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA0594EF0F52063E002A2F65 /* mkVGU.cpp in Sources */,
+				FA0594F00F52063E002A2F65 /* mkContext.cpp in Sources */,
+				FA0594F70F52066A002A2F65 /* error.c in Sources */,
+				FA0594F80F52066A002A2F65 /* glue.c in Sources */,
+				FA0594FA0F52066A002A2F65 /* project.c in Sources */,
+				FA0594FB0F52066A002A2F65 /* registry.c in Sources */,
+				FA0595FE0F521C3E002A2F65 /* mkPath.cpp in Sources */,
+				FA05960F0F524CE8002A2F65 /* mkParameter.cpp in Sources */,
+				FA0596170F524DD9002A2F65 /* mkBaseObject.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../glu/include,
+					../../include,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "MonkVG-XCode";
+			};
+			name = Debug;
+		};
+		1DEB91ED08733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = (
+					../../glu/include,
+					../../include,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "MonkVG-XCode";
+			};
+			name = Release;
+		};
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-XCode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1DEB91ED08733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkVG-XCode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

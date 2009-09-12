@@ -1,0 +1,174 @@
+// !$*UTF8*$!
+{
+	1D3623250D0F684500981E51 /* MonkVG_Test_iPhoneAppDelegate.mm */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {891, 532}}";
+			sepNavSelRange = "{293, 0}";
+			sepNavVisRange = "{0, 675}";
+		};
+	};
+	1D6058900D05DD3D006BFB54 /* MonkVG-Test-iPhone */ = {
+		activeExec = 0;
+		executables = (
+			FA0594490F51F93C002A2F65 /* MonkVG-Test-iPhone */,
+		);
+	};
+	28FD14FD0DC6FC130079059D /* EAGLView.mm */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1011, 3094}}";
+			sepNavSelRange = "{235, 43}";
+			sepNavVisRange = "{0, 750}";
+			sepNavWindowFrame = "{{15, 40}, {1187, 733}}";
+		};
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = FA0594490F51F93C002A2F65 /* MonkVG-Test-iPhone */;
+		activeTarget = 1D6058900D05DD3D006BFB54 /* MonkVG-Test-iPhone */;
+		addToTargets = (
+			1D6058900D05DD3D006BFB54 /* MonkVG-Test-iPhone */,
+		);
+		codeSenseManager = FA0594500F51F95A002A2F65 /* Code sense */;
+		executables = (
+			FA0594490F51F93C002A2F65 /* MonkVG-Test-iPhone */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					833,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					673,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 257797625;
+			PBXWorkspaceStateSaveDate = 257797625;
+		};
+		perUserProjectItems = {
+			FA8428F20F5CD3B7005539E0 /* PBXTextBookmark */ = FA8428F20F5CD3B7005539E0 /* PBXTextBookmark */;
+			FA8428F40F5CD3B7005539E0 /* PBXTextBookmark */ = FA8428F40F5CD3B7005539E0 /* PBXTextBookmark */;
+			FA8428F50F5CD3B7005539E0 /* PBXTextBookmark */ = FA8428F50F5CD3B7005539E0 /* PBXTextBookmark */;
+			FA842AAD0F5E0F38005539E0 /* PBXTextBookmark */ = FA842AAD0F5E0F38005539E0 /* PBXTextBookmark */;
+		};
+		sourceControlManager = FA05944F0F51F95A002A2F65 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	32CA4F630368D1EE00C91783 /* MonkVG_Test_iPhone_Prefix.pch */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1011, 600}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 197}";
+		};
+	};
+	FA0594490F51F93C002A2F65 /* MonkVG-Test-iPhone */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = "MonkVG-Test-iPhone";
+		sourceDirectories = (
+		);
+	};
+	FA05944F0F51F95A002A2F65 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	FA0594500F51F95A002A2F65 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	FA8428F20F5CD3B7005539E0 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32CA4F630368D1EE00C91783 /* MonkVG_Test_iPhone_Prefix.pch */;
+		name = "MonkVG_Test_iPhone_Prefix.pch: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 197;
+		vrLoc = 0;
+	};
+	FA8428F40F5CD3B7005539E0 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 32CA4F630368D1EE00C91783 /* MonkVG_Test_iPhone_Prefix.pch */;
+		name = "MonkVG_Test_iPhone_Prefix.pch: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 197;
+		vrLoc = 0;
+	};
+	FA8428F50F5CD3B7005539E0 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */;
+		name = "EAGLView.mm: 84";
+		rLen = 0;
+		rLoc = 2060;
+		rType = 0;
+		vrLen = 1219;
+		vrLoc = 1594;
+	};
+	FA842AAD0F5E0F38005539E0 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */;
+		name = "EAGLView.mm: 16";
+		rLen = 43;
+		rLoc = 235;
+		rType = 0;
+		vrLen = 750;
+		vrLoc = 0;
+	};
+}

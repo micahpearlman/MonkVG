@@ -1,0 +1,310 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA8429020F5CD3E7005539E0 /* openvg.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8428FE0F5CD3E7005539E0 /* openvg.h */; };
+		FA8429030F5CD3E7005539E0 /* vgext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8428FF0F5CD3E7005539E0 /* vgext.h */; };
+		FA8429040F5CD3E7005539E0 /* vgplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8429000F5CD3E7005539E0 /* vgplatform.h */; };
+		FA8429050F5CD3E7005539E0 /* vgu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8429010F5CD3E7005539E0 /* vgu.h */; };
+		FA8429110F5CD40D005539E0 /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8429080F5CD40D005539E0 /* mkCommon.h */; };
+		FA8429120F5CD40D005539E0 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA8429090F5CD40D005539E0 /* mkVGU.cpp */; };
+		FA8429130F5CD40D005539E0 /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA84290A0F5CD40D005539E0 /* mkContext.cpp */; };
+		FA8429140F5CD40D005539E0 /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA84290B0F5CD40D005539E0 /* mkContext.h */; };
+		FA8429150F5CD40D005539E0 /* mkPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA84290C0F5CD40D005539E0 /* mkPath.h */; };
+		FA8429160F5CD40D005539E0 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA84290D0F5CD40D005539E0 /* mkPath.cpp */; };
+		FA8429170F5CD40D005539E0 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA84290E0F5CD40D005539E0 /* mkParameter.cpp */; };
+		FA8429180F5CD40D005539E0 /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA84290F0F5CD40D005539E0 /* mkBaseObject.h */; };
+		FA8429190F5CD40D005539E0 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA8429100F5CD40D005539E0 /* mkBaseObject.cpp */; };
+		FA8429340F5CD63F005539E0 /* qzContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8429320F5CD63F005539E0 /* qzContext.h */; };
+		FA8429350F5CD63F005539E0 /* qzContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA8429330F5CD63F005539E0 /* qzContext.mm */; };
+		FA8429C20F5DB3B1005539E0 /* qzPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8429C00F5DB3B1005539E0 /* qzPath.h */; };
+		FA8429C30F5DB3B1005539E0 /* qzPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA8429C10F5DB3B1005539E0 /* qzPath.cpp */; };
+		FA842A9A0F5E0B9D005539E0 /* mkPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA842A980F5E0B9D005539E0 /* mkPaint.h */; };
+		FA842A9B0F5E0B9D005539E0 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA842A990F5E0B9D005539E0 /* mkPaint.cpp */; };
+		FA842B6B0F5E1E72005539E0 /* qzPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA842B690F5E1E72005539E0 /* qzPaint.h */; };
+		FA842B6C0F5E1E72005539E0 /* qzPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA842B6A0F5E1E72005539E0 /* qzPaint.cpp */; };
+		FAF33D760F684AD400E4025E /* mkMath.h in Headers */ = {isa = PBXBuildFile; fileRef = FAF33D740F684AD400E4025E /* mkMath.h */; };
+		FAF33D770F684AD400E4025E /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAF33D750F684AD400E4025E /* mkMath.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D2AAC046055464E500DB518D /* libMonkVG-Quartz.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMonkVG-Quartz.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA8428FE0F5CD3E7005539E0 /* openvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openvg.h; path = ../../include/VG/openvg.h; sourceTree = SOURCE_ROOT; };
+		FA8428FF0F5CD3E7005539E0 /* vgext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgext.h; path = ../../include/VG/vgext.h; sourceTree = SOURCE_ROOT; };
+		FA8429000F5CD3E7005539E0 /* vgplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgplatform.h; path = ../../include/VG/vgplatform.h; sourceTree = SOURCE_ROOT; };
+		FA8429010F5CD3E7005539E0 /* vgu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgu.h; path = ../../include/VG/vgu.h; sourceTree = SOURCE_ROOT; };
+		FA8429080F5CD40D005539E0 /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = ../../src/mkCommon.h; sourceTree = SOURCE_ROOT; };
+		FA8429090F5CD40D005539E0 /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = ../../src/mkVGU.cpp; sourceTree = SOURCE_ROOT; };
+		FA84290A0F5CD40D005539E0 /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = ../../src/mkContext.cpp; sourceTree = SOURCE_ROOT; };
+		FA84290B0F5CD40D005539E0 /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = ../../src/mkContext.h; sourceTree = SOURCE_ROOT; };
+		FA84290C0F5CD40D005539E0 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = ../../src/mkPath.h; sourceTree = SOURCE_ROOT; };
+		FA84290D0F5CD40D005539E0 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = ../../src/mkPath.cpp; sourceTree = SOURCE_ROOT; };
+		FA84290E0F5CD40D005539E0 /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = ../../src/mkParameter.cpp; sourceTree = SOURCE_ROOT; };
+		FA84290F0F5CD40D005539E0 /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = ../../src/mkBaseObject.h; sourceTree = SOURCE_ROOT; };
+		FA8429100F5CD40D005539E0 /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = ../../src/mkBaseObject.cpp; sourceTree = SOURCE_ROOT; };
+		FA8429320F5CD63F005539E0 /* qzContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzContext.h; path = ../../src/Quartz/qzContext.h; sourceTree = SOURCE_ROOT; };
+		FA8429330F5CD63F005539E0 /* qzContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = qzContext.mm; path = ../../src/Quartz/qzContext.mm; sourceTree = SOURCE_ROOT; };
+		FA8429C00F5DB3B1005539E0 /* qzPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzPath.h; path = ../../src/Quartz/qzPath.h; sourceTree = SOURCE_ROOT; };
+		FA8429C10F5DB3B1005539E0 /* qzPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qzPath.cpp; path = ../../src/Quartz/qzPath.cpp; sourceTree = SOURCE_ROOT; };
+		FA842A980F5E0B9D005539E0 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkPaint.h; sourceTree = "<group>"; };
+		FA842A990F5E0B9D005539E0 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkPaint.cpp; sourceTree = "<group>"; };
+		FA842B690F5E1E72005539E0 /* qzPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzPaint.h; path = ../../src/Quartz/qzPaint.h; sourceTree = SOURCE_ROOT; };
+		FA842B6A0F5E1E72005539E0 /* qzPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qzPaint.cpp; path = ../../src/Quartz/qzPaint.cpp; sourceTree = SOURCE_ROOT; };
+		FAF33D740F684AD400E4025E /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = ../../src/mkMath.h; sourceTree = SOURCE_ROOT; };
+		FAF33D750F684AD400E4025E /* mkMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkMath.cpp; path = ../../src/mkMath.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* MonkVG-Quartz */ = {
+			isa = PBXGroup;
+			children = (
+				FA8428FC0F5CD3E7005539E0 /* include */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = "MonkVG-Quartz";
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FA8429310F5CD5F1005539E0 /* Quartz */,
+				FA8429080F5CD40D005539E0 /* mkCommon.h */,
+				FA8429090F5CD40D005539E0 /* mkVGU.cpp */,
+				FA84290A0F5CD40D005539E0 /* mkContext.cpp */,
+				FA84290B0F5CD40D005539E0 /* mkContext.h */,
+				FA84290C0F5CD40D005539E0 /* mkPath.h */,
+				FA84290D0F5CD40D005539E0 /* mkPath.cpp */,
+				FA84290E0F5CD40D005539E0 /* mkParameter.cpp */,
+				FA84290F0F5CD40D005539E0 /* mkBaseObject.h */,
+				FA8429100F5CD40D005539E0 /* mkBaseObject.cpp */,
+				FA842A980F5E0B9D005539E0 /* mkPaint.h */,
+				FA842A990F5E0B9D005539E0 /* mkPaint.cpp */,
+				FAF33D740F684AD400E4025E /* mkMath.h */,
+				FAF33D750F684AD400E4025E /* mkMath.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC046055464E500DB518D /* libMonkVG-Quartz.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		FA8428FC0F5CD3E7005539E0 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				FA8428FD0F5CD3E7005539E0 /* VG */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		FA8428FD0F5CD3E7005539E0 /* VG */ = {
+			isa = PBXGroup;
+			children = (
+				FA8428FE0F5CD3E7005539E0 /* openvg.h */,
+				FA8428FF0F5CD3E7005539E0 /* vgext.h */,
+				FA8429000F5CD3E7005539E0 /* vgplatform.h */,
+				FA8429010F5CD3E7005539E0 /* vgu.h */,
+			);
+			name = VG;
+			sourceTree = "<group>";
+		};
+		FA8429310F5CD5F1005539E0 /* Quartz */ = {
+			isa = PBXGroup;
+			children = (
+				FA8429320F5CD63F005539E0 /* qzContext.h */,
+				FA8429330F5CD63F005539E0 /* qzContext.mm */,
+				FA8429C00F5DB3B1005539E0 /* qzPath.h */,
+				FA8429C10F5DB3B1005539E0 /* qzPath.cpp */,
+				FA842B690F5E1E72005539E0 /* qzPaint.h */,
+				FA842B6A0F5E1E72005539E0 /* qzPaint.cpp */,
+			);
+			name = Quartz;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC043055464E500DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA8429020F5CD3E7005539E0 /* openvg.h in Headers */,
+				FA8429030F5CD3E7005539E0 /* vgext.h in Headers */,
+				FA8429040F5CD3E7005539E0 /* vgplatform.h in Headers */,
+				FA8429050F5CD3E7005539E0 /* vgu.h in Headers */,
+				FA8429110F5CD40D005539E0 /* mkCommon.h in Headers */,
+				FA8429140F5CD40D005539E0 /* mkContext.h in Headers */,
+				FA8429150F5CD40D005539E0 /* mkPath.h in Headers */,
+				FA8429180F5CD40D005539E0 /* mkBaseObject.h in Headers */,
+				FA8429340F5CD63F005539E0 /* qzContext.h in Headers */,
+				FA8429C20F5DB3B1005539E0 /* qzPath.h in Headers */,
+				FA842A9A0F5E0B9D005539E0 /* mkPaint.h in Headers */,
+				FA842B6B0F5E1E72005539E0 /* qzPaint.h in Headers */,
+				FAF33D760F684AD400E4025E /* mkMath.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC045055464E500DB518D /* MonkVG-Quartz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-Quartz" */;
+			buildPhases = (
+				D2AAC043055464E500DB518D /* Headers */,
+				D2AAC044055464E500DB518D /* Sources */,
+				D289987405E68DCB004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MonkVG-Quartz";
+			productName = "MonkVG-Quartz";
+			productReference = D2AAC046055464E500DB518D /* libMonkVG-Quartz.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkVG-Quartz" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* MonkVG-Quartz */;
+			projectDirPath = "";
+			projectRoot = ../../..;
+			targets = (
+				D2AAC045055464E500DB518D /* MonkVG-Quartz */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC044055464E500DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA8429120F5CD40D005539E0 /* mkVGU.cpp in Sources */,
+				FA8429130F5CD40D005539E0 /* mkContext.cpp in Sources */,
+				FA8429160F5CD40D005539E0 /* mkPath.cpp in Sources */,
+				FA8429170F5CD40D005539E0 /* mkParameter.cpp in Sources */,
+				FA8429190F5CD40D005539E0 /* mkBaseObject.cpp in Sources */,
+				FA8429350F5CD63F005539E0 /* qzContext.mm in Sources */,
+				FA8429C30F5DB3B1005539E0 /* qzPath.cpp in Sources */,
+				FA842A9B0F5E0B9D005539E0 /* mkPaint.cpp in Sources */,
+				FA842B6C0F5E1E72005539E0 /* qzPaint.cpp in Sources */,
+				FAF33D770F684AD400E4025E /* mkMath.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../include;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "MonkVG-Quartz";
+			};
+			name = Debug;
+		};
+		1DEB91ED08733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = ../../include;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "MonkVG-Quartz";
+			};
+			name = Release;
+		};
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-Quartz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1DEB91ED08733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkVG-Quartz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
