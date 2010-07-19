@@ -119,7 +119,7 @@ namespace MonkVG {
 		,	_active_matrix( &_path_user_to_surface )
 		,	_fill_rule( VG_NON_ZERO )
 	{
-		
+		_active_matrix->setIdentity();
 	}
 	
 	//// parameters ////

@@ -12,7 +12,7 @@
 
 #include "mkContext.h"
 #include <QuartzCore/QuartzCore.h>
-#include <stack>
+//#include <stack>
 
 namespace MonkVG {
 	
@@ -49,7 +49,7 @@ namespace MonkVG {
 	private:
 	
 		CGContextRef _context;		// the CoreGraphics context
-		std::stack<bool>	_context_stack;
+									//		std::stack<bool>	_context_stack;
 	
 	};
 }

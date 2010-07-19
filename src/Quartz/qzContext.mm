@@ -82,13 +82,15 @@ namespace MonkVG {
 	}
 	
 	void QuartzContext::setIdentity() {
-		if( !_context_stack.empty() ) {
-			CGContextRestoreGState( getNativeContext() );
-			_context_stack.pop();
-		}
-			
-		CGContextSaveGState ( getNativeContext() );
-		_context_stack.push( true );
+		Matrix33* active = getActiveMatrix();
+		active->setIdentity();
+//		if( _context_stack.size() > 1 ) {
+//			CGContextRestoreGState( getNativeContext() );
+//			_context_stack.pop(); 
+//		}
+//			
+//		CGContextSaveGState ( getNativeContext() );
+//		_context_stack.push( true );
 
 //		CGAffineTransform ctm = CGContextGetCTM( getNativeContext() );
 //		if( CGAffineTransformIsIdentity( ctm ) == false ) {
@@ -101,24 +103,36 @@ namespace MonkVG {
 		// a	b	0
 		// c	d	0
 		// tx	ty	1
-		Matrix33 active = *getActiveMatrix();
-		active.transpose();
-		
-		CGAffineTransform transform = CGAffineTransformMake ( active.get( 0, 0 ), active.get( 0, 1 ),
-												  active.get( 1, 0 ), active.get( 1, 1 ),
-												  active.get( 2, 0 ), active.get( 2, 1 ) );
-												  
-		CGContextConcatCTM( getNativeContext(), transform );
+//		Matrix33 active = *getActiveMatrix();
+//		active.transpose();
+//		
+//		CGAffineTransform transform = CGAffineTransformMake ( active.get( 0, 0 ), active.get( 0, 1 ),
+//												  active.get( 1, 0 ), active.get( 1, 1 ),
+//												  active.get( 2, 0 ), active.get( 2, 1 ) );
+//												  
+//		CGContextConcatCTM( getNativeContext(), transform );
 	}
 
 	void QuartzContext::scale( VGfloat sx, VGfloat sy ) {
-		CGContextScaleCTM( getNativeContext(), sx, sy );
+		//CGContextScaleCTM( getNativeContext(), sx, sy );
+		Matrix33* active = getActiveMatrix();
+		Matrix33 scale;
+		scale.setScale( sx, sy );
+		active->multiply( scale );
 	}
 	void QuartzContext::translate( VGfloat x, VGfloat y ) {
-		CGContextTranslateCTM( getNativeContext(), x, y );
+		//CGContextTranslateCTM( getNativeContext(), x, y );
+		Matrix33* active = getActiveMatrix();
+		Matrix33 translate;
+		translate.setTranslate( x, y );
+		active->multiply( translate );
 	}
 	void QuartzContext::rotate( VGfloat angle ) {
-		CGContextRotateCTM( getNativeContext(), radians( angle ) );
+		//CGContextRotateCTM( getNativeContext(), radians( angle ) );
+		Matrix33* active = getActiveMatrix();
+		Matrix33 rotate;
+		rotate.setRotate( radians( angle ) );
+		active->multiply( rotate );
 	}
 	
 	

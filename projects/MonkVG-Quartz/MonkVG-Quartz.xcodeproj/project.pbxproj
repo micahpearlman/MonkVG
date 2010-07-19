@@ -23,7 +23,7 @@
 		FA8429340F5CD63F005539E0 /* qzContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8429320F5CD63F005539E0 /* qzContext.h */; };
 		FA8429350F5CD63F005539E0 /* qzContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA8429330F5CD63F005539E0 /* qzContext.mm */; };
 		FA8429C20F5DB3B1005539E0 /* qzPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA8429C00F5DB3B1005539E0 /* qzPath.h */; };
-		FA8429C30F5DB3B1005539E0 /* qzPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA8429C10F5DB3B1005539E0 /* qzPath.cpp */; };
+		FA8429C30F5DB3B1005539E0 /* qzPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA8429C10F5DB3B1005539E0 /* qzPath.mm */; };
 		FA842A9A0F5E0B9D005539E0 /* mkPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA842A980F5E0B9D005539E0 /* mkPaint.h */; };
 		FA842A9B0F5E0B9D005539E0 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA842A990F5E0B9D005539E0 /* mkPaint.cpp */; };
 		FA842B6B0F5E1E72005539E0 /* qzPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA842B690F5E1E72005539E0 /* qzPaint.h */; };
@@ -50,7 +50,7 @@
 		FA8429320F5CD63F005539E0 /* qzContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzContext.h; path = ../../src/Quartz/qzContext.h; sourceTree = SOURCE_ROOT; };
 		FA8429330F5CD63F005539E0 /* qzContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = qzContext.mm; path = ../../src/Quartz/qzContext.mm; sourceTree = SOURCE_ROOT; };
 		FA8429C00F5DB3B1005539E0 /* qzPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzPath.h; path = ../../src/Quartz/qzPath.h; sourceTree = SOURCE_ROOT; };
-		FA8429C10F5DB3B1005539E0 /* qzPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qzPath.cpp; path = ../../src/Quartz/qzPath.cpp; sourceTree = SOURCE_ROOT; };
+		FA8429C10F5DB3B1005539E0 /* qzPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = qzPath.mm; path = ../../src/Quartz/qzPath.mm; sourceTree = SOURCE_ROOT; };
 		FA842A980F5E0B9D005539E0 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkPaint.h; sourceTree = "<group>"; };
 		FA842A990F5E0B9D005539E0 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mkPaint.cpp; sourceTree = "<group>"; };
 		FA842B690F5E1E72005539E0 /* qzPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzPaint.h; path = ../../src/Quartz/qzPaint.h; sourceTree = SOURCE_ROOT; };
@@ -142,7 +142,7 @@
 				FA8429320F5CD63F005539E0 /* qzContext.h */,
 				FA8429330F5CD63F005539E0 /* qzContext.mm */,
 				FA8429C00F5DB3B1005539E0 /* qzPath.h */,
-				FA8429C10F5DB3B1005539E0 /* qzPath.cpp */,
+				FA8429C10F5DB3B1005539E0 /* qzPath.mm */,
 				FA842B690F5E1E72005539E0 /* qzPaint.h */,
 				FA842B6A0F5E1E72005539E0 /* qzPaint.cpp */,
 			);
@@ -220,7 +220,7 @@
 				FA8429170F5CD40D005539E0 /* mkParameter.cpp in Sources */,
 				FA8429190F5CD40D005539E0 /* mkBaseObject.cpp in Sources */,
 				FA8429350F5CD63F005539E0 /* qzContext.mm in Sources */,
-				FA8429C30F5DB3B1005539E0 /* qzPath.cpp in Sources */,
+				FA8429C30F5DB3B1005539E0 /* qzPath.mm in Sources */,
 				FA842A9B0F5E0B9D005539E0 /* mkPaint.cpp in Sources */,
 				FA842B6C0F5E1E72005539E0 /* qzPaint.cpp in Sources */,
 				FAF33D770F684AD400E4025E /* mkMath.cpp in Sources */,
@@ -241,7 +241,9 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = ../../include;
 				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "MonkVG-Quartz";
+				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
 		};
@@ -253,7 +255,9 @@
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = ../../include;
 				INSTALL_PATH = /usr/local/lib;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "MonkVG-Quartz";
+				SDKROOT = iphoneos4.0;
 			};
 			name = Release;
 		};

@@ -28,7 +28,7 @@ namespace MonkVG {
 	public:
 	
 		Matrix33() {
-			
+			//setIdentity();
 		}
 		
 		Matrix33( const Matrix33 &m ) {
@@ -56,13 +56,15 @@ namespace MonkVG {
 		inline void copy( const Matrix33& m ) {
 			for( int i = 0; i < 3; i++ )
 				for( int k = 0; k < 3; k++ )
-					set( i, k, get( i, k ) );
+					set( i, k, m.get( i, k ) );
 						
 		}
 		inline void transpose( ) {
+			Matrix33 tmp;
 			for( int i = 0; i < 3; i++ )
 				for( int k = 0; k < 3; k++ )
-					set( i, k, get( k, i ) );
+					tmp.set( i, k, get( k, i ) );
+			copy( tmp );
 		}
 		inline void multiply( const Matrix33& m ) {
 			Matrix33 tmp;
@@ -75,12 +77,15 @@ namespace MonkVG {
 		}
 		
 		inline void setScale( VGfloat sx, VGfloat sy ) {
+			setIdentity();
 			set( 0, 0, sx ); set( 1, 1, sy );
 		}
 		inline void setTranslate( VGfloat tx, VGfloat ty ) {
+			setIdentity();
 			set( 0, 2, tx ); set( 1, 2, ty );
 		}
 		inline void setRotate( VGfloat a ) {
+			setIdentity();
 			set( 0, 0, cos( a ) );	set( 0, 1, -sin( a ) );
 			set( 1, 0, sin( a ) );	set( 1, 1, cos( a ) );			
 		}
