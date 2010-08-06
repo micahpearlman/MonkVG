@@ -311,9 +311,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MonkVG_Test_Quartz_Prefix.pch;
-				HEADER_SEARCH_PATHS = "~/dev/MonkVG/include";
+				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = "MonkVG-Test-Quartz";
+				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
 		};
@@ -324,9 +325,10 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MonkVG_Test_Quartz_Prefix.pch;
-				HEADER_SEARCH_PATHS = "~/dev/MonkVG/include";
+				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = "MonkVG-Test-Quartz";
+				SDKROOT = iphoneos4.0;
 			};
 			name = Release;
 		};
