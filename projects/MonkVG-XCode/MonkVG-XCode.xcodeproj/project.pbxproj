@@ -11,46 +11,52 @@
 		FA0594370F51F575002A2F65 /* vgext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594330F51F575002A2F65 /* vgext.h */; };
 		FA0594380F51F575002A2F65 /* vgplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594340F51F575002A2F65 /* vgplatform.h */; };
 		FA0594390F51F575002A2F65 /* vgu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594350F51F575002A2F65 /* vgu.h */; };
-		FA0594EE0F52063E002A2F65 /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594EB0F52063E002A2F65 /* mkCommon.h */; };
-		FA0594EF0F52063E002A2F65 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0594EC0F52063E002A2F65 /* mkVGU.cpp */; };
-		FA0594F00F52063E002A2F65 /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0594ED0F52063E002A2F65 /* mkContext.cpp */; };
-		FA0594F70F52066A002A2F65 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F20F52066A002A2F65 /* error.c */; };
-		FA0594F80F52066A002A2F65 /* glue.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F30F52066A002A2F65 /* glue.c */; };
-		FA0594F90F52066A002A2F65 /* gluint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0594F40F52066A002A2F65 /* gluint.h */; };
-		FA0594FA0F52066A002A2F65 /* project.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F50F52066A002A2F65 /* project.c */; };
-		FA0594FB0F52066A002A2F65 /* registry.c in Sources */ = {isa = PBXBuildFile; fileRef = FA0594F60F52066A002A2F65 /* registry.c */; };
-		FA0595070F520728002A2F65 /* glu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0595050F520728002A2F65 /* glu.h */; };
-		FA0595080F520728002A2F65 /* gluos.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0595060F520728002A2F65 /* gluos.h */; };
-		FA0595300F521136002A2F65 /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA05952F0F521136002A2F65 /* mkContext.h */; };
-		FA0595FD0F521C3E002A2F65 /* mkPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0595FB0F521C3E002A2F65 /* mkPath.h */; };
-		FA0595FE0F521C3E002A2F65 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0595FC0F521C3E002A2F65 /* mkPath.cpp */; };
-		FA05960F0F524CE8002A2F65 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA05960E0F524CE8002A2F65 /* mkParameter.cpp */; };
-		FA0596160F524DD9002A2F65 /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0596140F524DD9002A2F65 /* mkBaseObject.h */; };
-		FA0596170F524DD9002A2F65 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0596150F524DD9002A2F65 /* mkBaseObject.cpp */; };
+		FA9C4DF5120C94E8004AD208 /* qzContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DE2120C94E8004AD208 /* qzContext.h */; };
+		FA9C4DF6120C94E8004AD208 /* qzContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DE3120C94E8004AD208 /* qzContext.mm */; };
+		FA9C4DF7120C94E8004AD208 /* qzPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DE4120C94E8004AD208 /* qzPath.h */; };
+		FA9C4DF8120C94E8004AD208 /* qzPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DE5120C94E8004AD208 /* qzPath.mm */; };
+		FA9C4DF9120C94E8004AD208 /* qzPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DE6120C94E8004AD208 /* qzPaint.h */; };
+		FA9C4DFA120C94E8004AD208 /* qzPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DE7120C94E8004AD208 /* qzPaint.cpp */; };
+		FA9C4DFB120C94E8004AD208 /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DE8120C94E8004AD208 /* mkCommon.h */; };
+		FA9C4DFC120C94E8004AD208 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DE9120C94E8004AD208 /* mkVGU.cpp */; };
+		FA9C4DFD120C94E8004AD208 /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DEA120C94E8004AD208 /* mkContext.cpp */; };
+		FA9C4DFE120C94E8004AD208 /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DEB120C94E8004AD208 /* mkContext.h */; };
+		FA9C4DFF120C94E8004AD208 /* mkPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DEC120C94E8004AD208 /* mkPath.h */; };
+		FA9C4E00120C94E8004AD208 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DED120C94E8004AD208 /* mkPath.cpp */; };
+		FA9C4E01120C94E8004AD208 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DEE120C94E8004AD208 /* mkParameter.cpp */; };
+		FA9C4E02120C94E8004AD208 /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DEF120C94E8004AD208 /* mkBaseObject.h */; };
+		FA9C4E03120C94E8004AD208 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DF0120C94E8004AD208 /* mkBaseObject.cpp */; };
+		FA9C4E04120C94E8004AD208 /* mkPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DF1120C94E8004AD208 /* mkPaint.h */; };
+		FA9C4E05120C94E8004AD208 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DF2120C94E8004AD208 /* mkPaint.cpp */; };
+		FA9C4E06120C94E8004AD208 /* mkMath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9C4DF3120C94E8004AD208 /* mkMath.h */; };
+		FA9C4E07120C94E8004AD208 /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9C4DF4120C94E8004AD208 /* mkMath.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D2AAC046055464E500DB518D /* libMonkVG-XCode.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMonkVG-XCode.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2AAC046055464E500DB518D /* libMonkVG-iOS-Quartz.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMonkVG-iOS-Quartz.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA0594320F51F575002A2F65 /* openvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = openvg.h; path = ../../include/VG/openvg.h; sourceTree = SOURCE_ROOT; };
 		FA0594330F51F575002A2F65 /* vgext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgext.h; path = ../../include/VG/vgext.h; sourceTree = SOURCE_ROOT; };
 		FA0594340F51F575002A2F65 /* vgplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgplatform.h; path = ../../include/VG/vgplatform.h; sourceTree = SOURCE_ROOT; };
 		FA0594350F51F575002A2F65 /* vgu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vgu.h; path = ../../include/VG/vgu.h; sourceTree = SOURCE_ROOT; };
-		FA0594EB0F52063E002A2F65 /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = ../../src/mkCommon.h; sourceTree = SOURCE_ROOT; };
-		FA0594EC0F52063E002A2F65 /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = ../../src/mkVGU.cpp; sourceTree = SOURCE_ROOT; };
-		FA0594ED0F52063E002A2F65 /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = ../../src/mkContext.cpp; sourceTree = SOURCE_ROOT; };
-		FA0594F20F52066A002A2F65 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = error.c; path = ../../glu/libutil/error.c; sourceTree = SOURCE_ROOT; };
-		FA0594F30F52066A002A2F65 /* glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glue.c; path = ../../glu/libutil/glue.c; sourceTree = SOURCE_ROOT; };
-		FA0594F40F52066A002A2F65 /* gluint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gluint.h; path = ../../glu/libutil/gluint.h; sourceTree = SOURCE_ROOT; };
-		FA0594F50F52066A002A2F65 /* project.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = project.c; path = ../../glu/libutil/project.c; sourceTree = SOURCE_ROOT; };
-		FA0594F60F52066A002A2F65 /* registry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = registry.c; path = ../../glu/libutil/registry.c; sourceTree = SOURCE_ROOT; };
-		FA0595050F520728002A2F65 /* glu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glu.h; path = ../../glu/include/glu.h; sourceTree = SOURCE_ROOT; };
-		FA0595060F520728002A2F65 /* gluos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gluos.h; path = ../../glu/include/gluos.h; sourceTree = SOURCE_ROOT; };
-		FA05952F0F521136002A2F65 /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = ../../src/mkContext.h; sourceTree = SOURCE_ROOT; };
-		FA0595FB0F521C3E002A2F65 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = ../../src/mkPath.h; sourceTree = SOURCE_ROOT; };
-		FA0595FC0F521C3E002A2F65 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = ../../src/mkPath.cpp; sourceTree = SOURCE_ROOT; };
-		FA05960E0F524CE8002A2F65 /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = ../../src/mkParameter.cpp; sourceTree = SOURCE_ROOT; };
-		FA0596140F524DD9002A2F65 /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = ../../src/mkBaseObject.h; sourceTree = SOURCE_ROOT; };
-		FA0596150F524DD9002A2F65 /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = ../../src/mkBaseObject.cpp; sourceTree = SOURCE_ROOT; };
+		FA9C4DE2120C94E8004AD208 /* qzContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzContext.h; path = ../../src/Quartz/qzContext.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DE3120C94E8004AD208 /* qzContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = qzContext.mm; path = ../../src/Quartz/qzContext.mm; sourceTree = SOURCE_ROOT; };
+		FA9C4DE4120C94E8004AD208 /* qzPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzPath.h; path = ../../src/Quartz/qzPath.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DE5120C94E8004AD208 /* qzPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = qzPath.mm; path = ../../src/Quartz/qzPath.mm; sourceTree = SOURCE_ROOT; };
+		FA9C4DE6120C94E8004AD208 /* qzPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qzPaint.h; path = ../../src/Quartz/qzPaint.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DE7120C94E8004AD208 /* qzPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qzPaint.cpp; path = ../../src/Quartz/qzPaint.cpp; sourceTree = SOURCE_ROOT; };
+		FA9C4DE8120C94E8004AD208 /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = ../../src/mkCommon.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DE9120C94E8004AD208 /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = ../../src/mkVGU.cpp; sourceTree = SOURCE_ROOT; };
+		FA9C4DEA120C94E8004AD208 /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = ../../src/mkContext.cpp; sourceTree = SOURCE_ROOT; };
+		FA9C4DEB120C94E8004AD208 /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = ../../src/mkContext.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DEC120C94E8004AD208 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = ../../src/mkPath.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DED120C94E8004AD208 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = ../../src/mkPath.cpp; sourceTree = SOURCE_ROOT; };
+		FA9C4DEE120C94E8004AD208 /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = ../../src/mkParameter.cpp; sourceTree = SOURCE_ROOT; };
+		FA9C4DEF120C94E8004AD208 /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = ../../src/mkBaseObject.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DF0120C94E8004AD208 /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = ../../src/mkBaseObject.cpp; sourceTree = SOURCE_ROOT; };
+		FA9C4DF1120C94E8004AD208 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPaint.h; path = "../MonkVG-Quartz/mkPaint.h"; sourceTree = SOURCE_ROOT; };
+		FA9C4DF2120C94E8004AD208 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPaint.cpp; path = "../MonkVG-Quartz/mkPaint.cpp"; sourceTree = SOURCE_ROOT; };
+		FA9C4DF3120C94E8004AD208 /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = ../../src/mkMath.h; sourceTree = SOURCE_ROOT; };
+		FA9C4DF4120C94E8004AD208 /* mkMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkMath.cpp; path = ../../src/mkMath.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,16 +84,20 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				FA0594F10F520644002A2F65 /* glu */,
-				FA0594EB0F52063E002A2F65 /* mkCommon.h */,
-				FA0594EC0F52063E002A2F65 /* mkVGU.cpp */,
-				FA0594ED0F52063E002A2F65 /* mkContext.cpp */,
-				FA05952F0F521136002A2F65 /* mkContext.h */,
-				FA0595FB0F521C3E002A2F65 /* mkPath.h */,
-				FA0595FC0F521C3E002A2F65 /* mkPath.cpp */,
-				FA05960E0F524CE8002A2F65 /* mkParameter.cpp */,
-				FA0596140F524DD9002A2F65 /* mkBaseObject.h */,
-				FA0596150F524DD9002A2F65 /* mkBaseObject.cpp */,
+				FA9C4DE8120C94E8004AD208 /* mkCommon.h */,
+				FA9C4DE9120C94E8004AD208 /* mkVGU.cpp */,
+				FA9C4DEA120C94E8004AD208 /* mkContext.cpp */,
+				FA9C4DEB120C94E8004AD208 /* mkContext.h */,
+				FA9C4DEC120C94E8004AD208 /* mkPath.h */,
+				FA9C4DED120C94E8004AD208 /* mkPath.cpp */,
+				FA9C4DEE120C94E8004AD208 /* mkParameter.cpp */,
+				FA9C4DEF120C94E8004AD208 /* mkBaseObject.h */,
+				FA9C4DF0120C94E8004AD208 /* mkBaseObject.cpp */,
+				FA9C4DF1120C94E8004AD208 /* mkPaint.h */,
+				FA9C4DF2120C94E8004AD208 /* mkPaint.cpp */,
+				FA9C4DF3120C94E8004AD208 /* mkMath.h */,
+				FA9C4DF4120C94E8004AD208 /* mkMath.cpp */,
+				FA9C4DE1120C94E8004AD208 /* Quartz */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -95,7 +105,7 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC046055464E500DB518D /* libMonkVG-XCode.a */,
+				D2AAC046055464E500DB518D /* libMonkVG-iOS-Quartz.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -126,18 +136,17 @@
 			name = VG;
 			sourceTree = "<group>";
 		};
-		FA0594F10F520644002A2F65 /* glu */ = {
+		FA9C4DE1120C94E8004AD208 /* Quartz */ = {
 			isa = PBXGroup;
 			children = (
-				FA0595050F520728002A2F65 /* glu.h */,
-				FA0595060F520728002A2F65 /* gluos.h */,
-				FA0594F20F52066A002A2F65 /* error.c */,
-				FA0594F30F52066A002A2F65 /* glue.c */,
-				FA0594F40F52066A002A2F65 /* gluint.h */,
-				FA0594F50F52066A002A2F65 /* project.c */,
-				FA0594F60F52066A002A2F65 /* registry.c */,
+				FA9C4DE2120C94E8004AD208 /* qzContext.h */,
+				FA9C4DE3120C94E8004AD208 /* qzContext.mm */,
+				FA9C4DE4120C94E8004AD208 /* qzPath.h */,
+				FA9C4DE5120C94E8004AD208 /* qzPath.mm */,
+				FA9C4DE6120C94E8004AD208 /* qzPaint.h */,
+				FA9C4DE7120C94E8004AD208 /* qzPaint.cpp */,
 			);
-			name = glu;
+			name = Quartz;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -151,22 +160,24 @@
 				FA0594370F51F575002A2F65 /* vgext.h in Headers */,
 				FA0594380F51F575002A2F65 /* vgplatform.h in Headers */,
 				FA0594390F51F575002A2F65 /* vgu.h in Headers */,
-				FA0594EE0F52063E002A2F65 /* mkCommon.h in Headers */,
-				FA0594F90F52066A002A2F65 /* gluint.h in Headers */,
-				FA0595070F520728002A2F65 /* glu.h in Headers */,
-				FA0595080F520728002A2F65 /* gluos.h in Headers */,
-				FA0595300F521136002A2F65 /* mkContext.h in Headers */,
-				FA0595FD0F521C3E002A2F65 /* mkPath.h in Headers */,
-				FA0596160F524DD9002A2F65 /* mkBaseObject.h in Headers */,
+				FA9C4DF5120C94E8004AD208 /* qzContext.h in Headers */,
+				FA9C4DF7120C94E8004AD208 /* qzPath.h in Headers */,
+				FA9C4DF9120C94E8004AD208 /* qzPaint.h in Headers */,
+				FA9C4DFB120C94E8004AD208 /* mkCommon.h in Headers */,
+				FA9C4DFE120C94E8004AD208 /* mkContext.h in Headers */,
+				FA9C4DFF120C94E8004AD208 /* mkPath.h in Headers */,
+				FA9C4E02120C94E8004AD208 /* mkBaseObject.h in Headers */,
+				FA9C4E04120C94E8004AD208 /* mkPaint.h in Headers */,
+				FA9C4E06120C94E8004AD208 /* mkMath.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D2AAC045055464E500DB518D /* MonkVG-XCode */ = {
+		D2AAC045055464E500DB518D /* MonkVG-iOS-Quartz */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-XCode" */;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-iOS-Quartz" */;
 			buildPhases = (
 				D2AAC043055464E500DB518D /* Headers */,
 				D2AAC044055464E500DB518D /* Sources */,
@@ -176,9 +187,9 @@
 			);
 			dependencies = (
 			);
-			name = "MonkVG-XCode";
+			name = "MonkVG-iOS-Quartz";
 			productName = "MonkVG-XCode";
-			productReference = D2AAC046055464E500DB518D /* libMonkVG-XCode.a */;
+			productReference = D2AAC046055464E500DB518D /* libMonkVG-iOS-Quartz.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -193,7 +204,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2AAC045055464E500DB518D /* MonkVG-XCode */,
+				D2AAC045055464E500DB518D /* MonkVG-iOS-Quartz */,
 			);
 		};
 /* End PBXProject section */
@@ -203,15 +214,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA0594EF0F52063E002A2F65 /* mkVGU.cpp in Sources */,
-				FA0594F00F52063E002A2F65 /* mkContext.cpp in Sources */,
-				FA0594F70F52066A002A2F65 /* error.c in Sources */,
-				FA0594F80F52066A002A2F65 /* glue.c in Sources */,
-				FA0594FA0F52066A002A2F65 /* project.c in Sources */,
-				FA0594FB0F52066A002A2F65 /* registry.c in Sources */,
-				FA0595FE0F521C3E002A2F65 /* mkPath.cpp in Sources */,
-				FA05960F0F524CE8002A2F65 /* mkParameter.cpp in Sources */,
-				FA0596170F524DD9002A2F65 /* mkBaseObject.cpp in Sources */,
+				FA9C4DF6120C94E8004AD208 /* qzContext.mm in Sources */,
+				FA9C4DF8120C94E8004AD208 /* qzPath.mm in Sources */,
+				FA9C4DFA120C94E8004AD208 /* qzPaint.cpp in Sources */,
+				FA9C4DFC120C94E8004AD208 /* mkVGU.cpp in Sources */,
+				FA9C4DFD120C94E8004AD208 /* mkContext.cpp in Sources */,
+				FA9C4E00120C94E8004AD208 /* mkPath.cpp in Sources */,
+				FA9C4E01120C94E8004AD208 /* mkParameter.cpp in Sources */,
+				FA9C4E03120C94E8004AD208 /* mkBaseObject.cpp in Sources */,
+				FA9C4E05120C94E8004AD208 /* mkPaint.cpp in Sources */,
+				FA9C4E07120C94E8004AD208 /* mkMath.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,6 +234,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -232,7 +245,8 @@
 					../../include,
 				);
 				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = "MonkVG-XCode";
+				PRODUCT_NAME = "MonkVG-iOS-Quartz";
+				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
 		};
@@ -240,6 +254,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = (
@@ -247,7 +262,8 @@
 					../../include,
 				);
 				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = "MonkVG-XCode";
+				PRODUCT_NAME = "MonkVG-iOS-Quartz";
+				SDKROOT = iphoneos4.0;
 			};
 			name = Release;
 		};
@@ -280,7 +296,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-XCode" */ = {
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-iOS-Quartz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91EC08733DB70010E9CD /* Debug */,

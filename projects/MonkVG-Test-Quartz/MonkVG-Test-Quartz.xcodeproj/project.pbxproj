@@ -24,23 +24,23 @@
 		FA4806060F67357900ECBF20 /* test_tiger_paths.c in Sources */ = {isa = PBXBuildFile; fileRef = FA4806040F67357900ECBF20 /* test_tiger_paths.c */; };
 		FA4806090F67361E00ECBF20 /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = FA4806070F67361E00ECBF20 /* test.c */; };
 		FA8428E40F5CD217005539E0 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8428E30F5CD217005539E0 /* QuartzCore.framework */; };
-		FA84298A0F5DAECD005539E0 /* libMonkVG-Quartz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA8429870F5DAE6A005539E0 /* libMonkVG-Quartz.a */; };
+		FA9C4E35120C961A004AD208 /* libMonkVG-XCode.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA9C4E2F120C9594004AD208 /* libMonkVG-XCode.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		FA8429860F5DAE6A005539E0 /* PBXContainerItemProxy */ = {
+		FA9C4E2E120C9594004AD208 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = FA8429820F5DAE6A005539E0 /* MonkVG-Quartz.xcodeproj */;
+			containerPortal = FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC046055464E500DB518D;
-			remoteInfo = "MonkVG-Quartz";
+			remoteGlobalIDString = D2AAC046055464E500DB518D /* libMonkVG-XCode.a */;
+			remoteInfo = "MonkVG-iOS-Quartz";
 		};
-		FA8429880F5DAE91005539E0 /* PBXContainerItemProxy */ = {
+		FA9C4E30120C95AF004AD208 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = FA8429820F5DAE6A005539E0 /* MonkVG-Quartz.xcodeproj */;
+			containerPortal = FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC045055464E500DB518D;
-			remoteInfo = "MonkVG-Quartz";
+			remoteGlobalIDString = D2AAC045055464E500DB518D /* MonkVG-iOS-Quartz */;
+			remoteInfo = "MonkVG-iOS-Quartz";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -72,7 +72,7 @@
 		FA4806070F67361E00ECBF20 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 		FA4806080F67361E00ECBF20 /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		FA8428E30F5CD217005539E0 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		FA8429820F5DAE6A005539E0 /* MonkVG-Quartz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkVG-Quartz.xcodeproj"; path = "../MonkVG-Quartz/MonkVG-Quartz.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkVG-XCode.xcodeproj"; path = "../MonkVG-XCode/MonkVG-XCode.xcodeproj"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA84298A0F5DAECD005539E0 /* libMonkVG-Quartz.a in Frameworks */,
+				FA9C4E35120C961A004AD208 /* libMonkVG-XCode.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765590DF743DE002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -136,8 +136,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */,
 				FA4805FD0F67346B00ECBF20 /* tiger */,
-				FA8429820F5DAE6A005539E0 /* MonkVG-Quartz.xcodeproj */,
 				289233A00DB2D0730083E9F9 /* Main View */,
 				281C6CD70DB2D82200F60ACC /* Flipside View */,
 				080E96DDFE201D6D7F000001 /* Application Controllers */,
@@ -191,10 +191,10 @@
 			path = tiger;
 			sourceTree = "<group>";
 		};
-		FA8429830F5DAE6A005539E0 /* Products */ = {
+		FA9C4E2B120C9594004AD208 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FA8429870F5DAE6A005539E0 /* libMonkVG-Quartz.a */,
+				FA9C4E2F120C9594004AD208 /* libMonkVG-XCode.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -213,7 +213,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				FA8429890F5DAE91005539E0 /* PBXTargetDependency */,
+				FA9C4E31120C95AF004AD208 /* PBXTargetDependency */,
 			);
 			name = "MonkVG-Test-Quartz";
 			productName = "MonkVG-Test-Quartz";
@@ -239,8 +239,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = FA8429830F5DAE6A005539E0 /* Products */;
-					ProjectRef = FA8429820F5DAE6A005539E0 /* MonkVG-Quartz.xcodeproj */;
+					ProductGroup = FA9C4E2B120C9594004AD208 /* Products */;
+					ProjectRef = FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -251,11 +251,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		FA8429870F5DAE6A005539E0 /* libMonkVG-Quartz.a */ = {
+		FA9C4E2F120C9594004AD208 /* libMonkVG-XCode.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libMonkVG-Quartz.a";
-			remoteRef = FA8429860F5DAE6A005539E0 /* PBXContainerItemProxy */;
+			path = "libMonkVG-XCode.a";
+			remoteRef = FA9C4E2E120C9594004AD208 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -294,10 +294,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		FA8429890F5DAE91005539E0 /* PBXTargetDependency */ = {
+		FA9C4E31120C95AF004AD208 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "MonkVG-Quartz";
-			targetProxy = FA8429880F5DAE91005539E0 /* PBXContainerItemProxy */;
+			name = "MonkVG-iOS-Quartz";
+			targetProxy = FA9C4E30120C95AF004AD208 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
