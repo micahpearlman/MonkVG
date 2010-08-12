@@ -20,7 +20,10 @@
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		FAB1428E121371FC004DF07F /* libMonkVG-XCode.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB1428B1213719D004DF07F /* libMonkVG-XCode.a */; };
-		FAB142ED12137497004DF07F /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB142EC12137497004DF07F /* libstdc++.dylib */; };
+		FAB144781214867E004DF07F /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144741214867E004DF07F /* test.c */; };
+		FAB144791214867E004DF07F /* test_tiger.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144761214867E004DF07F /* test_tiger.c */; };
+		FAB1447A1214867E004DF07F /* test_tiger_paths.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144771214867E004DF07F /* test_tiger_paths.c */; };
+		FAB1451E121493B3004DF07F /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB1451D121493B3004DF07F /* libstdc++.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,7 +72,11 @@
 		32CA4F630368D1EE00C91783 /* MonkVG_Test_iOS_OpenGL_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkVG_Test_iOS_OpenGL_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* MonkVG_Test_iOS_OpenGL-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MonkVG_Test_iOS_OpenGL-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkVG-XCode.xcodeproj"; path = "../MonkVG-XCode/MonkVG-XCode.xcodeproj"; sourceTree = SOURCE_ROOT; };
-		FAB142EC12137497004DF07F /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/powerpc-apple-darwin10/4.2.1/libstdc++.dylib"; sourceTree = SDKROOT; };
+		FAB144741214867E004DF07F /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
+		FAB144751214867E004DF07F /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
+		FAB144761214867E004DF07F /* test_tiger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_tiger.c; sourceTree = "<group>"; };
+		FAB144771214867E004DF07F /* test_tiger_paths.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_tiger_paths.c; sourceTree = "<group>"; };
+		FAB1451D121493B3004DF07F /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin10/4.0.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +89,7 @@
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
 				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
-				FAB142ED12137497004DF07F /* libstdc++.dylib in Frameworks */,
+				FAB1451E121493B3004DF07F /* libstdc++.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,13 +133,13 @@
 			isa = PBXGroup;
 			children = (
 				FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */,
+				FAB144731214867E004DF07F /* tiger */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				2514C27610084DB600A42282 /* Shaders */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				FAB142EC12137497004DF07F /* libstdc++.dylib */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -162,6 +169,7 @@
 				28FD14FF0DC6FC520079059D /* OpenGLES.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
+				FAB1451D121493B3004DF07F /* libstdc++.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -173,6 +181,17 @@
 				FAB1428B1213719D004DF07F /* libMonkVG-XCode.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FAB144731214867E004DF07F /* tiger */ = {
+			isa = PBXGroup;
+			children = (
+				FAB144741214867E004DF07F /* test.c */,
+				FAB144751214867E004DF07F /* test.h */,
+				FAB144761214867E004DF07F /* test_tiger.c */,
+				FAB144771214867E004DF07F /* test_tiger_paths.c */,
+			);
+			path = tiger;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -259,6 +278,9 @@
 				28FD14FE0DC6FC130079059D /* EAGLView.m in Sources */,
 				2514C27210084DB100A42282 /* ES1Renderer.m in Sources */,
 				2514C27310084DB100A42282 /* ES2Renderer.m in Sources */,
+				FAB144781214867E004DF07F /* test.c in Sources */,
+				FAB144791214867E004DF07F /* test_tiger.c in Sources */,
+				FAB1447A1214867E004DF07F /* test_tiger_paths.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,16 +301,14 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MonkVG_Test_iOS_OpenGL_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
 				INFOPLIST_FILE = "MonkVG_Test_iOS_OpenGL-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/powerpc-apple-darwin10/4.2.1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "MonkVG-Test-iOS-OpenGL";
 			};
 			name = Debug;
@@ -298,15 +318,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = MonkVG_Test_iOS_OpenGL_Prefix.pch;
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
 				INFOPLIST_FILE = "MonkVG_Test_iOS_OpenGL-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/usr/lib/gcc/powerpc-apple-darwin10/4.2.1\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "MonkVG-Test-iOS-OpenGL";
 				VALIDATE_PRODUCT = YES;
 			};

@@ -22,6 +22,7 @@ namespace MonkVG {
 		OpenGLPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) 
 			:	IPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities )
 			,	_fillTesseleator( 0 )
+			,	_isDirty( true )
 		{
 
 		}
@@ -54,6 +55,7 @@ namespace MonkVG {
 		GLenum				_primType;
 		GLuint				_fillVBO;
 		int					_numberVertices;
+		bool				_isDirty;
 		
 	private:		// tesseleator callbacks
 		static void tessBegin( GLenum type, GLvoid* user );
@@ -63,6 +65,17 @@ namespace MonkVG {
 								GLfloat weight[4], void **outData,
 								void *polygonData );
 		void endOfTesselation();
+		
+	private:	// utility methods
+		static inline VGfloat calcCubicBezier1d( VGfloat x0, VGfloat x1, VGfloat x2, VGfloat x3, VGfloat t ) {
+			// see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
+			VGfloat oneT = 1.0f - t;
+			VGfloat x =		x0 * (oneT * oneT * oneT)
+						+	3.0f * x1 * (oneT * oneT) * t
+						+	3.0f * x2 * oneT * (t * t)
+						+	x3 * (t * t * t);
+			return x;	
+		}
 		
 	};
 }

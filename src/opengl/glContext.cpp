@@ -80,6 +80,11 @@ namespace MonkVG {
 	}
 	
 	void OpenGLContext::fill() {
+		if ( _fill_paint ) {
+			const VGfloat* c = _fill_paint->getPaintColor();
+			glColor4f(c[0], c[1], c[2], c[3] );
+		}
+		
 	}
 	
 	void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {

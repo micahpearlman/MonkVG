@@ -542,7 +542,11 @@ static int CheckForRightSplice( GLUtesselator *tess, ActiveRegion *regUp )
     if( EdgeSign( eUp->Dst, eLo->Org, eUp->Org ) < 0 ) return FALSE;
 
     /* eLo->Org appears to be above eUp, so splice eLo->Org into eUp */
-    RegionAbove(regUp)->dirty = regUp->dirty = TRUE;
+	regUp->dirty = TRUE;
+	void* valid_ptr_check = RegionAbove(regUp);//->dirty  
+	if ( valid_ptr_check ) {
+		RegionAbove(regUp)->dirty = TRUE;  
+	}  
     if (__gl_meshSplitEdge( eUp->Sym ) == NULL) longjmp(tess->env,1);
     if ( !__gl_meshSplice( eLo->Oprev, eUp ) ) longjmp(tess->env,1);
   }
@@ -580,7 +584,10 @@ static int CheckForLeftSplice( GLUtesselator *tess, ActiveRegion *regUp )
     if( EdgeSign( eUp->Dst, eLo->Dst, eUp->Org ) < 0 ) return FALSE;
 
     /* eLo->Dst is above eUp, so splice eLo->Dst into eUp */
-    RegionAbove(regUp)->dirty = regUp->dirty = TRUE;
+	if ( RegionAbove(regUp) ) {
+		RegionAbove(regUp)->dirty = TRUE;
+	}  
+	regUp->dirty = TRUE;
     e = __gl_meshSplitEdge( eUp );
     if (e == NULL) longjmp(tess->env,1);
     if ( !__gl_meshSplice( eLo->Sym, e ) ) longjmp(tess->env,1);

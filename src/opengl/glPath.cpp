@@ -18,13 +18,12 @@ namespace MonkVG {
 		// get the native OpenGL context
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
 
-		if( paintModes & VG_FILL_PATH && _fillTesseleator == 0 ) {	// build the fill polygons
+		if( paintModes & VG_FILL_PATH && _isDirty == true ) {	// build the fill polygons
 			_fillTesseleator = gluNewTess();
 			gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (*) ( )) &OpenGLPath::tessBegin );
 			gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (*) ( )) &OpenGLPath::tessEnd );
 			gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (*) ( )) &OpenGLPath::tessVertex );
-			gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE, (GLvoid (*) ( )) &OpenGLPath::tessCombine );			
-			//gluTessProperty( _fillTesseleator, GLU_TESS_BOUNDARY_ONLY, GL_FALSE ); 
+			//gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (*) ( )) &OpenGLPath::tessCombine );			
 			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
 			
 			gluTessBeginPolygon( _fillTesseleator, this );
@@ -113,12 +112,25 @@ namespace MonkVG {
 					} break;
 					case (VG_CUBIC_TO >> 1):	// todo
 					{
-						//					VGfloat cp1x = *coordsIter; coordsIter++;
-						//					VGfloat cp1y = *coordsIter; coordsIter++;
-						//					VGfloat cp2x = *coordsIter; coordsIter++;
-						//					VGfloat cp2y = *coordsIter; coordsIter++;
-						//					coords[0] = *coordsIter; coordsIter++;
-						//					coords[1] = *coordsIter; coordsIter++;
+						VGfloat cp1x = *coordsIter; coordsIter++;
+						VGfloat cp1y = *coordsIter; coordsIter++;
+						VGfloat cp2x = *coordsIter; coordsIter++;
+						VGfloat cp2y = *coordsIter; coordsIter++;
+						VGfloat p3x = *coordsIter; coordsIter++;
+						VGfloat p3y = *coordsIter; coordsIter++;
+						
+						VGfloat increment = 1.0f / 4.0f;
+						for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+							GLdouble* c = new GLdouble[3];
+							c[0] = OpenGLPath::calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
+							c[1] = OpenGLPath::calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
+							c[2] = coords[2];
+							
+							gluTessVertex( _fillTesseleator, c, c );
+						}
+						coords[0] = p3x;
+						coords[1] = p3y;
+						
 					}
 						break;	
 					default:
@@ -128,6 +140,11 @@ namespace MonkVG {
 			
 			gluTessEndContour( _fillTesseleator );
 			gluTessEndPolygon( _fillTesseleator );
+			
+			gluDeleteTess( _fillTesseleator );
+			_fillTesseleator = 0;
+			
+			_isDirty = false;
 
 		}
 		if( paintModes & VG_STROKE_PATH )
@@ -160,7 +177,7 @@ namespace MonkVG {
 		if( paintModes & VG_FILL_PATH ) {
 			
 			// draw
-			glColor4f(1, 1, 1, 1);
+			IContext::instance().fill();
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
@@ -181,7 +198,7 @@ namespace MonkVG {
 		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float) * 2, &_vertices[0], GL_STATIC_DRAW );
 		_numberVertices = _vertices.size()/2;
 		for (list<GLdouble*>::iterator iter = _verticesToDestroy.begin(); iter != _verticesToDestroy.end(); iter++ ) {
-			delete [] *(iter);
+//todo!!!			delete [] *(iter);
 		}
 		_verticesToDestroy.clear();
 		_vertices.clear();
@@ -253,12 +270,17 @@ namespace MonkVG {
 			
 			vertexCount_++;
 		}
-		printf("vert: %f, %f, %f\n", v[0], v[1], v[2] );
+		printf("\tvert: %f, %f, %f\n", v[0], v[1], v[2] );
 	}
 	void OpenGLPath::tessCombine( GLdouble coords[3], void *data[4],
 							GLfloat weight[4], void **outData,
 							void *polygonData ) {
-		
+		GLdouble* vertex = new GLdouble[3];
+		vertex[0] = coords[0];
+		vertex[1] = coords[1];
+		vertex[2] = coords[2];		
+		*outData = vertex;
+//todo!!!		me->addVertexToDestroy( v );
 		printf("combine\n");
 		
 	}

@@ -8,7 +8,12 @@
 
 #import "ES1Renderer.h"
 
+void loadTiger();
+void display(float dt);
+
 @implementation ES1Renderer
+
+
 
 // Create an OpenGL ES 1.1 context
 - (id)init
@@ -43,6 +48,8 @@
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
+		loadTiger();
+		
     }
 
     return self;
@@ -60,19 +67,21 @@
     // This call is redundant, but needed if dealing with multiple framebuffers.
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	display(0.05f);
 	
-	VGfloat clearColor[] = {1,1,1,1};
-	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
-	vgClear(0,0,320,480);
-	
-	
-	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
-	vgLoadIdentity();
-	vgTranslate(320/2,(480/2)/2);
-	vgRotate(ang);
-	ang += 0.5f;
-	
-	vgDrawPath( _path, VG_FILL_PATH );
+//	VGfloat clearColor[] = {1,1,1,1};
+//	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
+//	vgClear(0,0,320,480);
+//	
+//	
+//	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+//	vgLoadIdentity();
+//	vgTranslate(320/2,(480/2)/2);
+//	vgRotate(ang);
+//	ang += 0.5f;
+//	
+//	vgDrawPath( _path, VG_FILL_PATH );
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.

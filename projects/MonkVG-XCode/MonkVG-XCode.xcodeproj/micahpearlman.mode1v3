@@ -230,6 +230,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -273,6 +275,7 @@
 								<string>FA2D0235120CD4AF0042EEC6</string>
 								<string>FAB141EE1213619B004DF07F</string>
 								<string>FAB141EF1213619B004DF07F</string>
+								<string>FAB141FF12136477004DF07F</string>
 								<string>FA2D023C120CD4AF0042EEC6</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>FAB1431C1213798C004DF07F</string>
@@ -285,9 +288,9 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>32</integer>
-									<integer>21</integer>
-									<integer>7</integer>
+									<integer>3</integer>
+									<integer>2</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -324,14 +327,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>glPath.cpp</string>
+								<string>openvg.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -339,11 +340,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>glPath.cpp</string>
+										<string>openvg.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>FAB1443A12145E99004DF07F</string>
+										<string>FAB14534121494C7004DF07F</string>
 										<key>history</key>
 										<array>
 											<string>FAB143201213798C004DF07F</string>
@@ -357,20 +358,29 @@
 											<string>FAB1432B1213798C004DF07F</string>
 											<string>FAB1432E1213798C004DF07F</string>
 											<string>FAB1432F1213798C004DF07F</string>
-											<string>FAB1435212137D17004DF07F</string>
 											<string>FAB1437112138138004DF07F</string>
-											<string>FAB143D912139F69004DF07F</string>
 											<string>FAB143EC1213A144004DF07F</string>
 											<string>FAB143ED1213A144004DF07F</string>
-											<string>FAB143EE1213A144004DF07F</string>
 											<string>FAB143FC1213A2A6004DF07F</string>
-											<string>FAB1442412145E0A004DF07F</string>
-											<string>FAB1442512145E0A004DF07F</string>
 											<string>FAB1442612145E0A004DF07F</string>
 											<string>FAB1442712145E0A004DF07F</string>
 											<string>FAB1442812145E0A004DF07F</string>
 											<string>FAB1442912145E0A004DF07F</string>
-											<string>FAB1443212145E67004DF07F</string>
+											<string>FAB1446212148020004DF07F</string>
+											<string>FAB1446312148020004DF07F</string>
+											<string>FAB1446412148020004DF07F</string>
+											<string>FAB1446512148020004DF07F</string>
+											<string>FAB1446712148020004DF07F</string>
+											<string>FAB1446812148020004DF07F</string>
+											<string>FAB1448B1214875C004DF07F</string>
+											<string>FAB144AD12148997004DF07F</string>
+											<string>FAB144D012148F23004DF07F</string>
+											<string>FAB144D112148F23004DF07F</string>
+											<string>FAB144D212148F23004DF07F</string>
+											<string>FAB144D312148F23004DF07F</string>
+											<string>FAB144D412148F23004DF07F</string>
+											<string>FAB14532121494C7004DF07F</string>
+											<string>FAB14533121494C7004DF07F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -581,8 +591,8 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>1CD10A99069EF8BA00B06720</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>FA4047910EF1F60200B4EFF1</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/micahpearlman/dev/personal/MonkVG/projects/MonkVG-XCode/MonkVG-XCode.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -823,25 +833,25 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>glContext.cpp</string>
+										<string>dict.h</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{0, 0}, {1680, 541}}</string>
+										<string>{{0, 0}, {1200, 1473}}</string>
 										<key>RubberWindowFrame</key>
-										<string>0 40 1680 988 0 0 1680 1028 </string>
+										<string>1680 -870 1200 1920 1680 -870 1200 1920 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXNavigatorGroup</string>
 									<key>Proportion</key>
-									<string>1680pt</string>
+									<string>1200pt</string>
 								</dict>
 							</array>
 							<key>Proportion</key>
-							<string>541pt</string>
+							<string>1473pt</string>
 						</dict>
 						<dict>
 							<key>BecomeActive</key>
@@ -856,9 +866,9 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 546}, {1680, 401}}</string>
+								<string>{{0, 1478}, {1200, 401}}</string>
 								<key>RubberWindowFrame</key>
-								<string>0 40 1680 988 0 0 1680 1028 </string>
+								<string>1680 -870 1200 1920 1680 -870 1200 1920 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXProjectFindModule</string>
@@ -867,7 +877,7 @@
 						</dict>
 					</array>
 					<key>Proportion</key>
-					<string>947pt</string>
+					<string>1879pt</string>
 				</dict>
 			</array>
 			<key>Name</key>
@@ -887,11 +897,11 @@
 				<string>1CD0528E0623707200166675</string>
 			</array>
 			<key>WindowString</key>
-			<string>0 40 1680 988 0 0 1680 1028 </string>
+			<string>1680 -870 1200 1920 1680 -870 1200 1920 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
