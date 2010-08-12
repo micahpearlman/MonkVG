@@ -271,7 +271,7 @@
 	FA4806080F67361E00ECBF20 /* test.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1271, 855}}";
-			sepNavSelRange = "{81, 43}";
+			sepNavSelRange = "{798, 0}";
 			sepNavVisRange = "{0, 1124}";
 		};
 	};

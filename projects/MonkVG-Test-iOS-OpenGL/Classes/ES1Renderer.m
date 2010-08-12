@@ -39,7 +39,7 @@
 		vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
 		
 		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
-		vguRect( _path, 10.0f, 10.0f, 90.0f, 50.0f );
+		vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
@@ -48,26 +48,10 @@
     return self;
 }
 
+
 - (void)render
 {
-    // Replace the implementation of this method to do your own custom drawing
-
-//    static const GLfloat squareVertices[] = {
-//        -0.5f,  -0.33f,
-//         0.5f,  -0.33f,
-//        -0.5f,   0.33f,
-//         0.5f,   0.33f,
-//    };
-//
-//    static const GLubyte squareColors[] = {
-//        255, 255,   0, 255,
-//        0,   255, 255, 255,
-//        0,     0,   0,   0,
-//        255,   0, 255, 255,
-//    };
-//
-//    static float transY = 0.0f;
-
+	static float ang = 0;
     // This application only creates a single context which is already set current at this point.
     // This call is redundant, but needed if dealing with multiple contexts.
     [EAGLContext setCurrentContext:context];
@@ -75,27 +59,20 @@
     // This application only creates a single default framebuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple framebuffers.
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
-//    glViewport(0, 0, backingWidth, backingHeight);
-//
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
+	glClear(GL_COLOR_BUFFER_BIT);
 	
-	//vgDrawPath(line, VG_STROKE_PATH);
+	VGfloat clearColor[] = {1,1,1,1};
+	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
+	vgClear(0,0,320,480);
+	
+	
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate(320/2,(480/2)/2);
+	vgRotate(ang);
+	ang += 0.5f;
+	
 	vgDrawPath( _path, VG_FILL_PATH );
-//    glTranslatef(0.0f, (GLfloat)(sinf(transY)/2.0f), 0.0f);
-//    transY += 0.075f;
-//
-//    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-//    glClear(GL_COLOR_BUFFER_BIT);
-//
-//    glVertexPointer(2, GL_FLOAT, 0, squareVertices);
-//    glEnableClientState(GL_VERTEX_ARRAY);
-//    glColorPointer(4, GL_UNSIGNED_BYTE, 0, squareColors);
-//    glEnableClientState(GL_COLOR_ARRAY);
-//
-//    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.

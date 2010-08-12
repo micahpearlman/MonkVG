@@ -52,7 +52,7 @@ namespace MonkVG {
 		vector<GLfloat>		_vertices;
 		list<GLdouble*>		_verticesToDestroy;
 		GLenum				_primType;
-		GLuint				_vertexBufferObject;
+		GLuint				_fillVBO;
 		int					_numberVertices;
 		
 	private:		// tesseleator callbacks

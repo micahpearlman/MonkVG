@@ -63,7 +63,7 @@ namespace MonkVG {
 						c[0] = closeTo[0];
 						c[1] = closeTo[1];
 						c[2] = closeTo[2];
-//						gluTessVertex( _fillTesseleator, c, c );
+						// do not think this is necessary for the tesselator						gluTessVertex( _fillTesseleator, c, c );
 					} break;
 					case (VG_MOVE_TO >> 1):
 					{	
@@ -144,11 +144,24 @@ namespace MonkVG {
 		// tx	ty	1
 		active.transpose();		// NOTE:  have to transpose.  Maybe should set up the matrices already as transposed?
 		
+		GLfloat mat44[4][4];
+		for( int x = 0; x < 4; x++ )
+			for( int y = 0; y < 4; y++ )
+				mat44[x][y] = 0;
+		mat44[0][0] = active.get( 0, 0 );
+		mat44[0][1] = active.get( 0, 1 );
+		mat44[1][0]	= active.get( 1, 0 );
+		mat44[1][1] = active.get( 1, 1 );
+		mat44[2][2] = 1.0f;
+		mat44[3][3]	= 1.0f;
+		//todo: translation
+		glPushMatrix();
+		glLoadMatrixf( &mat44[0][0] );
 		if( paintModes & VG_FILL_PATH ) {
 			
 			// draw
 			glColor4f(1, 1, 1, 1);
-			glBindBuffer( GL_ARRAY_BUFFER, _vertexBufferObject );
+			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLES, 0, _numberVertices );
@@ -156,13 +169,15 @@ namespace MonkVG {
 		}
 		
 		glContext.endRender();
+		glPopMatrix();
+		
 		return true;
 	}
 	
 	
 	void OpenGLPath::endOfTesselation() {
-		glGenBuffers( 1, &_vertexBufferObject );
-		glBindBuffer( GL_ARRAY_BUFFER, _vertexBufferObject );
+		glGenBuffers( 1, &_fillVBO );
+		glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float) * 2, &_vertices[0], GL_STATIC_DRAW );
 		_numberVertices = _vertices.size()/2;
 		for (list<GLdouble*>::iterator iter = _verticesToDestroy.begin(); iter != _verticesToDestroy.end(); iter++ ) {
@@ -255,7 +270,7 @@ namespace MonkVG {
 			_fillTesseleator = 0;
 		}
 		
-		glDeleteBuffers( 1, &_vertexBufferObject );
+		glDeleteBuffers( 1, &_fillVBO );
 	}
 	
 	

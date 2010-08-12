@@ -343,7 +343,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>FAB1440C1213A396004DF07F</string>
+										<string>FAB1443A12145E99004DF07F</string>
 										<key>history</key>
 										<array>
 											<string>FAB143201213798C004DF07F</string>
@@ -354,7 +354,6 @@
 											<string>FAB143261213798C004DF07F</string>
 											<string>FAB143271213798C004DF07F</string>
 											<string>FAB143281213798C004DF07F</string>
-											<string>FAB143291213798C004DF07F</string>
 											<string>FAB1432B1213798C004DF07F</string>
 											<string>FAB1432E1213798C004DF07F</string>
 											<string>FAB1432F1213798C004DF07F</string>
@@ -365,7 +364,13 @@
 											<string>FAB143ED1213A144004DF07F</string>
 											<string>FAB143EE1213A144004DF07F</string>
 											<string>FAB143FC1213A2A6004DF07F</string>
-											<string>FAB143FD1213A2A6004DF07F</string>
+											<string>FAB1442412145E0A004DF07F</string>
+											<string>FAB1442512145E0A004DF07F</string>
+											<string>FAB1442612145E0A004DF07F</string>
+											<string>FAB1442712145E0A004DF07F</string>
+											<string>FAB1442812145E0A004DF07F</string>
+											<string>FAB1442912145E0A004DF07F</string>
+											<string>FAB1443212145E67004DF07F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -813,8 +818,6 @@
 							<key>Dock</key>
 							<array>
 								<dict>
-									<key>BecomeActive</key>
-									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
@@ -841,6 +844,8 @@
 							<string>541pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
