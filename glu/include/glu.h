@@ -136,8 +136,8 @@ extern "C" {
 
 
 /* Not defined in OpenGL ES */
-typedef double GLdouble;
-typedef double GLclampd;
+typedef float GLdouble;
+typedef float GLclampd;
 
 #ifdef __cplusplus
 class GLUtesselator;

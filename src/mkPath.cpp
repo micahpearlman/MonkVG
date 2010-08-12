@@ -9,6 +9,7 @@
 
 #include "mkPath.h"
 #include "mkContext.h"
+#include <cassert>
 
 namespace MonkVG {	// Internal Implementation
 
@@ -35,7 +36,8 @@ namespace MonkVG {	// Internal Implementation
 					_fcoords->push_back( *(((VGfloat*)(pathData)) + i) );
 					break;
 				default:
-					// error 
+					// error
+					assert( !"unsupported path data type" );
 					break;
 			}
 			
@@ -60,7 +62,8 @@ namespace MonkVG {	// Internal Implementation
 				_fcoords->clear();
 				break;
 			default:
-				// error 
+				// error
+				assert( !"unsupported path data type" );
 				break;
 		}
 		

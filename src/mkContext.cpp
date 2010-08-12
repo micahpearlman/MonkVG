@@ -22,17 +22,6 @@ VG_API_CALL VGboolean vgCreateContextSH(VGint width, VGint height)
 	IContext::instance().setWidth( width );
 	IContext::instance().setHeight( height );
 	
-#if 0	
-	/* setup GL projection */
-	glViewport(0,0,width,height);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(0,width,0,height);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-#endif	
 	return VG_TRUE;
 }
 

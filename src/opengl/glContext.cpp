@@ -21,6 +21,16 @@ namespace MonkVG {
 	
 	bool OpenGLContext::Initialize() {
 	
+		/* setup GL projection */
+		glViewport(0,0, _width, _height);
+		
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluOrtho2D(0, _width,0, _height);
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
 		return true;
 	}
 	
@@ -28,6 +38,23 @@ namespace MonkVG {
 	bool OpenGLContext::Terminate() {
 		return true;
 	}
+	
+	void OpenGLContext::beginRender() {
+		/* setup GL projection */
+		glViewport(0,0, _width, _height);
+		
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluOrtho2D(0, _width,0, _height);
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		
+	}
+	void OpenGLContext::endRender() {
+		
+	}
+
 	
 	
 	IPath* OpenGLContext::createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {

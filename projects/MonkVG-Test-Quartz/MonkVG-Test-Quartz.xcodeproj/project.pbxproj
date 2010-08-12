@@ -32,15 +32,22 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC046055464E500DB518D /* libMonkVG-XCode.a */;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
 			remoteInfo = "MonkVG-iOS-Quartz";
 		};
 		FA9C4E30120C95AF004AD208 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC045055464E500DB518D /* MonkVG-iOS-Quartz */;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
 			remoteInfo = "MonkVG-iOS-Quartz";
+		};
+		FAB141BE121360DB004DF07F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA9C4E2A120C9594004AD208 /* MonkVG-XCode.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FA2D028B120CD5150042EEC6 /* libMonkVG-XCode.a */;
+			remoteInfo = "MonkVG-OpenGL-iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -195,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				FA9C4E2F120C9594004AD208 /* libMonkVG-XCode.a */,
+				FAB141BF121360DB004DF07F /* libMonkVG-XCode.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -256,6 +264,13 @@
 			fileType = archive.ar;
 			path = "libMonkVG-XCode.a";
 			remoteRef = FA9C4E2E120C9594004AD208 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FAB141BF121360DB004DF07F /* libMonkVG-XCode.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libMonkVG-XCode.a";
+			remoteRef = FAB141BE121360DB004DF07F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
