@@ -63,7 +63,7 @@ namespace MonkVG {
 						c[0] = closeTo[0];
 						c[1] = closeTo[1];
 						c[2] = closeTo[2];
-						gluTessVertex( _fillTesseleator, c, c );
+//						gluTessVertex( _fillTesseleator, c, c );
 					} break;
 					case (VG_MOVE_TO >> 1):
 					{	

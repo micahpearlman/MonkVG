@@ -271,6 +271,8 @@
 								<string>FA0594310F51F54B002A2F65</string>
 								<string>08FB7795FE84155DC02AAC07</string>
 								<string>FA2D0235120CD4AF0042EEC6</string>
+								<string>FAB141EE1213619B004DF07F</string>
+								<string>FAB141EF1213619B004DF07F</string>
 								<string>FA2D023C120CD4AF0042EEC6</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>FAB1431C1213798C004DF07F</string>
@@ -283,7 +285,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>27</integer>
+									<integer>32</integer>
 									<integer>21</integer>
 									<integer>7</integer>
 									<integer>0</integer>
@@ -341,7 +343,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>FAB143F01213A144004DF07F</string>
+										<string>FAB1440C1213A396004DF07F</string>
 										<key>history</key>
 										<array>
 											<string>FAB143201213798C004DF07F</string>
@@ -358,12 +360,12 @@
 											<string>FAB1432F1213798C004DF07F</string>
 											<string>FAB1435212137D17004DF07F</string>
 											<string>FAB1437112138138004DF07F</string>
-											<string>FAB1439C12139C87004DF07F</string>
 											<string>FAB143D912139F69004DF07F</string>
 											<string>FAB143EC1213A144004DF07F</string>
 											<string>FAB143ED1213A144004DF07F</string>
 											<string>FAB143EE1213A144004DF07F</string>
-											<string>FAB143EF1213A144004DF07F</string>
+											<string>FAB143FC1213A2A6004DF07F</string>
+											<string>FAB143FD1213A2A6004DF07F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -811,12 +813,14 @@
 							<key>Dock</key>
 							<array>
 								<dict>
+									<key>BecomeActive</key>
+									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>tess.h</string>
+										<string>glContext.cpp</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -837,8 +841,6 @@
 							<string>541pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -884,7 +886,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

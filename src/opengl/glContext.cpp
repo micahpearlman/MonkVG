@@ -26,8 +26,7 @@ namespace MonkVG {
 		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluOrtho2D(0, _width,0, _height);
-		
+		glOrthof(0, _width, _height, 0, -1, 1);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		
@@ -45,7 +44,7 @@ namespace MonkVG {
 		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluOrtho2D(0, _width,0, _height);
+		glOrthof(0, _width, _height, 0, -1, 1);
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();

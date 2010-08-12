@@ -39,7 +39,7 @@
 		vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
 		
 		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
-		vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
+		vguRect( _path, 10.0f, 10.0f, 90.0f, 50.0f );
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
