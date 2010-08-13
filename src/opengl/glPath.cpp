@@ -34,6 +34,7 @@ namespace MonkVG {
 			VGbyte segment = VG_CLOSE_PATH;
 			GLdouble coords[3] = {0,0,0};
 			GLdouble closeTo[3] = {0,0,0};
+			int nummovetos = 0;
 			for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 				segment = (*segmentIter);
 				numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
@@ -62,7 +63,8 @@ namespace MonkVG {
 						c[0] = closeTo[0];
 						c[1] = closeTo[1];
 						c[2] = closeTo[2];
-						// do not think this is necessary for the tesselator						gluTessVertex( _fillTesseleator, c, c );
+						// do not think this is necessary for the tesselator						
+						gluTessVertex( _fillTesseleator, c, c );
 					} break;
 					case (VG_MOVE_TO >> 1):
 					{	
@@ -75,6 +77,11 @@ namespace MonkVG {
 						c[2] = coords[2];
 						
 						gluTessVertex( _fillTesseleator, c, c );
+						
+						nummovetos++;
+						if ( nummovetos > 1 ) {
+							printf("too many movetos");
+						}
 					} break;
 					case (VG_LINE_TO >> 1):
 					{
@@ -119,15 +126,25 @@ namespace MonkVG {
 						VGfloat p3x = *coordsIter; coordsIter++;
 						VGfloat p3y = *coordsIter; coordsIter++;
 						
-						VGfloat increment = 1.0f / 4.0f;
+						VGfloat increment = 1.0f / 1.0f;
+////						for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+//							GLdouble* c = new GLdouble[3];
+//						c[0] = p3x;//OpenGLPath::calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
+//						c[1] = p3y;// OpenGLPath::calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
+//							c[2] = coords[2];
+//							
+//							gluTessVertex( _fillTesseleator, c, c );
+////						}
+						printf("\tcubic: ");
 						for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 							GLdouble* c = new GLdouble[3];
 							c[0] = OpenGLPath::calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
 							c[1] = OpenGLPath::calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
 							c[2] = coords[2];
-							
+							printf( "(%f, %f), ", c[0], c[1] );
 							gluTessVertex( _fillTesseleator, c, c );
 						}
+						printf("\n");
 						coords[0] = p3x;
 						coords[1] = p3y;
 						
@@ -159,7 +176,7 @@ namespace MonkVG {
 		// a	b	0
 		// c	d	0
 		// tx	ty	1
-		active.transpose();		// NOTE:  have to transpose.  Maybe should set up the matrices already as transposed?
+		//active.transpose();		// NOTE:  have to transpose.  Maybe should set up the matrices already as transposed?
 		
 		GLfloat mat44[4][4];
 		for( int x = 0; x < 4; x++ )
@@ -171,6 +188,8 @@ namespace MonkVG {
 		mat44[1][1] = active.get( 1, 1 );
 		mat44[2][2] = 1.0f;
 		mat44[3][3]	= 1.0f;
+		mat44[3][0] = active.get( 0, 2 );
+		mat44[3][1] = active.get( 1, 2 );
 		//todo: translation
 		glPushMatrix();
 		glLoadMatrixf( &mat44[0][0] );
@@ -267,10 +286,38 @@ namespace MonkVG {
 					lastVertex_[1] = v[1];
 					break;
 			}
-			
-			vertexCount_++;
+		} else if ( me->primType() == GL_TRIANGLES ) {
+			me->addVertex( v );
+		} else if ( me->primType() == GL_TRIANGLE_STRIP ) {
+			switch ( vertexCount_ ) {
+				case 0:
+					me->addVertex( v );
+					break;
+				case 1:
+					startVertex_[0] = v[0];
+					startVertex_[1] = v[1];
+					me->addVertex( v );
+					break;
+				case 2:
+					lastVertex_[0] = v[0];
+					lastVertex_[1] = v[1];
+					me->addVertex( v );
+					break;
+	
+				default:
+					me->addVertex( startVertex_ );
+					me->addVertex( lastVertex_ );
+					me->addVertex( v );
+					startVertex_[0] = lastVertex_[0];
+					startVertex_[1] = lastVertex_[1];
+					lastVertex_[0] = v[0];
+					lastVertex_[1] = v[1];
+					break;
+			}
 		}
-		printf("\tvert: %f, %f, %f\n", v[0], v[1], v[2] );
+		vertexCount_++;
+
+		printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
 	}
 	void OpenGLPath::tessCombine( GLdouble coords[3], void *data[4],
 							GLfloat weight[4], void **outData,

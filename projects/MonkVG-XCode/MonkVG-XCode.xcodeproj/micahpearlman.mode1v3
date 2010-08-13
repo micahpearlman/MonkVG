@@ -230,8 +230,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -288,9 +286,9 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>3</integer>
-									<integer>2</integer>
-									<integer>1</integer>
+									<integer>54</integer>
+									<integer>21</integer>
+									<integer>7</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -327,12 +325,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>openvg.h</string>
+								<string>glContext.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -340,11 +340,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>openvg.h</string>
+										<string>glContext.cpp</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>FAB14534121494C7004DF07F</string>
+										<string>FAB1459C1214C0DD004DF07F</string>
 										<key>history</key>
 										<array>
 											<string>FAB143201213798C004DF07F</string>
@@ -371,7 +371,6 @@
 											<string>FAB1446412148020004DF07F</string>
 											<string>FAB1446512148020004DF07F</string>
 											<string>FAB1446712148020004DF07F</string>
-											<string>FAB1446812148020004DF07F</string>
 											<string>FAB1448B1214875C004DF07F</string>
 											<string>FAB144AD12148997004DF07F</string>
 											<string>FAB144D012148F23004DF07F</string>
@@ -379,8 +378,10 @@
 											<string>FAB144D212148F23004DF07F</string>
 											<string>FAB144D312148F23004DF07F</string>
 											<string>FAB144D412148F23004DF07F</string>
-											<string>FAB14532121494C7004DF07F</string>
-											<string>FAB14533121494C7004DF07F</string>
+											<string>FAB1453B1214BA31004DF07F</string>
+											<string>FAB145981214C0DD004DF07F</string>
+											<string>FAB145991214C0DD004DF07F</string>
+											<string>FAB1459B1214C0DD004DF07F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
