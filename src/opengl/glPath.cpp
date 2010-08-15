@@ -64,7 +64,7 @@ namespace MonkVG {
 						c[1] = closeTo[1];
 						c[2] = closeTo[2];
 						// do not think this is necessary for the tesselator						
-						gluTessVertex( _fillTesseleator, c, c );
+						//gluTessVertex( _fillTesseleator, c, c );
 					} break;
 					case (VG_MOVE_TO >> 1):
 					{	
@@ -126,15 +126,7 @@ namespace MonkVG {
 						VGfloat p3x = *coordsIter; coordsIter++;
 						VGfloat p3y = *coordsIter; coordsIter++;
 						
-						VGfloat increment = 1.0f / 1.0f;
-////						for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-//							GLdouble* c = new GLdouble[3];
-//						c[0] = p3x;//OpenGLPath::calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
-//						c[1] = p3y;// OpenGLPath::calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
-//							c[2] = coords[2];
-//							
-//							gluTessVertex( _fillTesseleator, c, c );
-////						}
+						VGfloat increment = 1.0f / 4.0f;
 						printf("\tcubic: ");
 						for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 							GLdouble* c = new GLdouble[3];
@@ -197,6 +189,7 @@ namespace MonkVG {
 			
 			// draw
 			IContext::instance().fill();
+			glColor4f(1, 0, 0, 1);
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );

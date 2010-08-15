@@ -50,10 +50,9 @@ namespace MonkVG {
 		glLoadIdentity();
 		
 		glDisable( GL_CULL_FACE );
-		
 	}
 	void OpenGLContext::endRender() {
-		glEnable( GL_CULL_FACE );
+		//glEnable( GL_CULL_FACE );
 	}
 
 	

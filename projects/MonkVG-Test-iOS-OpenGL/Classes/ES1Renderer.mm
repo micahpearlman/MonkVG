@@ -7,9 +7,20 @@
 //
 
 #import "ES1Renderer.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <ostream>
+#include "svg.h"
 
-void loadTiger();
-void display(float dt);
+
+extern "C" void loadTiger();
+extern "C" void display(float dt);
+
+using namespace std;
+SVGHandler* _handler;
+
+
 
 @implementation ES1Renderer
 
@@ -48,7 +59,27 @@ void display(float dt);
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
-		loadTiger();
+//		loadTiger();
+		
+
+		MonkSVG::SVG svg_parser;
+		_handler = new SVGHandler;
+		
+		svg_parser.initialize( _handler );
+		
+		NSString *base_path = [[NSBundle mainBundle] resourcePath];
+		std::string path = std::string( [base_path UTF8String] ) + string("/circle.svg");
+		
+		fstream file( path.c_str() );
+		if ( file.is_open() ) {
+			std::string line;
+			std::string buf;
+			while( std::getline( file, line) )
+				buf += line;
+			std::cout << "read: " << buf << "\n";
+			svg_parser.read( buf );
+		}
+		
 		
     }
 
@@ -68,7 +99,8 @@ void display(float dt);
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	display(0.05f);
+	_handler->draw();
+//	display(0.05f);
 	
 //	VGfloat clearColor[] = {1,1,1,1};
 //	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);

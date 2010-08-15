@@ -276,17 +276,13 @@
 								<string>FAB141FF12136477004DF07F</string>
 								<string>FA2D023C120CD4AF0042EEC6</string>
 								<string>1C37FBAC04509CD000000102</string>
-								<string>FAB1431C1213798C004DF07F</string>
-								<string>FAB1431D1213798C004DF07F</string>
-								<string>FAB1431E1213798C004DF07F</string>
-								<string>FAB1431F1213798C004DF07F</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>54</integer>
+									<integer>58</integer>
 									<integer>21</integer>
 									<integer>7</integer>
 									<integer>0</integer>
@@ -332,7 +328,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>glContext.cpp</string>
+								<string>glPath.cpp</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -340,11 +336,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>glContext.cpp</string>
+										<string>glPath.cpp</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>FAB1459C1214C0DD004DF07F</string>
+										<string>FAAB4C8012185B87006D3694</string>
 										<key>history</key>
 										<array>
 											<string>FAB143201213798C004DF07F</string>
@@ -379,9 +375,9 @@
 											<string>FAB144D312148F23004DF07F</string>
 											<string>FAB144D412148F23004DF07F</string>
 											<string>FAB1453B1214BA31004DF07F</string>
-											<string>FAB145981214C0DD004DF07F</string>
 											<string>FAB145991214C0DD004DF07F</string>
-											<string>FAB1459B1214C0DD004DF07F</string>
+											<string>FAAB4C6B12185AAB006D3694</string>
+											<string>FAAB4C6C12185AAB006D3694</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -439,9 +435,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>FAB141D2121360E7004DF07F</string>
+				<string>FAAB4C6E12185AAB006D3694</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>FAB141D3121360E7004DF07F</string>
+				<string>FAAB4C6F12185AAB006D3694</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -591,9 +587,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>FA4047910EF1F60200B4EFF1</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/micahpearlman/dev/personal/MonkVG/projects/MonkVG-XCode/MonkVG-XCode.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -618,7 +612,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>mkContext.cpp</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -635,8 +629,6 @@
 							<string>650pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -676,7 +668,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>FA4047910EF1F60200B4EFF1</string>
-				<string>FAB141D4121360E7004DF07F</string>
+				<string>FAAB4C7012185AAB006D3694</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -687,7 +679,7 @@
 			<key>WindowToolGUID</key>
 			<string>FA4047910EF1F60200B4EFF1</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>

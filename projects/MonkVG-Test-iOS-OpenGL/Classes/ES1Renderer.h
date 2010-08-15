@@ -13,6 +13,8 @@
 #include <vg/openvg.h>
 #include <vg/vgu.h>
 
+//class SVGHandler;
+
 @interface ES1Renderer : NSObject <ESRenderer>
 {
 @private
@@ -27,6 +29,7 @@
 	
 	VGPath _path;
 	VGPaint _paint;
+	
 }
 
 - (void)render;
