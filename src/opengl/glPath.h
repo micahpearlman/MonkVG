@@ -65,6 +65,7 @@ namespace MonkVG {
 		static void tessCombine( GLdouble coords[3], void *data[4],
 								GLfloat weight[4], void **outData,
 								void *polygonData );
+		static void tessError( GLenum errorCode );
 		void endOfTesselation();
 		
 	private:	// utility methods

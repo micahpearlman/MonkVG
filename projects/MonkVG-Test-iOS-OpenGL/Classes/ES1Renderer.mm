@@ -62,23 +62,23 @@ SVGHandler* _handler;
 		loadTiger();
 		
 
-//		MonkSVG::SVG svg_parser;
-//		_handler = new SVGHandler;
-//		
-//		svg_parser.initialize( _handler );
-//		
-//		NSString *base_path = [[NSBundle mainBundle] resourcePath];
-//		std::string path = std::string( [base_path UTF8String] ) + string("/circle_poly.svg");
-//		
-//		fstream file( path.c_str() );
-//		if ( file.is_open() ) {
-//			std::string line;
-//			std::string buf;
-//			while( std::getline( file, line) )
-//				buf += line;
-//			std::cout << "read: " << buf << "\n";
-//			svg_parser.read( buf );
-//		}
+		MonkSVG::SVG svg_parser;
+		_handler = new SVGHandler;
+		
+		svg_parser.initialize( _handler );
+		
+		NSString *base_path = [[NSBundle mainBundle] resourcePath];
+		std::string path = std::string( [base_path UTF8String] ) + string("/circle_poly.svg");
+		
+		fstream file( path.c_str() );
+		if ( file.is_open() ) {
+			std::string line;
+			std::string buf;
+			while( std::getline( file, line) )
+				buf += line;
+			std::cout << "read: " << buf << "\n";
+			svg_parser.read( buf );
+		}
 		
 		
     }

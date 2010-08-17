@@ -21,8 +21,11 @@ class SVGHandler : public MonkSVG::ISVGHandler {
 	
 public:
 	void draw() {
-		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++ ) {
+		vector<VGPaint>::iterator fillpaintiter = _fill_list.begin();
+		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++, fillpaintiter++ ) {
+			vgSetPaint( *fillpaintiter, VG_FILL_PATH );
 			vgDrawPath( *iter, VG_FILL_PATH );
+			
 		}
 		
 	}
@@ -39,6 +42,7 @@ private:
 		VGfloat data = 0.0f;
 		vgAppendPathData( _path, 1, &seg, &data );
 		_path_list.push_back( _path );
+		
 	}
 	
 	virtual void onPathMoveTo( float x, float y ) { 
@@ -67,9 +71,21 @@ private:
 		vgAppendPathData( _path, 1, &seg, data);
 		
 	}
+	virtual void onPathFillColor( unsigned int color ) {
+		_fill_paint = vgCreatePaint();
+		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
+			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
+			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
+			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+		vgSetParameterfv(_fill_paint, VG_PAINT_COLOR, 4, &fcolor[0]);
+		_fill_list.push_back( _fill_paint );
+	}
 	
 	VGPath _path;
+	VGPaint _fill_paint;
+	
 	vector<VGPath>	_path_list;
+	vector<VGPaint>	_fill_list;
 };
 
 #endif

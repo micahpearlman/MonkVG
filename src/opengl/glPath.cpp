@@ -23,8 +23,9 @@ namespace MonkVG {
 			gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (*) ( )) &OpenGLPath::tessBegin );
 			gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (*) ( )) &OpenGLPath::tessEnd );
 			gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (*) ( )) &OpenGLPath::tessVertex );
-			//gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (*) ( )) &OpenGLPath::tessCombine );			
-			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
+			gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (*) ( )) &OpenGLPath::tessCombine );
+			gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (*)())&OpenGLPath::tessError );
+			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
 			
 			gluTessBeginPolygon( _fillTesseleator, this );
 			gluTessBeginContour( _fillTesseleator );
@@ -141,8 +142,9 @@ namespace MonkVG {
 						coords[1] = p3y;
 						
 					}
-						break;	
+					break;	
 					default:
+						printf("unkwown command\n");
 						break;
 				}
 			}	// foreach segment
@@ -328,6 +330,9 @@ namespace MonkVG {
 		
 	}
 	
+	void OpenGLPath::tessError( GLenum errorCode ) {
+		printf("tesselator error: [%d] %s\n", errorCode, gluErrorString( errorCode) );
+	}
 	
 	OpenGLPath::~OpenGLPath() {
 		if ( _fillTesseleator ) {
