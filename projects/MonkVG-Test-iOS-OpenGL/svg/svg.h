@@ -21,7 +21,10 @@ class SVGHandler : public MonkSVG::ISVGHandler {
 	
 public:
 	void draw() {
-		vgDrawPath( _path, VG_FILL_PATH );
+		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++ ) {
+			vgDrawPath( *iter, VG_FILL_PATH );
+		}
+		
 	}
 	
 private:
@@ -35,6 +38,7 @@ private:
 		VGubyte seg = VG_CLOSE_PATH;
 		VGfloat data = 0.0f;
 		vgAppendPathData( _path, 1, &seg, &data );
+		_path_list.push_back( _path );
 	}
 	
 	virtual void onPathMoveTo( float x, float y ) { 
@@ -65,6 +69,7 @@ private:
 	}
 	
 	VGPath _path;
+	vector<VGPath>	_path_list;
 };
 
 #endif

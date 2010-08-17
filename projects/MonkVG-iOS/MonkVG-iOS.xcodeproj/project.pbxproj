@@ -1,0 +1,662 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA747D9F0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */; };
+		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		FA9ACCD4121A088200814394 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC94121A088200814394 /* mkBaseObject.cpp */; };
+		FA9ACCD5121A088200814394 /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC95121A088200814394 /* mkBaseObject.h */; };
+		FA9ACCD6121A088200814394 /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC96121A088200814394 /* mkCommon.h */; };
+		FA9ACCD7121A088200814394 /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC97121A088200814394 /* mkContext.cpp */; };
+		FA9ACCD8121A088200814394 /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC98121A088200814394 /* mkContext.h */; };
+		FA9ACCD9121A088200814394 /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC99121A088200814394 /* mkMath.cpp */; };
+		FA9ACCDA121A088200814394 /* mkMath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC9A121A088200814394 /* mkMath.h */; };
+		FA9ACCDB121A088200814394 /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC9B121A088200814394 /* mkPaint.cpp */; };
+		FA9ACCDC121A088200814394 /* mkPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC9C121A088200814394 /* mkPaint.h */; };
+		FA9ACCDD121A088200814394 /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC9D121A088200814394 /* mkParameter.cpp */; };
+		FA9ACCDE121A088200814394 /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC9E121A088200814394 /* mkPath.cpp */; };
+		FA9ACCDF121A088200814394 /* mkPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC9F121A088200814394 /* mkPath.h */; };
+		FA9ACCE0121A088200814394 /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCA0121A088200814394 /* mkVGU.cpp */; };
+		FA9ACCE1121A088200814394 /* glu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCA4121A088200814394 /* glu.h */; };
+		FA9ACCE2121A088200814394 /* gluos.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCA5121A088200814394 /* gluos.h */; };
+		FA9ACCE3121A088200814394 /* dict-list.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCA8121A088200814394 /* dict-list.h */; };
+		FA9ACCE5121A088200814394 /* dict.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCAA121A088200814394 /* dict.h */; };
+		FA9ACCE7121A088200814394 /* geom.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCAC121A088200814394 /* geom.h */; };
+		FA9ACCE9121A088200814394 /* memalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCAE121A088200814394 /* memalloc.h */; };
+		FA9ACCEB121A088200814394 /* mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB0121A088200814394 /* mesh.h */; };
+		FA9ACCED121A088200814394 /* normal.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB2121A088200814394 /* normal.h */; };
+		FA9ACCEF121A088200814394 /* priorityq-heap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB4121A088200814394 /* priorityq-heap.h */; };
+		FA9ACCF0121A088200814394 /* priorityq-sort.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB5121A088200814394 /* priorityq-sort.h */; };
+		FA9ACCF2121A088200814394 /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB7121A088200814394 /* priorityq.h */; };
+		FA9ACCF4121A088200814394 /* render.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBA121A088200814394 /* render.h */; };
+		FA9ACCF6121A088200814394 /* sweep.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBC121A088200814394 /* sweep.h */; };
+		FA9ACCF8121A088200814394 /* tess.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBE121A088200814394 /* tess.h */; };
+		FA9ACCFA121A088200814394 /* tessmono.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCC0121A088200814394 /* tessmono.h */; };
+		FA9ACCFD121A088200814394 /* gluint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCC4121A088200814394 /* gluint.h */; };
+		FA9ACD01121A088200814394 /* glContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCC8121A088200814394 /* glContext.h */; };
+		FA9ACD03121A088200814394 /* glPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCCA121A088200814394 /* glPaint.h */; };
+		FA9ACD05121A088200814394 /* glPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCCC121A088200814394 /* glPath.h */; };
+		FA9ACD06121A088200814394 /* qzContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCCE121A088200814394 /* qzContext.h */; };
+		FA9ACD07121A088200814394 /* qzContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCCF121A088200814394 /* qzContext.mm */; };
+		FA9ACD08121A088200814394 /* qzPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCD0121A088200814394 /* qzPaint.cpp */; };
+		FA9ACD09121A088200814394 /* qzPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCD1121A088200814394 /* qzPaint.h */; };
+		FA9ACD0A121A088200814394 /* qzPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCD2121A088200814394 /* qzPath.h */; };
+		FA9ACD0B121A088200814394 /* qzPath.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCD3121A088200814394 /* qzPath.mm */; };
+		FAE282AA121A08BB00823BCB /* MonkVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */; };
+		FAE282AB121A08BB00823BCB /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC95121A088200814394 /* mkBaseObject.h */; };
+		FAE282AC121A08BB00823BCB /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC96121A088200814394 /* mkCommon.h */; };
+		FAE282AD121A08BB00823BCB /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC98121A088200814394 /* mkContext.h */; };
+		FAE282AE121A08BB00823BCB /* mkMath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC9A121A088200814394 /* mkMath.h */; };
+		FAE282AF121A08BB00823BCB /* mkPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC9C121A088200814394 /* mkPaint.h */; };
+		FAE282B0121A08BB00823BCB /* mkPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC9F121A088200814394 /* mkPath.h */; };
+		FAE282B1121A08BB00823BCB /* glu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCA4121A088200814394 /* glu.h */; };
+		FAE282B2121A08BB00823BCB /* gluos.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCA5121A088200814394 /* gluos.h */; };
+		FAE282B3121A08BB00823BCB /* dict-list.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCA8121A088200814394 /* dict-list.h */; };
+		FAE282B4121A08BB00823BCB /* dict.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCAA121A088200814394 /* dict.h */; };
+		FAE282B5121A08BB00823BCB /* geom.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCAC121A088200814394 /* geom.h */; };
+		FAE282B6121A08BB00823BCB /* memalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCAE121A088200814394 /* memalloc.h */; };
+		FAE282B7121A08BB00823BCB /* mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB0121A088200814394 /* mesh.h */; };
+		FAE282B8121A08BB00823BCB /* normal.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB2121A088200814394 /* normal.h */; };
+		FAE282B9121A08BB00823BCB /* priorityq-heap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB4121A088200814394 /* priorityq-heap.h */; };
+		FAE282BA121A08BB00823BCB /* priorityq-sort.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB5121A088200814394 /* priorityq-sort.h */; };
+		FAE282BB121A08BB00823BCB /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB7121A088200814394 /* priorityq.h */; };
+		FAE282BC121A08BB00823BCB /* render.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBA121A088200814394 /* render.h */; };
+		FAE282BD121A08BB00823BCB /* sweep.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBC121A088200814394 /* sweep.h */; };
+		FAE282BE121A08BB00823BCB /* tess.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBE121A088200814394 /* tess.h */; };
+		FAE282BF121A08BB00823BCB /* tessmono.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCC0121A088200814394 /* tessmono.h */; };
+		FAE282C0121A08BB00823BCB /* gluint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCC4121A088200814394 /* gluint.h */; };
+		FAE282C1121A08BB00823BCB /* glContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCC8121A088200814394 /* glContext.h */; };
+		FAE282C2121A08BB00823BCB /* glPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCCA121A088200814394 /* glPaint.h */; };
+		FAE282C3121A08BB00823BCB /* glPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCCC121A088200814394 /* glPath.h */; };
+		FAE282C4121A08BB00823BCB /* qzContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCCE121A088200814394 /* qzContext.h */; };
+		FAE282C5121A08BB00823BCB /* qzPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCD1121A088200814394 /* qzPaint.h */; };
+		FAE282C6121A08BB00823BCB /* qzPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCD2121A088200814394 /* qzPath.h */; };
+		FAE282C8121A08BB00823BCB /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC94121A088200814394 /* mkBaseObject.cpp */; };
+		FAE282C9121A08BB00823BCB /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC97121A088200814394 /* mkContext.cpp */; };
+		FAE282CA121A08BB00823BCB /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC99121A088200814394 /* mkMath.cpp */; };
+		FAE282CB121A08BB00823BCB /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC9B121A088200814394 /* mkPaint.cpp */; };
+		FAE282CC121A08BB00823BCB /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC9D121A088200814394 /* mkParameter.cpp */; };
+		FAE282CD121A08BB00823BCB /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC9E121A088200814394 /* mkPath.cpp */; };
+		FAE282CE121A08BB00823BCB /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCA0121A088200814394 /* mkVGU.cpp */; };
+		FAE282CF121A08BB00823BCB /* dict.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCA9121A088200814394 /* dict.c */; };
+		FAE282D0121A08BB00823BCB /* geom.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCAB121A088200814394 /* geom.c */; };
+		FAE282D1121A08BB00823BCB /* memalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCAD121A088200814394 /* memalloc.c */; };
+		FAE282D2121A08BB00823BCB /* mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCAF121A088200814394 /* mesh.c */; };
+		FAE282D3121A08BB00823BCB /* normal.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB1121A088200814394 /* normal.c */; };
+		FAE282D4121A08BB00823BCB /* priorityq-heap.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB3121A088200814394 /* priorityq-heap.c */; };
+		FAE282D5121A08BB00823BCB /* priorityq.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB6121A088200814394 /* priorityq.c */; };
+		FAE282D6121A08BB00823BCB /* render.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB9121A088200814394 /* render.c */; };
+		FAE282D7121A08BB00823BCB /* sweep.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCBB121A088200814394 /* sweep.c */; };
+		FAE282D8121A08BB00823BCB /* tess.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCBD121A088200814394 /* tess.c */; };
+		FAE282D9121A08BB00823BCB /* tessmono.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCBF121A088200814394 /* tessmono.c */; };
+		FAE282DA121A08BB00823BCB /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCC2121A088200814394 /* error.c */; };
+		FAE282DB121A08BB00823BCB /* glue.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCC3121A088200814394 /* glue.c */; };
+		FAE282DC121A08BB00823BCB /* project.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCC5121A088200814394 /* project.c */; };
+		FAE282DD121A08BB00823BCB /* registry.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCC6121A088200814394 /* registry.c */; };
+		FAE282DE121A08BB00823BCB /* glContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCC7121A088200814394 /* glContext.cpp */; };
+		FAE282DF121A08BB00823BCB /* glPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCC9121A088200814394 /* glPaint.cpp */; };
+		FAE282E0121A08BB00823BCB /* glPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCCB121A088200814394 /* glPath.cpp */; };
+		FAE282E5121A08BB00823BCB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkVG_iOS_Prefix.pch; sourceTree = SOURCE_ROOT; };
+		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D2AAC07E0554694100DB518D /* libMonkVG_iOS_Quartz.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkVG_iOS_Quartz.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA9ACC94121A088200814394 /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = ../../src/mkBaseObject.cpp; sourceTree = SOURCE_ROOT; };
+		FA9ACC95121A088200814394 /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = ../../src/mkBaseObject.h; sourceTree = SOURCE_ROOT; };
+		FA9ACC96121A088200814394 /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = ../../src/mkCommon.h; sourceTree = SOURCE_ROOT; };
+		FA9ACC97121A088200814394 /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = ../../src/mkContext.cpp; sourceTree = SOURCE_ROOT; };
+		FA9ACC98121A088200814394 /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = ../../src/mkContext.h; sourceTree = SOURCE_ROOT; };
+		FA9ACC99121A088200814394 /* mkMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkMath.cpp; path = ../../src/mkMath.cpp; sourceTree = SOURCE_ROOT; };
+		FA9ACC9A121A088200814394 /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = ../../src/mkMath.h; sourceTree = SOURCE_ROOT; };
+		FA9ACC9B121A088200814394 /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPaint.cpp; path = ../../src/mkPaint.cpp; sourceTree = SOURCE_ROOT; };
+		FA9ACC9C121A088200814394 /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPaint.h; path = ../../src/mkPaint.h; sourceTree = SOURCE_ROOT; };
+		FA9ACC9D121A088200814394 /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = ../../src/mkParameter.cpp; sourceTree = SOURCE_ROOT; };
+		FA9ACC9E121A088200814394 /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = ../../src/mkPath.cpp; sourceTree = SOURCE_ROOT; };
+		FA9ACC9F121A088200814394 /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = ../../src/mkPath.h; sourceTree = SOURCE_ROOT; };
+		FA9ACCA0121A088200814394 /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = ../../src/mkVGU.cpp; sourceTree = SOURCE_ROOT; };
+		FA9ACCA4121A088200814394 /* glu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glu.h; sourceTree = "<group>"; };
+		FA9ACCA5121A088200814394 /* gluos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gluos.h; sourceTree = "<group>"; };
+		FA9ACCA7121A088200814394 /* alg-outline */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "alg-outline"; sourceTree = "<group>"; };
+		FA9ACCA8121A088200814394 /* dict-list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "dict-list.h"; sourceTree = "<group>"; };
+		FA9ACCA9121A088200814394 /* dict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dict.c; sourceTree = "<group>"; };
+		FA9ACCAA121A088200814394 /* dict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dict.h; sourceTree = "<group>"; };
+		FA9ACCAB121A088200814394 /* geom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = geom.c; sourceTree = "<group>"; };
+		FA9ACCAC121A088200814394 /* geom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geom.h; sourceTree = "<group>"; };
+		FA9ACCAD121A088200814394 /* memalloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = memalloc.c; sourceTree = "<group>"; };
+		FA9ACCAE121A088200814394 /* memalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memalloc.h; sourceTree = "<group>"; };
+		FA9ACCAF121A088200814394 /* mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mesh.c; sourceTree = "<group>"; };
+		FA9ACCB0121A088200814394 /* mesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
+		FA9ACCB1121A088200814394 /* normal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = normal.c; sourceTree = "<group>"; };
+		FA9ACCB2121A088200814394 /* normal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = normal.h; sourceTree = "<group>"; };
+		FA9ACCB3121A088200814394 /* priorityq-heap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "priorityq-heap.c"; sourceTree = "<group>"; };
+		FA9ACCB4121A088200814394 /* priorityq-heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "priorityq-heap.h"; sourceTree = "<group>"; };
+		FA9ACCB5121A088200814394 /* priorityq-sort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "priorityq-sort.h"; sourceTree = "<group>"; };
+		FA9ACCB6121A088200814394 /* priorityq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = priorityq.c; sourceTree = "<group>"; };
+		FA9ACCB7121A088200814394 /* priorityq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = priorityq.h; sourceTree = "<group>"; };
+		FA9ACCB8121A088200814394 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		FA9ACCB9121A088200814394 /* render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = render.c; sourceTree = "<group>"; };
+		FA9ACCBA121A088200814394 /* render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render.h; sourceTree = "<group>"; };
+		FA9ACCBB121A088200814394 /* sweep.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sweep.c; sourceTree = "<group>"; };
+		FA9ACCBC121A088200814394 /* sweep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sweep.h; sourceTree = "<group>"; };
+		FA9ACCBD121A088200814394 /* tess.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tess.c; sourceTree = "<group>"; };
+		FA9ACCBE121A088200814394 /* tess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tess.h; sourceTree = "<group>"; };
+		FA9ACCBF121A088200814394 /* tessmono.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tessmono.c; sourceTree = "<group>"; };
+		FA9ACCC0121A088200814394 /* tessmono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tessmono.h; sourceTree = "<group>"; };
+		FA9ACCC2121A088200814394 /* error.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = error.c; sourceTree = "<group>"; };
+		FA9ACCC3121A088200814394 /* glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glue.c; sourceTree = "<group>"; };
+		FA9ACCC4121A088200814394 /* gluint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gluint.h; sourceTree = "<group>"; };
+		FA9ACCC5121A088200814394 /* project.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = project.c; sourceTree = "<group>"; };
+		FA9ACCC6121A088200814394 /* registry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = registry.c; sourceTree = "<group>"; };
+		FA9ACCC7121A088200814394 /* glContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glContext.cpp; sourceTree = "<group>"; };
+		FA9ACCC8121A088200814394 /* glContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glContext.h; sourceTree = "<group>"; };
+		FA9ACCC9121A088200814394 /* glPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glPaint.cpp; sourceTree = "<group>"; };
+		FA9ACCCA121A088200814394 /* glPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPaint.h; sourceTree = "<group>"; };
+		FA9ACCCB121A088200814394 /* glPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glPath.cpp; sourceTree = "<group>"; };
+		FA9ACCCC121A088200814394 /* glPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPath.h; sourceTree = "<group>"; };
+		FA9ACCCE121A088200814394 /* qzContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qzContext.h; sourceTree = "<group>"; };
+		FA9ACCCF121A088200814394 /* qzContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = qzContext.mm; sourceTree = "<group>"; };
+		FA9ACCD0121A088200814394 /* qzPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = qzPaint.cpp; sourceTree = "<group>"; };
+		FA9ACCD1121A088200814394 /* qzPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qzPaint.h; sourceTree = "<group>"; };
+		FA9ACCD2121A088200814394 /* qzPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qzPath.h; sourceTree = "<group>"; };
+		FA9ACCD3121A088200814394 /* qzPath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = qzPath.mm; sourceTree = "<group>"; };
+		FAE282E9121A08BB00823BCB /* libMonkVG_iOS_OpenGL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkVG_iOS_OpenGL.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2AAC07C0554694100DB518D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAE282E4121A08BB00823BCB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAE282E5121A08BB00823BCB /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC07E0554694100DB518D /* libMonkVG_iOS_Quartz.a */,
+				FAE282E9121A08BB00823BCB /* libMonkVG_iOS_OpenGL.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* MonkVG-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACC93121A088200814394 /* Source */,
+				32C88DFF0371C24200C91783 /* Other Sources */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = "MonkVG-iOS";
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		FA9ACC93121A088200814394 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACC94121A088200814394 /* mkBaseObject.cpp */,
+				FA9ACC95121A088200814394 /* mkBaseObject.h */,
+				FA9ACC96121A088200814394 /* mkCommon.h */,
+				FA9ACC97121A088200814394 /* mkContext.cpp */,
+				FA9ACC98121A088200814394 /* mkContext.h */,
+				FA9ACC99121A088200814394 /* mkMath.cpp */,
+				FA9ACC9A121A088200814394 /* mkMath.h */,
+				FA9ACC9B121A088200814394 /* mkPaint.cpp */,
+				FA9ACC9C121A088200814394 /* mkPaint.h */,
+				FA9ACC9D121A088200814394 /* mkParameter.cpp */,
+				FA9ACC9E121A088200814394 /* mkPath.cpp */,
+				FA9ACC9F121A088200814394 /* mkPath.h */,
+				FA9ACCA0121A088200814394 /* mkVGU.cpp */,
+				FA9ACCA1121A088200814394 /* opengl */,
+				FA9ACCCD121A088200814394 /* Quartz */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		FA9ACCA1121A088200814394 /* opengl */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACCA2121A088200814394 /* glu */,
+				FA9ACCC7121A088200814394 /* glContext.cpp */,
+				FA9ACCC8121A088200814394 /* glContext.h */,
+				FA9ACCC9121A088200814394 /* glPaint.cpp */,
+				FA9ACCCA121A088200814394 /* glPaint.h */,
+				FA9ACCCB121A088200814394 /* glPath.cpp */,
+				FA9ACCCC121A088200814394 /* glPath.h */,
+			);
+			name = opengl;
+			path = ../../src/opengl;
+			sourceTree = SOURCE_ROOT;
+		};
+		FA9ACCA2121A088200814394 /* glu */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACCA3121A088200814394 /* include */,
+				FA9ACCA6121A088200814394 /* libtess */,
+				FA9ACCC1121A088200814394 /* libutil */,
+			);
+			name = glu;
+			path = ../../glu;
+			sourceTree = SOURCE_ROOT;
+		};
+		FA9ACCA3121A088200814394 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACCA4121A088200814394 /* glu.h */,
+				FA9ACCA5121A088200814394 /* gluos.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		FA9ACCA6121A088200814394 /* libtess */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACCA7121A088200814394 /* alg-outline */,
+				FA9ACCA8121A088200814394 /* dict-list.h */,
+				FA9ACCA9121A088200814394 /* dict.c */,
+				FA9ACCAA121A088200814394 /* dict.h */,
+				FA9ACCAB121A088200814394 /* geom.c */,
+				FA9ACCAC121A088200814394 /* geom.h */,
+				FA9ACCAD121A088200814394 /* memalloc.c */,
+				FA9ACCAE121A088200814394 /* memalloc.h */,
+				FA9ACCAF121A088200814394 /* mesh.c */,
+				FA9ACCB0121A088200814394 /* mesh.h */,
+				FA9ACCB1121A088200814394 /* normal.c */,
+				FA9ACCB2121A088200814394 /* normal.h */,
+				FA9ACCB3121A088200814394 /* priorityq-heap.c */,
+				FA9ACCB4121A088200814394 /* priorityq-heap.h */,
+				FA9ACCB5121A088200814394 /* priorityq-sort.h */,
+				FA9ACCB6121A088200814394 /* priorityq.c */,
+				FA9ACCB7121A088200814394 /* priorityq.h */,
+				FA9ACCB8121A088200814394 /* README */,
+				FA9ACCB9121A088200814394 /* render.c */,
+				FA9ACCBA121A088200814394 /* render.h */,
+				FA9ACCBB121A088200814394 /* sweep.c */,
+				FA9ACCBC121A088200814394 /* sweep.h */,
+				FA9ACCBD121A088200814394 /* tess.c */,
+				FA9ACCBE121A088200814394 /* tess.h */,
+				FA9ACCBF121A088200814394 /* tessmono.c */,
+				FA9ACCC0121A088200814394 /* tessmono.h */,
+			);
+			path = libtess;
+			sourceTree = "<group>";
+		};
+		FA9ACCC1121A088200814394 /* libutil */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACCC2121A088200814394 /* error.c */,
+				FA9ACCC3121A088200814394 /* glue.c */,
+				FA9ACCC4121A088200814394 /* gluint.h */,
+				FA9ACCC5121A088200814394 /* project.c */,
+				FA9ACCC6121A088200814394 /* registry.c */,
+			);
+			path = libutil;
+			sourceTree = "<group>";
+		};
+		FA9ACCCD121A088200814394 /* Quartz */ = {
+			isa = PBXGroup;
+			children = (
+				FA9ACCCE121A088200814394 /* qzContext.h */,
+				FA9ACCCF121A088200814394 /* qzContext.mm */,
+				FA9ACCD0121A088200814394 /* qzPaint.cpp */,
+				FA9ACCD1121A088200814394 /* qzPaint.h */,
+				FA9ACCD2121A088200814394 /* qzPath.h */,
+				FA9ACCD3121A088200814394 /* qzPath.mm */,
+			);
+			name = Quartz;
+			path = ../../src/Quartz;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC07A0554694100DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA747D9F0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch in Headers */,
+				FA9ACCD5121A088200814394 /* mkBaseObject.h in Headers */,
+				FA9ACCD6121A088200814394 /* mkCommon.h in Headers */,
+				FA9ACCD8121A088200814394 /* mkContext.h in Headers */,
+				FA9ACCDA121A088200814394 /* mkMath.h in Headers */,
+				FA9ACCDC121A088200814394 /* mkPaint.h in Headers */,
+				FA9ACCDF121A088200814394 /* mkPath.h in Headers */,
+				FA9ACCE1121A088200814394 /* glu.h in Headers */,
+				FA9ACCE2121A088200814394 /* gluos.h in Headers */,
+				FA9ACCE3121A088200814394 /* dict-list.h in Headers */,
+				FA9ACCE5121A088200814394 /* dict.h in Headers */,
+				FA9ACCE7121A088200814394 /* geom.h in Headers */,
+				FA9ACCE9121A088200814394 /* memalloc.h in Headers */,
+				FA9ACCEB121A088200814394 /* mesh.h in Headers */,
+				FA9ACCED121A088200814394 /* normal.h in Headers */,
+				FA9ACCEF121A088200814394 /* priorityq-heap.h in Headers */,
+				FA9ACCF0121A088200814394 /* priorityq-sort.h in Headers */,
+				FA9ACCF2121A088200814394 /* priorityq.h in Headers */,
+				FA9ACCF4121A088200814394 /* render.h in Headers */,
+				FA9ACCF6121A088200814394 /* sweep.h in Headers */,
+				FA9ACCF8121A088200814394 /* tess.h in Headers */,
+				FA9ACCFA121A088200814394 /* tessmono.h in Headers */,
+				FA9ACCFD121A088200814394 /* gluint.h in Headers */,
+				FA9ACD01121A088200814394 /* glContext.h in Headers */,
+				FA9ACD03121A088200814394 /* glPaint.h in Headers */,
+				FA9ACD05121A088200814394 /* glPath.h in Headers */,
+				FA9ACD06121A088200814394 /* qzContext.h in Headers */,
+				FA9ACD09121A088200814394 /* qzPaint.h in Headers */,
+				FA9ACD0A121A088200814394 /* qzPath.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAE282A9121A08BB00823BCB /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAE282AA121A08BB00823BCB /* MonkVG_iOS_Prefix.pch in Headers */,
+				FAE282AB121A08BB00823BCB /* mkBaseObject.h in Headers */,
+				FAE282AC121A08BB00823BCB /* mkCommon.h in Headers */,
+				FAE282AD121A08BB00823BCB /* mkContext.h in Headers */,
+				FAE282AE121A08BB00823BCB /* mkMath.h in Headers */,
+				FAE282AF121A08BB00823BCB /* mkPaint.h in Headers */,
+				FAE282B0121A08BB00823BCB /* mkPath.h in Headers */,
+				FAE282B1121A08BB00823BCB /* glu.h in Headers */,
+				FAE282B2121A08BB00823BCB /* gluos.h in Headers */,
+				FAE282B3121A08BB00823BCB /* dict-list.h in Headers */,
+				FAE282B4121A08BB00823BCB /* dict.h in Headers */,
+				FAE282B5121A08BB00823BCB /* geom.h in Headers */,
+				FAE282B6121A08BB00823BCB /* memalloc.h in Headers */,
+				FAE282B7121A08BB00823BCB /* mesh.h in Headers */,
+				FAE282B8121A08BB00823BCB /* normal.h in Headers */,
+				FAE282B9121A08BB00823BCB /* priorityq-heap.h in Headers */,
+				FAE282BA121A08BB00823BCB /* priorityq-sort.h in Headers */,
+				FAE282BB121A08BB00823BCB /* priorityq.h in Headers */,
+				FAE282BC121A08BB00823BCB /* render.h in Headers */,
+				FAE282BD121A08BB00823BCB /* sweep.h in Headers */,
+				FAE282BE121A08BB00823BCB /* tess.h in Headers */,
+				FAE282BF121A08BB00823BCB /* tessmono.h in Headers */,
+				FAE282C0121A08BB00823BCB /* gluint.h in Headers */,
+				FAE282C1121A08BB00823BCB /* glContext.h in Headers */,
+				FAE282C2121A08BB00823BCB /* glPaint.h in Headers */,
+				FAE282C3121A08BB00823BCB /* glPath.h in Headers */,
+				FAE282C4121A08BB00823BCB /* qzContext.h in Headers */,
+				FAE282C5121A08BB00823BCB /* qzPaint.h in Headers */,
+				FAE282C6121A08BB00823BCB /* qzPath.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC07D0554694100DB518D /* MonkVG-iOS-Quartz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB921E08733DC00010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-iOS-Quartz" */;
+			buildPhases = (
+				D2AAC07A0554694100DB518D /* Headers */,
+				D2AAC07B0554694100DB518D /* Sources */,
+				D2AAC07C0554694100DB518D /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MonkVG-iOS-Quartz";
+			productName = "MonkVG-iOS";
+			productReference = D2AAC07E0554694100DB518D /* libMonkVG_iOS_Quartz.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		FAE282A8121A08BB00823BCB /* MonkVG-iOS-OpenGL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAE282E6121A08BB00823BCB /* Build configuration list for PBXNativeTarget "MonkVG-iOS-OpenGL" */;
+			buildPhases = (
+				FAE282A9121A08BB00823BCB /* Headers */,
+				FAE282C7121A08BB00823BCB /* Sources */,
+				FAE282E4121A08BB00823BCB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MonkVG-iOS-OpenGL";
+			productName = "MonkVG-iOS";
+			productReference = FAE282E9121A08BB00823BCB /* libMonkVG_iOS_OpenGL.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "MonkVG-iOS" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* MonkVG-iOS */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC07D0554694100DB518D /* MonkVG-iOS-Quartz */,
+				FAE282A8121A08BB00823BCB /* MonkVG-iOS-OpenGL */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC07B0554694100DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA9ACCD4121A088200814394 /* mkBaseObject.cpp in Sources */,
+				FA9ACCD7121A088200814394 /* mkContext.cpp in Sources */,
+				FA9ACCD9121A088200814394 /* mkMath.cpp in Sources */,
+				FA9ACCDB121A088200814394 /* mkPaint.cpp in Sources */,
+				FA9ACCDD121A088200814394 /* mkParameter.cpp in Sources */,
+				FA9ACCDE121A088200814394 /* mkPath.cpp in Sources */,
+				FA9ACCE0121A088200814394 /* mkVGU.cpp in Sources */,
+				FA9ACD07121A088200814394 /* qzContext.mm in Sources */,
+				FA9ACD08121A088200814394 /* qzPaint.cpp in Sources */,
+				FA9ACD0B121A088200814394 /* qzPath.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAE282C7121A08BB00823BCB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAE282C8121A08BB00823BCB /* mkBaseObject.cpp in Sources */,
+				FAE282C9121A08BB00823BCB /* mkContext.cpp in Sources */,
+				FAE282CA121A08BB00823BCB /* mkMath.cpp in Sources */,
+				FAE282CB121A08BB00823BCB /* mkPaint.cpp in Sources */,
+				FAE282CC121A08BB00823BCB /* mkParameter.cpp in Sources */,
+				FAE282CD121A08BB00823BCB /* mkPath.cpp in Sources */,
+				FAE282CE121A08BB00823BCB /* mkVGU.cpp in Sources */,
+				FAE282CF121A08BB00823BCB /* dict.c in Sources */,
+				FAE282D0121A08BB00823BCB /* geom.c in Sources */,
+				FAE282D1121A08BB00823BCB /* memalloc.c in Sources */,
+				FAE282D2121A08BB00823BCB /* mesh.c in Sources */,
+				FAE282D3121A08BB00823BCB /* normal.c in Sources */,
+				FAE282D4121A08BB00823BCB /* priorityq-heap.c in Sources */,
+				FAE282D5121A08BB00823BCB /* priorityq.c in Sources */,
+				FAE282D6121A08BB00823BCB /* render.c in Sources */,
+				FAE282D7121A08BB00823BCB /* sweep.c in Sources */,
+				FAE282D8121A08BB00823BCB /* tess.c in Sources */,
+				FAE282D9121A08BB00823BCB /* tessmono.c in Sources */,
+				FAE282DA121A08BB00823BCB /* error.c in Sources */,
+				FAE282DB121A08BB00823BCB /* glue.c in Sources */,
+				FAE282DC121A08BB00823BCB /* project.c in Sources */,
+				FAE282DD121A08BB00823BCB /* registry.c in Sources */,
+				FAE282DE121A08BB00823BCB /* glContext.cpp in Sources */,
+				FAE282DF121A08BB00823BCB /* glPaint.cpp in Sources */,
+				FAE282E0121A08BB00823BCB /* glPath.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB921F08733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/MonkVG_iOS.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = MonkVG_iOS_Quartz;
+			};
+			name = Debug;
+		};
+		1DEB922008733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/MonkVG_iOS.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = MonkVG_iOS_Quartz;
+			};
+			name = Release;
+		};
+		1DEB922308733DC00010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../include;
+				OTHER_LDFLAGS = "-ObjC";
+				PREBINDING = NO;
+				SDKROOT = iphoneos4.0;
+			};
+			name = Debug;
+		};
+		1DEB922408733DC00010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../include;
+				OTHER_LDFLAGS = "-ObjC";
+				PREBINDING = NO;
+				SDKROOT = iphoneos4.0;
+			};
+			name = Release;
+		};
+		FAE282E7121A08BB00823BCB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				DSTROOT = /tmp/MonkVG_iOS.dst;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					../../glu/include,
+					../../include,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = MonkVG_iOS_OpenGL;
+			};
+			name = Debug;
+		};
+		FAE282E8121A08BB00823BCB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				DSTROOT = /tmp/MonkVG_iOS.dst;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
+				HEADER_SEARCH_PATHS = (
+					../../glu/include,
+					../../include,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = MonkVG_iOS_OpenGL;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB921E08733DC00010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-iOS-Quartz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB921F08733DC00010E9CD /* Debug */,
+				1DEB922008733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "MonkVG-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB922308733DC00010E9CD /* Debug */,
+				1DEB922408733DC00010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAE282E6121A08BB00823BCB /* Build configuration list for PBXNativeTarget "MonkVG-iOS-OpenGL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAE282E7121A08BB00823BCB /* Debug */,
+				FAE282E8121A08BB00823BCB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

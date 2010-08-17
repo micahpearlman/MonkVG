@@ -151,6 +151,10 @@ namespace MonkVG {
 			gluTessEndPolygon( _fillTesseleator );
 			
 			gluDeleteTess( _fillTesseleator );
+			
+			
+			endOfTesselation();
+			
 			_fillTesseleator = 0;
 			
 			_isDirty = false;
@@ -189,7 +193,6 @@ namespace MonkVG {
 			
 			// draw
 			IContext::instance().fill();
-			glColor4f(1, 0, 0, 1);
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
@@ -247,8 +250,8 @@ namespace MonkVG {
 	
 	
 	void OpenGLPath::tessEnd( GLvoid* user ) {
-		OpenGLPath* me = (OpenGLPath*)user;
-		me->endOfTesselation();
+//		OpenGLPath* me = (OpenGLPath*)user;
+//		me->endOfTesselation();
 		
 		printf("end\n");
 	}

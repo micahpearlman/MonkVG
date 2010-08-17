@@ -19,14 +19,14 @@
 		28FD14FE0DC6FC130079059D /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.m */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		FA9ACB6B121A03BC00814394 /* circle_poly.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA9ACB6A121A03BC00814394 /* circle_poly.svg */; };
 		FAAB4BEF1218531A006D3694 /* libMonkSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAAB4BE4121852F2006D3694 /* libMonkSVG.a */; };
 		FAAB4C2312185572006D3694 /* circle.svg in Resources */ = {isa = PBXBuildFile; fileRef = FAAB4C2212185572006D3694 /* circle.svg */; };
-		FAB1428E121371FC004DF07F /* libMonkVG-iOS-OpenGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB1428B1213719D004DF07F /* libMonkVG-iOS-OpenGL.a */; };
 		FAB144781214867E004DF07F /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144741214867E004DF07F /* test.c */; };
 		FAB144791214867E004DF07F /* test_tiger.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144761214867E004DF07F /* test_tiger.c */; };
 		FAB1447A1214867E004DF07F /* test_tiger_paths.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144771214867E004DF07F /* test_tiger_paths.c */; };
-		FAB1451E121493B3004DF07F /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FAB1451D121493B3004DF07F /* libstdc++.dylib */; };
 		FAB145A91214C74C004DF07F /* svg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAB145A81214C74C004DF07F /* svg.cpp */; };
+		FAE2830D121A09A800823BCB /* libMonkVG_iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FAE28309121A095500823BCB /* libMonkVG_iOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,36 +34,36 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = FAAB4BDF121852F2006D3694 /* MonkSVG.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC046055464E500DB518D /* libMonkSVG.a */;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
 			remoteInfo = MonkSVG;
 		};
 		FAAB4BED12185304006D3694 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FAAB4BDF121852F2006D3694 /* MonkSVG.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC045055464E500DB518D /* MonkSVG */;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
 			remoteInfo = MonkSVG;
 		};
-		FAB142881213719D004DF07F /* PBXContainerItemProxy */ = {
+		FAE28306121A095500823BCB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */;
+			containerPortal = FAE28301121A095500823BCB /* MonkVG-iOS.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = D2AAC046055464E500DB518D;
-			remoteInfo = "MonkVG-Quartz-iOS";
+			remoteGlobalIDString = D2AAC07E0554694100DB518D /* libMonkVG_iOS.a */;
+			remoteInfo = "MonkVG-iOS-Quartz";
 		};
-		FAB1428A1213719D004DF07F /* PBXContainerItemProxy */ = {
+		FAE28308121A095500823BCB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */;
+			containerPortal = FAE28301121A095500823BCB /* MonkVG-iOS.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = FA2D028B120CD5150042EEC6;
-			remoteInfo = "MonkVG-OpenGL-iOS";
+			remoteGlobalIDString = FAE282E9121A08BB00823BCB /* libMonkVG_iOS.a */;
+			remoteInfo = "MonkVG-iOS-OpenGL";
 		};
-		FAB1428C121371AC004DF07F /* PBXContainerItemProxy */ = {
+		FAE2830A121A095E00823BCB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */;
+			containerPortal = FAE28301121A095500823BCB /* MonkVG-iOS.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = FA2D026A120CD5150042EEC6;
-			remoteInfo = "MonkVG-OpenGL-iOS";
+			remoteGlobalIDString = FAE282A8121A08BB00823BCB /* MonkVG-iOS-OpenGL */;
+			remoteInfo = "MonkVG-iOS-OpenGL";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -88,16 +88,16 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* MonkVG_Test_iOS_OpenGL_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkVG_Test_iOS_OpenGL_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* MonkVG_Test_iOS_OpenGL-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MonkVG_Test_iOS_OpenGL-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		FA9ACB6A121A03BC00814394 /* circle_poly.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = circle_poly.svg; sourceTree = "<group>"; };
 		FAAB4BDF121852F2006D3694 /* MonkSVG.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MonkSVG.xcodeproj; path = ../../../MonkSVG/MonkSVG.xcodeproj; sourceTree = SOURCE_ROOT; };
 		FAAB4C2212185572006D3694 /* circle.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = circle.svg; path = "../../../MonkSVG/test/SVGParse-Test-OSX/circle.svg"; sourceTree = SOURCE_ROOT; };
-		FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkVG-XCode.xcodeproj"; path = "../MonkVG-XCode/MonkVG-XCode.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		FAB144741214867E004DF07F /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 		FAB144751214867E004DF07F /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		FAB144761214867E004DF07F /* test_tiger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_tiger.c; sourceTree = "<group>"; };
 		FAB144771214867E004DF07F /* test_tiger_paths.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_tiger_paths.c; sourceTree = "<group>"; };
-		FAB1451D121493B3004DF07F /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/gcc/arm-apple-darwin10/4.0.1/libstdc++.dylib"; sourceTree = SDKROOT; };
 		FAB145A71214C74C004DF07F /* svg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = svg.h; path = svg/svg.h; sourceTree = "<group>"; };
 		FAB145A81214C74C004DF07F /* svg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = svg.cpp; path = svg/svg.cpp; sourceTree = "<group>"; };
+		FAE28301121A095500823BCB /* MonkVG-iOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "MonkVG-iOS.xcodeproj"; path = "../MonkVG-iOS/MonkVG-iOS.xcodeproj"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,13 +105,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAE2830D121A09A800823BCB /* libMonkVG_iOS.a in Frameworks */,
 				FAAB4BEF1218531A006D3694 /* libMonkSVG.a in Frameworks */,
-				FAB1428E121371FC004DF07F /* libMonkVG-iOS-OpenGL.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
 				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
-				FAB1451E121493B3004DF07F /* libstdc++.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,8 +153,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				FAE28301121A095500823BCB /* MonkVG-iOS.xcodeproj */,
 				FAAB4BDF121852F2006D3694 /* MonkSVG.xcodeproj */,
-				FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */,
 				FAB145AA1214C761004DF07F /* svg */,
 				FAB144731214867E004DF07F /* tiger */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -180,6 +179,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FA9ACB6A121A03BC00814394 /* circle_poly.svg */,
 				FAAB4C2212185572006D3694 /* circle.svg */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* MonkVG_Test_iOS_OpenGL-Info.plist */,
@@ -194,7 +194,6 @@
 				28FD14FF0DC6FC520079059D /* OpenGLES.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				FAB1451D121493B3004DF07F /* libstdc++.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -203,15 +202,6 @@
 			isa = PBXGroup;
 			children = (
 				FAAB4BE4121852F2006D3694 /* libMonkSVG.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		FAB142841213719D004DF07F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				FAB142891213719D004DF07F /* libMonkVG-XCode.a */,
-				FAB1428B1213719D004DF07F /* libMonkVG-iOS-OpenGL.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -236,6 +226,15 @@
 			name = svg;
 			sourceTree = "<group>";
 		};
+		FAE28302121A095500823BCB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FAE28307121A095500823BCB /* libMonkVG_iOS.a */,
+				FAE28309121A095500823BCB /* libMonkVG_iOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -250,8 +249,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				FAB1428D121371AC004DF07F /* PBXTargetDependency */,
 				FAAB4BEE12185304006D3694 /* PBXTargetDependency */,
+				FAE2830B121A095E00823BCB /* PBXTargetDependency */,
 			);
 			name = "MonkVG-Test-iOS-OpenGL";
 			productName = "MonkVG-Test-iOS-OpenGL";
@@ -274,8 +273,8 @@
 					ProjectRef = FAAB4BDF121852F2006D3694 /* MonkSVG.xcodeproj */;
 				},
 				{
-					ProductGroup = FAB142841213719D004DF07F /* Products */;
-					ProjectRef = FAB142831213719D004DF07F /* MonkVG-XCode.xcodeproj */;
+					ProductGroup = FAE28302121A095500823BCB /* Products */;
+					ProjectRef = FAE28301121A095500823BCB /* MonkVG-iOS.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -293,18 +292,18 @@
 			remoteRef = FAAB4BE3121852F2006D3694 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FAB142891213719D004DF07F /* libMonkVG-XCode.a */ = {
+		FAE28307121A095500823BCB /* libMonkVG_iOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libMonkVG-XCode.a";
-			remoteRef = FAB142881213719D004DF07F /* PBXContainerItemProxy */;
+			path = libMonkVG_iOS.a;
+			remoteRef = FAE28306121A095500823BCB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		FAB1428B1213719D004DF07F /* libMonkVG-iOS-OpenGL.a */ = {
+		FAE28309121A095500823BCB /* libMonkVG_iOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libMonkVG-iOS-OpenGL.a";
-			remoteRef = FAB1428A1213719D004DF07F /* PBXContainerItemProxy */;
+			path = libMonkVG_iOS.a;
+			remoteRef = FAE28308121A095500823BCB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -318,6 +317,7 @@
 				2514C27C10084DCA00A42282 /* Shader.vsh in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				FAAB4C2312185572006D3694 /* circle.svg in Resources */,
+				FA9ACB6B121A03BC00814394 /* circle_poly.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -348,10 +348,10 @@
 			name = MonkSVG;
 			targetProxy = FAAB4BED12185304006D3694 /* PBXContainerItemProxy */;
 		};
-		FAB1428D121371AC004DF07F /* PBXTargetDependency */ = {
+		FAE2830B121A095E00823BCB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "MonkVG-OpenGL-iOS";
-			targetProxy = FAB1428C121371AC004DF07F /* PBXContainerItemProxy */;
+			name = "MonkVG-iOS-OpenGL";
+			targetProxy = FAE2830A121A095E00823BCB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

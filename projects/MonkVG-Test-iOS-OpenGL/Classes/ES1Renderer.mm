@@ -59,26 +59,26 @@ SVGHandler* _handler;
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
-//		loadTiger();
+		loadTiger();
 		
 
-		MonkSVG::SVG svg_parser;
-		_handler = new SVGHandler;
-		
-		svg_parser.initialize( _handler );
-		
-		NSString *base_path = [[NSBundle mainBundle] resourcePath];
-		std::string path = std::string( [base_path UTF8String] ) + string("/circle.svg");
-		
-		fstream file( path.c_str() );
-		if ( file.is_open() ) {
-			std::string line;
-			std::string buf;
-			while( std::getline( file, line) )
-				buf += line;
-			std::cout << "read: " << buf << "\n";
-			svg_parser.read( buf );
-		}
+//		MonkSVG::SVG svg_parser;
+//		_handler = new SVGHandler;
+//		
+//		svg_parser.initialize( _handler );
+//		
+//		NSString *base_path = [[NSBundle mainBundle] resourcePath];
+//		std::string path = std::string( [base_path UTF8String] ) + string("/circle_poly.svg");
+//		
+//		fstream file( path.c_str() );
+//		if ( file.is_open() ) {
+//			std::string line;
+//			std::string buf;
+//			while( std::getline( file, line) )
+//				buf += line;
+//			std::cout << "read: " << buf << "\n";
+//			svg_parser.read( buf );
+//		}
 		
 		
     }
@@ -99,8 +99,8 @@ SVGHandler* _handler;
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	_handler->draw();
-//	display(0.05f);
+//	_handler->draw();
+	display(0.05f);
 	
 //	VGfloat clearColor[] = {1,1,1,1};
 //	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);

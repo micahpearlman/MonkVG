@@ -13,6 +13,7 @@
 #include "mkPath.h"
 #include "glu.h"
 #include <list>
+#include <vector>
 
 namespace MonkVG {
 	
