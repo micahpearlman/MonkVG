@@ -22,9 +22,17 @@ class SVGHandler : public MonkSVG::ISVGHandler {
 public:
 	void draw() {
 		vector<VGPaint>::iterator fillpaintiter = _fill_list.begin();
-		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++, fillpaintiter++ ) {
+		vector<VGPaint>::iterator strokepaintiter = _stroke_list.begin();
+		vector<float>::iterator widthiter = _stroke_width.begin();
+		int i = 0;
+		for ( vector<VGPath>::iterator iter = _path_list.begin(); iter != _path_list.end(); iter++, fillpaintiter++, strokepaintiter++, widthiter++, i++ ) {
 			vgSetPaint( *fillpaintiter, VG_FILL_PATH );
-			vgDrawPath( *iter, VG_FILL_PATH );
+			vgSetPaint( *strokepaintiter, VG_STROKE_PATH );
+			vgSetf( VG_STROKE_LINE_WIDTH, *widthiter );
+//			if ( i == 2) {
+				vgDrawPath( *iter, VG_FILL_PATH | VG_STROKE_PATH );
+//			}
+			
 			
 		}
 		
@@ -80,12 +88,28 @@ private:
 		vgSetParameterfv(_fill_paint, VG_PAINT_COLOR, 4, &fcolor[0]);
 		_fill_list.push_back( _fill_paint );
 	}
+	virtual void onPathStrokeColor( unsigned int color ) {
+		VGPaint stroke_paint = vgCreatePaint();
+		VGfloat fcolor[4] = { VGfloat( (color & 0xff000000) >> 24)/255.0f, 
+			VGfloat( (color & 0x00ff0000) >> 16)/255.0f, 
+			VGfloat( (color & 0x0000ff00) >> 8)/255.0f, 
+			1.0f /*VGfloat(color & 0x000000ff)/255.0f*/ };
+		vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &fcolor[0]);
+		_stroke_list.push_back( stroke_paint );
+		
+	}
+	virtual void onPathStrokeWidth( float width ) {
+		_stroke_width.push_back( width );
+	}
+
 	
 	VGPath _path;
 	VGPaint _fill_paint;
 	
 	vector<VGPath>	_path_list;
 	vector<VGPaint>	_fill_list;
+	vector<VGPaint> _stroke_list;
+	vector<float>	_stroke_width;
 };
 
 #endif

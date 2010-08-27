@@ -71,50 +71,12 @@ namespace MonkVG {
 		void endOfTesselation();
 		
 	private:	// utility methods
-		static inline VGfloat calcCubicBezier1d( VGfloat x0, VGfloat x1, VGfloat x2, VGfloat x3, VGfloat t ) {
-			// see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
-			VGfloat oneT = 1.0f - t;
-			VGfloat x =		x0 * (oneT * oneT * oneT)
-						+	3.0f * x1 * (oneT * oneT) * t
-						+	3.0f * x2 * oneT * (t * t)
-						+	x3 * (t * t * t);
-			return x;	
-		}
 		
 
 		void buildFill();
 		void buildStroke();
 		
 		
-		struct v2_t {
-			GLfloat x, y;
-		};
-		
-		static inline void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
-			float dx = p1.y - p0.y;
-			float dy = p0.x - p1.x;
-			const float inv_mag = 1.0f / sqrt(dx*dx + dy*dy);
-			dx = dx * inv_mag;
-			dy = dy * inv_mag;
-			
-			v2_t v0, v1, v2, v3;
-			v0.x = p0.x + radius * dx;
-			v0.y = p0.y + radius * dy;
-			vertices.push_back( v0 );
-			
-			v1.x = p0.x - radius * dx;
-			v1.y = p0.y - radius * dy;
-			vertices.push_back( v1 );			
-			
-			v2.x = p1.x + radius * dx;
-			v2.y = p1.y + radius * dy;
-			vertices.push_back( v2 );			
-			
-			v3.x = p1.x - radius * dx;
-			v3.y = p1.y - radius * dy;
-			vertices.push_back( v3 );			
-			
-		}
 	};
 }
 

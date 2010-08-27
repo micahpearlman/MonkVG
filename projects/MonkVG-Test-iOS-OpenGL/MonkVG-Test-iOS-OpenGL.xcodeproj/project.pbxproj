@@ -19,6 +19,7 @@
 		28FD14FE0DC6FC130079059D /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.m */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		FA08A7AE1228420A00F0EB21 /* square.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA08A7AD1228420A00F0EB21 /* square.svg */; };
 		FAB144781214867E004DF07F /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144741214867E004DF07F /* test.c */; };
 		FAB144791214867E004DF07F /* test_tiger.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144761214867E004DF07F /* test_tiger.c */; };
 		FAB1447A1214867E004DF07F /* test_tiger_paths.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144771214867E004DF07F /* test_tiger_paths.c */; };
@@ -87,6 +88,7 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* MonkVG_Test_iOS_OpenGL_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkVG_Test_iOS_OpenGL_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* MonkVG_Test_iOS_OpenGL-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MonkVG_Test_iOS_OpenGL-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		FA08A7AD1228420A00F0EB21 /* square.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = square.svg; sourceTree = "<group>"; };
 		FAB144741214867E004DF07F /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 		FAB144751214867E004DF07F /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		FAB144761214867E004DF07F /* test_tiger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_tiger.c; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FA08A7AD1228420A00F0EB21 /* square.svg */,
 				FAE283A6121AFFF600823BCB /* circle_poly.svg */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* MonkVG_Test_iOS_OpenGL-Info.plist */,
@@ -314,6 +317,7 @@
 				2514C27C10084DCA00A42282 /* Shader.vsh in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				FAE283A7121AFFF600823BCB /* circle_poly.svg in Resources */,
+				FA08A7AE1228420A00F0EB21 /* square.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

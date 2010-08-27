@@ -69,7 +69,7 @@ namespace MonkVG {
 			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
-			glDrawArrays( GL_TRIANGLES, 0, _numberStrokeVertices );
+			glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
 			
 		}
 		
@@ -79,6 +79,15 @@ namespace MonkVG {
 		return true;
 	}
 	
+	static inline VGfloat calcCubicBezier1d( VGfloat x0, VGfloat x1, VGfloat x2, VGfloat x3, VGfloat t ) {
+		// see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
+		VGfloat oneT = 1.0f - t;
+		VGfloat x =		x0 * (oneT * oneT * oneT)
+		+	3.0f * x1 * (oneT * oneT) * t
+		+	3.0f * x2 * oneT * (t * t)
+		+	x3 * (t * t * t);
+		return x;	
+	}
 	
 	void OpenGLPath::buildFill() {
 		
@@ -194,8 +203,8 @@ namespace MonkVG {
 					printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						GLdouble* c = new GLdouble[3];
-						c[0] = OpenGLPath::calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
-						c[1] = OpenGLPath::calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
+						c[0] = calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
+						c[1] = calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
 						c[2] = coords[2];
 						printf( "(%f, %f), ", c[0], c[1] );
 						gluTessVertex( _fillTesseleator, c, c );
@@ -224,6 +233,55 @@ namespace MonkVG {
 		
 	}
 
+	struct v2_t {
+		GLfloat x, y;
+		
+		void print() const {
+			printf("(%f, %f)\n", x, y);
+		}
+	};
+	static inline void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
+		
+		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
+			return;
+		}
+			
+		float dx = p1.y - p0.y;
+		float dy = p0.x - p1.x;
+		const float inv_mag = 1.0f / sqrtf(dx*dx + dy*dy);
+		dx = dx * inv_mag;
+		dy = dy * inv_mag;
+
+		v2_t v0, v1, v2, v3;
+		
+		v0.x = p0.x + radius * dx;
+		v0.y = p0.y + radius * dy;
+		vertices.push_back( v0 );
+		
+		v1.x = p0.x - radius * dx;
+		v1.y = p0.y - radius * dy;
+		vertices.push_back( v1 );			
+		
+		
+		v2.x = p1.x + radius * dx;
+		v2.y = p1.y + radius * dy;
+		vertices.push_back( v2 );			
+		
+		v3.x = p1.x - radius * dx;
+		v3.y = p1.y - radius * dy;
+		vertices.push_back( v3 );
+		
+//		printf("start stroke\n");
+//		printf("p0: ");p0.print();
+//		printf("p1: ");p1.print();
+//		printf("\t"); v0.print();
+//		printf("\t"); v1.print();
+//		printf("\t"); v2.print();
+//		printf("\t"); v3.print();
+//		printf("end stroke\n");
+		
+	}
+	
 	void OpenGLPath::buildStroke() {
 		
 		// get the native OpenGL context
@@ -262,6 +320,7 @@ namespace MonkVG {
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
+					buildFatLineSegment( vertices, coords, closeTo, stroke_width );
 				} break;
 				case (VG_MOVE_TO >> 1):
 				{	
@@ -275,7 +334,7 @@ namespace MonkVG {
 					coords.x = *coordsIter; coordsIter++;
 					coords.y = *coordsIter; coordsIter++;
 					
-					OpenGLPath::buildFatLineSegment( vertices, prev, coords, stroke_width );
+					buildFatLineSegment( vertices, prev, coords, stroke_width );
 
 					
 				} break;
@@ -283,13 +342,13 @@ namespace MonkVG {
 				{
 					prev = coords;
 					coords.x = *coordsIter; coordsIter++;
-					OpenGLPath::buildFatLineSegment( vertices, prev, coords, stroke_width );
+					buildFatLineSegment( vertices, prev, coords, stroke_width );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
 					prev = coords;
 					coords.y = *coordsIter; coordsIter++;
-					OpenGLPath::buildFatLineSegment( vertices, prev, coords, stroke_width );
+					buildFatLineSegment( vertices, prev, coords, stroke_width );
 					
 				} break;
 				case (VG_CUBIC_TO >> 1):	// todo
@@ -305,9 +364,9 @@ namespace MonkVG {
 					prev = coords;
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						v2_t c;
-						c.x = OpenGLPath::calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
-						c.y = OpenGLPath::calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						OpenGLPath::buildFatLineSegment( vertices, prev, c, stroke_width );
+						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+						buildFatLineSegment( vertices, prev, c, stroke_width );
 						prev = c;
 					}
 					coords.x = p3x;
@@ -325,7 +384,7 @@ namespace MonkVG {
 		glGenBuffers( 1, &_strokeVBO );
 		glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
 		glBufferData( GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 2, &vertices[0], GL_STATIC_DRAW );
-		_numberStrokeVertices = vertices.size()/2;
+		_numberStrokeVertices = vertices.size();
 		
 		
 	}
