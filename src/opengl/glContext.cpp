@@ -78,6 +78,10 @@ namespace MonkVG {
 	}
 	
 	void OpenGLContext::stroke() {
+		if ( _stroke_paint ) {
+			const VGfloat* c = _stroke_paint->getPaintColor();
+			glColor4f(c[0], c[1], c[2], c[3] );
+		}
 	}
 	
 	void OpenGLContext::fill() {

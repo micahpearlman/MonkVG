@@ -55,7 +55,9 @@ namespace MonkVG {
 		list<GLdouble*>		_verticesToDestroy;
 		GLenum				_primType;
 		GLuint				_fillVBO;
-		int					_numberVertices;
+		GLuint				_strokeVBO;
+		int					_numberFillVertices;
+		int					_numberStrokeVertices;
 		bool				_isDirty;
 		
 	private:		// tesseleator callbacks
@@ -79,6 +81,40 @@ namespace MonkVG {
 			return x;	
 		}
 		
+
+		void buildFill();
+		void buildStroke();
+		
+		
+		struct v2_t {
+			GLfloat x, y;
+		};
+		
+		static inline void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
+			float dx = p1.y - p0.y;
+			float dy = p0.x - p1.x;
+			const float inv_mag = 1.0f / sqrt(dx*dx + dy*dy);
+			dx = dx * inv_mag;
+			dy = dy * inv_mag;
+			
+			v2_t v0, v1, v2, v3;
+			v0.x = p0.x + radius * dx;
+			v0.y = p0.y + radius * dy;
+			vertices.push_back( v0 );
+			
+			v1.x = p0.x - radius * dx;
+			v1.y = p0.y - radius * dy;
+			vertices.push_back( v1 );			
+			
+			v2.x = p1.x + radius * dx;
+			v2.y = p1.y + radius * dy;
+			vertices.push_back( v2 );			
+			
+			v3.x = p1.x - radius * dx;
+			v3.y = p1.y - radius * dy;
+			vertices.push_back( v3 );			
+			
+		}
 	};
 }
 

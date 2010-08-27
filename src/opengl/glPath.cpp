@@ -19,152 +19,14 @@ namespace MonkVG {
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
 
 		if( paintModes & VG_FILL_PATH && _isDirty == true ) {	// build the fill polygons
-			_fillTesseleator = gluNewTess();
-			gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (*) ( )) &OpenGLPath::tessBegin );
-			gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (*) ( )) &OpenGLPath::tessEnd );
-			gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (*) ( )) &OpenGLPath::tessVertex );
-			gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (*) ( )) &OpenGLPath::tessCombine );
-			gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (*)())&OpenGLPath::tessError );
-			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
-			
-			gluTessBeginPolygon( _fillTesseleator, this );
-			gluTessBeginContour( _fillTesseleator );
-			
-			vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-			int numCoords = 0;
-			VGbyte segment = VG_CLOSE_PATH;
-			GLdouble coords[3] = {0,0,0};
-			GLdouble closeTo[3] = {0,0,0};
-			int nummovetos = 0;
-			for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
-				segment = (*segmentIter);
-				numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
-				//segment = segment >> 1;
-				
-				
-				//			VG_CLOSE_PATH                               = ( 0 << 1),
-				//			VG_MOVE_TO                                  = ( 1 << 1),
-				//			VG_LINE_TO                                  = ( 2 << 1),
-				//			VG_HLINE_TO                                 = ( 3 << 1),
-				//			VG_VLINE_TO                                 = ( 4 << 1),
-				//			VG_QUAD_TO                                  = ( 5 << 1),
-				//			VG_CUBIC_TO                                 = ( 6 << 1),
-				//			VG_SQUAD_TO                                 = ( 7 << 1),
-				//			VG_SCUBIC_TO                                = ( 8 << 1),
-				//			VG_SCCWARC_TO                               = ( 9 << 1),
-				//			VG_SCWARC_TO                                = (10 << 1),
-				//			VG_LCCWARC_TO                               = (11 << 1),
-				//			VG_LCWARC_TO                                = (12 << 1),
-				
-				// todo: deal with relative move
-				switch (segment >> 1) {
-					case (VG_CLOSE_PATH >> 1):
-					{
-						GLdouble* c = new GLdouble[3];
-						c[0] = closeTo[0];
-						c[1] = closeTo[1];
-						c[2] = closeTo[2];
-						// do not think this is necessary for the tesselator						
-						//gluTessVertex( _fillTesseleator, c, c );
-					} break;
-					case (VG_MOVE_TO >> 1):
-					{	
-						closeTo[0] = coords[0] = *coordsIter; coordsIter++;
-						closeTo[1] = coords[1] = *coordsIter; coordsIter++;
-						
-						GLdouble* c = new GLdouble[3];
-						c[0] = coords[0];
-						c[1] = coords[1];
-						c[2] = coords[2];
-						
-						gluTessVertex( _fillTesseleator, c, c );
-						
-						nummovetos++;
-						if ( nummovetos > 1 ) {
-							printf("too many movetos");
-						}
-					} break;
-					case (VG_LINE_TO >> 1):
-					{
-						coords[0] = *coordsIter; coordsIter++;
-						coords[1] = *coordsIter; coordsIter++;
-						
-						GLdouble* c = new GLdouble[3];
-						c[0] = coords[0];
-						c[1] = coords[1];
-						c[2] = coords[2];
-						
-						gluTessVertex( _fillTesseleator, c, c );
-					} break;
-					case (VG_HLINE_TO >> 1):
-					{
-						coords[0] = *coordsIter; coordsIter++;
-						
-						GLdouble* c = new GLdouble[3];
-						c[0] = coords[0];
-						c[1] = coords[1];
-						c[2] = coords[2];
-						
-						gluTessVertex( _fillTesseleator, c, c );
-					} break;
-					case (VG_VLINE_TO >> 1):
-					{
-						coords[1] = *coordsIter; coordsIter++;
-						
-						GLdouble* c = new GLdouble[3];
-						c[0] = coords[0];
-						c[1] = coords[1];
-						c[2] = coords[2];
-						
-						gluTessVertex( _fillTesseleator, c, c );
-					} break;
-					case (VG_CUBIC_TO >> 1):	// todo
-					{
-						VGfloat cp1x = *coordsIter; coordsIter++;
-						VGfloat cp1y = *coordsIter; coordsIter++;
-						VGfloat cp2x = *coordsIter; coordsIter++;
-						VGfloat cp2y = *coordsIter; coordsIter++;
-						VGfloat p3x = *coordsIter; coordsIter++;
-						VGfloat p3y = *coordsIter; coordsIter++;
-						
-						VGfloat increment = 1.0f / 4.0f;
-						printf("\tcubic: ");
-						for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-							GLdouble* c = new GLdouble[3];
-							c[0] = OpenGLPath::calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
-							c[1] = OpenGLPath::calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
-							c[2] = coords[2];
-							printf( "(%f, %f), ", c[0], c[1] );
-							gluTessVertex( _fillTesseleator, c, c );
-						}
-						printf("\n");
-						coords[0] = p3x;
-						coords[1] = p3y;
-						
-					}
-					break;	
-					default:
-						printf("unkwown command\n");
-						break;
-				}
-			}	// foreach segment
-			
-			gluTessEndContour( _fillTesseleator );
-			gluTessEndPolygon( _fillTesseleator );
-			
-			gluDeleteTess( _fillTesseleator );
-			
-			
-			endOfTesselation();
-			
-			_fillTesseleator = 0;
-			
-			_isDirty = false;
-
+			buildFill();
 		}
-		if( paintModes & VG_STROKE_PATH )
-		{
+		
+		if( paintModes & VG_STROKE_PATH && _isDirty == true ) {
+			buildStroke();
 		}
+		
+		_isDirty = false;
 		
 		glContext.beginRender();
 		
@@ -198,8 +60,17 @@ namespace MonkVG {
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
-			glDrawArrays( GL_TRIANGLES, 0, _numberVertices );
+			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
 
+		}
+		
+		if ( paintModes & VG_STROKE_PATH ) {
+			IContext::instance().stroke();
+			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
+			glEnableClientState( GL_VERTEX_ARRAY );
+			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
+			glDrawArrays( GL_TRIANGLES, 0, _numberStrokeVertices );
+			
 		}
 		
 		glContext.endRender();
@@ -209,11 +80,261 @@ namespace MonkVG {
 	}
 	
 	
+	void OpenGLPath::buildFill() {
+		
+		_fillTesseleator = gluNewTess();
+		gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (*) ( )) &OpenGLPath::tessBegin );
+		gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (*) ( )) &OpenGLPath::tessEnd );
+		gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (*) ( )) &OpenGLPath::tessVertex );
+		gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (*) ( )) &OpenGLPath::tessCombine );
+		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (*)())&OpenGLPath::tessError );
+		gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
+		
+		gluTessBeginPolygon( _fillTesseleator, this );
+		gluTessBeginContour( _fillTesseleator );
+		
+		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
+		int numCoords = 0;
+		VGbyte segment = VG_CLOSE_PATH;
+		GLdouble coords[3] = {0,0,0};
+		GLdouble closeTo[3] = {0,0,0};
+		int nummovetos = 0;
+		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
+			segment = (*segmentIter);
+			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
+			//segment = segment >> 1;
+			
+			
+			//			VG_CLOSE_PATH                               = ( 0 << 1),
+			//			VG_MOVE_TO                                  = ( 1 << 1),
+			//			VG_LINE_TO                                  = ( 2 << 1),
+			//			VG_HLINE_TO                                 = ( 3 << 1),
+			//			VG_VLINE_TO                                 = ( 4 << 1),
+			//			VG_QUAD_TO                                  = ( 5 << 1),
+			//			VG_CUBIC_TO                                 = ( 6 << 1),
+			//			VG_SQUAD_TO                                 = ( 7 << 1),
+			//			VG_SCUBIC_TO                                = ( 8 << 1),
+			//			VG_SCCWARC_TO                               = ( 9 << 1),
+			//			VG_SCWARC_TO                                = (10 << 1),
+			//			VG_LCCWARC_TO                               = (11 << 1),
+			//			VG_LCWARC_TO                                = (12 << 1),
+			
+			// todo: deal with relative move
+			switch (segment >> 1) {
+				case (VG_CLOSE_PATH >> 1):
+				{
+					GLdouble* c = new GLdouble[3];
+					c[0] = closeTo[0];
+					c[1] = closeTo[1];
+					c[2] = closeTo[2];
+					// do not think this is necessary for the tesselator						
+					//gluTessVertex( _fillTesseleator, c, c );
+				} break;
+				case (VG_MOVE_TO >> 1):
+				{	
+					closeTo[0] = coords[0] = *coordsIter; coordsIter++;
+					closeTo[1] = coords[1] = *coordsIter; coordsIter++;
+					
+					GLdouble* c = new GLdouble[3];
+					c[0] = coords[0];
+					c[1] = coords[1];
+					c[2] = coords[2];
+					
+					gluTessVertex( _fillTesseleator, c, c );
+					
+					nummovetos++;
+					if ( nummovetos > 1 ) {
+						printf("too many movetos");
+					}
+				} break;
+				case (VG_LINE_TO >> 1):
+				{
+					coords[0] = *coordsIter; coordsIter++;
+					coords[1] = *coordsIter; coordsIter++;
+					
+					GLdouble* c = new GLdouble[3];
+					c[0] = coords[0];
+					c[1] = coords[1];
+					c[2] = coords[2];
+					
+					gluTessVertex( _fillTesseleator, c, c );
+				} break;
+				case (VG_HLINE_TO >> 1):
+				{
+					coords[0] = *coordsIter; coordsIter++;
+					
+					GLdouble* c = new GLdouble[3];
+					c[0] = coords[0];
+					c[1] = coords[1];
+					c[2] = coords[2];
+					
+					gluTessVertex( _fillTesseleator, c, c );
+				} break;
+				case (VG_VLINE_TO >> 1):
+				{
+					coords[1] = *coordsIter; coordsIter++;
+					
+					GLdouble* c = new GLdouble[3];
+					c[0] = coords[0];
+					c[1] = coords[1];
+					c[2] = coords[2];
+					
+					gluTessVertex( _fillTesseleator, c, c );
+				} break;
+				case (VG_CUBIC_TO >> 1):	// todo
+				{
+					VGfloat cp1x = *coordsIter; coordsIter++;
+					VGfloat cp1y = *coordsIter; coordsIter++;
+					VGfloat cp2x = *coordsIter; coordsIter++;
+					VGfloat cp2y = *coordsIter; coordsIter++;
+					VGfloat p3x = *coordsIter; coordsIter++;
+					VGfloat p3y = *coordsIter; coordsIter++;
+					
+					VGfloat increment = 1.0f / 4.0f;
+					printf("\tcubic: ");
+					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+						GLdouble* c = new GLdouble[3];
+						c[0] = OpenGLPath::calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
+						c[1] = OpenGLPath::calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
+						c[2] = coords[2];
+						printf( "(%f, %f), ", c[0], c[1] );
+						gluTessVertex( _fillTesseleator, c, c );
+					}
+					printf("\n");
+					coords[0] = p3x;
+					coords[1] = p3y;
+					
+				}
+					break;	
+				default:
+					printf("unkwown command\n");
+					break;
+			}
+		}	// foreach segment
+		
+		gluTessEndContour( _fillTesseleator );
+		gluTessEndPolygon( _fillTesseleator );
+		
+		gluDeleteTess( _fillTesseleator );
+		
+		
+		endOfTesselation();
+		
+		_fillTesseleator = 0;
+		
+	}
+
+	void OpenGLPath::buildStroke() {
+		
+		// get the native OpenGL context
+		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
+		
+		const VGfloat stroke_width = glContext.getStrokeLineWidth();
+		
+		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
+		int numCoords = 0;
+		VGbyte segment = VG_CLOSE_PATH;
+		v2_t coords = {0,0};
+		v2_t prev = {0,0};
+		v2_t closeTo = {0,0}; 
+		vector<v2_t> vertices;
+		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
+			segment = (*segmentIter);
+			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
+			//segment = segment >> 1;
+			
+			
+			//			VG_CLOSE_PATH                               = ( 0 << 1),
+			//			VG_MOVE_TO                                  = ( 1 << 1),
+			//			VG_LINE_TO                                  = ( 2 << 1),
+			//			VG_HLINE_TO                                 = ( 3 << 1),
+			//			VG_VLINE_TO                                 = ( 4 << 1),
+			//			VG_QUAD_TO                                  = ( 5 << 1),
+			//			VG_CUBIC_TO                                 = ( 6 << 1),
+			//			VG_SQUAD_TO                                 = ( 7 << 1),
+			//			VG_SCUBIC_TO                                = ( 8 << 1),
+			//			VG_SCCWARC_TO                               = ( 9 << 1),
+			//			VG_SCWARC_TO                                = (10 << 1),
+			//			VG_LCCWARC_TO                               = (11 << 1),
+			//			VG_LCWARC_TO                                = (12 << 1),
+			
+			// todo: deal with relative move
+			switch (segment >> 1) {
+				case (VG_CLOSE_PATH >> 1):
+				{
+				} break;
+				case (VG_MOVE_TO >> 1):
+				{	
+					prev.x = closeTo.x = coords.x = *coordsIter; coordsIter++;
+					prev.y = closeTo.y = coords.y = *coordsIter; coordsIter++;
+					
+				} break;
+				case (VG_LINE_TO >> 1):
+				{
+					prev = coords;
+					coords.x = *coordsIter; coordsIter++;
+					coords.y = *coordsIter; coordsIter++;
+					
+					OpenGLPath::buildFatLineSegment( vertices, prev, coords, stroke_width );
+
+					
+				} break;
+				case (VG_HLINE_TO >> 1):
+				{
+					prev = coords;
+					coords.x = *coordsIter; coordsIter++;
+					OpenGLPath::buildFatLineSegment( vertices, prev, coords, stroke_width );
+				} break;
+				case (VG_VLINE_TO >> 1):
+				{
+					prev = coords;
+					coords.y = *coordsIter; coordsIter++;
+					OpenGLPath::buildFatLineSegment( vertices, prev, coords, stroke_width );
+					
+				} break;
+				case (VG_CUBIC_TO >> 1):	// todo
+				{
+					VGfloat cp1x = *coordsIter; coordsIter++;
+					VGfloat cp1y = *coordsIter; coordsIter++;
+					VGfloat cp2x = *coordsIter; coordsIter++;
+					VGfloat cp2y = *coordsIter; coordsIter++;
+					VGfloat p3x = *coordsIter; coordsIter++;
+					VGfloat p3y = *coordsIter; coordsIter++;
+					
+					VGfloat increment = 1.0f / 4.0f;
+					prev = coords;
+					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+						v2_t c;
+						c.x = OpenGLPath::calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+						c.y = OpenGLPath::calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+						OpenGLPath::buildFatLineSegment( vertices, prev, c, stroke_width );
+						prev = c;
+					}
+					coords.x = p3x;
+					coords.y = p3y;
+					
+				}
+					break;	
+				default:
+					printf("unkwown command\n");
+					break;
+			}
+		}	// foreach segment
+		
+		// build the vertex buffer object VBO
+		glGenBuffers( 1, &_strokeVBO );
+		glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
+		glBufferData( GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 2, &vertices[0], GL_STATIC_DRAW );
+		_numberStrokeVertices = vertices.size()/2;
+		
+		
+	}
+	
 	void OpenGLPath::endOfTesselation() {
 		glGenBuffers( 1, &_fillVBO );
 		glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float) * 2, &_vertices[0], GL_STATIC_DRAW );
-		_numberVertices = _vertices.size()/2;
+		_numberFillVertices = _vertices.size()/2;
 		for (list<GLdouble*>::iterator iter = _verticesToDestroy.begin(); iter != _verticesToDestroy.end(); iter++ ) {
 //todo!!!			delete [] *(iter);
 		}
