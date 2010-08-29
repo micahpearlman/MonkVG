@@ -11,7 +11,7 @@ It can be found at GitHub http://github.com/micahpearlman/MonkVG
 
 ## INSTALLATION
 
-Not even versioned yet for download.  Use git to clone:  git clone git@github.com:micahpearlman/MonkVG.git
+Not even versioned yet for download.  Use git to clone:  <tt>git clone git@github.com:micahpearlman/MonkVG.git</tt>
 
 Currently only XCode iOS projects.  
 
