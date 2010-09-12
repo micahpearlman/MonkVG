@@ -50,8 +50,14 @@ namespace MonkVG {
 		glLoadIdentity();
 		
 		glDisable( GL_CULL_FACE );
+		
+		// turn on blending
+		glEnable(GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);		
 	}
 	void OpenGLContext::endRender() {
+		
+		// todo: restore state to be nice to other apps
 		//glEnable( GL_CULL_FACE );
 	}
 
