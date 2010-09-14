@@ -201,16 +201,16 @@ namespace MonkVG {
 					VGfloat p3y = *coordsIter; coordsIter++;
 					
 					VGfloat increment = 1.0f / 4.0f;
-					printf("\tcubic: ");
+					//printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						GLdouble* c = new GLdouble[3];
 						c[0] = calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
 						c[1] = calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
 						c[2] = coords[2];
-						printf( "(%f, %f), ", c[0], c[1] );
+						//printf( "(%f, %f), ", c[0], c[1] );
 						gluTessVertex( _fillTesseleator, c, c );
 					}
-					printf("\n");
+					//printf("\n");
 					coords[0] = p3x;
 					coords[1] = p3y;
 					
@@ -238,7 +238,7 @@ namespace MonkVG {
 		GLfloat x, y;
 		
 		void print() const {
-			printf("(%f, %f)\n", x, y);
+			//printf("(%f, %f)\n", x, y);
 		}
 	};
 	static inline void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
@@ -414,16 +414,16 @@ namespace MonkVG {
 		switch( type )
 		{
 			case GL_TRIANGLES:
-				printf( "begin(GL_TRIANGLES)\n" );
+				//printf( "begin(GL_TRIANGLES)\n" );
 				break;
 			case GL_TRIANGLE_FAN:
-				printf( "begin(GL_TRIANGLE_FAN)\n" );
+				//printf( "begin(GL_TRIANGLE_FAN)\n" );
 				break;
 			case GL_TRIANGLE_STRIP:
-				printf( "begin(GL_TRIANGLE_STRIP)\n" );
+				//printf( "begin(GL_TRIANGLE_STRIP)\n" );
 				break;
 			case GL_LINE_LOOP:
-				printf( "begin(GL_LINE_LOOP)\n" );
+				//printf( "begin(GL_LINE_LOOP)\n" );
 				break;
 			default:
 				break;
@@ -436,7 +436,7 @@ namespace MonkVG {
 //		OpenGLPath* me = (OpenGLPath*)user;
 //		me->endOfTesselation();
 		
-		printf("end\n");
+//		printf("end\n");
 	}
 	
 	
@@ -496,7 +496,7 @@ namespace MonkVG {
 		}
 		vertexCount_++;
 
-		printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
+//		printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
 	}
 	void OpenGLPath::tessCombine( GLdouble coords[3], void *data[4],
 							GLfloat weight[4], void **outData,
@@ -507,7 +507,7 @@ namespace MonkVG {
 		vertex[2] = coords[2];		
 		*outData = vertex;
 //todo!!!		me->addVertexToDestroy( v );
-		printf("combine\n");
+//		printf("combine\n");
 		
 	}
 	

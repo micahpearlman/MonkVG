@@ -612,6 +612,7 @@
 				);
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
+				SDKROOT = iphoneos4.1;
 			};
 			name = Debug;
 		};
@@ -630,6 +631,7 @@
 				);
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
+				SDKROOT = iphoneos4.1;
 			};
 			name = Release;
 		};
