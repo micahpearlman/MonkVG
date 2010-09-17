@@ -10,6 +10,7 @@
 
 #include "glPath.h"
 #include "glContext.h"
+#include <cassert>
 
 namespace MonkVG {
 	
@@ -101,14 +102,14 @@ namespace MonkVG {
 		gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
 		
 		gluTessBeginPolygon( _fillTesseleator, this );
-		gluTessBeginContour( _fillTesseleator );
+		
 		
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
 		int numCoords = 0;
 		VGbyte segment = VG_CLOSE_PATH;
 		GLdouble coords[3] = {0,0,0};
 		GLdouble closeTo[3] = {0,0,0};
-		int nummovetos = 0;
+		int num_contours = 0;
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
 			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
@@ -142,6 +143,13 @@ namespace MonkVG {
 				} break;
 				case (VG_MOVE_TO >> 1):
 				{	
+					if ( num_contours ) {
+						gluTessEndContour( _fillTesseleator );
+						num_contours--;
+					}
+					
+					gluTessBeginContour( _fillTesseleator );
+					num_contours++;
 					closeTo[0] = coords[0] = *coordsIter; coordsIter++;
 					closeTo[1] = coords[1] = *coordsIter; coordsIter++;
 					
@@ -152,10 +160,6 @@ namespace MonkVG {
 					
 					gluTessVertex( _fillTesseleator, c, c );
 					
-					nummovetos++;
-					if ( nummovetos > 1 ) {
-						printf("too many movetos");
-					}
 				} break;
 				case (VG_LINE_TO >> 1):
 				{
@@ -222,7 +226,13 @@ namespace MonkVG {
 			}
 		}	// foreach segment
 		
-		gluTessEndContour( _fillTesseleator );
+		if ( num_contours ) {
+			gluTessEndContour( _fillTesseleator );
+			num_contours--;
+		}
+
+		assert(num_contours == 0);
+		
 		gluTessEndPolygon( _fillTesseleator );
 		
 		gluDeleteTess( _fillTesseleator );
