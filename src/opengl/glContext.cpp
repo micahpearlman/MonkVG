@@ -10,6 +10,7 @@
 #include "glContext.h"
 #include "glPath.h"
 #include "glPaint.h"
+#include "mkCommon.h"
 
 namespace MonkVG {
 	
@@ -18,17 +19,56 @@ namespace MonkVG {
 	{
 	}
 	
+	void OpenGLContext::checkGLError() {
+		
+		int err = glGetError();
+		
+		
+		const char* RVAL = "GL_UNKNOWN_ERROR";
+		
+		switch( err )
+		{
+			case GL_NO_ERROR:
+				RVAL =  "GL_NO_ERROR";
+				break;
+			case GL_INVALID_ENUM:
+				RVAL =  "GL_INVALID_ENUM";
+				break;
+			case GL_INVALID_VALUE:
+				RVAL =  "GL_INVALID_VALUE";
+				break;
+			case GL_INVALID_OPERATION:
+				RVAL = "GL_INVALID_OPERATION";
+				break;
+			case GL_STACK_OVERFLOW:
+				RVAL =  "GL_STACK_OVERFLOW";
+				break;
+			case GL_STACK_UNDERFLOW:
+				RVAL =  "GL_STACK_UNDERFLOW";
+				break;
+			case GL_OUT_OF_MEMORY:
+				RVAL =  "GL_OUT_OF_MEMORY";
+				break;
+			default:
+				break;
+		}
+		
+		if( err != GL_NO_ERROR ) {
+			printf("GL_ERROR: %s\n", RVAL );
+			MK_ASSERT(0);
+		}
+	}	
 	
 	bool OpenGLContext::Initialize() {
 	
-		/* setup GL projection */
-		glViewport(0,0, _width, _height);
-		
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrthof(0, _width, _height, 0, -1, 1);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+//		/* setup GL projection */
+//		glViewport(0,0, _width, _height);
+//		
+//		glMatrixMode(GL_PROJECTION);
+//		glLoadIdentity();
+//		glOrthof(0, _width, _height, 0, -1, 1);
+//		glMatrixMode(GL_MODELVIEW);
+//		glLoadIdentity();
 		
 		return true;
 	}
@@ -38,8 +78,16 @@ namespace MonkVG {
 		return true;
 	}
 	
+	
 	void OpenGLContext::beginRender() {
-		/* setup GL projection */
+		
+		CHECK_GL_ERROR;
+		
+		// get viewport to restore back when we are done
+		glGetIntegerv( GL_VIEWPORT, _viewport );
+		glGetFloatv( GL_PROJECTION_MATRIX, _projection );
+		glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+		// setup GL projection 
 		glViewport(0,0, _width, _height);
 		
 		glMatrixMode(GL_PROJECTION);
@@ -53,12 +101,24 @@ namespace MonkVG {
 		
 		// turn on blending
 		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);		
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+		
+		CHECK_GL_ERROR;
+		
 	}
 	void OpenGLContext::endRender() {
 		
+		CHECK_GL_ERROR;
+		
 		// todo: restore state to be nice to other apps
-		//glEnable( GL_CULL_FACE );
+		// restore the old viewport
+		glMatrixMode( GL_PROJECTION );
+		glLoadMatrixf( _projection );
+		glViewport( _viewport[0], _viewport[1], _viewport[2], _viewport[3] );
+		glMatrixMode( GL_MODELVIEW );			
+		glLoadMatrixf( _modelview );
+		
+		CHECK_GL_ERROR;
 	}
 
 	

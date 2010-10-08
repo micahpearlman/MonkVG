@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		AA747D9F0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */; };
 		AACBBE4A0F95108600F1A2B1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
+		FA0F6A14125ECDC600FE3D55 /* priorityq-heap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB4121A088200814394 /* priorityq-heap.h */; };
+		FA0F6A1E125ECE1300FE3D55 /* priorityq.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB6121A088200814394 /* priorityq.c */; };
+		FA0F6A1F125ECE1400FE3D55 /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB7121A088200814394 /* priorityq.h */; };
 		FA9ACCD4121A088200814394 /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACC94121A088200814394 /* mkBaseObject.cpp */; };
 		FA9ACCD5121A088200814394 /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC95121A088200814394 /* mkBaseObject.h */; };
 		FA9ACCD6121A088200814394 /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC96121A088200814394 /* mkCommon.h */; };
@@ -62,9 +65,7 @@
 		FAE282B6121A08BB00823BCB /* memalloc.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCAE121A088200814394 /* memalloc.h */; };
 		FAE282B7121A08BB00823BCB /* mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB0121A088200814394 /* mesh.h */; };
 		FAE282B8121A08BB00823BCB /* normal.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB2121A088200814394 /* normal.h */; };
-		FAE282B9121A08BB00823BCB /* priorityq-heap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB4121A088200814394 /* priorityq-heap.h */; };
 		FAE282BA121A08BB00823BCB /* priorityq-sort.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB5121A088200814394 /* priorityq-sort.h */; };
-		FAE282BB121A08BB00823BCB /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB7121A088200814394 /* priorityq.h */; };
 		FAE282BC121A08BB00823BCB /* render.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBA121A088200814394 /* render.h */; };
 		FAE282BD121A08BB00823BCB /* sweep.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBC121A088200814394 /* sweep.h */; };
 		FAE282BE121A08BB00823BCB /* tess.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCBE121A088200814394 /* tess.h */; };
@@ -88,8 +89,6 @@
 		FAE282D1121A08BB00823BCB /* memalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCAD121A088200814394 /* memalloc.c */; };
 		FAE282D2121A08BB00823BCB /* mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCAF121A088200814394 /* mesh.c */; };
 		FAE282D3121A08BB00823BCB /* normal.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB1121A088200814394 /* normal.c */; };
-		FAE282D4121A08BB00823BCB /* priorityq-heap.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB3121A088200814394 /* priorityq-heap.c */; };
-		FAE282D5121A08BB00823BCB /* priorityq.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB6121A088200814394 /* priorityq.c */; };
 		FAE282D6121A08BB00823BCB /* render.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB9121A088200814394 /* render.c */; };
 		FAE282D7121A08BB00823BCB /* sweep.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCBB121A088200814394 /* sweep.c */; };
 		FAE282D8121A08BB00823BCB /* tess.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCBD121A088200814394 /* tess.c */; };
@@ -399,9 +398,7 @@
 				FAE282B6121A08BB00823BCB /* memalloc.h in Headers */,
 				FAE282B7121A08BB00823BCB /* mesh.h in Headers */,
 				FAE282B8121A08BB00823BCB /* normal.h in Headers */,
-				FAE282B9121A08BB00823BCB /* priorityq-heap.h in Headers */,
 				FAE282BA121A08BB00823BCB /* priorityq-sort.h in Headers */,
-				FAE282BB121A08BB00823BCB /* priorityq.h in Headers */,
 				FAE282BC121A08BB00823BCB /* render.h in Headers */,
 				FAE282BD121A08BB00823BCB /* sweep.h in Headers */,
 				FAE282BE121A08BB00823BCB /* tess.h in Headers */,
@@ -413,6 +410,8 @@
 				FAE282C4121A08BB00823BCB /* qzContext.h in Headers */,
 				FAE282C5121A08BB00823BCB /* qzPaint.h in Headers */,
 				FAE282C6121A08BB00823BCB /* qzPath.h in Headers */,
+				FA0F6A14125ECDC600FE3D55 /* priorityq-heap.h in Headers */,
+				FA0F6A1F125ECE1400FE3D55 /* priorityq.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,8 +512,6 @@
 				FAE282D1121A08BB00823BCB /* memalloc.c in Sources */,
 				FAE282D2121A08BB00823BCB /* mesh.c in Sources */,
 				FAE282D3121A08BB00823BCB /* normal.c in Sources */,
-				FAE282D4121A08BB00823BCB /* priorityq-heap.c in Sources */,
-				FAE282D5121A08BB00823BCB /* priorityq.c in Sources */,
 				FAE282D6121A08BB00823BCB /* render.c in Sources */,
 				FAE282D7121A08BB00823BCB /* sweep.c in Sources */,
 				FAE282D8121A08BB00823BCB /* tess.c in Sources */,
@@ -526,6 +523,7 @@
 				FAE282DE121A08BB00823BCB /* glContext.cpp in Sources */,
 				FAE282DF121A08BB00823BCB /* glPaint.cpp in Sources */,
 				FAE282E0121A08BB00823BCB /* glPath.cpp in Sources */,
+				FA0F6A1E125ECE1300FE3D55 /* priorityq.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,7 +573,7 @@
 				HEADER_SEARCH_PATHS = ../../include;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 			};
 			name = Debug;
 		};
@@ -589,7 +587,7 @@
 				HEADER_SEARCH_PATHS = ../../include;
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.0;
+				SDKROOT = iphoneos4.1;
 			};
 			name = Release;
 		};
