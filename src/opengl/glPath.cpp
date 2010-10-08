@@ -18,21 +18,23 @@ namespace MonkVG {
 	
 	bool OpenGLPath::draw( VGbitfield paintModes ) {
 		
+		CHECK_GL_ERROR;
+		
 		// get the native OpenGL context
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
 		
 		if( paintModes & VG_FILL_PATH && _isDirty == true ) {	// build the fill polygons
 			buildFill();
 		}
-		
+
 		if( paintModes & VG_STROKE_PATH && _isDirty == true ) {
 			buildStroke();
 		}
 		
 		_isDirty = false;
-		
+
+
 		glContext.beginRender();
-		
 		
 		
 		Matrix33 active = *IContext::instance().getActiveMatrix();
@@ -56,28 +58,45 @@ namespace MonkVG {
 		//todo: translation
 		glPushMatrix();
 		glLoadMatrixf( &mat44[0][0] );
+		
 		if( paintModes & VG_FILL_PATH ) {
 			
 			// draw
+			glDisable(GL_TEXTURE_2D);
+			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+			glDisableClientState( GL_COLOR_ARRAY );
+			
+			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);			
+
 			IContext::instance().fill();
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
+			glBindBuffer( GL_ARRAY_BUFFER, 0 );
 			
 		}
 		
 		if ( paintModes & VG_STROKE_PATH ) {
+			// draw
+			glDisable(GL_TEXTURE_2D);
+			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+			glDisableClientState( GL_COLOR_ARRAY );
+			
 			IContext::instance().stroke();
 			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
 			
+			glBindBuffer( GL_ARRAY_BUFFER, 0 );			
+			
 		}
 		
 		glContext.endRender();
 		glPopMatrix();
+		
+		CHECK_GL_ERROR;
 		
 		return true;
 	}
@@ -164,6 +183,8 @@ namespace MonkVG {
 	
 	
 	void OpenGLPath::buildFill() {
+		
+		CHECK_GL_ERROR;
 		
 		_fillTesseleator = gluNewTess();
 		gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (*) ( )) &OpenGLPath::tessBegin );
@@ -324,7 +345,7 @@ namespace MonkVG {
 							c[0] = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
 							c[1] = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
 							c[2] = coords[2];
-							//printf( "(%f, %f), ", c[0], c[1] );
+							//printf( "(%f, %f)\n", c[0], c[1] );
 							gluTessVertex( _fillTesseleator, c, c );
 						}
 					}
@@ -357,13 +378,15 @@ namespace MonkVG {
 		
 		_fillTesseleator = 0;
 		
+		CHECK_GL_ERROR;
+		
 	}
 	
 	struct v2_t {
 		GLfloat x, y;
 		
 		void print() const {
-			//printf("(%f, %f)\n", x, y);
+			printf("(%f, %f)\n", x, y);
 		}
 	};
 	static inline void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {

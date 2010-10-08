@@ -14,6 +14,9 @@
 
 namespace MonkVG {
 	
+	// todo: setup debug and release versions
+#define CHECK_GL_ERROR OpenGLContext::checkGLError()
+	
 	class OpenGLContext : public IContext {
 	public:
 	
@@ -44,8 +47,15 @@ namespace MonkVG {
 		void beginRender();
 		void endRender();
 		
+		
+		static void checkGLError();
+		
+		
 	private:
-	
+		
+		int		_viewport[4];
+		float	_projection[16];
+		float	_modelview[16];
 	};
 }
 
