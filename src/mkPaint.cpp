@@ -82,8 +82,8 @@ VG_API_CALL void vgDestroyPaint(VGPaint paint)
 	// todo
 }
 
-VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes)
-{
+VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
+
 	// Set stroke / fill 
 	if (paintModes & VG_STROKE_PATH)
 		IContext::instance().setStrokePaint( (IPaint*)paint );

@@ -151,31 +151,33 @@ namespace MonkVG {	// Internal Implementation
 
 using namespace MonkVG;
 
-VG_API_CALL VGPath vgCreatePath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities )
-{
+VG_API_CALL VGPath vgCreatePath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
 	IPath* path = IContext::instance().createPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL );
 	
 	return (VGPath)path;
 }
 
 VG_API_CALL void VG_API_ENTRY vgDestroyPath(VGPath path) VG_API_EXIT {
-	if( path )
-	{
+	if( path ) {
 		IContext::instance().destroyPath( (IPath*)path );
 		path = 0;
 	}
 }
 
 
-VG_API_CALL void vgAppendPathData( VGPath dstPath, VGint numSegments, const VGubyte * pathSegments, const void * pathData )
-{
+VG_API_CALL void vgAppendPathData( VGPath dstPath, VGint numSegments, const VGubyte * pathSegments, const void * pathData ) {
 	IPath* path = (IPath*)dstPath;
 	path->appendData( numSegments, pathSegments, pathData );
 }
 
-VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes)
-{
+VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
+	if ( path == 0 ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		return;
+	}
+	
 	IPath* p = (IPath*)path;
+	
 	p->draw( paintModes );
 }
 
