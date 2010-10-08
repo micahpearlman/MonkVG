@@ -55,30 +55,31 @@ SVGHandler* _handler;
 		vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
 		
 		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
-		vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
+		//vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
+		vguEllipse( _path, 100.0f, 100.0f, 90.0f, 50.0f );
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
-		loadTiger();
-		
-
-		MonkSVG::SVG svg_parser;
-		_handler = new SVGHandler;
-		
-		svg_parser.initialize( _handler );
-		
-		NSString *base_path = [[NSBundle mainBundle] resourcePath];
-		std::string path = std::string( [base_path UTF8String] ) + string("/circle_poly.svg");
-		
-		fstream file( path.c_str() );
-		if ( file.is_open() ) {
-			std::string line;
-			std::string buf;
-			while( std::getline( file, line) )
-				buf += line;
-			std::cout << "read: " << buf << "\n";
-			svg_parser.read( buf );
-		}
+//		loadTiger();
+//		
+//
+//		MonkSVG::SVG svg_parser;
+//		_handler = new SVGHandler;
+//		
+//		svg_parser.initialize( _handler );
+//		
+//		NSString *base_path = [[NSBundle mainBundle] resourcePath];
+//		std::string path = std::string( [base_path UTF8String] ) + string("/circle_poly.svg");
+//		
+//		fstream file( path.c_str() );
+//		if ( file.is_open() ) {
+//			std::string line;
+//			std::string buf;
+//			while( std::getline( file, line) )
+//				buf += line;
+//			std::cout << "read: " << buf << "\n";
+//			svg_parser.read( buf );
+//		}
 		
 		
     }
@@ -100,20 +101,20 @@ SVGHandler* _handler;
 	glClear(GL_COLOR_BUFFER_BIT);
 
 //	_handler->draw();
-	display(0.05f);
+//	display(0.05f);
 	
-//	VGfloat clearColor[] = {1,1,1,1};
-//	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
-//	vgClear(0,0,320,480);
-//	
-//	
-//	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
-//	vgLoadIdentity();
+	VGfloat clearColor[] = {1,1,1,1};
+	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
+	vgClear(0,0,320,480);
+	
+	
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+	vgLoadIdentity();
 //	vgTranslate(320/2,(480/2)/2);
 //	vgRotate(ang);
 //	ang += 0.5f;
-//	
-//	vgDrawPath( _path, VG_FILL_PATH );
+	
+	vgDrawPath( _path, VG_FILL_PATH );
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.

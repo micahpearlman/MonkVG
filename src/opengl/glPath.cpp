@@ -14,11 +14,13 @@
 
 namespace MonkVG {
 	
-	bool OpenGLPath::draw( VGbitfield paintModes ) {
 	
+	
+	bool OpenGLPath::draw( VGbitfield paintModes ) {
+		
 		// get the native OpenGL context
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
-
+		
 		if( paintModes & VG_FILL_PATH && _isDirty == true ) {	// build the fill polygons
 			buildFill();
 		}
@@ -62,7 +64,7 @@ namespace MonkVG {
 			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
-
+			
 		}
 		
 		if ( paintModes & VG_STROKE_PATH ) {
@@ -89,6 +91,77 @@ namespace MonkVG {
 		+	x3 * (t * t * t);
 		return x;	
 	}
+	
+#ifndef M_PI 
+#define M_PI 3.14159265358979323846 
+#endif
+	// Given: Points (x0, y0) and (x1, y1) 
+	// Return: TRUE if a solution exists, FALSE otherwise 
+	//	Circle centers are written to (cx0, cy0) and (cx1, cy1) 
+	static VGboolean findUnitCircles(VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1,
+									 VGfloat *cx0, VGfloat *cy0, VGfloat *cx1, VGfloat *cy1) {								 
+		
+		// Compute differences and averages
+		VGfloat dx = x0 - x1;
+		VGfloat dy = y0 - y1;
+		VGfloat xm = (x0 + x1)/2;
+		VGfloat ym = (y0 + y1)/2; 
+		VGfloat dsq, disc, s, sdx, sdy;
+		// Solve for intersecting unit circles 
+		dsq = dx*dx + dy*dy; 
+		if (dsq == 0.0) 
+			return VG_FALSE; // Points are coincident 
+		disc = 1.0f/dsq - 1.0f/4.0f;
+		if (disc < 0.0) 
+			return VG_FALSE; // Points are too far apart 
+		
+		s = sqrt(disc); 
+		sdx = s*dx; 
+		sdy = s*dy;
+		*cx0 = xm + sdy; 
+		*cy0 = ym - sdx;
+		*cx1 = xm - sdy;
+		*cy1 = ym + sdx; 
+		
+		return VG_TRUE;
+	}
+	
+	//Given: 
+	//Return: 
+	//Ellipse parameters rh, rv, rot (in degrees), endpoints (x0, y0) and (x1, y1) TRUE if a solution exists, FALSE otherwise Ellipse centers are written to (cx0, cy0) and (cx1, cy1)
+	
+	static VGboolean findEllipses(VGfloat rh, VGfloat rv, VGfloat rot,
+								  VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1, 
+								  VGfloat *cx0, VGfloat *cy0, VGfloat *cx1, VGfloat *cy1) {
+		VGfloat COS, SIN, x0p, y0p, x1p, y1p, pcx0, pcy0, pcx1, pcy1;
+		// Convert rotation angle from degrees to radians 
+		rot *= M_PI/180.0;
+		// Pre-compute rotation matrix entries 
+		COS = cos(rot); 
+		SIN = sin(rot);
+		// Transform (x0, y0) and (x1, y1) into unit space 
+		// using (inverse) rotate, followed by (inverse) scale	
+		x0p = (x0*COS + y0*SIN)/rh; 
+		y0p = (-x0*SIN + y0*COS)/rv; 
+		x1p = (x1*COS + y1*SIN)/rh; 
+		y1p = (-x1*SIN + y1*COS)/rv;
+		if (!findUnitCircles(x0p, y0p, x1p, y1p, &pcx0, &pcy0, &pcx1, &pcy1)) {
+			return VG_FALSE;
+		}
+		// Transform back to original coordinate space 
+		// using (forward) scale followed by (forward) rotate 
+		pcx0 *= rh; 
+		pcy0 *= rv; 
+		pcx1 *= rh; 
+		pcy1 *= rv;
+		*cx0 = pcx0*COS - pcy0*SIN; 
+		*cy0 = pcx0*SIN + pcy0*COS; 
+		*cx1 = pcx1*COS - pcy1*SIN; 
+		*cy1 = pcx1*SIN + pcy1*COS;
+		
+		return VG_TRUE;	
+	}
+	
 	
 	void OpenGLPath::buildFill() {
 		
@@ -195,7 +268,7 @@ namespace MonkVG {
 					
 					gluTessVertex( _fillTesseleator, c, c );
 				} break;
-				case (VG_CUBIC_TO >> 1):	// todo
+				case (VG_CUBIC_TO >> 1):
 				{
 					VGfloat cp1x = *coordsIter; coordsIter++;
 					VGfloat cp1y = *coordsIter; coordsIter++;
@@ -219,7 +292,49 @@ namespace MonkVG {
 					coords[1] = p3y;
 					
 				}
-					break;	
+					break;
+				case (VG_SCCWARC_TO >> 1):
+				{
+					VGfloat rh = *coordsIter; coordsIter++;
+					VGfloat rv = *coordsIter; coordsIter++;
+					VGfloat rot = *coordsIter; coordsIter++;
+					VGfloat cp1x = *coordsIter; coordsIter++;
+					VGfloat cp1y = *coordsIter; coordsIter++;
+					
+					// convert to Center Parameterization (see OpenVG Spec Apendix A)
+					VGfloat cx0[2];
+					VGfloat cx1[2];
+					VGboolean success = findEllipses( rh, rv, rot,
+													 coords[0], coords[1], cp1x, cp1y,
+													 &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
+					
+					if ( success ) {
+						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
+						const int steps = 36;
+						VGfloat beta = 0;	// angle. todo
+						VGfloat sinbeta = sinf( beta );
+						VGfloat cosbeta = cosf( beta );
+
+						for ( VGfloat g = 0; g < 360; g+=360/steps ) {
+							GLdouble* c = new GLdouble[3];
+							
+							VGfloat alpha = g * (M_PI / 180.0f);
+							VGfloat sinalpha = sinf( alpha );
+							VGfloat cosalpha = cosf( alpha );
+							c[0] = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
+							c[1] = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
+							c[2] = coords[2];
+							printf( "(%f, %f), ", c[0], c[1] );
+							gluTessVertex( _fillTesseleator, c, c );
+						}
+					}
+					
+					coords[0] = cp1x;
+					coords[1] = cp1y;
+					
+				}
+					break;
+					
 				default:
 					printf("unkwown command\n");
 					break;
@@ -230,7 +345,7 @@ namespace MonkVG {
 			gluTessEndContour( _fillTesseleator );
 			num_contours--;
 		}
-
+		
 		assert(num_contours == 0);
 		
 		gluTessEndPolygon( _fillTesseleator );
@@ -243,7 +358,7 @@ namespace MonkVG {
 		_fillTesseleator = 0;
 		
 	}
-
+	
 	struct v2_t {
 		GLfloat x, y;
 		
@@ -256,13 +371,13 @@ namespace MonkVG {
 		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
 			return;
 		}
-			
+		
 		float dx = p1.y - p0.y;
 		float dy = p0.x - p1.x;
 		const float inv_mag = 1.0f / sqrtf(dx*dx + dy*dy);
 		dx = dx * inv_mag;
 		dy = dy * inv_mag;
-
+		
 		v2_t v0, v1, v2, v3;
 		
 		v0.x = p0.x + radius * dx;
@@ -282,14 +397,14 @@ namespace MonkVG {
 		v3.y = p1.y - radius * dy;
 		vertices.push_back( v3 );
 		
-//		printf("start stroke\n");
-//		printf("p0: ");p0.print();
-//		printf("p1: ");p1.print();
-//		printf("\t"); v0.print();
-//		printf("\t"); v1.print();
-//		printf("\t"); v2.print();
-//		printf("\t"); v3.print();
-//		printf("end stroke\n");
+		//		printf("start stroke\n");
+		//		printf("p0: ");p0.print();
+		//		printf("p1: ");p1.print();
+		//		printf("\t"); v0.print();
+		//		printf("\t"); v1.print();
+		//		printf("\t"); v2.print();
+		//		printf("\t"); v3.print();
+		//		printf("end stroke\n");
 		
 	}
 	
@@ -346,7 +461,7 @@ namespace MonkVG {
 					coords.y = *coordsIter; coordsIter++;
 					
 					buildFatLineSegment( vertices, prev, coords, stroke_width );
-
+					
 					
 				} break;
 				case (VG_HLINE_TO >> 1):
@@ -406,12 +521,12 @@ namespace MonkVG {
 		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float) * 2, &_vertices[0], GL_STATIC_DRAW );
 		_numberFillVertices = _vertices.size()/2;
 		for (list<GLdouble*>::iterator iter = _verticesToDestroy.begin(); iter != _verticesToDestroy.end(); iter++ ) {
-//todo!!!			delete [] *(iter);
+			//todo!!!			delete [] *(iter);
 		}
 		_verticesToDestroy.clear();
 		_vertices.clear();
 	}
-
+	
 	static GLfloat startVertex_[2];
 	static GLfloat lastVertex_[2];
 	static int vertexCount_ = 0;
@@ -443,10 +558,10 @@ namespace MonkVG {
 	
 	
 	void OpenGLPath::tessEnd( GLvoid* user ) {
-//		OpenGLPath* me = (OpenGLPath*)user;
-//		me->endOfTesselation();
+		//		OpenGLPath* me = (OpenGLPath*)user;
+		//		me->endOfTesselation();
 		
-//		printf("end\n");
+		//		printf("end\n");
 	}
 	
 	
@@ -492,7 +607,7 @@ namespace MonkVG {
 					lastVertex_[1] = v[1];
 					me->addVertex( v );
 					break;
-	
+					
 				default:
 					me->addVertex( startVertex_ );
 					me->addVertex( lastVertex_ );
@@ -505,19 +620,19 @@ namespace MonkVG {
 			}
 		}
 		vertexCount_++;
-
-//		printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
+		
+		//		printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
 	}
 	void OpenGLPath::tessCombine( GLdouble coords[3], void *data[4],
-							GLfloat weight[4], void **outData,
-							void *polygonData ) {
+								 GLfloat weight[4], void **outData,
+								 void *polygonData ) {
 		GLdouble* vertex = new GLdouble[3];
 		vertex[0] = coords[0];
 		vertex[1] = coords[1];
 		vertex[2] = coords[2];		
 		*outData = vertex;
-//todo!!!		me->addVertexToDestroy( v );
-//		printf("combine\n");
+		//todo!!!		me->addVertexToDestroy( v );
+		//		printf("combine\n");
 		
 	}
 	
@@ -533,8 +648,5 @@ namespace MonkVG {
 		
 		glDeleteBuffers( 1, &_fillVBO );
 	}
-	
-	
-	
 	
 }

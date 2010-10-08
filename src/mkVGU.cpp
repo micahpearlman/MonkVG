@@ -194,6 +194,31 @@ VGUErrorCode vguRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat h
 	return VGU_NO_ERROR;
 }
 
+
+
+VGUErrorCode vguEllipse(VGPath path, VGfloat cx, VGfloat cy, VGfloat width, VGfloat height)
+{
+	VGErrorCode error = vgGetError();	//clear the error state
+	if(width <= 0 || height <= 0)
+		return VGU_ILLEGAL_ARGUMENT_ERROR;
+	
+	static const VGubyte segments[4] = {VG_MOVE_TO | VG_ABSOLUTE,
+		VG_SCCWARC_TO | VG_ABSOLUTE,
+		VG_SCCWARC_TO | VG_ABSOLUTE,
+		VG_CLOSE_PATH};
+	const VGfloat data[12] = {cx + width/2, cy,
+		width/2, height/2, 0, cx - width/2, cy,
+		width/2, height/2, 0, cx + width/2, cy};
+	append(path, 4, segments, 12, data);
+	
+	error = vgGetError();
+	if(error == VG_BAD_HANDLE_ERROR)
+		return VGU_BAD_HANDLE_ERROR;
+	else if(error == VG_PATH_CAPABILITY_ERROR)
+		return VGU_PATH_CAPABILITY_ERROR;
+	return VGU_NO_ERROR;
+}
+
 #if 0 // todo
 /*-------------------------------------------------------------------*//*!
  * \brief	
@@ -240,35 +265,6 @@ VGUErrorCode vguRoundRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfl
 	return VGU_NO_ERROR;
 }
 
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
-
-VGUErrorCode vguEllipse(VGPath path, VGfloat cx, VGfloat cy, VGfloat width, VGfloat height)
-{
-	VGErrorCode error = vgGetError();	//clear the error state
-	if(width <= 0 || height <= 0)
-		return VGU_ILLEGAL_ARGUMENT_ERROR;
-	
-	static const VGubyte segments[4] = {VG_MOVE_TO | VG_ABSOLUTE,
-		VG_SCCWARC_TO | VG_ABSOLUTE,
-		VG_SCCWARC_TO | VG_ABSOLUTE,
-	VG_CLOSE_PATH};
-	const VGfloat data[12] = {cx + width/2, cy,
-		width/2, height/2, 0, cx - width/2, cy,
-	width/2, height/2, 0, cx + width/2, cy};
-	append(path, 4, segments, 12, data);
-	
-	error = vgGetError();
-	if(error == VG_BAD_HANDLE_ERROR)
-		return VGU_BAD_HANDLE_ERROR;
-	else if(error == VG_PATH_CAPABILITY_ERROR)
-		return VGU_PATH_CAPABILITY_ERROR;
-	return VGU_NO_ERROR;
-}
 
 /*-------------------------------------------------------------------*//*!
  * \brief	

@@ -381,6 +381,7 @@
 				INFOPLIST_FILE = "MonkVG_Test_iOS_OpenGL-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "MonkVG-Test-iOS-OpenGL";
+				SDKROOT = iphoneos4.1;
 			};
 			name = Debug;
 		};
@@ -397,6 +398,7 @@
 				INFOPLIST_FILE = "MonkVG_Test_iOS_OpenGL-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "MonkVG-Test-iOS-OpenGL";
+				SDKROOT = iphoneos4.1;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
