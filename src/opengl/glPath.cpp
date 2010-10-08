@@ -324,7 +324,7 @@ namespace MonkVG {
 							c[0] = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
 							c[1] = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
 							c[2] = coords[2];
-							printf( "(%f, %f), ", c[0], c[1] );
+							//printf( "(%f, %f), ", c[0], c[1] );
 							gluTessVertex( _fillTesseleator, c, c );
 						}
 					}
