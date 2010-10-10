@@ -56,7 +56,8 @@ VG_API_CALL void VG_API_ENTRY vgGetParameterfv(VGHandle object,
 											   VGint paramType,
 											   VGint count, VGfloat * values) VG_API_EXIT 
 {
-	
+	BaseObject* obj = (BaseObject*)object;
+	obj->getParameterfv( paramType, values );
 }
 
 VG_API_CALL void VG_API_ENTRY vgGetParameteriv(VGHandle object,

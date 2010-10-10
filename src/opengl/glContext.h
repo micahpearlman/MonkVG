@@ -53,9 +53,11 @@ namespace MonkVG {
 		
 	private:
 		
+		// restore values to play nice with other apps
 		int		_viewport[4];
 		float	_projection[16];
 		float	_modelview[16];
+		float	_color[4];
 	};
 }
 

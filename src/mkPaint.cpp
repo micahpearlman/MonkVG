@@ -30,7 +30,17 @@ namespace MonkVG {	// Internal Implementation
 	}
 	
 	void IPaint::getParameterfv( const VGint p, VGfloat *fv ) const {
-		IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+		switch (p) {
+			case VG_PAINT_COLOR:
+				for( int i = 0; i < 4; i++ )
+					fv[i] = _paintColor[i];
+				break;
+	
+			default:
+				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				break;
+		}
+		
 	}
 
 	void IPaint::setParameter( const VGint p, const VGint v ) {

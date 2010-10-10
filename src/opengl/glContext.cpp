@@ -87,6 +87,10 @@ namespace MonkVG {
 		glGetIntegerv( GL_VIEWPORT, _viewport );
 		glGetFloatv( GL_PROJECTION_MATRIX, _projection );
 		glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+		
+		// get the color to back up when we are done
+		glGetFloatv( GL_CURRENT_COLOR, _color );
+		
 		// setup GL projection 
 		glViewport(0,0, _width, _height);
 		
@@ -117,6 +121,9 @@ namespace MonkVG {
 		glViewport( _viewport[0], _viewport[1], _viewport[2], _viewport[3] );
 		glMatrixMode( GL_MODELVIEW );			
 		glLoadMatrixf( _modelview );
+		
+		// restore color
+		glColor4f( _color[0], _color[1], _color[2], _color[3] );
 		
 		CHECK_GL_ERROR;
 	}
