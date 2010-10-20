@@ -7,9 +7,7 @@
  *
  */
 #include "mkContext.h"
-//#include "glu.h"
-//#include <OpenGLES/ES1/gl.h>
-//#include <OpenGLES/ES1/glext.h>
+#include "glPath.h"
 
 using namespace MonkVG;
 
@@ -64,13 +62,13 @@ VG_API_CALL void VG_API_ENTRY vgSetiv(VGParamType type, VGint count,
 }
 
 VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGParamType type) VG_API_EXIT {
-
+	return -1.0f;
 }
 VG_API_CALL VGint VG_API_ENTRY vgGeti(VGParamType type) VG_API_EXIT {
-	
+	return -1;
 }
 VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGParamType type) VG_API_EXIT {
-	
+	return -1;
 }
 VG_API_CALL void VG_API_ENTRY vgGetfv(VGParamType type, VGint count, VGfloat * values) VG_API_EXIT {
 	

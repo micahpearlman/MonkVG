@@ -56,8 +56,15 @@ extern "C" {
 #define VG_MAX_ENUM 0x7FFFFFFF
 #endif
 
-typedef VGuint VGHandle;
 
+#if __LP64__
+	// if 64 bit architecture
+	typedef	unsigned long long VGHandle;
+#else
+	// assume 32 bit
+	typedef VGuint VGHandle;
+#endif
+	
 typedef VGHandle VGPath;
 typedef VGHandle VGImage;
 typedef VGHandle VGMaskLayer;

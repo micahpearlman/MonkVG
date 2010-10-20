@@ -1,0 +1,318 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA0B190F126F8C5A00550DCC /* mkBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B18CF126F8C5A00550DCC /* mkBaseObject.cpp */; };
+		FA0B1910126F8C5A00550DCC /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B18D0126F8C5A00550DCC /* mkBaseObject.h */; };
+		FA0B1911126F8C5A00550DCC /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B18D1126F8C5A00550DCC /* mkCommon.h */; };
+		FA0B1912126F8C5A00550DCC /* mkContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B18D2126F8C5A00550DCC /* mkContext.cpp */; };
+		FA0B1913126F8C5A00550DCC /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B18D3126F8C5A00550DCC /* mkContext.h */; };
+		FA0B1914126F8C5A00550DCC /* mkMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B18D4126F8C5A00550DCC /* mkMath.cpp */; };
+		FA0B1915126F8C5A00550DCC /* mkMath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B18D5126F8C5A00550DCC /* mkMath.h */; };
+		FA0B1916126F8C5A00550DCC /* mkPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B18D6126F8C5A00550DCC /* mkPaint.cpp */; };
+		FA0B1917126F8C5A00550DCC /* mkPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B18D7126F8C5A00550DCC /* mkPaint.h */; };
+		FA0B1918126F8C5A00550DCC /* mkParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B18D8126F8C5A00550DCC /* mkParameter.cpp */; };
+		FA0B1919126F8C5A00550DCC /* mkPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B18D9126F8C5A00550DCC /* mkPath.cpp */; };
+		FA0B191A126F8C5A00550DCC /* mkPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B18DA126F8C5A00550DCC /* mkPath.h */; };
+		FA0B191B126F8C5A00550DCC /* mkVGU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B18DB126F8C5A00550DCC /* mkVGU.cpp */; };
+		FA0B193B126F8C5A00550DCC /* glContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B1902126F8C5A00550DCC /* glContext.cpp */; };
+		FA0B193C126F8C5A00550DCC /* glContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1903126F8C5A00550DCC /* glContext.h */; };
+		FA0B193D126F8C5A00550DCC /* glPaint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B1904126F8C5A00550DCC /* glPaint.cpp */; };
+		FA0B193E126F8C5A00550DCC /* glPaint.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1905126F8C5A00550DCC /* glPaint.h */; };
+		FA0B193F126F8C5A00550DCC /* glPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA0B1906126F8C5A00550DCC /* glPath.cpp */; };
+		FA0B1940126F8C5A00550DCC /* glPath.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1907126F8C5A00550DCC /* glPath.h */; };
+		FA0B1955126F8CE000550DCC /* openvg.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1951126F8CE000550DCC /* openvg.h */; };
+		FA0B1956126F8CE000550DCC /* vgext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1952126F8CE000550DCC /* vgext.h */; };
+		FA0B1957126F8CE000550DCC /* vgplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1953126F8CE000550DCC /* vgplatform.h */; };
+		FA0B1958126F8CE000550DCC /* vgu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1954126F8CE000550DCC /* vgu.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D2AAC046055464E500DB518D /* libMonkVG-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libMonkVG-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA0B18CF126F8C5A00550DCC /* mkBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBaseObject.cpp; path = ../../src/mkBaseObject.cpp; sourceTree = SOURCE_ROOT; };
+		FA0B18D0126F8C5A00550DCC /* mkBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBaseObject.h; path = ../../src/mkBaseObject.h; sourceTree = SOURCE_ROOT; };
+		FA0B18D1126F8C5A00550DCC /* mkCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkCommon.h; path = ../../src/mkCommon.h; sourceTree = SOURCE_ROOT; };
+		FA0B18D2126F8C5A00550DCC /* mkContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkContext.cpp; path = ../../src/mkContext.cpp; sourceTree = SOURCE_ROOT; };
+		FA0B18D3126F8C5A00550DCC /* mkContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkContext.h; path = ../../src/mkContext.h; sourceTree = SOURCE_ROOT; };
+		FA0B18D4126F8C5A00550DCC /* mkMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkMath.cpp; path = ../../src/mkMath.cpp; sourceTree = SOURCE_ROOT; };
+		FA0B18D5126F8C5A00550DCC /* mkMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkMath.h; path = ../../src/mkMath.h; sourceTree = SOURCE_ROOT; };
+		FA0B18D6126F8C5A00550DCC /* mkPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPaint.cpp; path = ../../src/mkPaint.cpp; sourceTree = SOURCE_ROOT; };
+		FA0B18D7126F8C5A00550DCC /* mkPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPaint.h; path = ../../src/mkPaint.h; sourceTree = SOURCE_ROOT; };
+		FA0B18D8126F8C5A00550DCC /* mkParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkParameter.cpp; path = ../../src/mkParameter.cpp; sourceTree = SOURCE_ROOT; };
+		FA0B18D9126F8C5A00550DCC /* mkPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkPath.cpp; path = ../../src/mkPath.cpp; sourceTree = SOURCE_ROOT; };
+		FA0B18DA126F8C5A00550DCC /* mkPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkPath.h; path = ../../src/mkPath.h; sourceTree = SOURCE_ROOT; };
+		FA0B18DB126F8C5A00550DCC /* mkVGU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkVGU.cpp; path = ../../src/mkVGU.cpp; sourceTree = SOURCE_ROOT; };
+		FA0B1902126F8C5A00550DCC /* glContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glContext.cpp; sourceTree = "<group>"; };
+		FA0B1903126F8C5A00550DCC /* glContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glContext.h; sourceTree = "<group>"; };
+		FA0B1904126F8C5A00550DCC /* glPaint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glPaint.cpp; sourceTree = "<group>"; };
+		FA0B1905126F8C5A00550DCC /* glPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPaint.h; sourceTree = "<group>"; };
+		FA0B1906126F8C5A00550DCC /* glPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glPath.cpp; sourceTree = "<group>"; };
+		FA0B1907126F8C5A00550DCC /* glPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPath.h; sourceTree = "<group>"; };
+		FA0B1951126F8CE000550DCC /* openvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openvg.h; sourceTree = "<group>"; };
+		FA0B1952126F8CE000550DCC /* vgext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgext.h; sourceTree = "<group>"; };
+		FA0B1953126F8CE000550DCC /* vgplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgplatform.h; sourceTree = "<group>"; };
+		FA0B1954126F8CE000550DCC /* vgu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgu.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289987405E68DCB004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* MonkVG-OSX */ = {
+			isa = PBXGroup;
+			children = (
+				FA0B194F126F8CDF00550DCC /* include */,
+				FA0B18CE126F8C5A00550DCC /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = "MonkVG-OSX";
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC046055464E500DB518D /* libMonkVG-OSX.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		FA0B18CE126F8C5A00550DCC /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FA0B18CF126F8C5A00550DCC /* mkBaseObject.cpp */,
+				FA0B18D0126F8C5A00550DCC /* mkBaseObject.h */,
+				FA0B18D1126F8C5A00550DCC /* mkCommon.h */,
+				FA0B18D2126F8C5A00550DCC /* mkContext.cpp */,
+				FA0B18D3126F8C5A00550DCC /* mkContext.h */,
+				FA0B18D4126F8C5A00550DCC /* mkMath.cpp */,
+				FA0B18D5126F8C5A00550DCC /* mkMath.h */,
+				FA0B18D6126F8C5A00550DCC /* mkPaint.cpp */,
+				FA0B18D7126F8C5A00550DCC /* mkPaint.h */,
+				FA0B18D8126F8C5A00550DCC /* mkParameter.cpp */,
+				FA0B18D9126F8C5A00550DCC /* mkPath.cpp */,
+				FA0B18DA126F8C5A00550DCC /* mkPath.h */,
+				FA0B18DB126F8C5A00550DCC /* mkVGU.cpp */,
+				FA0B18DC126F8C5A00550DCC /* opengl */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		FA0B18DC126F8C5A00550DCC /* opengl */ = {
+			isa = PBXGroup;
+			children = (
+				FA0B1902126F8C5A00550DCC /* glContext.cpp */,
+				FA0B1903126F8C5A00550DCC /* glContext.h */,
+				FA0B1904126F8C5A00550DCC /* glPaint.cpp */,
+				FA0B1905126F8C5A00550DCC /* glPaint.h */,
+				FA0B1906126F8C5A00550DCC /* glPath.cpp */,
+				FA0B1907126F8C5A00550DCC /* glPath.h */,
+			);
+			name = opengl;
+			path = ../../src/opengl;
+			sourceTree = SOURCE_ROOT;
+		};
+		FA0B194F126F8CDF00550DCC /* include */ = {
+			isa = PBXGroup;
+			children = (
+				FA0B1950126F8CE000550DCC /* VG */,
+			);
+			name = include;
+			path = ../../include;
+			sourceTree = SOURCE_ROOT;
+		};
+		FA0B1950126F8CE000550DCC /* VG */ = {
+			isa = PBXGroup;
+			children = (
+				FA0B1951126F8CE000550DCC /* openvg.h */,
+				FA0B1952126F8CE000550DCC /* vgext.h */,
+				FA0B1953126F8CE000550DCC /* vgplatform.h */,
+				FA0B1954126F8CE000550DCC /* vgu.h */,
+			);
+			path = VG;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC043055464E500DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA0B1910126F8C5A00550DCC /* mkBaseObject.h in Headers */,
+				FA0B1911126F8C5A00550DCC /* mkCommon.h in Headers */,
+				FA0B1913126F8C5A00550DCC /* mkContext.h in Headers */,
+				FA0B1915126F8C5A00550DCC /* mkMath.h in Headers */,
+				FA0B1917126F8C5A00550DCC /* mkPaint.h in Headers */,
+				FA0B191A126F8C5A00550DCC /* mkPath.h in Headers */,
+				FA0B193C126F8C5A00550DCC /* glContext.h in Headers */,
+				FA0B193E126F8C5A00550DCC /* glPaint.h in Headers */,
+				FA0B1940126F8C5A00550DCC /* glPath.h in Headers */,
+				FA0B1955126F8CE000550DCC /* openvg.h in Headers */,
+				FA0B1956126F8CE000550DCC /* vgext.h in Headers */,
+				FA0B1957126F8CE000550DCC /* vgplatform.h in Headers */,
+				FA0B1958126F8CE000550DCC /* vgu.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC045055464E500DB518D /* MonkVG-OSX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-OSX" */;
+			buildPhases = (
+				D2AAC043055464E500DB518D /* Headers */,
+				D2AAC044055464E500DB518D /* Sources */,
+				D289987405E68DCB004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MonkVG-OSX";
+			productName = "MonkVG-OSX";
+			productReference = D2AAC046055464E500DB518D /* libMonkVG-OSX.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkVG-OSX" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* MonkVG-OSX */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC045055464E500DB518D /* MonkVG-OSX */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC044055464E500DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA0B190F126F8C5A00550DCC /* mkBaseObject.cpp in Sources */,
+				FA0B1912126F8C5A00550DCC /* mkContext.cpp in Sources */,
+				FA0B1914126F8C5A00550DCC /* mkMath.cpp in Sources */,
+				FA0B1916126F8C5A00550DCC /* mkPaint.cpp in Sources */,
+				FA0B1918126F8C5A00550DCC /* mkParameter.cpp in Sources */,
+				FA0B1919126F8C5A00550DCC /* mkPath.cpp in Sources */,
+				FA0B191B126F8C5A00550DCC /* mkVGU.cpp in Sources */,
+				FA0B193B126F8C5A00550DCC /* glContext.cpp in Sources */,
+				FA0B193D126F8C5A00550DCC /* glPaint.cpp in Sources */,
+				FA0B193F126F8C5A00550DCC /* glPath.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91EC08733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../include;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "MonkVG-OSX";
+			};
+			name = Debug;
+		};
+		1DEB91ED08733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "MonkVG-OSX";
+			};
+			name = Release;
+		};
+		1DEB91F008733DB70010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB91F108733DB70010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91EB08733DB70010E9CD /* Build configuration list for PBXNativeTarget "MonkVG-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91EC08733DB70010E9CD /* Debug */,
+				1DEB91ED08733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkVG-OSX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91F008733DB70010E9CD /* Debug */,
+				1DEB91F108733DB70010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

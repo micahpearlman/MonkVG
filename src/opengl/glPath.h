@@ -11,7 +11,17 @@
 #define __glPath_h__
 
 #include "mkPath.h"
-#include "glu.h"
+#if defined(__APPLE__)
+	#include "TargetConditionals.h"
+	#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+		#include "glu.h"
+	#else
+		#include <OpenGL/glu.h>
+		#define glOrthof glOrtho
+	#endif
+#endif // #if defined(__APPLE__)
+
+
 #include <list>
 #include <vector>
 
@@ -40,7 +50,7 @@ namespace MonkVG {
 		void setPrimType( GLenum t ) {
 			_primType = t;
 		}
-		void addVertex( GLfloat* v ) {
+		void addVertex( GLdouble* v ) {
 			_vertices.push_back( v[0] );
 			_vertices.push_back( v[1] );
 		}

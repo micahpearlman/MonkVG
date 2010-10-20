@@ -550,8 +550,8 @@ namespace MonkVG {
 		_vertices.clear();
 	}
 	
-	static GLfloat startVertex_[2];
-	static GLfloat lastVertex_[2];
+	static GLdouble startVertex_[2];
+	static GLdouble lastVertex_[2];
 	static int vertexCount_ = 0;
 	
 	void OpenGLPath::tessBegin( GLenum type, GLvoid* user ) {

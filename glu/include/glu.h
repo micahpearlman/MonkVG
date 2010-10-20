@@ -31,7 +31,10 @@
 #ifndef __glu_h__
 #define __glu_h__
 
-#include <OpenGLES/ES1/gl.h>
+#if defined(__APPLE__)
+	#include "TargetConditionals.h"
+	#include <OpenGLES/ES1/gl.h>
+#endif // #if defined(__APPLE__)
 
 #ifndef GLAPIENTRY
 #define GLAPIENTRY
@@ -134,11 +137,10 @@ extern "C" {
 
 /*************************************************************/
 
-
 /* Not defined in OpenGL ES */
 typedef float GLdouble;
 typedef float GLclampd;
-
+	
 #ifdef __cplusplus
 class GLUtesselator;
 #else
