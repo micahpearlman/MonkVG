@@ -14,7 +14,22 @@
 
 namespace MonkVG {
 	
-	
+	void OpenGLPath::clear( VGbitfield caps ) {
+		IPath::clear( caps );
+		
+		_vertices.clear();
+		
+		// delete vbo buffers
+		if ( _strokeVBO != -1 ) {
+			glDeleteBuffers( 1, &_strokeVBO );
+			_strokeVBO = -1;
+		}
+		
+		if ( _fillVBO != -1 ) {
+			glDeleteBuffers( 1, &_fillVBO );
+			_fillVBO = -1;
+		}
+	}
 	
 	bool OpenGLPath::draw( VGbitfield paintModes ) {
 		
@@ -530,6 +545,11 @@ namespace MonkVG {
 		}	// foreach segment
 		
 		// build the vertex buffer object VBO
+		if ( _strokeVBO != -1 ) {
+			glDeleteBuffers( 1, &_strokeVBO );
+			_strokeVBO = -1;
+		}
+		
 		glGenBuffers( 1, &_strokeVBO );
 		glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
 		glBufferData( GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 2, &vertices[0], GL_STATIC_DRAW );
@@ -539,6 +559,11 @@ namespace MonkVG {
 	}
 	
 	void OpenGLPath::endOfTesselation() {
+		if ( _fillVBO != -1 ) {
+			glDeleteBuffers( 1, &_fillVBO );
+			_fillVBO = -1;
+		}
+		
 		glGenBuffers( 1, &_fillVBO );
 		glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float) * 2, &_vertices[0], GL_STATIC_DRAW );

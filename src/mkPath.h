@@ -23,7 +23,7 @@ namespace MonkVG {
 		
 		virtual bool draw( VGbitfield paintModes ) = 0;
 		
-		void clear( VGbitfield caps );
+		virtual void clear( VGbitfield caps );
 		
 		inline BaseObject::Type getType() const {
 			return BaseObject::kPathType;

@@ -33,6 +33,8 @@ namespace MonkVG {
 		OpenGLPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) 
 			:	IPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities )
 			,	_fillTesseleator( 0 )
+			,	_strokeVBO(-1)
+			,	_fillVBO(-1)
 		{
 
 		}
@@ -40,6 +42,7 @@ namespace MonkVG {
 		
 		
 		virtual bool draw( VGbitfield paintModes );
+		virtual void clear( VGbitfield caps );
 		
 		
 	public:		// really private but accessors for tesselator
