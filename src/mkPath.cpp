@@ -40,8 +40,9 @@ namespace MonkVG {	// Internal Implementation
 					assert( !"unsupported path data type" );
 					break;
 			}
-			
 		}
+		
+		setIsDirty( true );
 	}
 	
 	void IPath::copy( const IPath& src, const Matrix33& transform ) {

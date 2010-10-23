@@ -33,7 +33,6 @@ namespace MonkVG {
 		OpenGLPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) 
 			:	IPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities )
 			,	_fillTesseleator( 0 )
-			,	_isDirty( true )
 		{
 
 		}
@@ -68,7 +67,6 @@ namespace MonkVG {
 		GLuint				_strokeVBO;
 		int					_numberFillVertices;
 		int					_numberStrokeVertices;
-		bool				_isDirty;
 		
 	private:		// tesseleator callbacks
 		static void tessBegin( GLenum type, GLvoid* user );

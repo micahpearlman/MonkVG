@@ -78,6 +78,13 @@ namespace MonkVG {
 			_capabilities = c;
 		}
 		
+		inline bool getIsDirty() {
+			return _isDirty;
+		}
+		inline void setIsDirty( bool b ) {
+			_isDirty = b;
+		}
+		
 		//// parameter accessors/mutators ////
 		virtual VGint getParameteri( const VGint p ) const;
 		virtual VGfloat getParameterf( const VGint f ) const;
@@ -102,6 +109,7 @@ namespace MonkVG {
 		,	_numSegments( ns )
 		,	_numCoords( nc )
 		,	_capabilities( cap )
+		,	_isDirty( true )
 		{
 			switch (_datatype) {
 				case VG_PATH_DATATYPE_F:
@@ -140,6 +148,8 @@ namespace MonkVG {
 		// data
 		vector< VGubyte >	_segments;
 		vector< VGfloat >	*_fcoords;
+		bool				_isDirty;
+
 		
 		
 	};
