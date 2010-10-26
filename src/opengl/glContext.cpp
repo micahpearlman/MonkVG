@@ -180,6 +180,27 @@ namespace MonkVG {
 //		active.transpose();
 //		
 	}
+	
+	void OpenGLContext::setTransform( const VGfloat* t )  {
+		//	OpenVG:
+		//	sh	shx	tx
+		//	shy	sy	ty
+		//	0	0	1
+		//
+		// OpenGL
+		// a	b	0
+		// c	d	0
+		// tx	ty	1
+		
+		Matrix33* active = getActiveMatrix();
+		// transpose:  see above
+		for ( int x = 0; x < 3; x++ ) {
+			for ( int y = 0; y < 3; y++ ) {
+				active->set( y, x, t[(y*3)+x] );
+			}
+		}
+		
+	}
 
 	void OpenGLContext::scale( VGfloat sx, VGfloat sy ) {
 		Matrix33* active = getActiveMatrix();
@@ -188,10 +209,12 @@ namespace MonkVG {
 		active->multiply( scale );
 	}
 	void OpenGLContext::translate( VGfloat x, VGfloat y ) {
+		
 		Matrix33* active = getActiveMatrix();
-		Matrix33 translate;
-		translate.setTranslate( x, y );
-		active->multiply( translate );
+		active->addTranslate( x, y );
+//		Matrix33 translate;
+//		translate.setTranslate( x, y );
+//		active->multiply( translate );
 	}
 	void OpenGLContext::rotate( VGfloat angle ) {
 		Matrix33* active = getActiveMatrix();

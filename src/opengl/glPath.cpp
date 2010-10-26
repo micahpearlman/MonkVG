@@ -62,12 +62,20 @@ namespace MonkVG {
 		for( int x = 0; x < 4; x++ )
 			for( int y = 0; y < 4; y++ )
 				mat44[x][y] = 0;
+		// rotate
 		mat44[0][0] = active.get( 0, 0 );
 		mat44[0][1] = active.get( 0, 1 );
 		mat44[1][0]	= active.get( 1, 0 );
 		mat44[1][1] = active.get( 1, 1 );
+
+//		mat44[0][0] = active.get( 0, 0 );
+//		mat44[0][1] = active.get( 1, 0 );
+//		mat44[1][0]	= active.get( 0, 1 );
+//		mat44[1][1] = active.get( 1, 1 );
+		
 		mat44[2][2] = 1.0f;
 		mat44[3][3]	= 1.0f;
+		// scale
 		mat44[3][0] = active.get( 0, 2 );
 		mat44[3][1] = active.get( 1, 2 );
 		//todo: translation

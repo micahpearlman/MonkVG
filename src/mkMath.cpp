@@ -20,7 +20,9 @@ VG_API_CALL void VG_API_ENTRY vgLoadIdentity(void) VG_API_EXIT {
 //	IContext::instance().getActiveMatrix()->setIdentity();
 
 }
-//VG_API_CALL void VG_API_ENTRY vgLoadMatrix(const VGfloat * m) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgLoadMatrix(const VGfloat * m) VG_API_EXIT {
+	IContext::instance().setTransform( m );
+}
 //VG_API_CALL void VG_API_ENTRY vgGetMatrix(VGfloat * m) VG_API_EXIT;
 //VG_API_CALL void VG_API_ENTRY vgMultMatrix(const VGfloat * m) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgTranslate(VGfloat tx, VGfloat ty) VG_API_EXIT {

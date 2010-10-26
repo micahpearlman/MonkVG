@@ -89,7 +89,10 @@ namespace MonkVG {
 			set( 0, 0, cos( a ) );	set( 0, 1, -sin( a ) );
 			set( 1, 0, sin( a ) );	set( 1, 1, cos( a ) );			
 		}
-		
+		inline void addTranslate( VGfloat tx, VGfloat ty ) {
+			set( 0, 2, get(0, 2) + tx);
+			set( 1, 2, get(1, 2) + ty);
+		}
 		
 	private:
 	
