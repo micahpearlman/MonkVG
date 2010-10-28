@@ -214,10 +214,11 @@ namespace MonkVG {
 	void OpenGLContext::translate( VGfloat x, VGfloat y ) {
 		
 		Matrix33* active = getActiveMatrix();
-		active->addTranslate( x, y );
-//		Matrix33 translate;
-//		translate.setTranslate( x, y );
-//		active->multiply( translate );
+//		active->addTranslate( x, y );
+		Matrix33 translate;
+		translate.setTranslate( x, y );
+		translate.multiply( *active );
+		active->copy( translate );
 	}
 	void OpenGLContext::rotate( VGfloat angle ) {
 		Matrix33* active = getActiveMatrix();
