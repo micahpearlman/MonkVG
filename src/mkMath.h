@@ -93,6 +93,10 @@ namespace MonkVG {
 			set( 0, 2, get(0, 2) + tx);
 			set( 1, 2, get(1, 2) + ty);
 		}
+		inline void getTranslate( VGfloat& tx, VGfloat& ty ) {
+			tx = get( 0, 2 );
+			ty = get( 1, 2 );
+		}
 		
 	private:
 	
