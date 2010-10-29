@@ -143,6 +143,10 @@ namespace MonkVG {
 		delete (OpenGLPath*)path;
 	}
 	
+	void OpenGLContext::destroyPaint( IPaint* paint ) {
+		delete (OpenGLPaint*)paint;
+	}
+	
 	IPaint* OpenGLContext::createPaint() {
 		OpenGLPaint *paint = new OpenGLPaint();
 		if( paint == 0 )

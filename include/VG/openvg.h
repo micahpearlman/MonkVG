@@ -60,9 +60,13 @@ extern "C" {
 #if __LP64__
 	// if 64 bit architecture
 	typedef	unsigned long long VGHandle;
+	#define VG_INVALID_HANDLE ((VGHandle)0ULL)
+	
 #else
 	// assume 32 bit
 	typedef VGuint VGHandle;
+	#define VG_INVALID_HANDLE ((VGHandle)0)
+	
 #endif
 	
 typedef VGHandle VGPath;
@@ -71,7 +75,6 @@ typedef VGHandle VGMaskLayer;
 typedef VGHandle VGFont;
 typedef VGHandle VGPaint;
 
-#define VG_INVALID_HANDLE ((VGHandle)0)
 
 typedef enum {
   VG_FALSE               = 0,

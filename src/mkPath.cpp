@@ -161,7 +161,7 @@ VG_API_CALL VGPath vgCreatePath( VGint pathFormat, VGPathDatatype datatype, VGfl
 VG_API_CALL void VG_API_ENTRY vgDestroyPath(VGPath path) VG_API_EXIT {
 	if( path ) {
 		IContext::instance().destroyPath( (IPath*)path );
-		path = 0;
+		path = VG_INVALID_HANDLE;
 	}
 }
 
@@ -172,7 +172,7 @@ VG_API_CALL void vgAppendPathData( VGPath dstPath, VGint numSegments, const VGub
 }
 
 VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
-	if ( path == 0 ) {
+	if ( path == VG_INVALID_HANDLE ) {
 		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
@@ -183,6 +183,11 @@ VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
 }
 
 VG_API_CALL void VG_API_ENTRY vgClearPath(VGPath path, VGbitfield capabilities) VG_API_EXIT {
+	if ( path == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		return;
+	}
+	
 	IPath* p = (IPath*)path;
 	p->clear( capabilities );
 	

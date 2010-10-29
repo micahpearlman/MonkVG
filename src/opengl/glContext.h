@@ -27,7 +27,8 @@ namespace MonkVG {
 		
 		//// factories ////
 		virtual IPath* createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities );
-		virtual void destroyPath( IPath* path );		
+		virtual void destroyPath( IPath* path );	
+		virtual void destroyPaint( IPaint* paint );
 		virtual IPaint* createPaint();
 
 		//// platform specific execution of stroke and fill ////

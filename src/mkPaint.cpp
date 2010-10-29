@@ -82,18 +82,20 @@ namespace MonkVG {	// Internal Implementation
 
 using namespace MonkVG;
 
-VG_API_CALL VGPaint vgCreatePaint(void)
-{
+VG_API_CALL VGPaint vgCreatePaint(void) {
 	return (VGPaint)IContext::instance().createPaint();
 }
 
-VG_API_CALL void vgDestroyPaint(VGPaint paint)
-{
-	// todo
+VG_API_CALL void vgDestroyPaint(VGPaint paint) {
+	IContext::instance().destroyPaint( (IPaint*)paint );
 }
 
 VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
-
+	if ( paint == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		return;
+	}
+	
 	// Set stroke / fill 
 	if (paintModes & VG_STROKE_PATH)
 		IContext::instance().setStrokePaint( (IPaint*)paint );
