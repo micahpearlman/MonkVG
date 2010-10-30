@@ -15,7 +15,7 @@ Not even versioned yet for download.  Use git to clone:
 
 <tt>$ git clone git@github.com:micahpearlman/MonkVG.git</tt>
 
-Currently only XCode iOS projects.  
+Currently only XCode iOS and OSX projects.  
 
 TODO: standard *nix Makefiles.
 TODO: Android projects.
