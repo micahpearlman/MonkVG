@@ -564,8 +564,32 @@ namespace MonkVG {
 						VGfloat beta = 0;	// angle. todo
 						VGfloat sinbeta = sinf( beta );
 						VGfloat cosbeta = cosf( beta );
+						
+						// calculate the start and end angles
+						v2_t center;
+						center.x = cx0[0];//(cx0[0] + cx1[0])*0.5f;
+						center.y = cx0[1];//(cx0[1] + cx1[1])*0.5f;
+						v2_t norm[2];
+						norm[0].x = center.x - coords.x;
+						norm[0].y = center.y - coords.y;
+						VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
+						norm[0].x *= inverse_len;
+						norm[0].y *= inverse_len;
+						
+						norm[1].x = center.x - cp1x;
+						norm[1].y = center.y - cp1y;
+						inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
+						norm[1].x *= inverse_len;
+						norm[1].y *= inverse_len;
+						
+						v2_t base;
+						base.x = 1;
+						base.y = 0;
+						VGfloat startAngle = degrees( acosf( -norm[0].x ) );
+						VGfloat endAngle = degrees( acosf( -norm[1].x ) );
+						
 						prev = coords;
-						for ( VGfloat g = 0; g < 360; g+=360/steps ) {
+						for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
 							v2_t c;
 							
 							VGfloat alpha = g * (M_PI / 180.0f);

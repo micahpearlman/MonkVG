@@ -16,7 +16,8 @@
 
 namespace MonkVG {
 	
-	static inline VGfloat radians (VGfloat degrees) {return degrees * M_PI/180.0f;}	
+	static inline VGfloat radians (VGfloat degrees) {return degrees * (M_PI/180.0f);}	
+	static inline VGfloat degrees (VGfloat radians) {return radians * (180.0f/M_PI);}
 
 //	[ sx	shx	tx
 //	 shy	sy	ty

@@ -264,7 +264,6 @@ VGUErrorCode vguRoundRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfl
 	return VGU_NO_ERROR;
 }
 
-#if 0 // todo
 
 /*-------------------------------------------------------------------*//*!
  * \brief	
@@ -279,8 +278,8 @@ VGUErrorCode vguArc(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat he
 	if((arcType != VGU_ARC_OPEN && arcType != VGU_ARC_CHORD && arcType != VGU_ARC_PIE) || width <= 0.0f || height <= 0.0f)
 		return VGU_ILLEGAL_ARGUMENT_ERROR;
 	
-	startAngle = RI_DEG_TO_RAD(startAngle);
-	angleExtent = RI_DEG_TO_RAD(angleExtent);
+	startAngle = MonkVG::radians(startAngle);
+	angleExtent = MonkVG::radians(angleExtent);
 	
 	VGfloat w = width/2.0f;
 	VGfloat h = height/2.0f;
@@ -300,7 +299,7 @@ VGUErrorCode vguArc(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat he
 	if(angleExtent >= 0.0f)
 	{
 		segments[0] = VG_SCCWARC_TO | VG_ABSOLUTE;
-		for(VGfloat a = startAngle + PI;a < endAngle; a += PI)
+		for(VGfloat a = startAngle + M_PI;a < endAngle; a += M_PI)
 		{
 			data[3] = x + w * (VGfloat)cos(a);
 			data[4] = y + h * (VGfloat)sin(a);
@@ -310,7 +309,7 @@ VGUErrorCode vguArc(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat he
 	else
 	{
 		segments[0] = VG_SCWARC_TO | VG_ABSOLUTE;
-		for(VGfloat a = startAngle - PI;a > endAngle; a -= PI)
+		for(VGfloat a = startAngle - M_PI;a > endAngle; a -= M_PI)
 		{
 			data[3] = x + w * (VGfloat)cos(a);
 			data[4] = y + h * (VGfloat)sin(a);
@@ -343,6 +342,8 @@ VGUErrorCode vguArc(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfloat he
 		return VGU_PATH_CAPABILITY_ERROR;
 	return VGU_NO_ERROR;
 }
+
+#if 0 // todo
 
 /*-------------------------------------------------------------------*//*!
  * \brief	
