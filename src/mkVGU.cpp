@@ -42,7 +42,7 @@
 #include "VG/vgu.h"
 #include "VG/openvg.h"
 #include "mkCommon.h"
-
+#include "mkMath.h"
 
 //#include "riMath.h"
 
@@ -219,7 +219,6 @@ VGUErrorCode vguEllipse(VGPath path, VGfloat cx, VGfloat cy, VGfloat width, VGfl
 	return VGU_NO_ERROR;
 }
 
-#if 0 // todo
 /*-------------------------------------------------------------------*//*!
  * \brief	
  * \param	
@@ -265,6 +264,7 @@ VGUErrorCode vguRoundRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfl
 	return VGU_NO_ERROR;
 }
 
+#if 0 // todo
 
 /*-------------------------------------------------------------------*//*!
  * \brief	

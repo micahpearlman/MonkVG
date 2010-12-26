@@ -170,7 +170,7 @@ namespace MonkVG {
 	
 	//Given: 
 	//Return: 
-	//Ellipse parameters rh, rv, rot (in degrees), endpoints (x0, y0) and (x1, y1) TRUE if a solution exists, FALSE otherwise Ellipse centers are written to (cx0, cy0) and (cx1, cy1)
+	//Ellipse parameters rh, rv, rot (in degrees), endpoints (x0, y0) and (x1, y1) TRUE if a solution exists, FALSE otherwise. Ellipse centers are written to (cx0, cy0) and (cx1, cy1)
 	
 	static VGboolean findEllipses(VGfloat rh, VGfloat rv, VGfloat rot,
 								  VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1, 
@@ -335,8 +335,7 @@ namespace MonkVG {
 					coords[0] = p3x;
 					coords[1] = p3y;
 					
-				}
-					break;
+				} break;
 				case (VG_SCCWARC_TO >> 1):
 				{
 					VGfloat rh = *coordsIter; coordsIter++;
@@ -376,8 +375,7 @@ namespace MonkVG {
 					coords[0] = cp1x;
 					coords[1] = cp1y;
 					
-				}
-					break;
+				} break;
 					
 				default:
 					printf("unkwown command\n");
@@ -544,8 +542,48 @@ namespace MonkVG {
 					coords.x = p3x;
 					coords.y = p3y;
 					
-				}
-					break;	
+				} break;
+				case (VG_SCCWARC_TO >> 1):
+				{
+					VGfloat rh = *coordsIter; coordsIter++;
+					VGfloat rv = *coordsIter; coordsIter++;
+					VGfloat rot = *coordsIter; coordsIter++;
+					VGfloat cp1x = *coordsIter; coordsIter++;
+					VGfloat cp1y = *coordsIter; coordsIter++;
+					
+					// convert to Center Parameterization (see OpenVG Spec Apendix A)
+					VGfloat cx0[2];
+					VGfloat cx1[2];
+					VGboolean success = findEllipses( rh, rv, rot,
+													 coords.x, coords.y, cp1x, cp1y,
+													 &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
+					
+					if ( success ) {
+						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
+						const int steps = 36;
+						VGfloat beta = 0;	// angle. todo
+						VGfloat sinbeta = sinf( beta );
+						VGfloat cosbeta = cosf( beta );
+						prev = coords;
+						for ( VGfloat g = 0; g < 360; g+=360/steps ) {
+							v2_t c;
+							
+							VGfloat alpha = g * (M_PI / 180.0f);
+							VGfloat sinalpha = sinf( alpha );
+							VGfloat cosalpha = cosf( alpha );
+							c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
+							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
+							//printf( "(%f, %f)\n", c[0], c[1] );
+							buildFatLineSegment( vertices, prev, c, stroke_width );
+							prev = c;
+						}
+					}
+					
+					coords.x = cp1x;
+					coords.y = cp1y;
+					
+				} break;
+					
 				default:
 					printf("unkwown command\n");
 					break;

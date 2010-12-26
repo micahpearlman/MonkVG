@@ -12,6 +12,7 @@
 
 #include "VG/openvg.h"
 #include <cmath>
+#include "mkCommon.h"
 
 namespace MonkVG {
 	
@@ -102,5 +103,46 @@ namespace MonkVG {
 	
 		VGfloat _mat[3][3];
 	};
+}
+
+#define RI_ASSERT(_) 
+
+static inline int RI_ISNAN(float a) {
+    return (a!=a)?1:0;
+}
+
+static inline float   RI_MAX(float a, float b)                            { return (a > b) ? a : b; }
+static inline float   RI_MIN(float a, float b)                            { return (a < b) ? a : b; }
+static inline float   RI_CLAMP(float a, float l, float h)       { if(RI_ISNAN(a)) return l; RI_ASSERT(l <= h); return (a < l) ? l : (a > h) ? h : a; }
+static inline float   RI_SQR(float a)                                                       { return a * a; }
+static inline float   RI_MOD(float a, float b){
+	if(RI_ISNAN(a) || RI_ISNAN(b))
+		return 0.0f;
+    
+	RI_ASSERT(b >= 0.0f);
+	
+	if(b == 0.0f)
+		return 0.0f;
+    
+	float f = (float)fmod(a, b);
+	
+	if(f < 0.0f)
+		f += b;
+	RI_ASSERT(f >= 0.0f && f <= b);
+	return f;
+}
+
+static inline int RI_INT_MAX(int a, int b)                      { return (a > b) ? a : b; }
+static inline int RI_INT_MIN(int a, int b)                      { return (a < b) ? a : b; }
+static inline uint16_t RI_UINT16_MIN(uint16_t a,uint16_t b) { return (a < b) ? a : b; } 
+static inline uint32_t RI_UINT32_MIN(uint32_t a, uint32_t b)                    { return (a < b) ? a : b; }
+static inline int RI_INT_MOD(int a, int b)                      { RI_ASSERT(b >= 0); if(!b) return 0; int i = a % b; if(i < 0) i += b; RI_ASSERT(i >= 0 && i < b); return i; }
+static inline int RI_INT_CLAMP(int a, int l, int h)     { RI_ASSERT(l <= h); return (a < l) ? l : (a > h) ? h : a; }
+
+static inline int RI_FLOOR_TO_INT(float value){
+	if(value<0)
+		return floor(value);
+    
+	return value;
 }
 #endif // __mkMath_h__
