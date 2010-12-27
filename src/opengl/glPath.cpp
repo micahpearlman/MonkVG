@@ -387,9 +387,17 @@ namespace MonkVG {
 						VGfloat endAngle = degrees( acosf( -norm[1].x ) );
 						
 						VGfloat cross = norm[0].x;
-						if ( cross >= 0 ) {
+						
+						if ( cross >= 0  ) {
 							startAngle = 360 - startAngle;
 							endAngle = 360 - endAngle;
+						}
+						if ( startAngle > endAngle ) {
+							VGfloat tmp = startAngle;
+							startAngle = endAngle;
+							endAngle = tmp;
+							startAngle = startAngle - 90;
+							endAngle = endAngle - 90;
 						}
 						for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
 							GLdouble* c = new GLdouble[3];
@@ -614,9 +622,17 @@ namespace MonkVG {
 							startAngle = 360 - startAngle;
 							endAngle = 360 - endAngle;
 						}
+						if ( startAngle > endAngle ) {
+							VGfloat tmp = startAngle;
+							startAngle = endAngle;
+							endAngle = tmp;
+							startAngle = startAngle - 90;
+							endAngle = endAngle - 90;
+						}
+						
 						
 						prev = coords;
-						for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
+						for ( VGfloat g = startAngle; g < endAngle + (360/steps); g+=360/steps ) {
 							v2_t c;
 							
 							VGfloat alpha = g * (M_PI / 180.0f);
