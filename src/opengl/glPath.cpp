@@ -14,6 +14,15 @@
 
 namespace MonkVG {
 	
+	struct v2_t {
+		GLfloat x, y;
+		
+		void print() const {
+			printf("(%f, %f)\n", x, y);
+		}
+	};
+	
+	
 	void OpenGLPath::clear( VGbitfield caps ) {
 		IPath::clear( caps );
 		
@@ -357,8 +366,32 @@ namespace MonkVG {
 						VGfloat beta = 0;	// angle. todo
 						VGfloat sinbeta = sinf( beta );
 						VGfloat cosbeta = cosf( beta );
-
-						for ( VGfloat g = 0; g < 360; g+=360/steps ) {
+						
+						// calculate the start and end angles
+						v2_t center;
+						center.x = cx0[0];
+						center.y = cx0[1];
+						v2_t norm[2];
+						norm[0].x = center.x - coords[0];
+						norm[0].y = center.y - coords[1];
+						VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
+						norm[0].x *= inverse_len;
+						norm[0].y *= inverse_len;
+						
+						norm[1].x = center.x - cp1x;
+						norm[1].y = center.y - cp1y;
+						inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
+						norm[1].x *= inverse_len;
+						norm[1].y *= inverse_len;
+						VGfloat startAngle = degrees( acosf( -norm[0].x ) );
+						VGfloat endAngle = degrees( acosf( -norm[1].x ) );
+						
+						VGfloat cross = norm[0].x;
+						if ( cross >= 0 ) {
+							startAngle = 360 - startAngle;
+							endAngle = 360 - endAngle;
+						}
+						for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
 							GLdouble* c = new GLdouble[3];
 							
 							VGfloat alpha = g * (M_PI / 180.0f);
@@ -403,13 +436,6 @@ namespace MonkVG {
 		
 	}
 	
-	struct v2_t {
-		GLfloat x, y;
-		
-		void print() const {
-			printf("(%f, %f)\n", x, y);
-		}
-	};
 	static inline void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
 		
 		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
@@ -581,12 +607,13 @@ namespace MonkVG {
 						inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
 						norm[1].x *= inverse_len;
 						norm[1].y *= inverse_len;
-						
-						v2_t base;
-						base.x = 1;
-						base.y = 0;
 						VGfloat startAngle = degrees( acosf( -norm[0].x ) );
 						VGfloat endAngle = degrees( acosf( -norm[1].x ) );
+						VGfloat cross = norm[0].x;
+						if ( cross >= 0 ) {
+							startAngle = 360 - startAngle;
+							endAngle = 360 - endAngle;
+						}
 						
 						prev = coords;
 						for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
