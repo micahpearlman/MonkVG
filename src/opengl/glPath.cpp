@@ -233,8 +233,9 @@ namespace MonkVG {
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
 		int numCoords = 0;
 		VGbyte segment = VG_CLOSE_PATH;
-		GLdouble coords[3] = {0,0,0};
-		GLdouble closeTo[3] = {0,0,0};
+		v2_t coords = {0,0};
+		v2_t prev = {0,0};
+		v2_t closeTo = {0,0}; 
 		int num_contours = 0;
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
@@ -257,13 +258,14 @@ namespace MonkVG {
 			//			VG_LCWARC_TO                                = (12 << 1),
 			
 			// todo: deal with relative move
+			bool isRelative = segment & VG_RELATIVE;
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
 					GLdouble* c = new GLdouble[3];
-					c[0] = closeTo[0];
-					c[1] = closeTo[1];
-					c[2] = closeTo[2];
+					c[0] = closeTo.x;
+					c[1] = closeTo.y;
+					c[2] = 0;
 					// do not think this is necessary for the tesselator						
 					//gluTessVertex( _fillTesseleator, c, c );
 				} break;
@@ -276,53 +278,67 @@ namespace MonkVG {
 					
 					gluTessBeginContour( _fillTesseleator );
 					num_contours++;
-					closeTo[0] = coords[0] = *coordsIter; coordsIter++;
-					closeTo[1] = coords[1] = *coordsIter; coordsIter++;
+					closeTo.x = coords.x = *coordsIter; coordsIter++;
+					closeTo.y = coords.y = *coordsIter; coordsIter++;
 					
 					GLdouble* c = new GLdouble[3];
-					c[0] = coords[0];
-					c[1] = coords[1];
-					c[2] = coords[2];
+					c[0] = coords.x;
+					c[1] = coords.y;
+					c[2] = 0;
 					
 					gluTessVertex( _fillTesseleator, c, c );
 					
 				} break;
 				case (VG_LINE_TO >> 1):
 				{
-					coords[0] = *coordsIter; coordsIter++;
-					coords[1] = *coordsIter; coordsIter++;
+					prev = coords;
+					coords.x = *coordsIter; coordsIter++;
+					coords.y = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						coords.x += prev.x;
+						coords.y += prev.y;
+					}
 					
 					GLdouble* c = new GLdouble[3];
-					c[0] = coords[0];
-					c[1] = coords[1];
-					c[2] = coords[2];
+					c[0] = coords.x;
+					c[1] = coords.y;
+					c[2] = 0;
 					
 					gluTessVertex( _fillTesseleator, c, c );
 				} break;
 				case (VG_HLINE_TO >> 1):
 				{
-					coords[0] = *coordsIter; coordsIter++;
+					prev = coords;
+					coords.x = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						coords.x += prev.x;
+					}
 					
 					GLdouble* c = new GLdouble[3];
-					c[0] = coords[0];
-					c[1] = coords[1];
-					c[2] = coords[2];
+					c[0] = coords.x;
+					c[1] = coords.y;
+					c[2] = 0;
 					
 					gluTessVertex( _fillTesseleator, c, c );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
-					coords[1] = *coordsIter; coordsIter++;
+					prev = coords;
+					coords.y = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						coords.y += prev.y;
+					}
 					
 					GLdouble* c = new GLdouble[3];
-					c[0] = coords[0];
-					c[1] = coords[1];
-					c[2] = coords[2];
+					c[0] = coords.x;
+					c[1] = coords.y;
+					c[2] = 0;
 					
 					gluTessVertex( _fillTesseleator, c, c );
 				} break;
 				case (VG_CUBIC_TO >> 1):
 				{
+					prev = coords;
 					VGfloat cp1x = *coordsIter; coordsIter++;
 					VGfloat cp1y = *coordsIter; coordsIter++;
 					VGfloat cp2x = *coordsIter; coordsIter++;
@@ -330,19 +346,28 @@ namespace MonkVG {
 					VGfloat p3x = *coordsIter; coordsIter++;
 					VGfloat p3y = *coordsIter; coordsIter++;
 					
+					if ( isRelative ) {
+						cp1x += prev.x;
+						cp1y += prev.y;
+						cp2x += prev.x;
+						cp2y += prev.y;
+						p3x += prev.x;
+						p3y += prev.y;
+					}
+					
 					VGfloat increment = 1.0f / 4.0f;
 					//printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						GLdouble* c = new GLdouble[3];
-						c[0] = calcCubicBezier1d( coords[0], cp1x, cp2x, p3x, t );
-						c[1] = calcCubicBezier1d( coords[1], cp1y, cp2y, p3y, t );
-						c[2] = coords[2];
+						c[0] = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+						c[1] = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+						c[2] = 0;
 						//printf( "(%f, %f), ", c[0], c[1] );
 						gluTessVertex( _fillTesseleator, c, c );
 					}
 					//printf("\n");
-					coords[0] = p3x;
-					coords[1] = p3y;
+					coords.x = p3x;
+					coords.y = p3y;
 					
 				} break;
 				case (VG_SCCWARC_TO >> 1):
@@ -352,12 +377,16 @@ namespace MonkVG {
 					VGfloat rot = *coordsIter; coordsIter++;
 					VGfloat cp1x = *coordsIter; coordsIter++;
 					VGfloat cp1y = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						cp1x += prev.x;
+						cp1y += prev.y;
+					}
 					
 					// convert to Center Parameterization (see OpenVG Spec Apendix A)
 					VGfloat cx0[2];
 					VGfloat cx1[2];
 					VGboolean success = findEllipses( rh, rv, rot,
-													 coords[0], coords[1], cp1x, cp1y,
+													 coords.x, coords.y, cp1x, cp1y,
 													 &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
 					
 					if ( success ) {
@@ -372,8 +401,8 @@ namespace MonkVG {
 						center.x = cx0[0];
 						center.y = cx0[1];
 						v2_t norm[2];
-						norm[0].x = center.x - coords[0];
-						norm[0].y = center.y - coords[1];
+						norm[0].x = center.x - coords.x;
+						norm[0].y = center.y - coords.y;
 						VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
 						norm[0].x *= inverse_len;
 						norm[0].y *= inverse_len;
@@ -407,14 +436,14 @@ namespace MonkVG {
 							VGfloat cosalpha = cosf( alpha );
 							c[0] = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
 							c[1] = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-							c[2] = coords[2];
+							c[2] = 0;
 							//printf( "(%f, %f)\n", c[0], c[1] );
 							gluTessVertex( _fillTesseleator, c, c );
 						}
 					}
 					
-					coords[0] = cp1x;
-					coords[1] = cp1y;
+					coords.x = cp1x;
+					coords.y = cp1y;
 					
 				} break;
 					
@@ -521,6 +550,7 @@ namespace MonkVG {
 			//			VG_LCWARC_TO                                = (12 << 1),
 			
 			// todo: deal with relative move
+			bool isRelative = segment & VG_RELATIVE;
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
@@ -537,6 +567,10 @@ namespace MonkVG {
 					prev = coords;
 					coords.x = *coordsIter; coordsIter++;
 					coords.y = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						coords.x += prev.x;
+						coords.y += prev.y;
+					}
 					
 					buildFatLineSegment( vertices, prev, coords, stroke_width );
 					
@@ -546,17 +580,26 @@ namespace MonkVG {
 				{
 					prev = coords;
 					coords.x = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						coords.x += prev.x;
+					}
+					
 					buildFatLineSegment( vertices, prev, coords, stroke_width );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
 					prev = coords;
 					coords.y = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						coords.y += prev.y;
+					}
+					
 					buildFatLineSegment( vertices, prev, coords, stroke_width );
 					
 				} break;
 				case (VG_CUBIC_TO >> 1):	// todo
 				{
+					prev = coords;
 					VGfloat cp1x = *coordsIter; coordsIter++;
 					VGfloat cp1y = *coordsIter; coordsIter++;
 					VGfloat cp2x = *coordsIter; coordsIter++;
@@ -564,8 +607,18 @@ namespace MonkVG {
 					VGfloat p3x = *coordsIter; coordsIter++;
 					VGfloat p3y = *coordsIter; coordsIter++;
 					
+					if ( isRelative ) {
+						cp1x += prev.x;
+						cp1y += prev.y;
+						cp2x += prev.x;
+						cp2y += prev.y;
+						p3x += prev.x;
+						p3y += prev.y;
+					}
+					
+					
 					VGfloat increment = 1.0f / 4.0f;
-					prev = coords;
+					
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						v2_t c;
 						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
@@ -584,6 +637,11 @@ namespace MonkVG {
 					VGfloat rot = *coordsIter; coordsIter++;
 					VGfloat cp1x = *coordsIter; coordsIter++;
 					VGfloat cp1y = *coordsIter; coordsIter++;
+					if ( isRelative ) {
+						cp1x += prev.x;
+						cp1y += prev.y;
+					}
+					
 					
 					// convert to Center Parameterization (see OpenVG Spec Apendix A)
 					VGfloat cx0[2];
