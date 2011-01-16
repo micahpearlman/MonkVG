@@ -42,6 +42,9 @@ namespace MonkVG {
 	
 	bool OpenGLPath::draw( VGbitfield paintModes ) {
 		
+		if ( paintModes == 0 ) 
+			return false;
+		
 		CHECK_GL_ERROR;
 		
 		// get the native OpenGL context
