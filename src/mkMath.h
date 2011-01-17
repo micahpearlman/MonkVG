@@ -68,13 +68,23 @@ namespace MonkVG {
 					tmp.set( i, k, get( k, i ) );
 			copy( tmp );
 		}
-		inline void multiply( const Matrix33& m ) {
+		inline void postMultiply( const Matrix33& m ) {
 			Matrix33 tmp;
 			for( int j = 0; j < 3; j++ ) 
 				for( int i = 0; i < 3; i++ ) 
 					tmp.set( j, i, get( j, 0 ) * m.get( 0, i )
 									+ get( j, 1 ) * m.get( 1, i )
 									+ get( j, 2 ) * m.get( 2, i ) );
+			copy( tmp );
+		}
+
+		inline void preMultiply( const Matrix33& m ) {
+			Matrix33 tmp;
+			for( int j = 0; j < 3; j++ ) 
+				for( int i = 0; i < 3; i++ ) 
+					tmp.set( j, i, m.get( j, 0 ) * get( 0, i )
+							+ m.get( j, 1 ) * get( 1, i )
+							+ m.get( j, 2 ) * get( 2, i ) );
 			copy( tmp );
 		}
 		
@@ -88,8 +98,8 @@ namespace MonkVG {
 		}
 		inline void setRotate( VGfloat a ) {
 			setIdentity();
-			set( 0, 0, cos( a ) );	set( 0, 1, -sin( a ) );
-			set( 1, 0, sin( a ) );	set( 1, 1, cos( a ) );			
+			set( 0, 0, cosf( a ) );	set( 0, 1, sinf( a ) );
+			set( 1, 0, -sinf( a ) );	set( 1, 1, cosf( a ) );
 		}
 		inline void addTranslate( VGfloat tx, VGfloat ty ) {
 			set( 0, 2, get(0, 2) + tx);

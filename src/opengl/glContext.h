@@ -45,6 +45,7 @@ namespace MonkVG {
 		virtual void translate( VGfloat x, VGfloat y );
 		virtual void rotate( VGfloat angle );
 		virtual void setTransform( const VGfloat* t ) ;
+		virtual void multiply( const VGfloat* t );
 		
 		void beginRender();
 		void endRender();

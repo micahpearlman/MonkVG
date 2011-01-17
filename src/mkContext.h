@@ -134,6 +134,7 @@ namespace MonkVG {
 		virtual void translate( VGfloat x, VGfloat y ) = 0;
 		virtual void rotate( VGfloat angle ) = 0;
 		virtual void setTransform( const VGfloat* t ) = 0;
+		virtual void multiply( const VGfloat* t ) = 0;
 		
 		//// error handling ////
 		inline VGErrorCode getError() const { 

@@ -203,7 +203,20 @@ namespace MonkVG {
 				active->set( y, x, t[(y*3)+x] );
 			}
 		}
-		
+	}
+	
+	void OpenGLContext::multiply( const VGfloat* t ) {
+		Matrix33 m;
+		for ( int x = 0; x < 3; x++ ) {
+			for ( int y = 0; y < 3; y++ ) {
+				m.set( y, x, t[(y*3)+x] );
+			}
+		}
+		Matrix33* active = getActiveMatrix();
+		//m.multiply( *active );
+		//active->copy( m );
+		//active->multiply( m );
+		active->postMultiply( m );
 	}
 
 	void OpenGLContext::scale( VGfloat sx, VGfloat sy ) {
@@ -211,9 +224,10 @@ namespace MonkVG {
 		Matrix33 scale;
 		scale.setIdentity();
 		scale.setScale( sx, sy );
-		scale.multiply( *active );
+		//scale.multiply( *active );
 		//active->multiply( scale );
-		active->copy( scale );
+		//active->copy( scale );
+		active->postMultiply( scale );
 	}
 	void OpenGLContext::translate( VGfloat x, VGfloat y ) {
 		
@@ -221,14 +235,18 @@ namespace MonkVG {
 //		active->addTranslate( x, y );
 		Matrix33 translate;
 		translate.setTranslate( x, y );
-		translate.multiply( *active );
-		active->copy( translate );
+//		translate.multiply( *active );
+//		active->copy( translate );
+		active->postMultiply( translate );
 	}
 	void OpenGLContext::rotate( VGfloat angle ) {
 		Matrix33* active = getActiveMatrix();
 		Matrix33 rotate;
-		rotate.setRotate( radians( angle ) );
-		active->multiply( rotate );
+		rotate.setRotate( radians( -angle ) );
+//		rotate.multiply( *active );
+//		active->copy( rotate );
+		//active->multiply( rotate );
+		active->postMultiply( rotate );
 	}
 	
 	
