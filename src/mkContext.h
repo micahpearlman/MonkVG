@@ -129,7 +129,7 @@ namespace MonkVG {
 		}
 		
 		virtual void setIdentity() = 0;
-		virtual void transform() = 0; // performs transformation
+		virtual void transform( VGfloat* t ) = 0; 
 		virtual void scale( VGfloat sx, VGfloat sy ) = 0;
 		virtual void translate( VGfloat x, VGfloat y ) = 0;
 		virtual void rotate( VGfloat angle ) = 0;

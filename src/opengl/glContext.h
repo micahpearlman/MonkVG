@@ -40,7 +40,7 @@ namespace MonkVG {
 		
 		//// platform specific implementation of transform ////
 		virtual void setIdentity();
-		virtual void transform();
+		virtual void transform( VGfloat* t );
 		virtual void scale( VGfloat sx, VGfloat sy );
 		virtual void translate( VGfloat x, VGfloat y );
 		virtual void rotate( VGfloat angle );

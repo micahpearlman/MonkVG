@@ -176,13 +176,17 @@ namespace MonkVG {
 		Matrix33* active = getActiveMatrix();
 		active->setIdentity();
 	}
-	void OpenGLContext::transform() {
+	
+	void OpenGLContext::transform( VGfloat* t ) {
 		// a	b	0
 		// c	d	0
 		// tx	ty	1
-//		Matrix33 active = *getActiveMatrix();
-//		active.transpose();
-//		
+		Matrix33* active = getActiveMatrix();
+		for ( int x = 0; x < 3; x++ ) {
+			for ( int y = 0; y < 3; y++ ) {
+				t[(y*3)+x] = active->get( y, x );
+			}
+		}
 	}
 	
 	void OpenGLContext::setTransform( const VGfloat* t )  {
@@ -204,6 +208,7 @@ namespace MonkVG {
 			}
 		}
 	}
+	
 	
 	void OpenGLContext::multiply( const VGfloat* t ) {
 		Matrix33 m;
