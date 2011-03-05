@@ -14,13 +14,6 @@
 
 namespace MonkVG {
 	
-	struct v2_t {
-		GLfloat x, y;
-		
-		void print() const {
-			printf("(%f, %f)\n", x, y);
-		}
-	};
 	
 	
 	void OpenGLPath::clear( VGbitfield caps ) {
@@ -221,6 +214,7 @@ namespace MonkVG {
 		
 		CHECK_GL_ERROR;
 		
+
 		_fillTesseleator = gluNewTess();
 		gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (*) ( )) &OpenGLPath::tessBegin );
 		gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (*) ( )) &OpenGLPath::tessEnd );
@@ -240,6 +234,10 @@ namespace MonkVG {
 		v2_t prev = {0,0};
 		v2_t closeTo = {0,0}; 
 		int num_contours = 0;
+		
+		// HACKHACK: doing a reserve is wrong.  what we need todo is first add all the vertices to _tessVertices
+		// and then after adding all the vertices we then go through add do gluTessVertex
+		_tessVertices.reserve( _segments.size() * 8 );
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
 			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
@@ -284,12 +282,9 @@ namespace MonkVG {
 					closeTo.x = coords.x = *coordsIter; coordsIter++;
 					closeTo.y = coords.y = *coordsIter; coordsIter++;
 					
-					GLdouble* c = new GLdouble[3];
-					c[0] = coords.x;
-					c[1] = coords.y;
-					c[2] = 0;
-					
-					gluTessVertex( _fillTesseleator, c, c );
+					v3_t c( coords );
+					_tessVertices.push_back( c );
+					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
 					
 				} break;
 				case (VG_LINE_TO >> 1):
@@ -302,12 +297,9 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					GLdouble* c = new GLdouble[3];
-					c[0] = coords.x;
-					c[1] = coords.y;
-					c[2] = 0;
-					
-					gluTessVertex( _fillTesseleator, c, c );
+					v3_t c( coords );
+					_tessVertices.push_back( c );
+					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
 				} break;
 				case (VG_HLINE_TO >> 1):
 				{
@@ -317,12 +309,9 @@ namespace MonkVG {
 						coords.x += prev.x;
 					}
 					
-					GLdouble* c = new GLdouble[3];
-					c[0] = coords.x;
-					c[1] = coords.y;
-					c[2] = 0;
-					
-					gluTessVertex( _fillTesseleator, c, c );
+					v3_t c( coords );
+					_tessVertices.push_back( c );
+					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
@@ -332,12 +321,9 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					GLdouble* c = new GLdouble[3];
-					c[0] = coords.x;
-					c[1] = coords.y;
-					c[2] = 0;
-					
-					gluTessVertex( _fillTesseleator, c, c );
+					v3_t c( coords );
+					_tessVertices.push_back( c );
+					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
 				} break;
 				case (VG_CUBIC_TO >> 1):
 				{
@@ -361,12 +347,12 @@ namespace MonkVG {
 					VGfloat increment = 1.0f / 4.0f;
 					//printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-						GLdouble* c = new GLdouble[3];
-						c[0] = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
-						c[1] = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						c[2] = 0;
-						//printf( "(%f, %f), ", c[0], c[1] );
-						gluTessVertex( _fillTesseleator, c, c );
+						v3_t c;
+						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+						_tessVertices.push_back( c );
+						gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+					//	c.print();
 					}
 					//printf("\n");
 					coords.x = p3x;
@@ -432,16 +418,15 @@ namespace MonkVG {
 							endAngle = endAngle - 90;
 						}
 						for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
-							GLdouble* c = new GLdouble[3];
+							v3_t c;
 							
 							VGfloat alpha = g * (M_PI / 180.0f);
 							VGfloat sinalpha = sinf( alpha );
 							VGfloat cosalpha = cosf( alpha );
-							c[0] = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
-							c[1] = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-							c[2] = 0;
-							//printf( "(%f, %f)\n", c[0], c[1] );
-							gluTessVertex( _fillTesseleator, c, c );
+							c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
+							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
+							_tessVertices.push_back( c );
+							gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
 						}
 					}
 					
@@ -476,7 +461,7 @@ namespace MonkVG {
 		
 	}
 	
-	static inline void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
+	void OpenGLPath::buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
 		
 		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
 			return;
@@ -742,10 +727,7 @@ namespace MonkVG {
 		glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float) * 2, &_vertices[0], GL_STATIC_DRAW );
 		_numberFillVertices = _vertices.size()/2;
-		for (list<GLdouble*>::iterator iter = _verticesToDestroy.begin(); iter != _verticesToDestroy.end(); iter++ ) {
-			//todo!!!			delete [] *(iter);
-		}
-		_verticesToDestroy.clear();
+		_tessVertices.clear();
 		_vertices.clear();
 	}
 	
@@ -790,7 +772,6 @@ namespace MonkVG {
 	void OpenGLPath::tessVertex( GLvoid* vertex, GLvoid* user ) {
 		OpenGLPath* me = (OpenGLPath*)user;
 		GLdouble* v = (GLdouble*)vertex;
-		me->addVertexToDestroy( v );
 		
 		if ( me->primType() == GL_TRIANGLE_FAN ) {
 			// break up fans and strips into triangles
@@ -843,18 +824,27 @@ namespace MonkVG {
 		}
 		vertexCount_++;
 		
-		//		printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
+				//printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
 	}
 	void OpenGLPath::tessCombine( GLdouble coords[3], void *data[4],
 								 GLfloat weight[4], void **outData,
 								 void *polygonData ) {
-		GLdouble* vertex = new GLdouble[3];
-		vertex[0] = coords[0];
-		vertex[1] = coords[1];
-		vertex[2] = coords[2];		
-		*outData = vertex;
-		//todo!!!		me->addVertexToDestroy( v );
-		//		printf("combine\n");
+
+		OpenGLPath* me = (OpenGLPath*)polygonData;
+		v3_t v;
+		v.x = coords[0];
+		v.y = coords[1];
+		v.z = coords[2];
+		me->addTessVertex( v );
+		*outData = me->tessVerticesBackPtr();
+		
+//		GLdouble* vertex = new GLdouble[3];
+//		vertex[0] = coords[0];
+//		vertex[1] = coords[1];
+//		vertex[2] = coords[2];		
+//		*outData = vertex;
+//		//todo!!!		me->addVertexToDestroy( v );
+//printf("combine\n");
 		
 	}
 	

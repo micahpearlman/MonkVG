@@ -56,15 +56,44 @@ namespace MonkVG {
 			_vertices.push_back( v[0] );
 			_vertices.push_back( v[1] );
 		}
-		void addVertexToDestroy( GLdouble* v ) {
-			_verticesToDestroy.push_back( v );
+		
+		GLdouble* tessVerticesBackPtr() {
+			return &(_tessVertices.back().x);
+		} 
+		
+		struct v2_t {
+			GLfloat x, y;
+			
+			void print() const {
+				printf("(%f, %f)\n", x, y);
+			}
+		};
+		
+		
+		struct v3_t {
+			GLdouble x,y,z;
+			v3_t( const v2_t& v ) : x(v.x), y(v.y), z(0) {}
+			v3_t() : x(0), y(0), z(0) {}
+			void print() const {
+				printf("(%f, %f)\n", x, y);
+			}
+			
+		};
+		
+		
+		void addTessVertex( const v3_t& v ) {
+			_tessVertices.push_back( v );
 		}
+		
 		
 	private:
 		
+		
+		
+		
 		GLUtesselator*		_fillTesseleator;
 		vector<GLfloat>		_vertices;
-		list<GLdouble*>		_verticesToDestroy;
+		vector<v3_t>		_tessVertices;
 		GLenum				_primType;
 		GLuint				_fillVBO;
 		GLuint				_strokeVBO;
@@ -86,6 +115,7 @@ namespace MonkVG {
 
 		void buildFill();
 		void buildStroke();
+		void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius );
 		
 		
 	};
