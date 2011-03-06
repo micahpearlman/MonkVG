@@ -235,9 +235,6 @@ namespace MonkVG {
 		v2_t closeTo = {0,0}; 
 		int num_contours = 0;
 		
-		// HACKHACK: doing a reserve is wrong.  what we need todo is first add all the vertices to _tessVertices
-		// and then after adding all the vertices we then go through add do gluTessVertex
-		_tessVertices.reserve( _segments.size() * 8 );
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
 			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );

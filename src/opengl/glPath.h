@@ -108,7 +108,7 @@ namespace MonkVG {
 		
 		GLUtesselator*		_fillTesseleator;
 		vector<GLfloat>		_vertices;
-		vector<v3_t>		_tessVertices;
+		list<v3_t>		_tessVertices;
 		GLenum				_primType;
 		GLuint				_fillVBO;
 		GLuint				_strokeVBO;
