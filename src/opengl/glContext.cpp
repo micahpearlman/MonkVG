@@ -238,7 +238,8 @@ namespace MonkVG {
 		translate.setTranslate( x, y );
 		Matrix33 tmp;
 		tmp.setIdentity();
-		Matrix33::multiply( tmp, *active, translate );
+		//Matrix33::multiply( tmp, *active, translate );
+		Matrix33::multiply( tmp, translate, *active );
 		active->copy( tmp );
 	}
 	void OpenGLContext::rotate( VGfloat angle ) {
@@ -247,7 +248,7 @@ namespace MonkVG {
 		rotate.setRotate( radians( -angle ) );
 		Matrix33 tmp;
 		tmp.setIdentity();
-		Matrix33::multiply( tmp, *active, rotate );
+		Matrix33::multiply( tmp, rotate, *active );
 		active->copy( tmp );
 	}
 	
