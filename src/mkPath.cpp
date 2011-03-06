@@ -198,4 +198,16 @@ VG_API_CALL void VG_API_ENTRY vgTransformPath(VGPath dstPath, VGPath srcPath) VG
 	dp->copy( *(IPath*)srcPath, IContext::instance().getPathUserToSurface() );
 }
 
+VG_API_CALL void VG_API_ENTRY vgPathBounds(VGPath path,
+										   VGfloat * minX, VGfloat * minY,
+										   VGfloat * width, VGfloat * height) VG_API_EXIT {
+	IPath* p = (IPath*)path;
+	*minX = p->getMinX();
+	*minY = p->getMinY();
+	*width = p->getWidth();
+	*height = p->getHeight();
+	
+}
+
+
 

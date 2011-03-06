@@ -85,6 +85,20 @@ namespace MonkVG {
 			_isDirty = b;
 		}
 		
+		// bounds
+		inline VGfloat getMinX() {
+			return _minX;
+		}
+		inline VGfloat getMinY() {
+			return _minY;
+		}
+		inline VGfloat getWidth() {
+			return _width;
+		}
+		inline VGfloat getHeight() {
+			return _height;
+		}
+		
 		//// parameter accessors/mutators ////
 		virtual VGint getParameteri( const VGint p ) const;
 		virtual VGfloat getParameterf( const VGint f ) const;
@@ -110,6 +124,10 @@ namespace MonkVG {
 		,	_numCoords( nc )
 		,	_capabilities( cap )
 		,	_isDirty( true )
+		,	_minX( VG_MAX_FLOAT )
+		,	_minY( VG_MAX_FLOAT )
+		,	_width( -VG_MAX_FLOAT )
+		,	_height( -VG_MAX_FLOAT )
 		{
 			switch (_datatype) {
 				case VG_PATH_DATATYPE_F:
@@ -149,6 +167,12 @@ namespace MonkVG {
 		vector< VGubyte >	_segments;
 		vector< VGfloat >	*_fcoords;
 		bool				_isDirty;
+		
+		// bounds
+		VGfloat				_minX;
+		VGfloat				_minY;
+		VGfloat				_height;
+		VGfloat				_width;
 
 		
 		

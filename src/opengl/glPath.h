@@ -53,6 +53,21 @@ namespace MonkVG {
 			_primType = t;
 		}
 		void addVertex( GLdouble* v ) {
+			
+			// calculate the bounds
+			if ( v[0] < _minX ) {
+				_minX = v[0];
+			}
+			if ( v[0] > _width ) {
+				_width = v[0];
+			}
+			if ( v[1] < _minY ) {
+				_minY = v[0];
+			}
+			if ( v[1] > _height ) {
+				_width = v[0];
+			}
+			
 			_vertices.push_back( v[0] );
 			_vertices.push_back( v[1] );
 		}
