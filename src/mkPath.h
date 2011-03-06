@@ -79,10 +79,11 @@ namespace MonkVG {
 		}
 		
 		inline bool getIsDirty() {
-			return _isDirty;
+			return _isFillDirty;
 		}
 		inline void setIsDirty( bool b ) {
-			_isDirty = b;
+			_isFillDirty = b;
+			_isStrokeDirty = b;
 		}
 		
 		// bounds
@@ -111,6 +112,8 @@ namespace MonkVG {
 		void appendData( const VGint numSegments, const VGubyte * pathSegments, const void * pathData ) ;
 		int32_t segmentToNumCoordinates(VGPathSegment segment);
 		void copy( const IPath& src, const Matrix33& transform );
+		virtual void buildFillIfDirty() = 0;
+		
 
 		
 	protected:
@@ -123,7 +126,8 @@ namespace MonkVG {
 		,	_numSegments( ns )
 		,	_numCoords( nc )
 		,	_capabilities( cap )
-		,	_isDirty( true )
+		,	_isFillDirty( true )
+		,	_isStrokeDirty( true )
 		,	_minX( VG_MAX_FLOAT )
 		,	_minY( VG_MAX_FLOAT )
 		,	_width( -VG_MAX_FLOAT )
@@ -166,7 +170,8 @@ namespace MonkVG {
 		// data
 		vector< VGubyte >	_segments;
 		vector< VGfloat >	*_fcoords;
-		bool				_isDirty;
+		bool				_isFillDirty;
+		bool				_isStrokeDirty;
 		
 		// bounds
 		VGfloat				_minX;

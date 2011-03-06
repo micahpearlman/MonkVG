@@ -43,6 +43,7 @@ namespace MonkVG {
 		
 		virtual bool draw( VGbitfield paintModes );
 		virtual void clear( VGbitfield caps );
+		virtual void buildFillIfDirty();
 		
 		
 	public:		// really private but accessors for tesselator
@@ -62,10 +63,10 @@ namespace MonkVG {
 				_width = v[0];
 			}
 			if ( v[1] < _minY ) {
-				_minY = v[0];
+				_minY = v[1];
 			}
 			if ( v[1] > _height ) {
-				_width = v[0];
+				_height = v[1];
 			}
 			
 			_vertices.push_back( v[0] );

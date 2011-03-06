@@ -201,7 +201,9 @@ VG_API_CALL void VG_API_ENTRY vgTransformPath(VGPath dstPath, VGPath srcPath) VG
 VG_API_CALL void VG_API_ENTRY vgPathBounds(VGPath path,
 										   VGfloat * minX, VGfloat * minY,
 										   VGfloat * width, VGfloat * height) VG_API_EXIT {
+	
 	IPath* p = (IPath*)path;
+	p->buildFillIfDirty();	// NOTE: according to the OpenVG specs we only care about the fill bounds, NOT the fill + stroke
 	*minX = p->getMinX();
 	*minY = p->getMinY();
 	*width = p->getWidth();

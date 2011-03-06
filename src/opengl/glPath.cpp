@@ -33,6 +33,14 @@ namespace MonkVG {
 		}
 	}
 	
+	void OpenGLPath::buildFillIfDirty() {
+		// only build the fill
+		if ( _isFillDirty ) {
+			buildFill();
+		}
+		_isFillDirty = false;
+	}
+	
 	bool OpenGLPath::draw( VGbitfield paintModes ) {
 		
 		if ( paintModes == 0 ) 
@@ -43,15 +51,16 @@ namespace MonkVG {
 		// get the native OpenGL context
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
 		
-		if( paintModes & VG_FILL_PATH && _isDirty == true ) {	// build the fill polygons
-			buildFill();
+		if( paintModes & VG_FILL_PATH ) {	// build the fill polygons
+			buildFillIfDirty();
 		}
 
-		if( paintModes & VG_STROKE_PATH && _isDirty == true ) {
+		if( paintModes & VG_STROKE_PATH && _isStrokeDirty == true ) {
 			buildStroke();
+			_isStrokeDirty = false;
 		}
 		
-		_isDirty = false;
+		
 
 
 		glContext.beginRender();
