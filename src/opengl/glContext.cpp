@@ -229,29 +229,26 @@ namespace MonkVG {
 		Matrix33 scale;
 		scale.setIdentity();
 		scale.setScale( sx, sy );
-		//scale.multiply( *active );
-		//active->multiply( scale );
-		//active->copy( scale );
-		active->postMultiply( scale );
+		active->preMultiply( scale );
 	}
 	void OpenGLContext::translate( VGfloat x, VGfloat y ) {
 		
 		Matrix33* active = getActiveMatrix();
-//		active->addTranslate( x, y );
 		Matrix33 translate;
 		translate.setTranslate( x, y );
-//		translate.multiply( *active );
-//		active->copy( translate );
-		active->postMultiply( translate );
+		Matrix33 tmp;
+		tmp.setIdentity();
+		Matrix33::multiply( tmp, *active, translate );
+		active->copy( tmp );
 	}
 	void OpenGLContext::rotate( VGfloat angle ) {
 		Matrix33* active = getActiveMatrix();
 		Matrix33 rotate;
 		rotate.setRotate( radians( -angle ) );
-//		rotate.multiply( *active );
-//		active->copy( rotate );
-		//active->multiply( rotate );
-		active->postMultiply( rotate );
+		Matrix33 tmp;
+		tmp.setIdentity();
+		Matrix33::multiply( tmp, *active, rotate );
+		active->copy( tmp );
 	}
 	
 	

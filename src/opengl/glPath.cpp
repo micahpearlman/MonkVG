@@ -41,6 +41,13 @@ namespace MonkVG {
 		_isFillDirty = false;
 	}
 	
+	void printMat44( float m[4][4] ) {
+		printf("--\n");
+		for ( int x = 0; x < 4; x++ ) {
+			printf("%f\t%f\t%f\t%f\n", m[x][0], m[x][1], m[x][2], m[x][3]);			
+		}
+	}
+	
 	bool OpenGLPath::draw( VGbitfield paintModes ) {
 		
 		if ( paintModes == 0 ) 
@@ -70,29 +77,28 @@ namespace MonkVG {
 		// a	b	0
 		// c	d	0
 		// tx	ty	1
-		//active.transpose();		// NOTE:  have to transpose.  Maybe should set up the matrices already as transposed?
 		
 		GLfloat mat44[4][4];
 		for( int x = 0; x < 4; x++ )
 			for( int y = 0; y < 4; y++ )
 				mat44[x][y] = 0;
-		// rotate
-		mat44[0][0] = active.get( 0, 0 );
-		mat44[0][1] = active.get( 0, 1 );
-		mat44[1][0]	= active.get( 1, 0 );
-		mat44[1][1] = active.get( 1, 1 );
-
-//		mat44[0][0] = active.get( 0, 0 );
-//		mat44[0][1] = active.get( 1, 0 );
-//		mat44[1][0]	= active.get( 0, 1 );
-//		mat44[1][1] = active.get( 1, 1 );
-		
+		mat44[0][0] = 1.0f;
+		mat44[1][1] = 1.0f;
 		mat44[2][2] = 1.0f;
 		mat44[3][3]	= 1.0f;
+		
+		// rotate (note transposed)
+		mat44[0][0] = active.get( 0, 0 );
+		mat44[0][1] = active.get( 1, 0 );
+		mat44[1][0]	= active.get( 0, 1 );
+		mat44[1][1] = active.get( 1, 1 );
+		
 		// scale
 		mat44[3][0] = active.get( 0, 2 );
 		mat44[3][1] = active.get( 1, 2 );
-		//todo: translation
+		
+		
+		glMatrixMode( GL_MODELVIEW );
 		glPushMatrix();
 		glLoadMatrixf( &mat44[0][0] );
 		

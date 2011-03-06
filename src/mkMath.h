@@ -12,6 +12,8 @@
 
 #include "VG/openvg.h"
 #include <cmath>
+#include <cstdio>
+#include <stdlib.h>
 #include "mkCommon.h"
 
 namespace MonkVG {
@@ -70,22 +72,35 @@ namespace MonkVG {
 		}
 		inline void postMultiply( const Matrix33& m ) {
 			Matrix33 tmp;
-			for( int j = 0; j < 3; j++ ) 
-				for( int i = 0; i < 3; i++ ) 
-					tmp.set( j, i, get( j, 0 ) * m.get( 0, i )
-									+ get( j, 1 ) * m.get( 1, i )
-									+ get( j, 2 ) * m.get( 2, i ) );
+			Matrix33::multiply( tmp, *this, m );
 			copy( tmp );
 		}
 
 		inline void preMultiply( const Matrix33& m ) {
 			Matrix33 tmp;
-			for( int j = 0; j < 3; j++ ) 
-				for( int i = 0; i < 3; i++ ) 
-					tmp.set( j, i, m.get( j, 0 ) * get( 0, i )
-							+ m.get( j, 1 ) * get( 1, i )
-							+ m.get( j, 2 ) * get( 2, i ) );
+			Matrix33::multiply( tmp, m, *this );
 			copy( tmp );
+		}
+		
+		static inline void multiply( Matrix33& c, const Matrix33& a, const Matrix33& b ) {
+			c.set(0,0, a.get(0,0)*b.get(0,0)+a.get(0,1)*b.get(1,0)+a.get(0,2)*b.get(2,0));   
+			c.set(0,1, a.get(0,0)*b.get(0,1)+a.get(0,1)*b.get(1,1)+a.get(0,2)*b.get(2,1));   
+			c.set(0,2, a.get(0,0)*b.get(0,2)+a.get(0,1)*b.get(1,2)+a.get(0,2)*b.get(2,2));   
+			
+			c.set(1,0, a.get(1,0)*b.get(0,0)+a.get(1,1)*b.get(1,0)+a.get(1,2)*b.get(2,0));   
+			c.set(1,1, a.get(1,0)*b.get(0,1)+a.get(1,1)*b.get(1,1)+a.get(1,2)*b.get(2,1));   
+			c.set(1,2, a.get(1,0)*b.get(0,2)+a.get(1,1)*b.get(1,2)+a.get(1,2)*b.get(2,2));   
+			
+			c.set(2,0, a.get(2,0)*b.get(0,0)+a.get(2,1)*b.get(1,0)+a.get(2,2)*b.get(2,0));   
+			c.set(2,1, a.get(2,0)*b.get(0,1)+a.get(2,1)*b.get(1,1)+a.get(2,2)*b.get(2,1));   
+			c.set(2,2, a.get(2,0)*b.get(0,2)+a.get(2,1)*b.get(1,2)+a.get(2,2)*b.get(2,2));
+//			for (   int y = 0;  y < 3;  y ++ )
+//				for ( int x = 0;  x < 3;  x ++   )
+//				{
+//					c.set(y,x,0);// [y] [x] = 0;
+//					for ( int i = 0;  i < 3;  i ++ )
+//						c.set(y, x, c.get(y, x) + (a.get(y,i) * b.get(i,x)));//theMatrixA [y] [i] * theMatrixB [i] [x];
+//				}   			
 		}
 		
 		inline void setScale( VGfloat sx, VGfloat sy ) {
@@ -108,6 +123,13 @@ namespace MonkVG {
 		inline void getTranslate( VGfloat& tx, VGfloat& ty ) {
 			tx = get( 0, 2 );
 			ty = get( 1, 2 );
+		}
+		
+		void print() {
+			printf("--\n");
+			for ( int x = 0; x < 3; x++ ) {
+				printf("%f\t%f\t%f\n", _mat[x][0], _mat[x][1], _mat[x][2] );			
+			}
 		}
 		
 	private:
