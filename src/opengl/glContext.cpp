@@ -229,7 +229,9 @@ namespace MonkVG {
 		Matrix33 scale;
 		scale.setIdentity();
 		scale.setScale( sx, sy );
-		active->preMultiply( scale );
+        Matrix33 tmp;
+        Matrix33::multiply( tmp, scale, *active );
+		active->copy( tmp );
 	}
 	void OpenGLContext::translate( VGfloat x, VGfloat y ) {
 		
