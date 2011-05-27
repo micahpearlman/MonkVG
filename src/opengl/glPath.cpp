@@ -737,7 +737,7 @@ namespace MonkVG {
 		
 		glGenBuffers( 1, &_fillVBO );
 		glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float) * 2, &_vertices[0], GL_STATIC_DRAW );
+		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
 		_numberFillVertices = _vertices.size()/2;
 		_tessVertices.clear();
 		_vertices.clear();
