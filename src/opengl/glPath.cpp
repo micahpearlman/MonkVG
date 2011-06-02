@@ -372,6 +372,10 @@ namespace MonkVG {
 					
 				} break;
 				case (VG_SCCWARC_TO >> 1):
+				case (VG_SCWARC_TO >> 1):
+				case (VG_LCCWARC_TO >> 1):
+				case (VG_LCWARC_TO >> 1):	
+					
 				{
 					VGfloat rh = *coordsIter; coordsIter++;
 					VGfloat rv = *coordsIter; coordsIter++;
