@@ -1028,6 +1028,12 @@ static void ConnectLeftVertex( GLUtesselator *tess, GLUvertex *vEvent )
   tmp.eUp = vEvent->anEdge->Sym;
   /* __GL_DICTLISTKEY */ /* __gl_dictListSearch */
   regUp = (ActiveRegion *)dictKey( dictSearch( tess->dict, &tmp ));
+	// micah fix: (seem to happen to happen on a lot of detail or small areas. possibly use doubles instead of floats
+	if( regUp == 0 ) {
+		//printf( "fuck\n"); 
+		return;
+	}	
+	
   regLo = RegionBelow( regUp );
   eUp = regUp->eUp;
   eLo = regLo->eUp;
