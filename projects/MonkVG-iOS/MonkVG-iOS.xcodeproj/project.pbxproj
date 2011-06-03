@@ -586,6 +586,7 @@
 				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkVG_iOS_Quartz;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -600,6 +601,7 @@
 				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkVG_iOS_Quartz;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
@@ -651,7 +653,7 @@
 				);
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -670,7 +672,7 @@
 				);
 				INSTALL_PATH = /usr/local/lib;
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

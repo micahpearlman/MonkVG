@@ -1030,7 +1030,7 @@ static void ConnectLeftVertex( GLUtesselator *tess, GLUvertex *vEvent )
   regUp = (ActiveRegion *)dictKey( dictSearch( tess->dict, &tmp ));
 	// micah fix: (seem to happen to happen on a lot of detail or small areas. possibly use doubles instead of floats
 	if( regUp == 0 ) {
-		//printf( "fuck\n"); 
+		printf( "fuck\n"); 
 		return;
 	}	
 	
