@@ -238,7 +238,7 @@ namespace MonkVG {
 		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (*)())&OpenGLPath::tessError );
 		// TODO: SET WINDING RULE BASED ON THE OPENVG SETTING!!!
 		gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
-		gluTessProperty( _fillTesseleator, GLU_TESS_TOLERANCE, 10.5f );
+		gluTessProperty( _fillTesseleator, GLU_TESS_TOLERANCE, 0.5f );
 		
 		gluTessBeginPolygon( _fillTesseleator, this );
 		
