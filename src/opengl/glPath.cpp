@@ -397,7 +397,7 @@ namespace MonkVG {
 					
 					if ( success ) {
 						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
-						const int steps = 36;
+						const int steps = 4;
 						VGfloat beta = 0;	// angle. todo
 						VGfloat sinbeta = sinf( beta );
 						VGfloat cosbeta = cosf( beta );
