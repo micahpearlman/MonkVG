@@ -96,7 +96,9 @@ namespace MonkVG {
 		
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrthof(0, _width, _height, 0, -1, 1);
+		glOrthof(0, _width,		// left, right
+				 0, _height,	// top, botton
+				 -1, 1);		// near value, far value (depth)
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
