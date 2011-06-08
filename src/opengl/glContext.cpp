@@ -61,26 +61,6 @@ namespace MonkVG {
 	
 	bool OpenGLContext::Initialize() {
 	
-//		/* setup GL projection */
-//		glViewport(0,0, _width, _height);
-//		
-//		glMatrixMode(GL_PROJECTION);
-//		glLoadIdentity();
-//		glOrthof(0, _width, _height, 0, -1, 1);
-//		glMatrixMode(GL_MODELVIEW);
-//		glLoadIdentity();
-		
-		return true;
-	}
-	
-	
-	bool OpenGLContext::Terminate() {
-		return true;
-	}
-	
-	
-	void OpenGLContext::beginRender() {
-		
 		CHECK_GL_ERROR;
 		
 		// get viewport to restore back when we are done
@@ -103,7 +83,8 @@ namespace MonkVG {
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		
-		glDisable( GL_CULL_FACE );
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_TEXTURE_2D);
 		
 		// turn on blending
 		glEnable(GL_BLEND);
@@ -111,23 +92,64 @@ namespace MonkVG {
 		
 		CHECK_GL_ERROR;
 		
+		return true;
+	}
+	
+	
+	bool OpenGLContext::Terminate() {
+		return true;
+	}
+	
+	
+	void OpenGLContext::beginRender() {
+		
+//		CHECK_GL_ERROR;
+//		
+//		// get viewport to restore back when we are done
+//		glGetIntegerv( GL_VIEWPORT, _viewport );
+//		glGetFloatv( GL_PROJECTION_MATRIX, _projection );
+//		glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+//		
+//		// get the color to back up when we are done
+//		glGetFloatv( GL_CURRENT_COLOR, _color );
+//		
+//		// setup GL projection 
+//		glViewport(0,0, _width, _height);
+//		
+//		glMatrixMode(GL_PROJECTION);
+//		glLoadIdentity();
+//		glOrthof(0, _width,		// left, right
+//				 0, _height,	// top, botton
+//				 -1, 1);		// near value, far value (depth)
+//		
+//		glMatrixMode(GL_MODELVIEW);
+//		glLoadIdentity();
+//		
+//		glDisable( GL_CULL_FACE );
+//		
+//		// turn on blending
+//		glEnable(GL_BLEND);
+//		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+//		
+//		CHECK_GL_ERROR;
+		
 	}
 	void OpenGLContext::endRender() {
-		
-		CHECK_GL_ERROR;
-		
-		// todo: restore state to be nice to other apps
-		// restore the old viewport
-		glMatrixMode( GL_PROJECTION );
-		glLoadMatrixf( _projection );
-		glViewport( _viewport[0], _viewport[1], _viewport[2], _viewport[3] );
-		glMatrixMode( GL_MODELVIEW );			
-		glLoadMatrixf( _modelview );
-		
-		// restore color
-		glColor4f( _color[0], _color[1], _color[2], _color[3] );
-		
-		CHECK_GL_ERROR;
+//		
+//		CHECK_GL_ERROR;
+//		
+//		// todo: restore state to be nice to other apps
+//		// restore the old viewport
+//		glMatrixMode( GL_PROJECTION );
+//		glLoadMatrixf( _projection );
+//		glViewport( _viewport[0], _viewport[1], _viewport[2], _viewport[3] );
+//		glMatrixMode( GL_MODELVIEW );			
+//		glLoadMatrixf( _modelview );
+//		
+//		// restore color
+//		glColor4f( _color[0], _color[1], _color[2], _color[3] );
+//		
+//		CHECK_GL_ERROR;
 	}
 
 	

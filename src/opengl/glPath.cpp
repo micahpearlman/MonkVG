@@ -98,14 +98,14 @@ namespace MonkVG {
 		mat44[3][1] = active.get( 1, 2 );
 		
 		
-		glMatrixMode( GL_MODELVIEW );
+		//glMatrixMode( GL_MODELVIEW );
 		glPushMatrix();
 		glLoadMatrixf( &mat44[0][0] );
 		
 		if( paintModes & VG_FILL_PATH ) {
 			
 			// draw
-			glDisable(GL_TEXTURE_2D);
+			//glDisable(GL_TEXTURE_2D);
 			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 			glDisableClientState( GL_COLOR_ARRAY );
 			
@@ -122,7 +122,7 @@ namespace MonkVG {
 		
 		if ( paintModes & VG_STROKE_PATH ) {
 			// draw
-			glDisable(GL_TEXTURE_2D);
+			//glDisable(GL_TEXTURE_2D);
 			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 			glDisableClientState( GL_COLOR_ARRAY );
 			
