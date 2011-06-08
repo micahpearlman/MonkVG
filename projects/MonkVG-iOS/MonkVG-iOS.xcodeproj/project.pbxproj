@@ -651,9 +651,10 @@
 					../../glu/include,
 					../../include,
 				);
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -670,9 +671,10 @@
 					../../glu/include,
 					../../include,
 				);
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
