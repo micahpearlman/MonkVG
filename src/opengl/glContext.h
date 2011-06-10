@@ -50,6 +50,8 @@ namespace MonkVG {
 		void beginRender();
 		void endRender();
 		
+		virtual void resize();
+		
 		
 		static void checkGLError();
 		

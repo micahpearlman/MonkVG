@@ -75,6 +75,7 @@ namespace MonkVG {
 			_height = h;
 		}
 		
+		virtual void resize() = 0;
 		
 		//// parameters ////
 		void set( VGParamType type, VGfloat f );

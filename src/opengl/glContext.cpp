@@ -71,17 +71,7 @@ namespace MonkVG {
 		// get the color to back up when we are done
 		glGetFloatv( GL_CURRENT_COLOR, _color );
 		
-		// setup GL projection 
-		glViewport(0,0, _width, _height);
-		
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrthof(0, _width,		// left, right
-				 0, _height,	// top, botton
-				 -1, 1);		// near value, far value (depth)
-		
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		resize();
 		
 		glDisable(GL_CULL_FACE);
 		glDisable(GL_TEXTURE_2D);
@@ -93,6 +83,20 @@ namespace MonkVG {
 		CHECK_GL_ERROR;
 		
 		return true;
+	}
+	
+	void OpenGLContext::resize() {
+		// setup GL projection 
+		glViewport(0,0, _width, _height);
+		
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrthof(0, _width,		// left, right
+				 0, _height,	// top, botton
+				 -1, 1);		// near value, far value (depth)
+		
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 	}
 	
 	

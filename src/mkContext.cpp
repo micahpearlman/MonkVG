@@ -19,6 +19,7 @@ VG_API_CALL VGboolean vgCreateContextSH(VGint width, VGint height)
 
 	IContext::instance().setWidth( width );
 	IContext::instance().setHeight( height );
+	IContext::instance().resize();
 	
 	return VG_TRUE;
 }
@@ -27,6 +28,8 @@ VG_API_CALL void vgResizeSurfaceSH(VGint width, VGint height)
 {
 	IContext::instance().setWidth( width );
 	IContext::instance().setHeight( height );
+	IContext::instance().resize();
+
 }
 
 VG_API_CALL void vgDestroyContextSH()
