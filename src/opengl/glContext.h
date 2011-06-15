@@ -31,6 +31,10 @@ namespace MonkVG {
 		virtual void destroyPaint( IPaint* paint );
 		virtual IPaint* createPaint();
 
+		/// paint overrides
+		virtual void setStrokePaint( IPaint* paint );
+		virtual void setFillPaint( IPaint* paint );
+
 		//// platform specific execution of stroke and fill ////
 		virtual void stroke();
 		virtual void fill();
@@ -46,9 +50,12 @@ namespace MonkVG {
 		virtual void rotate( VGfloat angle );
 		virtual void setTransform( const VGfloat* t ) ;
 		virtual void multiply( const VGfloat* t );
+		void loadGLMatrix();
+		
 		
 		void beginRender();
 		void endRender();
+		
 		
 		virtual void resize();
 		

@@ -73,47 +73,47 @@ namespace MonkVG {
 		glContext.beginRender();
 		
 		
-		Matrix33 active = *IContext::instance().getActiveMatrix();
-		// a	b	0
-		// c	d	0
-		// tx	ty	1
-		
-		GLfloat mat44[4][4];
-		for( int x = 0; x < 4; x++ )
-			for( int y = 0; y < 4; y++ )
-				mat44[x][y] = 0;
-		mat44[0][0] = 1.0f;
-		mat44[1][1] = 1.0f;
-		mat44[2][2] = 1.0f;
-		mat44[3][3]	= 1.0f;
-		
-		// rotate (note transposed)
-		mat44[0][0] = active.get( 0, 0 );
-		mat44[0][1] = active.get( 1, 0 );
-		mat44[1][0]	= active.get( 0, 1 );
-		mat44[1][1] = active.get( 1, 1 );
-		
-		// scale
-		mat44[3][0] = active.get( 0, 2 );
-		mat44[3][1] = active.get( 1, 2 );
-		
-		
-		//glMatrixMode( GL_MODELVIEW );
-		glPushMatrix();
-		glLoadMatrixf( &mat44[0][0] );
+//		Matrix33 active = *IContext::instance().getActiveMatrix();
+//		// a	b	0
+//		// c	d	0
+//		// tx	ty	1
+//		
+//		GLfloat mat44[4][4];
+//		for( int x = 0; x < 4; x++ )
+//			for( int y = 0; y < 4; y++ )
+//				mat44[x][y] = 0;
+//		mat44[0][0] = 1.0f;
+//		mat44[1][1] = 1.0f;
+//		mat44[2][2] = 1.0f;
+//		mat44[3][3]	= 1.0f;
+//		
+//		// rotate (note transposed)
+//		mat44[0][0] = active.get( 0, 0 );
+//		mat44[0][1] = active.get( 1, 0 );
+//		mat44[1][0]	= active.get( 0, 1 );
+//		mat44[1][1] = active.get( 1, 1 );
+//		
+//		// scale
+//		mat44[3][0] = active.get( 0, 2 );
+//		mat44[3][1] = active.get( 1, 2 );
+//		
+//		
+//		//glMatrixMode( GL_MODELVIEW );
+//		glPushMatrix();
+//		glLoadMatrixf( &mat44[0][0] );
 		
 		if( paintModes & VG_FILL_PATH ) {
 			
 			// draw
-			//glDisable(GL_TEXTURE_2D);
-			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-			glDisableClientState( GL_COLOR_ARRAY );
-			
-			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);			
+//			glDisable(GL_TEXTURE_2D);
+//			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//			glDisableClientState( GL_COLOR_ARRAY );
+//			
+//			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);			
 
 			IContext::instance().fill();
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-			glEnableClientState( GL_VERTEX_ARRAY );
+//			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
 			glBindBuffer( GL_ARRAY_BUFFER, 0 );
@@ -123,12 +123,12 @@ namespace MonkVG {
 		if ( paintModes & VG_STROKE_PATH ) {
 			// draw
 			//glDisable(GL_TEXTURE_2D);
-			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-			glDisableClientState( GL_COLOR_ARRAY );
+//			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//			glDisableClientState( GL_COLOR_ARRAY );
 			
 			IContext::instance().stroke();
 			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-			glEnableClientState( GL_VERTEX_ARRAY );
+//			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
 			
@@ -137,7 +137,7 @@ namespace MonkVG {
 		}
 		
 		glContext.endRender();
-		glPopMatrix();
+		//		glPopMatrix();
 		
 		CHECK_GL_ERROR;
 		

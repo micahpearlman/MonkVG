@@ -16,6 +16,14 @@ namespace MonkVG {
 	
 	class OpenGLPaint : public IPaint {
 	public:
+		OpenGLPaint();
+		bool isDirty() { return _isDirty; }
+		void setIsDirty( bool b ) { _isDirty = b; }
+		void setGLState();
+		
+	private:
+		bool	_isDirty;
+		
 	};
 }
 #endif // __qzPaint_h__

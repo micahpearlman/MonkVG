@@ -8,4 +8,29 @@
  */
 
 #include "glPaint.h"
+#if defined(__APPLE__)
+#include "TargetConditionals.h"
+#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+#include "glu.h"
+#else
+#include <OpenGL/glu.h>
+#define glOrthof glOrtho
+#endif
+#endif // #if defined(__APPLE__)
 
+
+namespace MonkVG {
+	OpenGLPaint::OpenGLPaint()
+	:	IPaint()
+	,	_isDirty( true )
+	{
+		
+	}
+	
+	void OpenGLPaint::setGLState() {
+		if ( isDirty() ) {
+			const VGfloat* c = getPaintColor();
+			glColor4f(c[0], c[1], c[2], c[3] );
+		}
+	}
+}

@@ -41,13 +41,13 @@ namespace MonkVG {
 		virtual void clear(VGint x, VGint y, VGint width, VGint height) = 0;
 		
 		//// Paints ////
-		inline void setStrokePaint( IPaint* paint ) {
+		virtual void setStrokePaint( IPaint* paint ) {
 			_stroke_paint = paint;
 		}
 		inline IPaint* getStrokePaint() const {
 			return _stroke_paint;
 		}
-		inline void setFillPaint( IPaint* paint ) {
+		virtual void setFillPaint( IPaint* paint ) {
 			_fill_paint = paint;
 		}
 		inline IPaint* getFillPaint() {

@@ -80,6 +80,12 @@ namespace MonkVG {
 		glEnable(GL_BLEND);
 		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 		
+		glDisable(GL_TEXTURE_2D);
+		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		glDisableClientState( GL_COLOR_ARRAY );
+		glEnableClientState( GL_VERTEX_ARRAY );
+		
+		
 		CHECK_GL_ERROR;
 		
 		return true;
@@ -106,6 +112,13 @@ namespace MonkVG {
 	
 	
 	void OpenGLContext::beginRender() {
+//		glDisable(GL_TEXTURE_2D);
+//		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+//		glDisableClientState( GL_COLOR_ARRAY );
+//		glEnableClientState( GL_VERTEX_ARRAY );
+		
+		//glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);			
+
 		
 //		CHECK_GL_ERROR;
 //		
@@ -182,27 +195,100 @@ namespace MonkVG {
 		return (IPaint*)paint;
 	}
 	
+	void OpenGLContext::setStrokePaint( IPaint* paint ) {
+		if ( paint != _stroke_paint ) {
+			IContext::setStrokePaint( paint );
+			OpenGLPaint* glPaint = (OpenGLPaint*)_stroke_paint;
+			//glPaint->setGLState();
+			glPaint->setIsDirty( true );
+		}
+	}
+	
+	void OpenGLContext::setFillPaint( IPaint* paint ) {
+		if ( paint != _fill_paint ) {
+			IContext::setFillPaint( paint );
+			OpenGLPaint* glPaint = (OpenGLPaint*)_fill_paint;
+			//glPaint->setGLState();
+			glPaint->setIsDirty( true );
+		}
+		
+	}
+
+	
 	void OpenGLContext::stroke() {
 		if ( _stroke_paint ) {
-			const VGfloat* c = _stroke_paint->getPaintColor();
-			glColor4f(c[0], c[1], c[2], c[3] );
+			OpenGLPaint* glPaint = (OpenGLPaint*)_stroke_paint;
+			glPaint->setGLState();
+			glPaint->setIsDirty( false );
+			// set the fill paint to dirty
+			if ( _fill_paint ) {
+				glPaint = (OpenGLPaint*)_fill_paint;
+				glPaint->setIsDirty( true );
+			}
 		}
 	}
 	
 	void OpenGLContext::fill() {
+		
 		if ( _fill_paint ) {
-			const VGfloat* c = _fill_paint->getPaintColor();
-			glColor4f(c[0], c[1], c[2], c[3] );
+			OpenGLPaint* glPaint = (OpenGLPaint*)_fill_paint;
+			glPaint->setGLState();
+			glPaint->setIsDirty( false );
+			// set the stroke paint to dirty
+			if ( _stroke_paint ) {
+				glPaint = (OpenGLPaint*)_stroke_paint;
+				glPaint->setIsDirty( true );
+			}
 		}
+
+//		if ( _fill_paint ) {
+//			const VGfloat* c = _fill_paint->getPaintColor();
+//			glColor4f(c[0], c[1], c[2], c[3] );
+//		}
 		
 	}
 	
 	void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {
 	}
 	
+	void OpenGLContext::loadGLMatrix() {
+		Matrix33& active = *getActiveMatrix();
+		// a	b	0
+		// c	d	0
+		// tx	ty	1
+		
+		GLfloat mat44[4][4];
+		for( int x = 0; x < 4; x++ )
+			for( int y = 0; y < 4; y++ )
+				mat44[x][y] = 0;
+		mat44[0][0] = 1.0f;
+		mat44[1][1] = 1.0f;
+		mat44[2][2] = 1.0f;
+		mat44[3][3]	= 1.0f;
+		
+		// rotate (note transposed)
+		mat44[0][0] = active.get( 0, 0 );
+		mat44[0][1] = active.get( 1, 0 );
+		mat44[1][0]	= active.get( 0, 1 );
+		mat44[1][1] = active.get( 1, 1 );
+		
+		// scale
+		mat44[3][0] = active.get( 0, 2 );
+		mat44[3][1] = active.get( 1, 2 );
+		
+		
+		//glMatrixMode( GL_MODELVIEW );
+		//glPushMatrix();
+		glLoadMatrixf( &mat44[0][0] );
+		
+	}
+	
+
+	
 	void OpenGLContext::setIdentity() {
 		Matrix33* active = getActiveMatrix();
 		active->setIdentity();
+		loadGLMatrix();
 	}
 	
 	void OpenGLContext::transform( VGfloat* t ) {
@@ -215,6 +301,7 @@ namespace MonkVG {
 				t[(y*3)+x] = active->get( y, x );
 			}
 		}
+		
 	}
 	
 	void OpenGLContext::setTransform( const VGfloat* t )  {
@@ -235,6 +322,7 @@ namespace MonkVG {
 				active->set( y, x, t[(y*3)+x] );
 			}
 		}
+		loadGLMatrix();
 	}
 	
 	
@@ -250,6 +338,7 @@ namespace MonkVG {
 		//active->copy( m );
 		//active->multiply( m );
 		active->postMultiply( m );
+		loadGLMatrix();
 	}
 
 	void OpenGLContext::scale( VGfloat sx, VGfloat sy ) {
@@ -260,6 +349,7 @@ namespace MonkVG {
         Matrix33 tmp;
         Matrix33::multiply( tmp, scale, *active );
 		active->copy( tmp );
+		loadGLMatrix();
 	}
 	void OpenGLContext::translate( VGfloat x, VGfloat y ) {
 		
@@ -271,6 +361,7 @@ namespace MonkVG {
 		//Matrix33::multiply( tmp, *active, translate );
 		Matrix33::multiply( tmp, translate, *active );
 		active->copy( tmp );
+		loadGLMatrix();
 	}
 	void OpenGLContext::rotate( VGfloat angle ) {
 		Matrix33* active = getActiveMatrix();
@@ -280,6 +371,7 @@ namespace MonkVG {
 		tmp.setIdentity();
 		Matrix33::multiply( tmp, rotate, *active );
 		active->copy( tmp );
+		loadGLMatrix();
 	}
 	
 	
