@@ -11,14 +11,12 @@
 #include <fstream>
 #include <sstream>
 #include <ostream>
-#include "svg.h"
 
 
 extern "C" void loadTiger();
 extern "C" void display(float dt);
 
 using namespace std;
-SVGHandler* _handler;
 
 
 
@@ -63,23 +61,6 @@ SVGHandler* _handler;
 //		loadTiger();
 //		
 //
-//		MonkSVG::SVG svg_parser;
-//		_handler = new SVGHandler;
-//		
-//		svg_parser.initialize( _handler );
-//		
-//		NSString *base_path = [[NSBundle mainBundle] resourcePath];
-//		std::string path = std::string( [base_path UTF8String] ) + string("/circle_poly.svg");
-//		
-//		fstream file( path.c_str() );
-//		if ( file.is_open() ) {
-//			std::string line;
-//			std::string buf;
-//			while( std::getline( file, line) )
-//				buf += line;
-//			std::cout << "read: " << buf << "\n";
-//			svg_parser.read( buf );
-//		}
 		
 		
     }
@@ -90,7 +71,6 @@ SVGHandler* _handler;
 
 - (void)render
 {
-	static float ang = 0;
     // This application only creates a single context which is already set current at this point.
     // This call is redundant, but needed if dealing with multiple contexts.
     [EAGLContext setCurrentContext:context];
@@ -100,20 +80,14 @@ SVGHandler* _handler;
     glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-//	_handler->draw();
-//	display(0.05f);
 	
 	VGfloat clearColor[] = {1,1,1,1};
 	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
-	vgClear(0,0,320,480);
+	vgClear(0,0,backingWidth,backingHeight);
 	
 	
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
 	vgLoadIdentity();
-//	vgTranslate(320/2,(480/2)/2);
-//	vgRotate(ang);
-//	ang += 0.5f;
-	
 	vgDrawPath( _path, VG_FILL_PATH );
 
     // This application only creates a single color renderbuffer which is already bound at this point.

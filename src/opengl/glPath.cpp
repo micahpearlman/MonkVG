@@ -236,8 +236,11 @@ namespace MonkVG {
 		gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (*) ( )) &OpenGLPath::tessVertex );
 		gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (*) ( )) &OpenGLPath::tessCombine );
 		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (*)())&OpenGLPath::tessError );
-		// TODO: SET WINDING RULE BASED ON THE OPENVG SETTING!!!
-		gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
+		if( IContext::instance().getFillRule() == VG_EVEN_ODD ) {
+			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
+		} else if( IContext::instance().getFillRule() == VG_NON_ZERO ) {
+			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
+		}
 		gluTessProperty( _fillTesseleator, GLU_TESS_TOLERANCE, 0.5f );
 		
 		gluTessBeginPolygon( _fillTesseleator, this );

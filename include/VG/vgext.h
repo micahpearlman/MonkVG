@@ -52,9 +52,17 @@ extern "C" {
 #endif
 
 /*-------------------------------------------------------------------------------
- * KHR extensions
+ * MonkVG extensions
  *------------------------------------------------------------------------------*/
 
+
+	typedef enum {
+		VG_TESSELLATION_ITERATIONS_MNK = 0x1170,
+		VG_PARAM_TYPE_MNK_FORCE_SIZE = VG_MAX_ENUM
+	} VGParamTypeMNK;
+	
+	
+	
 typedef enum  {
 
 #ifndef VG_KHR_iterative_average_blur

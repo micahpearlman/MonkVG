@@ -95,7 +95,10 @@ namespace MonkVG {
 		,	_stroke_paint( 0 )
 		,	_fill_paint( 0 )
 		,	_active_matrix( &_path_user_to_surface )
-		,	_fill_rule( VG_NON_ZERO )
+		,	_fill_rule( VG_EVEN_ODD )
+		,	_renderingQuality( VG_RENDERING_QUALITY_BETTER )
+		,	_tessellationIterations( 16 )
+		,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
 	{
 		_active_matrix->setIdentity();
 	}
@@ -132,6 +135,9 @@ namespace MonkVG {
 			case VG_FILL_RULE:
 				setFillRule( (VGFillRule)i );
 				break;
+			case VG_TESSELLATION_ITERATIONS_MNK:
+				setTessellationIterations( i );
+				break;
 			default:
 				break;
 		}
@@ -160,8 +166,24 @@ namespace MonkVG {
 		}
 		
 	}
-	void IContext::get( VGParamType type, VGint ) const {
+	void IContext::get( VGParamType type, VGint& i ) const {
+		i = -1;
+
+		switch ( type ) {
+			case VG_MATRIX_MODE:
+				i = getMatrixMode( );
+				break;
+			case VG_FILL_RULE:
+				i =  getFillRule( );
+				break;
+			case VG_TESSELLATION_ITERATIONS_MNK:
+				i = getTessellationIterations( );
+				break;
+			default:
+				break;
+		}
 		
+
 	}
 	
 }

@@ -19,3 +19,11 @@ Currently only XCode iOS and OSX projects.
 
 TODO: standard *nix Makefiles.
 TODO: Android projects.
+
+## Extensions
+
+MonkVG was originally created for games, so speed has usually been prefered over quality or full OpenVG compliance.  To improve speed there have been MonkVG specific extensions. See "vgext.h" for some of the details.
+
+
+
+

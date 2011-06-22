@@ -11,6 +11,7 @@
 #define __mkContext_h__
 
 #include "VG/openvg.h"
+#include "VG/vgext.h"
 #include "mkPath.h"
 #include "mkPaint.h"
 #include "mkMath.h"
@@ -83,7 +84,7 @@ namespace MonkVG {
 		void set( VGParamType type, VGint i );
 		void get( VGParamType type, VGfloat &f ) const;
 		void get( VGParamType type, VGfloat *fv ) const;
-		void get( VGParamType type, VGint ) const; 
+		void get( VGParamType type, VGint &i ) const; 
 		
 		//// stroke parameters ////
 		inline void setStrokeLineWidth( VGfloat w ) {
@@ -111,11 +112,12 @@ namespace MonkVG {
 			_path_user_to_surface = m;
 		}
 		inline void setMatrixMode( VGMatrixMode mode ) {
-//			VG_MATRIX_PATH_USER_TO_SURFACE              = 0x1400,
-//			VG_MATRIX_IMAGE_USER_TO_SURFACE             = 0x1401,
-//			VG_MATRIX_FILL_PAINT_TO_USER                = 0x1402,
-//			VG_MATRIX_STROKE_PAINT_TO_USER              = 0x1403,
-//			VG_MATRIX_GLYPH_USER_TO_SURFACE             = 0x1404,
+			//			VG_MATRIX_PATH_USER_TO_SURFACE              = 0x1400,
+			//			VG_MATRIX_IMAGE_USER_TO_SURFACE             = 0x1401,
+			//			VG_MATRIX_FILL_PAINT_TO_USER                = 0x1402,
+			//			VG_MATRIX_STROKE_PAINT_TO_USER              = 0x1403,
+			//			VG_MATRIX_GLYPH_USER_TO_SURFACE             = 0x1404,
+			_matrixMode = mode;
 			switch (mode) {
 				case VG_MATRIX_PATH_USER_TO_SURFACE:
 					_active_matrix = &_path_user_to_surface;
@@ -125,6 +127,7 @@ namespace MonkVG {
 					break;
 			}
 		}
+		inline VGMatrixMode getMatrixMode() const { return _matrixMode; }
 		inline Matrix33* getActiveMatrix() {
 			return _active_matrix;
 		}
@@ -145,6 +148,13 @@ namespace MonkVG {
 			_error = e;
 		}
 		
+		/// rendering quality
+		inline VGRenderingQuality getRenderingQuality() const { return _renderingQuality; }
+		inline void setRenderingQuality( VGRenderingQuality rc ) { _renderingQuality = rc; }
+		
+		inline int32_t getTessellationIterations() const { return _tessellationIterations; }
+		inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
+		
 	protected:
 	
 		// surface properties
@@ -154,23 +164,28 @@ namespace MonkVG {
 		// matrix transforms
 		Matrix33		_path_user_to_surface;
 		Matrix33		*_active_matrix;
+		VGMatrixMode	_matrixMode;
 		
 		// stroke properties
-//		VG_STROKE_LINE_WIDTH                        = 0x1110,
-//		VG_STROKE_CAP_STYLE                         = 0x1111,
-//		VG_STROKE_JOIN_STYLE                        = 0x1112,
-//		VG_STROKE_MITER_LIMIT                       = 0x1113,
-//		VG_STROKE_DASH_PATTERN                      = 0x1114,
-//		VG_STROKE_DASH_PHASE                        = 0x1115,
-//		VG_STROKE_DASH_PHASE_RESET                  = 0x1116,
+		//		VG_STROKE_LINE_WIDTH                        = 0x1110,
+		//		VG_STROKE_CAP_STYLE                         = 0x1111,
+		//		VG_STROKE_JOIN_STYLE                        = 0x1112,
+		//		VG_STROKE_MITER_LIMIT                       = 0x1113,
+		//		VG_STROKE_DASH_PATTERN                      = 0x1114,
+		//		VG_STROKE_DASH_PHASE                        = 0x1115,
+		//		VG_STROKE_DASH_PHASE_RESET                  = 0x1116,
 		VGfloat			_stroke_line_width;			// VG_STROKE_LINE_WIDTH
 		
+		// rendering quality
+		VGRenderingQuality		_renderingQuality;
+		int32_t					_tessellationIterations;
+
 		// paints
 		IPaint*			_stroke_paint;
 		IPaint*			_fill_paint;
 		VGFillRule		_fill_rule;
 		// error 
-		VGErrorCode		_error;
+		VGErrorCode				_error;
 	};
 }
 
