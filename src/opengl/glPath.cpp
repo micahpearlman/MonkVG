@@ -284,7 +284,13 @@ namespace MonkVG {
 					c[1] = closeTo.y;
 					c[2] = 0;
 					// do not think this is necessary for the tesselator						
-					//gluTessVertex( _fillTesseleator, c, c );
+					gluTessVertex( _fillTesseleator, c, c );
+					
+					if ( num_contours ) {
+						gluTessEndContour( _fillTesseleator );
+						num_contours--;
+					}
+
 				} break;
 				case (VG_MOVE_TO >> 1):
 				{	
@@ -360,7 +366,7 @@ namespace MonkVG {
 						p3y += prev.y;
 					}
 					
-					VGfloat increment = 1.0f / 4.0f;
+					VGfloat increment = 1.0f / 16.0f;
 					//printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						v3_t c;
@@ -400,7 +406,7 @@ namespace MonkVG {
 					
 					if ( success ) {
 						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
-						const int steps = 4;
+						const int steps = 16;
 						VGfloat beta = 0;	// angle. todo
 						VGfloat sinbeta = sinf( beta );
 						VGfloat cosbeta = cosf( beta );
@@ -789,7 +795,7 @@ namespace MonkVG {
 		//		OpenGLPath* me = (OpenGLPath*)user;
 		//		me->endOfTesselation();
 		
-		//		printf("end\n");
+		//printf("end\n");
 	}
 	
 	
@@ -861,14 +867,6 @@ namespace MonkVG {
 		v.z = coords[2];
 		me->addTessVertex( v );
 		*outData = me->tessVerticesBackPtr();
-		
-//		GLdouble* vertex = new GLdouble[3];
-//		vertex[0] = coords[0];
-//		vertex[1] = coords[1];
-//		vertex[2] = coords[2];		
-//		*outData = vertex;
-//		//todo!!!		me->addVertexToDestroy( v );
-//printf("combine\n");
 		
 	}
 	
