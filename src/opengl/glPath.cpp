@@ -347,6 +347,42 @@ namespace MonkVG {
 					_tessVertices.push_back( c );
 					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
 				} break;
+				case (VG_SCUBIC_TO >> 1): 
+				{
+					prev = coords;
+					VGfloat cp2x = *coordsIter; coordsIter++;
+					VGfloat cp2y = *coordsIter; coordsIter++;
+					VGfloat p3x = *coordsIter; coordsIter++;
+					VGfloat p3y = *coordsIter; coordsIter++;
+
+					
+					if ( isRelative ) {
+						cp2x += prev.x;
+						cp2y += prev.y;
+						p3x += prev.x;
+						p3y += prev.y;
+					}
+					
+					VGfloat cp1x = 2.0f * cp2x - p3x;
+					VGfloat cp1y = 2.0f * cp2y - p3y;
+
+					
+					VGfloat increment = 1.0f / 16.0f;
+					//printf("\tcubic: ");
+					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+						v3_t c;
+						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+						_tessVertices.push_back( c );
+						gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+						//	c.print();
+					}
+					//printf("\n");
+					coords.x = p3x;
+					coords.y = p3y;
+
+				}
+				break;
 				case (VG_CUBIC_TO >> 1):
 				{
 					prev = coords;
@@ -381,6 +417,7 @@ namespace MonkVG {
 					coords.y = p3y;
 					
 				} break;
+				
 				case (VG_SCCWARC_TO >> 1):
 				case (VG_SCWARC_TO >> 1):
 				case (VG_LCCWARC_TO >> 1):
@@ -611,6 +648,41 @@ namespace MonkVG {
 					buildFatLineSegment( vertices, prev, coords, stroke_width );
 					
 				} break;
+				case (VG_SCUBIC_TO >> 1): 
+				{
+					prev = coords;
+					VGfloat cp2x = *coordsIter; coordsIter++;
+					VGfloat cp2y = *coordsIter; coordsIter++;
+					VGfloat p3x = *coordsIter; coordsIter++;
+					VGfloat p3y = *coordsIter; coordsIter++;
+					
+					
+					if ( isRelative ) {
+						cp2x += prev.x;
+						cp2y += prev.y;
+						p3x += prev.x;
+						p3y += prev.y;
+					}
+					
+					VGfloat cp1x = 2.0f * cp2x - p3x;
+					VGfloat cp1y = 2.0f * cp2y - p3y;
+					
+					
+					VGfloat increment = 1.0f / 16.0f;
+					//printf("\tcubic: ");
+					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+						v2_t c;
+						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+						buildFatLineSegment( vertices, prev, c, stroke_width );
+						prev = c;
+					}
+					coords.x = p3x;
+					coords.y = p3y;
+					
+				}
+				break;
+	
 				case (VG_CUBIC_TO >> 1):	// todo
 				{
 					prev = coords;
