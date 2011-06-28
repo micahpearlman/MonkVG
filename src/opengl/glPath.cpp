@@ -10,6 +10,7 @@
 
 #include "glPath.h"
 #include "glContext.h"
+#include "glBatch.h"
 #include <cassert>
 
 namespace MonkVG {
@@ -34,8 +35,8 @@ namespace MonkVG {
 	}
 	
 	void OpenGLPath::buildFillIfDirty() {
-		// only build the fill
-		if ( _isFillDirty ) {
+		// only build the fill if dirty or we are in batch build mode
+		if ( _isFillDirty || IContext::instance().currentBatch() ) {
 			buildFill();
 		}
 		_isFillDirty = false;
@@ -62,82 +63,44 @@ namespace MonkVG {
 			buildFillIfDirty();
 		}
 
-		if( paintModes & VG_STROKE_PATH && _isStrokeDirty == true ) {
+		if( paintModes & VG_STROKE_PATH && (_isStrokeDirty == true || IContext::instance().currentBatch())  ) {
 			buildStroke();
 			_isStrokeDirty = false;
 		}
 		
-		
+		endOfTesselation( paintModes );
+
+
+		if ( glContext.currentBatch() ) {
+			return true;		// creating a batch so bail from here
+		}
 
 
 		glContext.beginRender();
 		
-		
-//		Matrix33 active = *IContext::instance().getActiveMatrix();
-//		// a	b	0
-//		// c	d	0
-//		// tx	ty	1
-//		
-//		GLfloat mat44[4][4];
-//		for( int x = 0; x < 4; x++ )
-//			for( int y = 0; y < 4; y++ )
-//				mat44[x][y] = 0;
-//		mat44[0][0] = 1.0f;
-//		mat44[1][1] = 1.0f;
-//		mat44[2][2] = 1.0f;
-//		mat44[3][3]	= 1.0f;
-//		
-//		// rotate (note transposed)
-//		mat44[0][0] = active.get( 0, 0 );
-//		mat44[0][1] = active.get( 1, 0 );
-//		mat44[1][0]	= active.get( 0, 1 );
-//		mat44[1][1] = active.get( 1, 1 );
-//		
-//		// scale
-//		mat44[3][0] = active.get( 0, 2 );
-//		mat44[3][1] = active.get( 1, 2 );
-//		
-//		
-//		//glMatrixMode( GL_MODELVIEW );
-//		glPushMatrix();
-//		glLoadMatrixf( &mat44[0][0] );
-		
-		if( paintModes & VG_FILL_PATH ) {
-			
-			// draw
-//			glDisable(GL_TEXTURE_2D);
-//			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-//			glDisableClientState( GL_COLOR_ARRAY );
-//			
-//			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);			
+		glEnableClientState( GL_VERTEX_ARRAY );
+		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		glDisableClientState( GL_COLOR_ARRAY );
 
+		if( paintModes & VG_FILL_PATH ) {
+			// draw
 			IContext::instance().fill();
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-//			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
 			glBindBuffer( GL_ARRAY_BUFFER, 0 );
-			
 		}
 		
 		if ( paintModes & VG_STROKE_PATH ) {
 			// draw
-			//glDisable(GL_TEXTURE_2D);
-//			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-//			glDisableClientState( GL_COLOR_ARRAY );
-			
 			IContext::instance().stroke();
 			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-//			glEnableClientState( GL_VERTEX_ARRAY );
 			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
-			
 			glBindBuffer( GL_ARRAY_BUFFER, 0 );			
-			
 		}
 		
 		glContext.endRender();
-		//		glPopMatrix();
 		
 		CHECK_GL_ERROR;
 		
@@ -226,6 +189,8 @@ namespace MonkVG {
 	
 	
 	void OpenGLPath::buildFill() {
+		
+		_vertices.clear();
 		
 		CHECK_GL_ERROR;
 		
@@ -516,8 +481,6 @@ namespace MonkVG {
 		gluDeleteTess( _fillTesseleator );
 		
 		
-		endOfTesselation();
-		
 		_fillTesseleator = 0;
 		
 		CHECK_GL_ERROR;
@@ -567,6 +530,7 @@ namespace MonkVG {
 	}
 	
 	void OpenGLPath::buildStroke() {
+		_strokeVertices.clear();
 		
 		// get the native OpenGL context
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
@@ -579,7 +543,7 @@ namespace MonkVG {
 		v2_t coords = {0,0};
 		v2_t prev = {0,0};
 		v2_t closeTo = {0,0}; 
-		vector<v2_t> vertices;
+		//vector<v2_t> vertices;
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
 			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
@@ -605,7 +569,7 @@ namespace MonkVG {
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
-					buildFatLineSegment( vertices, coords, closeTo, stroke_width );
+					buildFatLineSegment( _strokeVertices, coords, closeTo, stroke_width );
 				} break;
 				case (VG_MOVE_TO >> 1):
 				{	
@@ -623,7 +587,7 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					buildFatLineSegment( vertices, prev, coords, stroke_width );
+					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
 					
 					
 				} break;
@@ -635,7 +599,7 @@ namespace MonkVG {
 						coords.x += prev.x;
 					}
 					
-					buildFatLineSegment( vertices, prev, coords, stroke_width );
+					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
@@ -645,7 +609,7 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					buildFatLineSegment( vertices, prev, coords, stroke_width );
+					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
 					
 				} break;
 				case (VG_SCUBIC_TO >> 1): 
@@ -674,7 +638,7 @@ namespace MonkVG {
 						v2_t c;
 						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						buildFatLineSegment( vertices, prev, c, stroke_width );
+						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
 						prev = c;
 					}
 					coords.x = p3x;
@@ -709,7 +673,7 @@ namespace MonkVG {
 						v2_t c;
 						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						buildFatLineSegment( vertices, prev, c, stroke_width );
+						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
 						prev = c;
 					}
 					coords.x = p3x;
@@ -789,7 +753,7 @@ namespace MonkVG {
 							c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
 							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
 							//printf( "(%f, %f)\n", c[0], c[1] );
-							buildFatLineSegment( vertices, prev, c, stroke_width );
+							buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
 							prev = c;
 						}
 					}
@@ -805,32 +769,52 @@ namespace MonkVG {
 			}
 		}	// foreach segment
 		
-		// build the vertex buffer object VBO
-		if ( _strokeVBO != -1 ) {
-			glDeleteBuffers( 1, &_strokeVBO );
-			_strokeVBO = -1;
-		}
-		
-		glGenBuffers( 1, &_strokeVBO );
-		glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-		glBufferData( GL_ARRAY_BUFFER, vertices.size() * sizeof(float) * 2, &vertices[0], GL_STATIC_DRAW );
-		_numberStrokeVertices = vertices.size();
 		
 		
 	}
 	
-	void OpenGLPath::endOfTesselation() {
-		if ( _fillVBO != -1 ) {
-			glDeleteBuffers( 1, &_fillVBO );
-			_fillVBO = -1;
+	void OpenGLPath::endOfTesselation( VGbitfield paintModes ) {
+		
+		/// build fill vbo
+		if ( _vertices.size() > 0 ) {
+			if ( _fillVBO != -1 ) {
+				glDeleteBuffers( 1, &_fillVBO );
+				_fillVBO = -1;
+			}
+			
+			glGenBuffers( 1, &_fillVBO );
+			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
+			glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
+			_numberFillVertices = _vertices.size()/2;
+			_tessVertices.clear();
 		}
 		
-		glGenBuffers( 1, &_fillVBO );
-		glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
-		_numberFillVertices = _vertices.size()/2;
-		_tessVertices.clear();
+		/// build stroke vbo 
+		if ( _strokeVertices.size() > 0 ) {
+			// build the vertex buffer object VBO
+			if ( _strokeVBO != -1 ) {
+				glDeleteBuffers( 1, &_strokeVBO );
+				_strokeVBO = -1;
+			}
+			
+			glGenBuffers( 1, &_strokeVBO );
+			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
+			glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
+			_numberStrokeVertices = _strokeVertices.size();
+
+		}
+		
+		OpenGLBatch* glBatch = (OpenGLBatch*)IContext::instance().currentBatch();
+		if( glBatch ) {	// if in batch mode update the current batch
+			glBatch->addPathVertexData( &_vertices[0], _vertices.size()/2, 
+									   (float*)&_strokeVertices[0], _strokeVertices.size(), 
+									   paintModes );
+
+		}
+		
+		// clear out vertex buffer
 		_vertices.clear();
+		_strokeVertices.clear();
 	}
 	
 	static GLdouble startVertex_[2];

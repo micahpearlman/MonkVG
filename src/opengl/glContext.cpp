@@ -10,6 +10,7 @@
 #include "glContext.h"
 #include "glPath.h"
 #include "glPaint.h"
+#include "glBatch.h"
 #include "mkCommon.h"
 
 namespace MonkVG {
@@ -195,6 +196,19 @@ namespace MonkVG {
 		return (IPaint*)paint;
 	}
 	
+	IBatch* OpenGLContext::createBatch() {
+		OpenGLBatch *batch = new OpenGLBatch();
+		if( batch == 0 )
+			setError( VG_OUT_OF_MEMORY_ERROR );
+		return (IBatch*)batch;
+	}
+	void OpenGLContext::destroyBatch( IBatch* batch ) {
+		if ( batch ) {
+			delete batch;
+		}
+	}
+
+	
 	void OpenGLContext::setStrokePaint( IPaint* paint ) {
 		if ( paint != _stroke_paint ) {
 			IContext::setStrokePaint( paint );
@@ -248,7 +262,18 @@ namespace MonkVG {
 		
 	}
 	
+	void OpenGLContext::startBatch( IBatch* batch ) {
+		assert( _currentBatch == 0 );	// can't have multiple batches going on at once
+		_currentBatch = batch;
+	}
+	void OpenGLContext::endBatch( IBatch* batch ) {
+		_currentBatch->finalize();
+		_currentBatch = 0;
+	}
+
+	
 	void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {
+		// TODO:
 	}
 	
 	void OpenGLContext::loadGLMatrix() {

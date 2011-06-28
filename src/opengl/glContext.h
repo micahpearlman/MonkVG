@@ -30,6 +30,10 @@ namespace MonkVG {
 		virtual void destroyPath( IPath* path );	
 		virtual void destroyPaint( IPaint* paint );
 		virtual IPaint* createPaint();
+		
+		virtual IBatch* createBatch();
+		virtual void destroyBatch( IBatch* batch );
+
 
 		/// paint overrides
 		virtual void setStrokePaint( IPaint* paint );
@@ -53,6 +57,7 @@ namespace MonkVG {
 		void loadGLMatrix();
 		
 		
+		
 		void beginRender();
 		void endRender();
 		
@@ -62,7 +67,11 @@ namespace MonkVG {
 		
 		static void checkGLError();
 		
-		
+		/// batch drawing
+		virtual void startBatch( IBatch* batch );
+		virtual void endBatch( IBatch* batch );
+
+
 	private:
 		
 		// restore values to play nice with other apps

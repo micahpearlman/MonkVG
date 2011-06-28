@@ -99,6 +99,7 @@ namespace MonkVG {
 		,	_renderingQuality( VG_RENDERING_QUALITY_BETTER )
 		,	_tessellationIterations( 16 )
 		,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
+		,	_currentBatch( 0 )
 	{
 		_active_matrix->setIdentity();
 	}

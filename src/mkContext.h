@@ -14,6 +14,7 @@
 #include "VG/vgext.h"
 #include "mkPath.h"
 #include "mkPaint.h"
+#include "mkBatch.h"
 #include "mkMath.h"
 
 namespace MonkVG {
@@ -33,6 +34,8 @@ namespace MonkVG {
 		virtual void destroyPath( IPath* path ) = 0;
 		virtual IPaint* createPaint() = 0;
 		virtual void destroyPaint( IPaint* paint ) = 0;
+		virtual IBatch* createBatch() = 0;
+		virtual void destroyBatch( IBatch* batch ) = 0;
 		
 		//// platform specific execution of stroke and fill ////
 		virtual void stroke() = 0;
@@ -155,6 +158,10 @@ namespace MonkVG {
 		inline int32_t getTessellationIterations() const { return _tessellationIterations; }
 		inline void setTessellationIterations( int32_t i ) { _tessellationIterations = i; }
 		
+		/// batch drawing
+		virtual void startBatch( IBatch* batch ) = 0;
+		virtual void endBatch( IBatch* batch ) = 0;
+		IBatch* currentBatch() { return _currentBatch; }
 	protected:
 	
 		// surface properties
@@ -184,6 +191,11 @@ namespace MonkVG {
 		IPaint*			_stroke_paint;
 		IPaint*			_fill_paint;
 		VGFillRule		_fill_rule;
+		
+		// batch
+		IBatch*			_currentBatch;
+
+		
 		// error 
 		VGErrorCode				_error;
 	};

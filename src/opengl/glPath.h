@@ -80,9 +80,9 @@ namespace MonkVG {
 		struct v2_t {
 			GLfloat x, y;
 			
-			void print() const {
-				printf("(%f, %f)\n", x, y);
-			}
+//			void print() const {
+//				printf("(%f, %f)\n", x, y);
+//			}
 		};
 		
 		
@@ -109,7 +109,8 @@ namespace MonkVG {
 		
 		GLUtesselator*		_fillTesseleator;
 		vector<GLfloat>		_vertices;
-		list<v3_t>		_tessVertices;
+		vector<v2_t>		_strokeVertices;
+		list<v3_t>			_tessVertices;
 		GLenum				_primType;
 		GLuint				_fillVBO;
 		GLuint				_strokeVBO;
@@ -124,7 +125,7 @@ namespace MonkVG {
 								GLfloat weight[4], void **outData,
 								void *polygonData );
 		static void tessError( GLenum errorCode );
-		void endOfTesselation();
+		void endOfTesselation( VGbitfield paintModes );
 		
 	private:	// utility methods
 		

@@ -136,7 +136,14 @@ namespace MonkVG {
 	
 		VGfloat _mat[3][3];
 	};
+	
+	inline void affineTransform( float result[2], const Matrix33& m, const float v[2] )	{ 
+		result[0] = v[0] * m.get(0,0) + v[1] * m.get(0,1) + m.get(0,2);
+		result[1] = v[0] * m.get(1,0) + v[1] * m.get(1,1) + m.get(1,2); 
+	}
+
 }
+
 
 #define RI_ASSERT(_) 
 
