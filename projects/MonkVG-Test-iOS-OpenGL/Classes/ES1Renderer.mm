@@ -58,6 +58,9 @@ using namespace std;
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
+		UIImage* image = [UIImage imageNamed:@"zero.png"];
+		[self buildVGImageFromUIImage:image];
+		
 //		loadTiger();
 //		
 //
@@ -66,6 +69,127 @@ using namespace std;
     }
 
     return self;
+}
+
+#define kMaxTextureSize	 1024
+- (void) buildVGImageFromUIImage:(UIImage *)uiImage
+{
+	NSUInteger				width,
+	height,
+	i;
+	CGContextRef			ctx = nil;
+	void*					data = nil;
+	CGColorSpaceRef			colorSpace;
+	void*					tempData;
+	unsigned int*			inPixel32;
+	unsigned short*			outPixel16;
+	BOOL					hasAlpha;
+	CGImageAlphaInfo		info;
+	CGAffineTransform		transform;
+	CGSize					imageSize;
+	VGImageFormat			pixelFormat;
+	CGImageRef				image;
+	UIImageOrientation		orientation;
+	BOOL					sizeToFit = NO;
+	
+	
+	image = [uiImage CGImage];
+	orientation = [uiImage imageOrientation]; 
+	
+	if(image == NULL) {
+		[self release];
+		NSLog(@"Image is Null");
+		return;
+	}
+	
+	
+	info = CGImageGetAlphaInfo(image);
+	hasAlpha = ((info == kCGImageAlphaPremultipliedLast) || (info == kCGImageAlphaPremultipliedFirst) || (info == kCGImageAlphaLast) || (info == kCGImageAlphaFirst) ? YES : NO);
+	if(CGImageGetColorSpace(image)) {
+		if(hasAlpha)
+			pixelFormat = VG_sRGBA_8888;
+		else
+			pixelFormat = VG_sRGB_565;
+	} else  //NOTE: No colorspace means a mask image
+		pixelFormat = VG_A_8;
+	
+	
+	imageSize = CGSizeMake(CGImageGetWidth(image), CGImageGetHeight(image));
+	transform = CGAffineTransformIdentity;
+	
+	width = imageSize.width;
+	
+	if((width != 1) && (width & (width - 1))) {
+		i = 1;
+		while((sizeToFit ? 2 * i : i) < width)
+			i *= 2;
+		width = i;
+	}
+	height = imageSize.height;
+	if((height != 1) && (height & (height - 1))) {
+		i = 1;
+		while((sizeToFit ? 2 * i : i) < height)
+			i *= 2;
+		height = i;
+	}
+	while((width > kMaxTextureSize) || (height > kMaxTextureSize)) {
+		width /= 2;
+		height /= 2;
+		transform = CGAffineTransformScale(transform, 0.5, 0.5);
+		imageSize.width *= 0.5;
+		imageSize.height *= 0.5;
+	}
+	
+	//colorSpace = CGImageGetColorSpace(image);
+	
+	switch(pixelFormat) {		
+		case VG_sRGBA_8888:
+			colorSpace = CGColorSpaceCreateDeviceRGB();
+			data = malloc(height * width * 4);
+			ctx = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+			CGColorSpaceRelease(colorSpace);
+			break;
+		case VG_sRGB_565:
+			colorSpace = CGColorSpaceCreateDeviceRGB();
+			data = malloc(height * width * 4);
+			ctx = CGBitmapContextCreate(data, width, height, 8, 4 * width, colorSpace, kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big);
+			CGColorSpaceRelease(colorSpace);
+			break;
+			
+		case VG_A_8:
+			data = malloc(height * width);
+			ctx = CGBitmapContextCreate(data, width, height, 8, width, NULL, kCGImageAlphaOnly);
+			break;				
+		default:
+			[NSException raise:NSInternalInconsistencyException format:@"Invalid pixel format"];
+	}
+	
+	
+	CGContextClearRect(ctx, CGRectMake(0, 0, width, height));
+	CGContextTranslateCTM(ctx, 0, height - imageSize.height);
+	
+	if(!CGAffineTransformIsIdentity(transform))
+		CGContextConcatCTM(ctx, transform);
+	CGContextDrawImage(ctx, CGRectMake(0, 0, CGImageGetWidth(image), CGImageGetHeight(image)), image);
+	//Convert "RRRRRRRRRGGGGGGGGBBBBBBBBAAAAAAAA" to "RRRRRGGGGGGBBBBB"
+	if(pixelFormat == VG_sRGB_565) {
+		tempData = malloc(height * width * 2);
+		inPixel32 = (unsigned int*)data;
+		outPixel16 = (unsigned short*)tempData;
+		for(i = 0; i < width * height; ++i, ++inPixel32)
+			*outPixel16++ = ((((*inPixel32 >> 0) & 0xFF) >> 3) << 11) | ((((*inPixel32 >> 8) & 0xFF) >> 2) << 5) | ((((*inPixel32 >> 16) & 0xFF) >> 3) << 0);
+		free(data);
+		data = tempData;
+		
+	}
+	
+	// create openvg image
+	_image = vgCreateImage(pixelFormat, width, height, 0 );
+	
+	vgImageSubData( _image, data, -1, pixelFormat, 0, 0, width, height );
+	
+	CGContextRelease(ctx);
+	free(data);
 }
 
 
@@ -89,6 +213,13 @@ using namespace std;
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
 	vgLoadIdentity();
 	vgDrawPath( _path, VG_FILL_PATH );
+	
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate( 50, 50 );
+	vgDrawImage( _image );
+
+	
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.

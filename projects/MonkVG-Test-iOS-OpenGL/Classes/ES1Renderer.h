@@ -27,12 +27,14 @@
     // The OpenGL ES names for the framebuffer and renderbuffer used to render to this view
     GLuint defaultFramebuffer, colorRenderbuffer;
 	
-	VGPath _path;
+	VGPath	_path;
 	VGPaint _paint;
+	VGImage _image;
 	
 }
 
 - (void)render;
 - (BOOL)resizeFromLayer:(CAEAGLLayer *)layer;
+- (void) buildVGImageFromUIImage:(UIImage *)uiImage;
 
 @end

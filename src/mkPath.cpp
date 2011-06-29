@@ -46,6 +46,8 @@ namespace MonkVG {	// Internal Implementation
 	}
 	
 	void IPath::copy( const IPath& src, const Matrix33& transform ) {
+		// TODO: transform!!!
+		// BUGBUG
 		setNumCoords( src.getNumCoords() );
 		setNumSegments( src.getNumSegments() );
 		_segments = src._segments;

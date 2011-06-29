@@ -11,6 +11,7 @@
 #include "glPath.h"
 #include "glPaint.h"
 #include "glBatch.h"
+#include "glImage.h"
 #include "mkCommon.h"
 
 namespace MonkVG {
@@ -171,6 +172,7 @@ namespace MonkVG {
 	}
 
 	
+	/// factories
 	
 	IPath* OpenGLContext::createPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) {
 	
@@ -202,13 +204,26 @@ namespace MonkVG {
 			setError( VG_OUT_OF_MEMORY_ERROR );
 		return (IBatch*)batch;
 	}
+	
 	void OpenGLContext::destroyBatch( IBatch* batch ) {
 		if ( batch ) {
 			delete batch;
 		}
 	}
-
 	
+	IImage* OpenGLContext::createImage( VGImageFormat format,
+									   VGint width, VGint height,
+									   VGbitfield allowedQuality) {
+		return new OpenGLImage( format, width, height, allowedQuality );
+	}
+	void OpenGLContext::destroyImage( IImage* image ) {
+		if ( image ) {
+			delete image;
+		}
+	}
+
+
+	/// state 
 	void OpenGLContext::setStrokePaint( IPaint* paint ) {
 		if ( paint != _stroke_paint ) {
 			IContext::setStrokePaint( paint );

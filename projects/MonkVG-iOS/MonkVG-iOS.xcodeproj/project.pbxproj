@@ -18,6 +18,10 @@
 		FA712FBE13B91A39002E9FDC /* mkBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = FA712FBC13B91A39002E9FDC /* mkBatch.h */; };
 		FA712FC113B91D36002E9FDC /* glBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA712FBF13B91D36002E9FDC /* glBatch.cpp */; };
 		FA712FC213B91D36002E9FDC /* glBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = FA712FC013B91D36002E9FDC /* glBatch.h */; };
+		FACFEDCF13BAB0E30045C681 /* mkImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDCD13BAB0E30045C681 /* mkImage.cpp */; };
+		FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDCE13BAB0E30045C681 /* mkImage.h */; };
+		FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDD113BAB2D40045C681 /* glImage.cpp */; };
+		FACFEDD413BAB2D40045C681 /* glImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDD213BAB2D40045C681 /* glImage.h */; };
 		FAE282AA121A08BB00823BCB /* MonkVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */; };
 		FAE282AB121A08BB00823BCB /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC95121A088200814394 /* mkBaseObject.h */; };
 		FAE282AC121A08BB00823BCB /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC96121A088200814394 /* mkCommon.h */; };
@@ -131,6 +135,10 @@
 		FA9ACCCA121A088200814394 /* glPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPaint.h; sourceTree = "<group>"; };
 		FA9ACCCB121A088200814394 /* glPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glPath.cpp; sourceTree = "<group>"; };
 		FA9ACCCC121A088200814394 /* glPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPath.h; sourceTree = "<group>"; };
+		FACFEDCD13BAB0E30045C681 /* mkImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkImage.cpp; path = ../../src/mkImage.cpp; sourceTree = "<group>"; };
+		FACFEDCE13BAB0E30045C681 /* mkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkImage.h; path = ../../src/mkImage.h; sourceTree = "<group>"; };
+		FACFEDD113BAB2D40045C681 /* glImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glImage.cpp; sourceTree = "<group>"; };
+		FACFEDD213BAB2D40045C681 /* glImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glImage.h; sourceTree = "<group>"; };
 		FAE282E9121A08BB00823BCB /* libMonkVG_iOS_OpenGL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkVG_iOS_OpenGL.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -220,6 +228,8 @@
 				FA9ACCA0121A088200814394 /* mkVGU.cpp */,
 				FA712FBC13B91A39002E9FDC /* mkBatch.h */,
 				FA712FBB13B91A39002E9FDC /* mkBatch.cpp */,
+				FACFEDCE13BAB0E30045C681 /* mkImage.h */,
+				FACFEDCD13BAB0E30045C681 /* mkImage.cpp */,
 				FA9ACCA1121A088200814394 /* opengl */,
 			);
 			name = Source;
@@ -237,6 +247,8 @@
 				FA9ACCCB121A088200814394 /* glPath.cpp */,
 				FA712FC013B91D36002E9FDC /* glBatch.h */,
 				FA712FBF13B91D36002E9FDC /* glBatch.cpp */,
+				FACFEDD213BAB2D40045C681 /* glImage.h */,
+				FACFEDD113BAB2D40045C681 /* glImage.cpp */,
 			);
 			name = opengl;
 			path = ../../src/opengl;
@@ -346,6 +358,8 @@
 				FA6AEFAF127679FD004079EE /* vgu.h in Headers */,
 				FA712FBE13B91A39002E9FDC /* mkBatch.h in Headers */,
 				FA712FC213B91D36002E9FDC /* glBatch.h in Headers */,
+				FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */,
+				FACFEDD413BAB2D40045C681 /* glImage.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -425,6 +439,8 @@
 				FA0F6A1E125ECE1300FE3D55 /* priorityq.c in Sources */,
 				FA712FBD13B91A39002E9FDC /* mkBatch.cpp in Sources */,
 				FA712FC113B91D36002E9FDC /* glBatch.cpp in Sources */,
+				FACFEDCF13BAB0E30045C681 /* mkImage.cpp in Sources */,
+				FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

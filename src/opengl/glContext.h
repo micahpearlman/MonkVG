@@ -30,7 +30,10 @@ namespace MonkVG {
 		virtual void destroyPath( IPath* path );	
 		virtual void destroyPaint( IPaint* paint );
 		virtual IPaint* createPaint();
-		
+		virtual IImage* createImage( VGImageFormat format,
+									VGint width, VGint height,
+									VGbitfield allowedQuality );
+		virtual void destroyImage( IImage* image );
 		virtual IBatch* createBatch();
 		virtual void destroyBatch( IBatch* batch );
 
@@ -54,7 +57,12 @@ namespace MonkVG {
 		virtual void rotate( VGfloat angle );
 		virtual void setTransform( const VGfloat* t ) ;
 		virtual void multiply( const VGfloat* t );
+		virtual void setMatrixMode( VGMatrixMode mode ) {
+			IContext::setMatrixMode( mode );
+			loadGLMatrix();
+		}
 		void loadGLMatrix();
+
 		
 		
 		

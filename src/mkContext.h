@@ -14,6 +14,7 @@
 #include "VG/vgext.h"
 #include "mkPath.h"
 #include "mkPaint.h"
+#include "mkImage.h"
 #include "mkBatch.h"
 #include "mkMath.h"
 
@@ -34,6 +35,10 @@ namespace MonkVG {
 		virtual void destroyPath( IPath* path ) = 0;
 		virtual IPaint* createPaint() = 0;
 		virtual void destroyPaint( IPaint* paint ) = 0;
+		virtual IImage* createImage( VGImageFormat format,
+									VGint width, VGint height,
+									VGbitfield allowedQuality ) = 0;
+		virtual void destroyImage( IImage* image ) = 0;
 		virtual IBatch* createBatch() = 0;
 		virtual void destroyBatch( IBatch* batch ) = 0;
 		
@@ -114,7 +119,7 @@ namespace MonkVG {
 		inline void setPathUserToSurface( const Matrix33& m ) {
 			_path_user_to_surface = m;
 		}
-		inline void setMatrixMode( VGMatrixMode mode ) {
+		virtual void setMatrixMode( VGMatrixMode mode ) {
 			//			VG_MATRIX_PATH_USER_TO_SURFACE              = 0x1400,
 			//			VG_MATRIX_IMAGE_USER_TO_SURFACE             = 0x1401,
 			//			VG_MATRIX_FILL_PAINT_TO_USER                = 0x1402,
@@ -124,6 +129,9 @@ namespace MonkVG {
 			switch (mode) {
 				case VG_MATRIX_PATH_USER_TO_SURFACE:
 					_active_matrix = &_path_user_to_surface;
+					break;
+				case VG_MATRIX_IMAGE_USER_TO_SURFACE:
+					_active_matrix = &_image_user_to_surface;
 					break;
 				default:
 					setError(VG_ILLEGAL_ARGUMENT_ERROR);
@@ -162,6 +170,8 @@ namespace MonkVG {
 		virtual void startBatch( IBatch* batch ) = 0;
 		virtual void endBatch( IBatch* batch ) = 0;
 		IBatch* currentBatch() { return _currentBatch; }
+		
+	
 	protected:
 	
 		// surface properties
@@ -170,6 +180,7 @@ namespace MonkVG {
 		
 		// matrix transforms
 		Matrix33		_path_user_to_surface;
+		Matrix33		_image_user_to_surface;
 		Matrix33		*_active_matrix;
 		VGMatrixMode	_matrixMode;
 		

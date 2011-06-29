@@ -82,6 +82,7 @@ namespace MonkVG {
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		glDisableClientState( GL_COLOR_ARRAY );
 
+		glDisable(GL_TEXTURE_2D);
 		if( paintModes & VG_FILL_PATH ) {
 			// draw
 			IContext::instance().fill();
