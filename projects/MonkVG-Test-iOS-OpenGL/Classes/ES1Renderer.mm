@@ -54,7 +54,7 @@ using namespace std;
 		
 		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
 		//vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
-		vguEllipse( _path, 100.0f, 100.0f, 90.0f, 50.0f );
+		vguEllipse( _path, 0, 0, 90.0f, 50.0f );
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
@@ -212,14 +212,16 @@ using namespace std;
 	vgClear(0,0,backingWidth,backingHeight);
 	
 	
-	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
-	vgLoadIdentity();
-	vgDrawPath( _path, VG_FILL_PATH );
 	
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
 	vgLoadIdentity();
-	vgTranslate( 50, 50 );
+	vgTranslate( backingWidth/2, backingHeight/2 );
 	vgDrawImage( _image );
+
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate( backingWidth/2, backingHeight/2 );
+	vgDrawPath( _path, VG_FILL_PATH );
 
 	
 
@@ -242,6 +244,8 @@ using namespace std;
         NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
         return NO;
     }
+	
+	vgResizeSurfaceSH( backingWidth, backingHeight );
 
     return YES;
 }
