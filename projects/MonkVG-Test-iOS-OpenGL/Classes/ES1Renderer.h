@@ -30,11 +30,14 @@
 	VGPath	_path;
 	VGPaint _paint;
 	VGImage _image;
+	VGImage	_bitmapFont;
+	VGFont	_font;
 	
 }
 
 - (void)render;
 - (BOOL)resizeFromLayer:(CAEAGLLayer *)layer;
 - (VGImage) buildVGImageFromUIImage:(UIImage *)uiImage;
+- (VGFont) buildVGFontFromBitmapFont:(NSString*)fontName;
 
 @end

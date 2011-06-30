@@ -58,8 +58,11 @@ using namespace std;
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
-		UIImage* image = [UIImage imageNamed:@"zero.png"];
-		_image = [self buildVGImageFromUIImage:image];
+		_image = [self buildVGImageFromUIImage:[UIImage imageNamed:@"zero.png"]];
+		_bitmapFont = [self buildVGImageFromUIImage:[UIImage imageNamed:@"testfont.png"]];
+		
+		_font = [self buildVGFontFromBitmapFont:@"testfont"];
+
 		
 //		loadTiger();
 //		
@@ -71,9 +74,156 @@ using namespace std;
     return self;
 }
 
-#define kMaxTextureSize	 1024
-- (VGImage) buildVGImageFromUIImage:(UIImage *)uiImage
+
+- (void)render
 {
+    // This application only creates a single context which is already set current at this point.
+    // This call is redundant, but needed if dealing with multiple contexts.
+    [EAGLContext setCurrentContext:context];
+
+    // This application only creates a single default framebuffer which is already bound at this point.
+    // This call is redundant, but needed if dealing with multiple framebuffers.
+    glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	
+	VGfloat clearColor[] = {1,1,1,1};
+	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
+	vgClear(0,0,backingWidth,backingHeight);
+	
+	
+	
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate( backingWidth/2, backingHeight/2 );
+	vgDrawImage( _image );
+
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate( backingWidth/2, backingHeight/2 );
+	vgDrawPath( _path, VG_FILL_PATH );
+
+	vgDrawGlyph( _font, 64, VG_FILL_PATH, VG_TRUE );
+
+    // This application only creates a single color renderbuffer which is already bound at this point.
+    // This call is redundant, but needed if dealing with multiple renderbuffers.
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);
+    [context presentRenderbuffer:GL_RENDERBUFFER_OES];
+}
+
+- (BOOL)resizeFromLayer:(CAEAGLLayer *)layer
+{	
+    // Allocate color buffer backing based on the current layer size
+    glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);
+    [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:layer];
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
+    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
+
+    if (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
+    {
+        NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
+        return NO;
+    }
+	
+	vgResizeSurfaceSH( backingWidth, backingHeight );
+
+    return YES;
+}
+
+
+- (VGFont) buildVGFontFromBitmapFont:(NSString*)fontName {
+	// load the bitmap image
+	NSString* bitmapName = [fontName stringByAppendingPathExtension:@"png"];
+	VGImage bitmapImage = [self buildVGImageFromUIImage:[UIImage imageNamed:bitmapName]];
+
+	
+	NSString* fontDescriptionPath = [[NSBundle mainBundle] pathForResource:fontName ofType:@"fnt"];
+	
+	// create openvg font
+	VGFont font = vgCreateFont( 0 );
+	
+	// Read the contents of the file into a string
+	NSString *contents = [NSString stringWithContentsOfFile:fontDescriptionPath encoding:NSASCIIStringEncoding error:nil];
+	
+	// Move all lines in the string, which are denoted by \n, into an array
+	NSArray *lines = [[NSArray alloc] initWithArray:[contents componentsSeparatedByString:@"\n"]];
+	
+	// Create an enumerator which we can use to move through the lines read from the control file
+	NSEnumerator *nse = [lines objectEnumerator];
+	
+	// Create a holder for each line we are going to work with
+	NSString *line;
+	
+	
+	// Loop through all the lines in the lines array processing each one
+	while(line = [nse nextObject]) {
+		// Check to see if the start of the line is something we are interested in
+		if([line hasPrefix:@"common"]) {
+			//[self parseCommon:line];  //// NEW CODE ADDED 05/02/10 to parse the common params
+		} else if([line hasPrefix:@"char"]) {
+			// Break the values for this line up using =
+			NSArray *values = [line componentsSeparatedByString:@"="];
+			if( [values count] < 3 )
+				continue;
+			
+			// Get the enumerator for the array of components which has been created
+			NSEnumerator *charNse = [values objectEnumerator];
+			
+			// We are going to place each value we read from the line into this string
+			NSString *propertyValue;
+			
+			// We need to move past the first entry in the array before we start assigning values
+			[charNse nextObject];
+			
+//			VG_API_CALL void VG_API_ENTRY vgSetGlyphToImage(VGFont font,
+//															VGuint glyphIndex,
+//															VGImage image,
+//															VGfloat glyphOrigin [2],
+//															VGfloat escapement[2]) VG_API_EXIT {
+
+			VGuint glyphIndex = -1;
+			VGfloat glyphOrigin[2] = {0,0};
+			VGfloat escapement[2] = {0,0};
+			
+			// Character ID
+			propertyValue = [charNse nextObject];
+			glyphIndex = [propertyValue intValue]; 
+			// Character x
+			propertyValue = [charNse nextObject];
+			glyphOrigin[0] = [propertyValue intValue];
+			// Character y
+			propertyValue = [charNse nextObject];
+			glyphOrigin[1] = [propertyValue intValue];
+			// Character width
+			propertyValue = [charNse nextObject];
+			escapement[0] = [propertyValue intValue];
+			// Character height
+			propertyValue = [charNse nextObject];
+			escapement[1] = [propertyValue intValue];
+			// Character xoffset
+			propertyValue = [charNse nextObject];
+			//			[characterDefinition setXOffset:[propertyValue intValue]];
+			// Character yoffset
+			propertyValue = [charNse nextObject];
+			//			[characterDefinition setYOffset:[propertyValue intValue]];
+			// Character xadvance
+			propertyValue = [charNse nextObject];
+			//			[characterDefinition setXAdvance:[propertyValue intValue]];
+			
+			// add the glyph to the font
+			vgSetGlyphToImage( font, glyphIndex, bitmapImage, glyphOrigin, escapement );
+		}		
+	}
+	// Finished with lines so release it
+	[lines release];
+	
+	return font;
+
+}
+
+
+#define kMaxTextureSize	 1024
+- (VGImage) buildVGImageFromUIImage:(UIImage *)uiImage {
 	NSUInteger				width,
 	height,
 	i;
@@ -194,61 +344,6 @@ using namespace std;
 	return vgimage;
 }
 
-
-- (void)render
-{
-    // This application only creates a single context which is already set current at this point.
-    // This call is redundant, but needed if dealing with multiple contexts.
-    [EAGLContext setCurrentContext:context];
-
-    // This application only creates a single default framebuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple framebuffers.
-    glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	
-	VGfloat clearColor[] = {1,1,1,1};
-	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
-	vgClear(0,0,backingWidth,backingHeight);
-	
-	
-	
-	vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
-	vgLoadIdentity();
-	vgTranslate( backingWidth/2, backingHeight/2 );
-	vgDrawImage( _image );
-
-	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
-	vgLoadIdentity();
-	vgTranslate( backingWidth/2, backingHeight/2 );
-	vgDrawPath( _path, VG_FILL_PATH );
-
-	
-
-    // This application only creates a single color renderbuffer which is already bound at this point.
-    // This call is redundant, but needed if dealing with multiple renderbuffers.
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);
-    [context presentRenderbuffer:GL_RENDERBUFFER_OES];
-}
-
-- (BOOL)resizeFromLayer:(CAEAGLLayer *)layer
-{	
-    // Allocate color buffer backing based on the current layer size
-    glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);
-    [context renderbufferStorage:GL_RENDERBUFFER_OES fromDrawable:layer];
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_WIDTH_OES, &backingWidth);
-    glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &backingHeight);
-
-    if (glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES)
-    {
-        NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
-        return NO;
-    }
-	
-	vgResizeSurfaceSH( backingWidth, backingHeight );
-
-    return YES;
-}
 
 - (void)dealloc
 {
