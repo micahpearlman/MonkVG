@@ -125,6 +125,43 @@ namespace MonkVG {
 		glVertexPointer(3, GL_FLOAT, 0, vertices);
 		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	}
+	
+	void OpenGLImage::drawSubRect( VGint ox, VGint oy, VGint w, VGint h, VGbitfield paintModes ) {
+		GLfloat minS = GLfloat(ox) / GLfloat(_width);
+		GLfloat maxS = GLfloat(ox + w) / GLfloat(_width);
+		GLfloat minT = GLfloat(oy) / GLfloat(_width);
+		GLfloat maxT = GLfloat(oy + h) / GLfloat(_width);
+		
+		GLfloat		coordinates[] = {	minS, maxT,		//0,	1,
+										maxS, maxT,		//1,	1,
+										minS, minT,		//0,	0,
+										maxS, minT };	//1,	0 
+		GLfloat	width = (GLfloat)w;
+		GLfloat height = (GLfloat)h;
+		GLfloat		vertices[] = {	-width / 2,	-height / 2,	0.0,
+			width / 2,	-height / 2,	0.0,
+			-width / 2,	height / 2,		0.0,
+			width / 2,	height / 2,		0.0 };
+		
+		glEnable(GL_TEXTURE_2D);
+		// turn on blending
+		glEnable(GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_SRC_COLOR);	
+		
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState( GL_COLOR_ARRAY );
+		
+		glDisable( GL_CULL_FACE );
+		
+		
+		
+		glBindTexture(GL_TEXTURE_2D, _name);
+		glVertexPointer(3, GL_FLOAT, 0, vertices);
+		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		
 	}
 }

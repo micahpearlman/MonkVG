@@ -24,7 +24,9 @@ namespace MonkVG {
 			kImageType,
 			kMaskLayerType,
 			kFontType,
-			kBatchType
+			kBatchType,
+			
+			kMAXIMUM_TYPE
 		};
 		
 		virtual BaseObject::Type getType() const = 0;

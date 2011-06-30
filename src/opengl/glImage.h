@@ -5,6 +5,9 @@
 //  Created by Micah Pearlman on 6/28/11.
 //  Copyright 2011 Zero Vision. All rights reserved.
 //
+#ifndef __glImage_h__
+#define __glImage_h__
+
 #include "mkImage.h"
 #if defined(__APPLE__)
 #include "TargetConditionals.h"
@@ -27,7 +30,7 @@ namespace MonkVG {
 		virtual ~OpenGLImage();
 		
 		virtual void draw();
-		
+		virtual void drawSubRect( VGint ox, VGint oy, VGint w, VGint h, VGbitfield paintModes );
 		virtual void setSubData( const void * data, VGint dataStride,
 								VGImageFormat dataFormat,
 								VGint x, VGint y, VGint width, VGint height );
@@ -37,3 +40,5 @@ namespace MonkVG {
 		
 	};
 }
+
+#endif // __glImage_h__

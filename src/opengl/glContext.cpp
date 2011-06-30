@@ -12,7 +12,9 @@
 #include "glPaint.h"
 #include "glBatch.h"
 #include "glImage.h"
+#include "glFont.h"
 #include "mkCommon.h"
+
 
 namespace MonkVG {
 	
@@ -221,6 +223,16 @@ namespace MonkVG {
 			delete image;
 		}
 	}
+	
+	IFont* OpenGLContext::createFont() {
+		return new OpenGLFont();
+	}
+	void OpenGLContext::destroyFont( IFont* font ) {
+		if ( font ) {
+			delete font;
+		}
+	}
+
 
 
 	/// state 

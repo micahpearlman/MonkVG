@@ -18,6 +18,10 @@
 		FA712FBE13B91A39002E9FDC /* mkBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = FA712FBC13B91A39002E9FDC /* mkBatch.h */; };
 		FA712FC113B91D36002E9FDC /* glBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA712FBF13B91D36002E9FDC /* glBatch.cpp */; };
 		FA712FC213B91D36002E9FDC /* glBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = FA712FC013B91D36002E9FDC /* glBatch.h */; };
+		FAA5DB8613BBB00F00326F9D /* mkFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAA5DB8413BBB00F00326F9D /* mkFont.cpp */; };
+		FAA5DB8713BBB00F00326F9D /* mkFont.h in Headers */ = {isa = PBXBuildFile; fileRef = FAA5DB8513BBB00F00326F9D /* mkFont.h */; };
+		FAA5DB8A13BBB1EE00326F9D /* glFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAA5DB8813BBB1EE00326F9D /* glFont.cpp */; };
+		FAA5DB8B13BBB1EE00326F9D /* glFont.h in Headers */ = {isa = PBXBuildFile; fileRef = FAA5DB8913BBB1EE00326F9D /* glFont.h */; };
 		FACFEDCF13BAB0E30045C681 /* mkImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDCD13BAB0E30045C681 /* mkImage.cpp */; };
 		FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDCE13BAB0E30045C681 /* mkImage.h */; };
 		FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDD113BAB2D40045C681 /* glImage.cpp */; };
@@ -135,6 +139,10 @@
 		FA9ACCCA121A088200814394 /* glPaint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPaint.h; sourceTree = "<group>"; };
 		FA9ACCCB121A088200814394 /* glPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glPath.cpp; sourceTree = "<group>"; };
 		FA9ACCCC121A088200814394 /* glPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPath.h; sourceTree = "<group>"; };
+		FAA5DB8413BBB00F00326F9D /* mkFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkFont.cpp; path = ../../src/mkFont.cpp; sourceTree = "<group>"; };
+		FAA5DB8513BBB00F00326F9D /* mkFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkFont.h; path = ../../src/mkFont.h; sourceTree = "<group>"; };
+		FAA5DB8813BBB1EE00326F9D /* glFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glFont.cpp; sourceTree = "<group>"; };
+		FAA5DB8913BBB1EE00326F9D /* glFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glFont.h; sourceTree = "<group>"; };
 		FACFEDCD13BAB0E30045C681 /* mkImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkImage.cpp; path = ../../src/mkImage.cpp; sourceTree = "<group>"; };
 		FACFEDCE13BAB0E30045C681 /* mkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkImage.h; path = ../../src/mkImage.h; sourceTree = "<group>"; };
 		FACFEDD113BAB2D40045C681 /* glImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glImage.cpp; sourceTree = "<group>"; };
@@ -230,6 +238,8 @@
 				FA712FBB13B91A39002E9FDC /* mkBatch.cpp */,
 				FACFEDCE13BAB0E30045C681 /* mkImage.h */,
 				FACFEDCD13BAB0E30045C681 /* mkImage.cpp */,
+				FAA5DB8513BBB00F00326F9D /* mkFont.h */,
+				FAA5DB8413BBB00F00326F9D /* mkFont.cpp */,
 				FA9ACCA1121A088200814394 /* opengl */,
 			);
 			name = Source;
@@ -249,6 +259,8 @@
 				FA712FBF13B91D36002E9FDC /* glBatch.cpp */,
 				FACFEDD213BAB2D40045C681 /* glImage.h */,
 				FACFEDD113BAB2D40045C681 /* glImage.cpp */,
+				FAA5DB8913BBB1EE00326F9D /* glFont.h */,
+				FAA5DB8813BBB1EE00326F9D /* glFont.cpp */,
 			);
 			name = opengl;
 			path = ../../src/opengl;
@@ -360,6 +372,8 @@
 				FA712FC213B91D36002E9FDC /* glBatch.h in Headers */,
 				FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */,
 				FACFEDD413BAB2D40045C681 /* glImage.h in Headers */,
+				FAA5DB8713BBB00F00326F9D /* mkFont.h in Headers */,
+				FAA5DB8B13BBB1EE00326F9D /* glFont.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +455,8 @@
 				FA712FC113B91D36002E9FDC /* glBatch.cpp in Sources */,
 				FACFEDCF13BAB0E30045C681 /* mkImage.cpp in Sources */,
 				FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */,
+				FAA5DB8613BBB00F00326F9D /* mkFont.cpp in Sources */,
+				FAA5DB8A13BBB1EE00326F9D /* glFont.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -492,6 +508,7 @@
 				HEADER_SEARCH_PATHS = (
 					../../glu/include,
 					../../include,
+					/opt/local/include,
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
@@ -513,6 +530,7 @@
 				HEADER_SEARCH_PATHS = (
 					../../glu/include,
 					../../include,
+					/opt/local/include,
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;

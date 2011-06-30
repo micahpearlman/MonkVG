@@ -31,6 +31,8 @@ namespace MonkVG {
 		
 		virtual void draw() = 0;
 		
+		virtual void drawSubRect( VGint ox, VGint oy, VGint w, VGint h, VGbitfield paintModes ) = 0;
+		
 		//// parameter accessors/mutators ////
 		virtual VGint getParameteri( const VGint p ) const;
 		virtual VGfloat getParameterf( const VGint f ) const;

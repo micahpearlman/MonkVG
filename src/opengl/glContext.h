@@ -36,6 +36,8 @@ namespace MonkVG {
 		virtual void destroyImage( IImage* image );
 		virtual IBatch* createBatch();
 		virtual void destroyBatch( IBatch* batch );
+		virtual IFont* createFont();
+		virtual void destroyFont( IFont* font );
 
 
 		/// paint overrides

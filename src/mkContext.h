@@ -16,6 +16,7 @@
 #include "mkPaint.h"
 #include "mkImage.h"
 #include "mkBatch.h"
+#include "mkFont.h"
 #include "mkMath.h"
 
 namespace MonkVG {
@@ -41,6 +42,8 @@ namespace MonkVG {
 		virtual void destroyImage( IImage* image ) = 0;
 		virtual IBatch* createBatch() = 0;
 		virtual void destroyBatch( IBatch* batch ) = 0;
+		virtual IFont* createFont() = 0;
+		virtual void destroyFont( IFont* font ) = 0;
 		
 		//// platform specific execution of stroke and fill ////
 		virtual void stroke() = 0;
