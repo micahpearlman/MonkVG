@@ -35,6 +35,6 @@
 
 - (void)render;
 - (BOOL)resizeFromLayer:(CAEAGLLayer *)layer;
-- (void) buildVGImageFromUIImage:(UIImage *)uiImage;
+- (VGImage) buildVGImageFromUIImage:(UIImage *)uiImage;
 
 @end

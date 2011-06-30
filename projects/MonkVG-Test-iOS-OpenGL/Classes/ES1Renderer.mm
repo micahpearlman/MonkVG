@@ -59,7 +59,7 @@ using namespace std;
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
 		UIImage* image = [UIImage imageNamed:@"zero.png"];
-		[self buildVGImageFromUIImage:image];
+		_image = [self buildVGImageFromUIImage:image];
 		
 //		loadTiger();
 //		
@@ -72,7 +72,7 @@ using namespace std;
 }
 
 #define kMaxTextureSize	 1024
-- (void) buildVGImageFromUIImage:(UIImage *)uiImage
+- (VGImage) buildVGImageFromUIImage:(UIImage *)uiImage
 {
 	NSUInteger				width,
 	height,
@@ -99,7 +99,7 @@ using namespace std;
 	if(image == NULL) {
 		[self release];
 		NSLog(@"Image is Null");
-		return;
+		return VG_INVALID_HANDLE;
 	}
 	
 	
@@ -184,12 +184,14 @@ using namespace std;
 	}
 	
 	// create openvg image
-	_image = vgCreateImage(pixelFormat, width, height, 0 );
+	VGImage vgimage = vgCreateImage(pixelFormat, width, height, 0 );
 	
-	vgImageSubData( _image, data, -1, pixelFormat, 0, 0, width, height );
+	vgImageSubData( vgimage, data, -1, pixelFormat, 0, 0, width, height );
 	
 	CGContextRelease(ctx);
 	free(data);
+	
+	return vgimage;
 }
 
 

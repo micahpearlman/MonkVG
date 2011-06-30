@@ -21,6 +21,8 @@
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		FA08A7AE1228420A00F0EB21 /* square.svg in Resources */ = {isa = PBXBuildFile; fileRef = FA08A7AD1228420A00F0EB21 /* square.svg */; };
 		FA9B04E413BACA2D0048E1C0 /* delorean.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9B04E313BACA2D0048E1C0 /* delorean.png */; };
+		FAA5DB9D13BCECC200326F9D /* testfont.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA5DB9C13BCECC200326F9D /* testfont.png */; };
+		FAA5DBA013BCEF5300326F9D /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAA5DB9F13BCEF5300326F9D /* MainWindow-iPad.xib */; };
 		FAB144781214867E004DF07F /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144741214867E004DF07F /* test.c */; };
 		FAB144791214867E004DF07F /* test_tiger.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144761214867E004DF07F /* test_tiger.c */; };
 		FAB1447A1214867E004DF07F /* test_tiger_paths.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144771214867E004DF07F /* test_tiger_paths.c */; };
@@ -70,6 +72,8 @@
 		8D1107310486CEB800E47090 /* MonkVG_Test_iOS_OpenGL-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MonkVG_Test_iOS_OpenGL-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		FA08A7AD1228420A00F0EB21 /* square.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = square.svg; sourceTree = "<group>"; };
 		FA9B04E313BACA2D0048E1C0 /* delorean.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = delorean.png; sourceTree = "<group>"; };
+		FAA5DB9C13BCECC200326F9D /* testfont.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testfont.png; sourceTree = "<group>"; };
+		FAA5DB9F13BCEF5300326F9D /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FAB144741214867E004DF07F /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 		FAB144751214867E004DF07F /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		FAB144761214867E004DF07F /* test_tiger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_tiger.c; sourceTree = "<group>"; };
@@ -140,6 +144,7 @@
 				2514C27610084DB600A42282 /* Shaders */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				FAA5DB9E13BCEF5100326F9D /* iPad */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -158,6 +163,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FAA5DB9C13BCECC200326F9D /* testfont.png */,
 				FA9B04E313BACA2D0048E1C0 /* delorean.png */,
 				FACFEDD513BAC4260045C681 /* zero.png */,
 				FA08A7AD1228420A00F0EB21 /* square.svg */,
@@ -177,6 +183,14 @@
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FAA5DB9E13BCEF5100326F9D /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+				FAA5DB9F13BCEF5300326F9D /* MainWindow-iPad.xib */,
+			);
+			name = iPad;
 			sourceTree = "<group>";
 		};
 		FAB144731214867E004DF07F /* tiger */ = {
@@ -271,6 +285,8 @@
 				FA08A7AE1228420A00F0EB21 /* square.svg in Resources */,
 				FACFEDD613BAC4260045C681 /* zero.png in Resources */,
 				FA9B04E413BACA2D0048E1C0 /* delorean.png in Resources */,
+				FAA5DB9D13BCECC200326F9D /* testfont.png in Resources */,
+				FAA5DBA013BCEF5300326F9D /* MainWindow-iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,9 +335,11 @@
 					../../../MonkVG/include,
 				);
 				INFOPLIST_FILE = "MonkVG_Test_iOS_OpenGL-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "MonkVG-Test-iOS-OpenGL";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -336,9 +354,11 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				HEADER_SEARCH_PATHS = ../../../MonkVG/include;
 				INFOPLIST_FILE = "MonkVG_Test_iOS_OpenGL-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_NAME = "MonkVG-Test-iOS-OpenGL";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
