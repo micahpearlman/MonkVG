@@ -136,6 +136,9 @@ namespace MonkVG {
 				case VG_MATRIX_IMAGE_USER_TO_SURFACE:
 					_active_matrix = &_image_user_to_surface;
 					break;
+				case VG_MATRIX_GLYPH_USER_TO_SURFACE:
+					_active_matrix = &_glyph_user_to_surface;
+					break;
 				default:
 					setError(VG_ILLEGAL_ARGUMENT_ERROR);
 					break;
@@ -174,44 +177,43 @@ namespace MonkVG {
 		virtual void endBatch( IBatch* batch ) = 0;
 		IBatch* currentBatch() { return _currentBatch; }
 		
+		/// font
+		void setGlyphOrigin( const VGfloat o[2] ) { _glyph_origin[0] = o[0]; _glyph_origin[1] = o[1]; }
+		void getGlyphOrigin( VGfloat o[2] ) { o[0] = _glyph_origin[0]; o[1] = _glyph_origin[1]; }
 	
 	protected:
 	
 		// surface properties
-		VGint			_width, _height;
-		VGfloat			_clear_color[4];
+		VGint				_width, _height;
+		VGfloat				_clear_color[4];
 		
 		// matrix transforms
-		Matrix33		_path_user_to_surface;
-		Matrix33		_image_user_to_surface;
-		Matrix33		*_active_matrix;
-		VGMatrixMode	_matrixMode;
+		Matrix33			_path_user_to_surface;
+		Matrix33			_image_user_to_surface;
+		Matrix33			_glyph_user_to_surface;
+		Matrix33			*_active_matrix;
+		VGMatrixMode		_matrixMode;
 		
 		// stroke properties
-		//		VG_STROKE_LINE_WIDTH                        = 0x1110,
-		//		VG_STROKE_CAP_STYLE                         = 0x1111,
-		//		VG_STROKE_JOIN_STYLE                        = 0x1112,
-		//		VG_STROKE_MITER_LIMIT                       = 0x1113,
-		//		VG_STROKE_DASH_PATTERN                      = 0x1114,
-		//		VG_STROKE_DASH_PHASE                        = 0x1115,
-		//		VG_STROKE_DASH_PHASE_RESET                  = 0x1116,
-		VGfloat			_stroke_line_width;			// VG_STROKE_LINE_WIDTH
+		VGfloat				_stroke_line_width;			// VG_STROKE_LINE_WIDTH
 		
 		// rendering quality
-		VGRenderingQuality		_renderingQuality;
-		int32_t					_tessellationIterations;
+		VGRenderingQuality	_renderingQuality;
+		int32_t				_tessellationIterations;
 
 		// paints
-		IPaint*			_stroke_paint;
-		IPaint*			_fill_paint;
-		VGFillRule		_fill_rule;
+		IPaint*				_stroke_paint;
+		IPaint*				_fill_paint;
+		VGFillRule			_fill_rule;
+		
+		// font
+		VGfloat				_glyph_origin[2];
 		
 		// batch
-		IBatch*			_currentBatch;
+		IBatch*				_currentBatch;
 
-		
 		// error 
-		VGErrorCode				_error;
+		VGErrorCode			_error;
 	};
 }
 

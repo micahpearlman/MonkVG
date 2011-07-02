@@ -102,6 +102,7 @@ namespace MonkVG {
 		,	_currentBatch( 0 )
 	{
 		_active_matrix->setIdentity();
+		_glyph_origin[0] = _glyph_origin[1] = 0;
 	}
 	
 	//// parameters ////

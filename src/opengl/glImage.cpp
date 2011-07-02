@@ -102,15 +102,15 @@ namespace MonkVG {
 										1,	0 };
 		GLfloat	width = (GLfloat)_width;
 		GLfloat height = (GLfloat)_height;
-		GLfloat		vertices[] = {	-width / 2,	-height / 2,	0.0,
-									width / 2,	-height / 2,	0.0,
-									-width / 2,	height / 2,		0.0,
-									width / 2,	height / 2,		0.0 };
+		GLfloat		vertices[] = {	-width,	-height,	0.0,
+									width,	-height,	0.0,
+									-width,	height,		0.0,
+									width,	height,		0.0 };
 		
 		glEnable(GL_TEXTURE_2D);
 		// turn on blending
 		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_SRC_COLOR);	
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -139,15 +139,15 @@ namespace MonkVG {
 										maxS, minT };	//1,	0 
 		GLfloat	width = (GLfloat)w;
 		GLfloat height = (GLfloat)h;
-		GLfloat		vertices[] = {	-width / 2,	-height / 2,	0.0,
-			width / 2,	-height / 2,	0.0,
-			-width / 2,	height / 2,		0.0,
-			width / 2,	height / 2,		0.0 };
+		GLfloat		vertices[] = {	-width,	-height,	0.0,
+			width,	-height,	0.0,
+			-width,	height,		0.0,
+			width,	height,		0.0 };
 		
 		glEnable(GL_TEXTURE_2D);
 		// turn on blending
 		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_SRC_COLOR);	
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 		
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnableClientState(GL_VERTEX_ARRAY);

@@ -118,6 +118,11 @@ VG_API_CALL void VG_API_ENTRY vgDrawImage(VGImage image) VG_API_EXIT {
 	if ( image == 0 ) 
 		return;
 
+	// force image matrix mode
+	if( IContext::instance().getMatrixMode() != VG_MATRIX_IMAGE_USER_TO_SURFACE ) {
+		IContext::instance().setMatrixMode( VG_MATRIX_IMAGE_USER_TO_SURFACE );
+	}
+
 	IImage* mkImage = (IImage*)image;
 	mkImage->draw();
 }

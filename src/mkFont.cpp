@@ -76,7 +76,12 @@ namespace MonkVG {	// Internal Implementation
 		boost::ptr_map<VGuint, Glyph*>::iterator it =  _glyphs.find( index );
 		if ( it != _glyphs.end() ) {
 			Glyph* glyph = *it->second;
+			VGfloat origin[2];
+//			IContext::instance().getGlyphOrigin( origin );
+//			vgTranslate( origin[0], origin[1] );
 			glyph->draw( paintModes );
+			origin[0] += glyph->escapement[0];
+			IContext::instance().setGlyphOrigin( origin );
 		}
 	}
 
@@ -129,8 +134,13 @@ VG_API_CALL void VG_API_ENTRY vgDrawGlyph(VGFont font,
 	if ( !font ) 
 		return;
 	
+	// force glyph matrix mode
+	if( IContext::instance().getMatrixMode() != VG_MATRIX_GLYPH_USER_TO_SURFACE ) {
+		IContext::instance().setMatrixMode( VG_MATRIX_GLYPH_USER_TO_SURFACE );
+	}
 	IFont* f = (IFont*)font;
 	f->drawGlyph( glyphIndex, paintModes );
+	
 	
 }
 VG_API_CALL void VG_API_ENTRY vgDrawGlyphs(VGFont font,
@@ -141,4 +151,8 @@ VG_API_CALL void VG_API_ENTRY vgDrawGlyphs(VGFont font,
 										   VGbitfield paintModes,
 										   VGboolean allowAutoHinting) VG_API_EXIT {
 	
+	// force glyph matrix mode
+	if( IContext::instance().getMatrixMode() != VG_MATRIX_GLYPH_USER_TO_SURFACE ) {
+		IContext::instance().setMatrixMode( VG_MATRIX_GLYPH_USER_TO_SURFACE );
+	}
 }

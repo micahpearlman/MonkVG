@@ -103,7 +103,13 @@ using namespace std;
 	vgTranslate( backingWidth/2, backingHeight/2 );
 	vgDrawPath( _path, VG_FILL_PATH );
 
-	vgDrawGlyph( _font, 64, VG_FILL_PATH, VG_TRUE );
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_GLYPH_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate( backingWidth/2, backingHeight/2 );
+	vgDrawGlyph( _font, int('Z'), VG_FILL_PATH, VG_TRUE );
+	vgDrawGlyph( _font, int('e'), VG_FILL_PATH, VG_TRUE );
+	vgDrawGlyph( _font, int('r'), VG_FILL_PATH, VG_TRUE );
+	vgDrawGlyph( _font, int('o'), VG_FILL_PATH, VG_TRUE );
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.
