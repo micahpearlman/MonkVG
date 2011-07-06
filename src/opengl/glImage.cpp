@@ -59,11 +59,30 @@ namespace MonkVG {
 		}
 	}
 	
+	OpenGLImage::OpenGLImage( OpenGLImage& other ) 
+	:	IImage( other )
+	,	_name( other._name )
+	{
+		
+	}
+	
 	OpenGLImage::~OpenGLImage() {
-		if( _name ) {
+		if( !_parent && _name ) {
 			glDeleteTextures( 1, &_name );
 			_name = 0;
 		}
+	}
+	
+	IImage* OpenGLImage::createChild( VGint x, VGint y, VGint w, VGint h ) {
+		OpenGLImage* glImage = new OpenGLImage( *this );
+		glImage->_s[0] = VGfloat(x)/VGfloat(_width);
+		glImage->_s[1] = VGfloat(x+w)/VGfloat(_width);
+		glImage->_t[0] = VGfloat(y)/VGfloat(_height);
+		glImage->_t[1] = VGfloat(y+h)/VGfloat(_height);
+		glImage->_width = w;
+		glImage->_height = h;
+		
+		return glImage;
 	}
 	
 	
@@ -96,16 +115,19 @@ namespace MonkVG {
 	}
 
 	void OpenGLImage::draw() {
-		GLfloat		coordinates[] = {	0,	1,
-										1,	1,
-										0,	0,
-										1,	0 };
-		GLfloat	width = (GLfloat)_width;
-		GLfloat height = (GLfloat)_height;
-		GLfloat		vertices[] = {	-width,	-height,	0.0,
-									width,	-height,	0.0,
-									-width,	height,		0.0,
-									width,	height,		0.0 };
+		GLfloat		coordinates[] = {	_s[0],	_t[1],
+										_s[1],	_t[1],
+										_s[0],	_t[0],
+										_s[1],	_t[0] };
+		GLfloat	w = (GLfloat)_width;
+		GLfloat h = (GLfloat)_height;
+		GLfloat x = 0, y = 0;
+		// note openvg coordinate system is bottom, left is 0,0
+		GLfloat		vertices[] = 
+		{	x,		y,		0.0,	// left, bottom
+			x+w,	y,		0.0,	// right, bottom
+			x,		y+h,	0.0,	// left, top
+			x+w,	y+h,	0.0 };	// right, top
 		
 		glEnable(GL_TEXTURE_2D);
 		// turn on blending
@@ -137,12 +159,14 @@ namespace MonkVG {
 										maxS, maxT,		//1,	1,
 										minS, minT,		//0,	0,
 										maxS, minT };	//1,	0 
-		GLfloat	width = (GLfloat)w;
-		GLfloat height = (GLfloat)h;
-		GLfloat		vertices[] = {	-width,	-height,	0.0,
-			width,	-height,	0.0,
-			-width,	height,		0.0,
-			width,	height,		0.0 };
+
+		GLfloat x = 0, y = 0;
+		// note openvg coordinate system is bottom, left is 0,0
+		GLfloat		vertices[] = 
+		{	x,		y,		0.0,	// left, bottom
+			x+w,	y,		0.0,	// right, bottom
+			x,		y+h,	0.0,	// left, top
+			x+w,	y+h,	0.0 };	// right, top
 		
 		glEnable(GL_TEXTURE_2D);
 		// turn on blending
@@ -163,5 +187,42 @@ namespace MonkVG {
 		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		
+	}
+	
+	void OpenGLImage::drawToRect( VGint x, VGint y, VGint w, VGint h, VGbitfield paintModes ) {
+		GLfloat	coordinates[] = {	_s[0],	_t[1],
+			_s[1],	_t[1],
+			_s[0],	_t[0],
+			_s[1],	_t[0] };
+		// note openvg coordinate system is bottom, left is 0,0
+		GLfloat		vertices[] = 
+		{	x,		y,		0.0,	// left, bottom
+			x+w,	y,		0.0,	// right, bottom
+			x,		y+h,	0.0,	// left, top
+			x+w,	y+h,	0.0 };	// right, top
+		
+		glEnable(GL_TEXTURE_2D);
+		// turn on blending
+		glEnable(GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+		
+		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState( GL_COLOR_ARRAY );
+		
+		glDisable( GL_CULL_FACE );
+		
+		
+		
+		glBindTexture(GL_TEXTURE_2D, _name);
+		glVertexPointer(3, GL_FLOAT, 0, vertices);
+		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	}
+	
+	void OpenGLImage::drawAtPoint( VGint x, VGint y, VGbitfield paintModes ) {
+		drawToRect( x, y, _width, _height, paintModes );
 	}
 }

@@ -179,7 +179,7 @@ namespace MonkVG {
 		
 		/// font
 		void setGlyphOrigin( const VGfloat o[2] ) { _glyph_origin[0] = o[0]; _glyph_origin[1] = o[1]; }
-		void getGlyphOrigin( VGfloat o[2] ) { o[0] = _glyph_origin[0]; o[1] = _glyph_origin[1]; }
+		void getGlyphOrigin( VGfloat o[2] ) const { o[0] = _glyph_origin[0]; o[1] = _glyph_origin[1]; }
 	
 	protected:
 	

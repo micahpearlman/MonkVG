@@ -30,7 +30,6 @@ namespace MonkVG {	// Internal Implementation
 	
 	void IFont::getParameterfv( const VGint p, VGfloat *fv ) const {
 		switch (p) {
-				
 			default:
 				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
@@ -57,7 +56,6 @@ namespace MonkVG {	// Internal Implementation
 	
 	void IFont::setParameter( const VGint p, const VGfloat* fv ) {
 		switch (p) {
-				
 			default:
 				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
@@ -72,18 +70,28 @@ namespace MonkVG {	// Internal Implementation
 		_glyphs[index_] = new IFont::GlyphPath( index_, path_, glyphOrigin_, escapement_ );
 	}
 	
-	void IFont::drawGlyph( VGuint index, VGbitfield paintModes ) {
+	void IFont::drawGlyph( VGuint index, VGfloat adj_x, VGfloat adj_y, VGbitfield paintModes ) {
 		boost::ptr_map<VGuint, Glyph*>::iterator it =  _glyphs.find( index );
 		if ( it != _glyphs.end() ) {
 			Glyph* glyph = *it->second;
 			VGfloat origin[2];
-//			IContext::instance().getGlyphOrigin( origin );
+			IContext::instance().getGlyphOrigin( origin );
 //			vgTranslate( origin[0], origin[1] );
-			glyph->draw( paintModes );
+			glyph->draw( adj_x, adj_y, paintModes );
 			origin[0] += glyph->escapement[0];
 			IContext::instance().setGlyphOrigin( origin );
 		}
 	}
+	
+	void IFont::GlyphImage::draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ) {
+		//image->drawSubRect( glyphOrigin[0], glyphOrigin[1], escapement[0], escapement[1], paintModes );
+		//image->draw( );
+		VGfloat origin[2];
+		IContext::instance().getGlyphOrigin( origin );
+		
+		image->drawAtPoint( origin[0] + adj_x, origin[1] + adj_y, paintModes );
+	}
+
 
 	
 }
@@ -105,8 +113,10 @@ VG_API_CALL void VG_API_ENTRY vgSetGlyphToPath(VGFont font,
 											   VGboolean isHinted,
 											   VGfloat glyphOrigin [2],
 											   VGfloat escapement[2]) VG_API_EXIT {
-	if ( !font ) 
+	if ( font == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
 		return;
+	}
 	
 	IFont* f = (IFont*)font;
 	f->addGlyphPath( glyphIndex, (IPath*)path, glyphOrigin, escapement );
@@ -117,8 +127,10 @@ VG_API_CALL void VG_API_ENTRY vgSetGlyphToImage(VGFont font,
 												VGImage image,
 												VGfloat glyphOrigin [2],
 												VGfloat escapement[2]) VG_API_EXIT {
-	if ( !font ) 
+	if ( font == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
 		return;
+	}
 	
 	IFont* f = (IFont*)font;
 	f->addGlyphImage( glyphIndex, (IImage*)image, glyphOrigin, escapement );
@@ -131,15 +143,17 @@ VG_API_CALL void VG_API_ENTRY vgDrawGlyph(VGFont font,
 										  VGuint glyphIndex,
 										  VGbitfield paintModes,
 										  VGboolean allowAutoHinting) VG_API_EXIT {
-	if ( !font ) 
+	if ( font == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
 		return;
+	}
 	
 	// force glyph matrix mode
 	if( IContext::instance().getMatrixMode() != VG_MATRIX_GLYPH_USER_TO_SURFACE ) {
 		IContext::instance().setMatrixMode( VG_MATRIX_GLYPH_USER_TO_SURFACE );
 	}
 	IFont* f = (IFont*)font;
-	f->drawGlyph( glyphIndex, paintModes );
+	f->drawGlyph( glyphIndex, 0,0, paintModes );
 	
 	
 }
@@ -151,8 +165,28 @@ VG_API_CALL void VG_API_ENTRY vgDrawGlyphs(VGFont font,
 										   VGbitfield paintModes,
 										   VGboolean allowAutoHinting) VG_API_EXIT {
 	
+	if ( font == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		return;
+	}
+	
+	IFont* f = (IFont*)font;
+
 	// force glyph matrix mode
 	if( IContext::instance().getMatrixMode() != VG_MATRIX_GLYPH_USER_TO_SURFACE ) {
 		IContext::instance().setMatrixMode( VG_MATRIX_GLYPH_USER_TO_SURFACE );
 	}
+	
+	for( int i = 0; i < glyphCount; i++ ) {
+		VGfloat ax = 0, ay = 0;
+		if ( adjustments_x ) {
+			ax = adjustments_x[i];
+		}
+		if ( adjustments_y ) {
+			ay = adjustments_y[i];
+		}
+
+		f->drawGlyph( glyphIndices[i], ax, ay, paintModes );
+	}
+	
 }

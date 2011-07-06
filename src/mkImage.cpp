@@ -10,6 +10,36 @@
 #include "mkContext.h"
 
 namespace MonkVG {	// Internal Implementation
+	
+	IImage::IImage( VGImageFormat format,
+		   VGint width, VGint height,
+		   VGbitfield allowedQuality )
+	:	BaseObject()
+	,	_format( format )
+	,	_width( width )
+	,	_height( height )
+	,	_allowedQuality( allowedQuality )
+	,	_parent( 0 )
+	{
+		_s[0] = _t[0] = 0;
+		_s[1] = _t[1] = 1;
+	}
+	
+	IImage::IImage( IImage& other ) 
+	:	BaseObject()
+	,	_format( other._format )
+	,	_width( other._width )
+	,	_height( other._height )
+	,	_allowedQuality( other._allowedQuality )
+	,	_parent( &other )
+	{
+		_s[0] = other._s[0]; 
+		_s[1] = other._s[1]; 
+		_t[0] = other._t[0]; 
+		_t[1] = other._t[1]; 
+
+	}
+
 	VGint IImage::getParameteri( const VGint p ) const {
 		switch (p) {
 			default:
@@ -89,8 +119,10 @@ VG_API_CALL void VG_API_ENTRY vgImageSubData(VGImage image,
 											 const void * data, VGint dataStride,
 											 VGImageFormat dataFormat,
 											 VGint x, VGint y, VGint width, VGint height) VG_API_EXIT {
-	if ( image == 0 ) 
+	if ( image == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
 		return;
+	}
 	
 	IImage* mkImage = (IImage*)image;
 	mkImage->setSubData( data, dataStride, dataFormat, x, y, width, height );
@@ -106,6 +138,16 @@ VG_API_CALL void VG_API_ENTRY vgGetImageSubData(VGImage image,
 VG_API_CALL VGImage VG_API_ENTRY vgChildImage(VGImage parent,
 											  VGint x, VGint y, VGint width, VGint height) VG_API_EXIT {
 	
+	if ( parent == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		return VG_INVALID_HANDLE;
+	}
+	
+	IImage* p = (IImage*)parent;
+	IImage* child = p->createChild( x, y, width, height );
+
+	return (VGImage)child;
+	
 }
 VG_API_CALL VGImage VG_API_ENTRY vgGetParent(VGImage image) VG_API_EXIT; 
 VG_API_CALL void VG_API_ENTRY vgCopyImage(VGImage dst, VGint dx, VGint dy,
@@ -115,8 +157,10 @@ VG_API_CALL void VG_API_ENTRY vgCopyImage(VGImage dst, VGint dx, VGint dy,
 	
 }
 VG_API_CALL void VG_API_ENTRY vgDrawImage(VGImage image) VG_API_EXIT {
-	if ( image == 0 ) 
+	if ( image == VG_INVALID_HANDLE ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
 		return;
+	}
 
 	// force image matrix mode
 	if( IContext::instance().getMatrixMode() != VG_MATRIX_IMAGE_USER_TO_SURFACE ) {

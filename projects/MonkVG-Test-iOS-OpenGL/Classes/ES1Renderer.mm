@@ -11,6 +11,8 @@
 #include <fstream>
 #include <sstream>
 #include <ostream>
+#include <map>
+#include <vector>
 
 
 extern "C" void loadTiger();
@@ -18,7 +20,12 @@ extern "C" void display(float dt);
 
 using namespace std;
 
+struct GlyphDescription {
+	VGImage image;
+	VGint ox, oy;	// offsets
+};
 
+map<VGuint, GlyphDescription>	_glyphs;
 
 @implementation ES1Renderer
 
@@ -105,11 +112,25 @@ using namespace std;
 
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_GLYPH_USER_TO_SURFACE);
 	vgLoadIdentity();
+	VGfloat glyphOrigin[2] = {0,0};
+	vgSetfv( VG_GLYPH_ORIGIN, 2, glyphOrigin );
 	vgTranslate( backingWidth/2, backingHeight/2 );
-	vgDrawGlyph( _font, int('Z'), VG_FILL_PATH, VG_TRUE );
-	vgDrawGlyph( _font, int('e'), VG_FILL_PATH, VG_TRUE );
-	vgDrawGlyph( _font, int('r'), VG_FILL_PATH, VG_TRUE );
-	vgDrawGlyph( _font, int('o'), VG_FILL_PATH, VG_TRUE );
+	VGuint glyphs[] = {'Z', 'e', 'r', 'o' };
+	// build the offset arrays
+	size_t glyphCount = sizeof(glyphs)/sizeof(VGuint);
+	vector<VGfloat> xadj;
+	vector<VGfloat> yadj;
+	for ( int i = 0; i < glyphCount; i++ ) {
+		xadj.push_back( _glyphs[glyphs[i]].ox );
+		yadj.push_back( _glyphs[glyphs[i]].oy );
+	}
+	
+
+	vgDrawGlyphs( _font, glyphCount, glyphs, &xadj[0], &yadj[0], VG_FILL_PATH, VG_TRUE );
+//	vgDrawGlyph( _font, int('Z'), VG_FILL_PATH, VG_TRUE );
+//	vgDrawGlyph( _font, int('e'), VG_FILL_PATH, VG_TRUE );
+//	vgDrawGlyph( _font, int('r'), VG_FILL_PATH, VG_TRUE );
+//	vgDrawGlyph( _font, int('o'), VG_FILL_PATH, VG_TRUE );
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.
@@ -190,6 +211,8 @@ using namespace std;
 			VGuint glyphIndex = -1;
 			VGfloat glyphOrigin[2] = {0,0};
 			VGfloat escapement[2] = {0,0};
+			VGfloat size[2] = {0,0}; 
+			GlyphDescription glyph;
 			
 			// Character ID
 			propertyValue = [charNse nextObject];
@@ -202,22 +225,29 @@ using namespace std;
 			glyphOrigin[1] = [propertyValue intValue];
 			// Character width
 			propertyValue = [charNse nextObject];
-			escapement[0] = [propertyValue intValue];
+			size[0] = [propertyValue intValue];
 			// Character height
 			propertyValue = [charNse nextObject];
-			escapement[1] = [propertyValue intValue];
+			size[1] = [propertyValue intValue];
 			// Character xoffset
 			propertyValue = [charNse nextObject];
-			//			[characterDefinition setXOffset:[propertyValue intValue]];
+			glyph.ox = [propertyValue intValue];
 			// Character yoffset
 			propertyValue = [charNse nextObject];
-			//			[characterDefinition setYOffset:[propertyValue intValue]];
+			glyph.oy = [propertyValue intValue];
 			// Character xadvance
 			propertyValue = [charNse nextObject];
-			//			[characterDefinition setXAdvance:[propertyValue intValue]];
+			escapement[0] = [propertyValue intValue];
 			
+			
+			// creaet a sub child image from the bitmap font image
+			
+			glyph.image = vgChildImage(bitmapImage, glyphOrigin[0], glyphOrigin[1], size[0], size[1] );
+			
+			// store away for later use
+			_glyphs[glyphIndex] = glyph;
 			// add the glyph to the font
-			vgSetGlyphToImage( font, glyphIndex, bitmapImage, glyphOrigin, escapement );
+			vgSetGlyphToImage( font, glyphIndex, glyph.image, glyphOrigin, escapement );
 		}		
 	}
 	// Finished with lines so release it

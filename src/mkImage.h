@@ -17,21 +17,21 @@ namespace MonkVG {
 		
 		IImage( VGImageFormat format,
 			   VGint width, VGint height,
-			   VGbitfield allowedQuality )
-		:	BaseObject()
-		,	_format( format )
-		,	_width( width )
-		,	_height( height )
-		,	_allowedQuality( allowedQuality )
-		{}
+			   VGbitfield allowedQuality );
+		IImage( IImage& image );
 		
 		inline BaseObject::Type getType() const {
 			return BaseObject::kImageType;
 		}
 		
+		virtual IImage* createChild( VGint x, VGint y, VGint w, VGint h ) = 0;
+		
 		virtual void draw() = 0;
 		
 		virtual void drawSubRect( VGint ox, VGint oy, VGint w, VGint h, VGbitfield paintModes ) = 0;
+		virtual void drawToRect( VGint x, VGint y, VGint w, VGint h, VGbitfield paintModes ) = 0;
+		virtual void drawAtPoint( VGint x, VGint y, VGbitfield paintModes ) = 0;
+		
 		
 		//// parameter accessors/mutators ////
 		virtual VGint getParameteri( const VGint p ) const;
@@ -46,10 +46,15 @@ namespace MonkVG {
 						   VGint x, VGint y, VGint width, VGint height ) = 0;
 	protected:
 		
+		
 		VGImageFormat	_format;
 		VGint			_width;
 		VGint			_height;
 		VGbitfield		_allowedQuality;
+		
+		IImage*			_parent;
+		VGfloat			_s[2];
+		VGfloat			_t[2];
 		
 	};
 	

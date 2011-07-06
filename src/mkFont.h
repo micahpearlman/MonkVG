@@ -26,7 +26,7 @@ namespace MonkVG {
 			return BaseObject::kFontType;
 		}
 		
-		virtual void drawGlyph( VGuint index, VGbitfield paintModes );
+		virtual void drawGlyph( VGuint index, VGfloat adj_x, VGfloat adj_y, VGbitfield paintModes );
 		
 		//// parameter accessors/mutators ////
 		virtual VGint getParameteri( const VGint p ) const;
@@ -55,7 +55,7 @@ namespace MonkVG {
 				escapement[1] = escapement_[1];
 			}
 			
-			virtual void draw( VGbitfield paintModes ) = 0;
+			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ) = 0;
 		};
 		
 		struct GlyphImage : public Glyph {
@@ -68,9 +68,15 @@ namespace MonkVG {
 				type = BaseObject::kImageType;
 			}
 			
-			virtual void draw( VGbitfield paintModes ) {
-				image->drawSubRect( glyphOrigin[0], glyphOrigin[1], escapement[0], escapement[1], paintModes );
-			}
+			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ); 
+//			{
+//				//image->drawSubRect( glyphOrigin[0], glyphOrigin[1], escapement[0], escapement[1], paintModes );
+//				//image->draw( );
+//				VGfloat origin[2];
+//				IContext::instance().getGlyphOrigin( origin );
+//
+//				image->drawAtPoint( origin[0], origin[1], paintModes );
+//			}
 		};
 		
 		struct GlyphPath : public Glyph {
@@ -83,7 +89,7 @@ namespace MonkVG {
 				type = BaseObject::kPathType;
 			}
 			
-			virtual void draw( VGbitfield paintModes ) {
+			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ) {
 				path->draw( paintModes);
 			}
 

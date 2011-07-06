@@ -122,6 +122,10 @@ namespace MonkVG {
 			case VG_CLEAR_COLOR:
 				setClearColor( fv );
 				break;
+			case VG_GLYPH_ORIGIN:
+				setGlyphOrigin( fv );
+				break;
+	
 			default:
 				setError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
@@ -162,6 +166,10 @@ namespace MonkVG {
 			case VG_CLEAR_COLOR:
 				getClearColor( fv );
 				break;
+			case VG_GLYPH_ORIGIN:
+				getGlyphOrigin( fv );
+				break;
+				
 			default:
 				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
