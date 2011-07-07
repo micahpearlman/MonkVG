@@ -24,6 +24,8 @@
 		FAA5DB9D13BCECC200326F9D /* testfont.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA5DB9C13BCECC200326F9D /* testfont.png */; };
 		FAA5DBA013BCEF5300326F9D /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAA5DB9F13BCEF5300326F9D /* MainWindow-iPad.xib */; };
 		FAA5DBA213BCF40F00326F9D /* testfont.fnt in Resources */ = {isa = PBXBuildFile; fileRef = FAA5DBA113BCF40F00326F9D /* testfont.fnt */; };
+		FAA8ECAE13C66A5C00D4B4FC /* arial.png in Resources */ = {isa = PBXBuildFile; fileRef = FAA8ECAC13C66A5C00D4B4FC /* arial.png */; };
+		FAA8ECAF13C66A5C00D4B4FC /* arial.fnt in Resources */ = {isa = PBXBuildFile; fileRef = FAA8ECAD13C66A5C00D4B4FC /* arial.fnt */; };
 		FAB144781214867E004DF07F /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144741214867E004DF07F /* test.c */; };
 		FAB144791214867E004DF07F /* test_tiger.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144761214867E004DF07F /* test_tiger.c */; };
 		FAB1447A1214867E004DF07F /* test_tiger_paths.c in Sources */ = {isa = PBXBuildFile; fileRef = FAB144771214867E004DF07F /* test_tiger_paths.c */; };
@@ -76,6 +78,8 @@
 		FAA5DB9C13BCECC200326F9D /* testfont.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = testfont.png; sourceTree = "<group>"; };
 		FAA5DB9F13BCEF5300326F9D /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FAA5DBA113BCF40F00326F9D /* testfont.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = testfont.fnt; sourceTree = "<group>"; };
+		FAA8ECAC13C66A5C00D4B4FC /* arial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arial.png; sourceTree = "<group>"; };
+		FAA8ECAD13C66A5C00D4B4FC /* arial.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arial.fnt; sourceTree = "<group>"; };
 		FAB144741214867E004DF07F /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 		FAB144751214867E004DF07F /* test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test.h; sourceTree = "<group>"; };
 		FAB144761214867E004DF07F /* test_tiger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test_tiger.c; sourceTree = "<group>"; };
@@ -165,6 +169,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				FAA8ECAC13C66A5C00D4B4FC /* arial.png */,
+				FAA8ECAD13C66A5C00D4B4FC /* arial.fnt */,
 				FAA5DBA113BCF40F00326F9D /* testfont.fnt */,
 				FAA5DB9C13BCECC200326F9D /* testfont.png */,
 				FA9B04E313BACA2D0048E1C0 /* delorean.png */,
@@ -291,6 +297,8 @@
 				FAA5DB9D13BCECC200326F9D /* testfont.png in Resources */,
 				FAA5DBA013BCEF5300326F9D /* MainWindow-iPad.xib in Resources */,
 				FAA5DBA213BCF40F00326F9D /* testfont.fnt in Resources */,
+				FAA8ECAE13C66A5C00D4B4FC /* arial.png in Resources */,
+				FAA8ECAF13C66A5C00D4B4FC /* arial.fnt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

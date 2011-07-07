@@ -32,6 +32,7 @@
 	VGImage _image;
 	VGImage	_bitmapFont;
 	VGFont	_font;
+	VGfloat _lineHeight;
 	
 }
 

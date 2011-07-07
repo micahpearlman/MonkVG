@@ -23,6 +23,7 @@ using namespace std;
 struct GlyphDescription {
 	VGImage image;
 	VGint ox, oy;	// offsets
+	VGint height;
 };
 
 map<VGuint, GlyphDescription>	_glyphs;
@@ -66,11 +67,11 @@ map<VGuint, GlyphDescription>	_glyphs;
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
 		_image = [self buildVGImageFromUIImage:[UIImage imageNamed:@"zero.png"]];
-		_bitmapFont = [self buildVGImageFromUIImage:[UIImage imageNamed:@"testfont.png"]];
+		_bitmapFont = [self buildVGImageFromUIImage:[UIImage imageNamed:@"arial.png"]];
 		
-		_font = [self buildVGFontFromBitmapFont:@"testfont"];
+		_font = [self buildVGFontFromBitmapFont:@"arial"];
 
-		
+		_lineHeight = 74;	// hardwired.  todo: read from file
 //		loadTiger();
 //		
 //
@@ -114,19 +115,24 @@ map<VGuint, GlyphDescription>	_glyphs;
 	vgLoadIdentity();
 	VGfloat glyphOrigin[2] = {0,0};
 	vgSetfv( VG_GLYPH_ORIGIN, 2, glyphOrigin );
-	vgTranslate( backingWidth/2, backingHeight/2 );
-	VGuint glyphs[] = {'Z', 'e', 'r', 'o' };
+	vgTranslate( 10, backingHeight/2 );
+	
+	std::string s("Hello World! And puppies dogs?");
+	vector<VGuint> glyphs;
+	for( string::const_iterator it = s.begin(); it != s.end(); it++ )
+		glyphs.push_back( VGuint( *it ) );
+
 	// build the offset arrays
-	size_t glyphCount = sizeof(glyphs)/sizeof(VGuint);
+	size_t glyphCount = glyphs.size();
 	vector<VGfloat> xadj;
 	vector<VGfloat> yadj;
 	for ( int i = 0; i < glyphCount; i++ ) {
 		xadj.push_back( _glyphs[glyphs[i]].ox );
-		yadj.push_back( _glyphs[glyphs[i]].oy );
+		yadj.push_back( _lineHeight - (_glyphs[glyphs[i]].height + _glyphs[glyphs[i]].oy) );
 	}
 	
 
-	vgDrawGlyphs( _font, glyphCount, glyphs, &xadj[0], &yadj[0], VG_FILL_PATH, VG_TRUE );
+	vgDrawGlyphs( _font, glyphCount, &glyphs[0], &xadj[0], &yadj[0], VG_FILL_PATH, VG_TRUE );
 //	vgDrawGlyph( _font, int('Z'), VG_FILL_PATH, VG_TRUE );
 //	vgDrawGlyph( _font, int('e'), VG_FILL_PATH, VG_TRUE );
 //	vgDrawGlyph( _font, int('r'), VG_FILL_PATH, VG_TRUE );
@@ -228,7 +234,7 @@ map<VGuint, GlyphDescription>	_glyphs;
 			size[0] = [propertyValue intValue];
 			// Character height
 			propertyValue = [charNse nextObject];
-			size[1] = [propertyValue intValue];
+			glyph.height = size[1] = [propertyValue intValue];
 			// Character xoffset
 			propertyValue = [charNse nextObject];
 			glyph.ox = [propertyValue intValue];
