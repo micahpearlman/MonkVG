@@ -147,6 +147,9 @@ namespace MonkVG {
 		glVertexPointer(3, GL_FLOAT, 0, vertices);
 		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		
+		glBindTexture(GL_TEXTURE_2D, 0);
+
 	}
 	
 	void OpenGLImage::drawSubRect( VGint ox, VGint oy, VGint w, VGint h, VGbitfield paintModes ) {
@@ -187,6 +190,9 @@ namespace MonkVG {
 		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		
 	}
 	
 	void OpenGLImage::drawToRect( VGint x, VGint y, VGint w, VGint h, VGbitfield paintModes ) {
@@ -219,6 +225,8 @@ namespace MonkVG {
 		glVertexPointer(3, GL_FLOAT, 0, vertices);
 		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 	}
 	

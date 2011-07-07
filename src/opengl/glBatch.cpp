@@ -115,7 +115,11 @@ namespace MonkVG {
 	}
 	
 	void OpenGLBatch::draw() {
+		// get the native OpenGL context
+		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
+		glContext.beginRender();
 
+		glDisable( GL_TEXTURE );
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glEnableClientState( GL_COLOR_ARRAY );
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
@@ -126,6 +130,8 @@ namespace MonkVG {
 		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, color) );
 		glDrawArrays( GL_TRIANGLES, 0, _vertexCount );
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		
+		glContext.endRender();
 
 	}
 }

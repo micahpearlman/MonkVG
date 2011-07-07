@@ -101,6 +101,9 @@ namespace MonkVG {
 		,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
 		,	_currentBatch( 0 )
 	{
+		_path_user_to_surface.setIdentity();
+		_glyph_user_to_surface.setIdentity();
+		_image_user_to_surface.setIdentity();
 		_active_matrix->setIdentity();
 		_glyph_origin[0] = _glyph_origin[1] = 0;
 	}

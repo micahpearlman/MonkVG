@@ -88,8 +88,10 @@ namespace MonkVG {	// Internal Implementation
 		//image->draw( );
 		VGfloat origin[2];
 		IContext::instance().getGlyphOrigin( origin );
+		origin[0] += adj_x;
+		origin[1] += adj_y;
 		
-		image->drawAtPoint( origin[0] + adj_x, origin[1] + adj_y, paintModes );
+		image->drawAtPoint( origin[0], origin[1], paintModes );
 	}
 
 
