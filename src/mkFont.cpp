@@ -77,7 +77,7 @@ namespace MonkVG {	// Internal Implementation
 			VGfloat origin[2];
 			IContext::instance().getGlyphOrigin( origin );
 //			vgTranslate( origin[0], origin[1] );
-			glyph->draw( adj_x, adj_y, paintModes );
+			glyph->draw( paintModes, adj_x, adj_y );
 			origin[0] += glyph->escapement[0];
 			IContext::instance().setGlyphOrigin( origin );
 		}
