@@ -179,6 +179,14 @@ namespace MonkVG {
 			x,		y+h,	0.0,	// left, top
 			x+w,	y+h,	0.0 };	// right, top
 		
+		if ( IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY ) {
+			// set the color to the current fill paint color
+			IPaint* fillPaint = IContext::instance().getFillPaint();
+			const VGfloat* color = fillPaint->getPaintColor();
+			glColor4f( color[0], color[1], color[2], color[3] );
+		}
+
+		
 		glEnable(GL_TEXTURE_2D);
 		// turn on blending
 		glEnable(GL_BLEND);
@@ -213,6 +221,14 @@ namespace MonkVG {
 			x+w,	y,		0.0,	// right, bottom
 			x,		y+h,	0.0,	// left, top
 			x+w,	y+h,	0.0 };	// right, top
+		
+		if ( IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY ) {
+			// set the color to the current fill paint color
+			IPaint* fillPaint = IContext::instance().getFillPaint();
+			const VGfloat* color = fillPaint->getPaintColor();
+			glColor4f( color[0], color[1], color[2], color[3] );
+		}
+
 		
 		glEnable(GL_TEXTURE_2D);
 		// turn on blending
