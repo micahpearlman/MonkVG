@@ -80,6 +80,9 @@ namespace MonkVG {
 		/// batch drawing
 		virtual void startBatch( IBatch* batch );
 		virtual void endBatch( IBatch* batch );
+		
+		/// image
+		virtual void setImageMode( VGImageMode im );
 
 
 	private:

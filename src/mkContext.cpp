@@ -100,12 +100,15 @@ namespace MonkVG {
 		,	_tessellationIterations( 16 )
 		,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
 		,	_currentBatch( 0 )
+		,	_imageMode( VG_DRAW_IMAGE_NORMAL )
 	{
 		_path_user_to_surface.setIdentity();
 		_glyph_user_to_surface.setIdentity();
 		_image_user_to_surface.setIdentity();
 		_active_matrix->setIdentity();
 		_glyph_origin[0] = _glyph_origin[1] = 0;
+		
+		setImageMode( _imageMode );
 	}
 	
 	//// parameters ////
@@ -146,6 +149,9 @@ namespace MonkVG {
 				break;
 			case VG_TESSELLATION_ITERATIONS_MNK:
 				setTessellationIterations( i );
+				break;
+			case VG_IMAGE_MODE:
+				setImageMode( (VGImageMode)i );
 				break;
 			default:
 				break;
@@ -192,6 +198,10 @@ namespace MonkVG {
 			case VG_TESSELLATION_ITERATIONS_MNK:
 				i = getTessellationIterations( );
 				break;
+			case VG_IMAGE_MODE:
+				i = getImageMode( );
+				break;
+				
 			default:
 				break;
 		}

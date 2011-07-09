@@ -129,12 +129,20 @@ namespace MonkVG {
 			x,		y+h,	0.0,	// left, top
 			x+w,	y+h,	0.0 };	// right, top
 		
+		
+		if ( IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY ) {
+			// set the color to the current fill paint color
+			IPaint* fillPaint = IContext::instance().getFillPaint();
+			const VGfloat* color = fillPaint->getPaintColor();
+			glColor4f( color[0], color[1], color[2], color[3] );
+		}
+		
 		glEnable(GL_TEXTURE_2D);
 		// turn on blending
 		glEnable(GL_BLEND);
 		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState( GL_COLOR_ARRAY );
@@ -176,7 +184,6 @@ namespace MonkVG {
 		glEnable(GL_BLEND);
 		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 		
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState( GL_COLOR_ARRAY );
@@ -212,7 +219,6 @@ namespace MonkVG {
 		glEnable(GL_BLEND);
 		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 		
-		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState( GL_COLOR_ARRAY );

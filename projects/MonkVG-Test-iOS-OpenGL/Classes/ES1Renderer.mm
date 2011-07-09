@@ -102,6 +102,7 @@ map<VGuint, GlyphDescription>	_glyphs;
 	
 	
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+	vgSeti( VG_IMAGE_MODE, VG_DRAW_IMAGE_NORMAL );
 	vgLoadIdentity();
 	vgTranslate( backingWidth/2, backingHeight/2 );
 	vgDrawImage( _image );
@@ -131,7 +132,7 @@ map<VGuint, GlyphDescription>	_glyphs;
 		yadj.push_back( _lineHeight - (_glyphs[glyphs[i]].height + _glyphs[glyphs[i]].oy) );
 	}
 	
-
+	vgSeti( VG_IMAGE_MODE, VG_DRAW_IMAGE_MULTIPLY );
 	vgDrawGlyphs( _font, glyphCount, &glyphs[0], &xadj[0], &yadj[0], VG_FILL_PATH, VG_TRUE );
 //	vgDrawGlyph( _font, int('Z'), VG_FILL_PATH, VG_TRUE );
 //	vgDrawGlyph( _font, int('e'), VG_FILL_PATH, VG_TRUE );

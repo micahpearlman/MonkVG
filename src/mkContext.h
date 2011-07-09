@@ -180,6 +180,10 @@ namespace MonkVG {
 		/// font
 		void setGlyphOrigin( const VGfloat o[2] ) { _glyph_origin[0] = o[0]; _glyph_origin[1] = o[1]; }
 		void getGlyphOrigin( VGfloat o[2] ) const { o[0] = _glyph_origin[0]; o[1] = _glyph_origin[1]; }
+		
+		/// image
+		virtual VGImageMode getImageMode() const { return _imageMode; }
+		virtual void setImageMode( VGImageMode im ) { _imageMode = im; }
 	
 	protected:
 	
@@ -211,6 +215,9 @@ namespace MonkVG {
 		
 		// batch
 		IBatch*				_currentBatch;
+		
+		// imFW
+		VGImageMode			_imageMode;
 
 		// error 
 		VGErrorCode			_error;

@@ -18,6 +18,14 @@
 
 namespace MonkVG {
 	
+	//// singleton implementation ////
+	static OpenGLContext g_context;
+	IContext& IContext::instance()
+	{
+		return g_context;
+	}
+
+	
 	OpenGLContext::OpenGLContext()
 		:	IContext()
 	{
@@ -426,12 +434,22 @@ namespace MonkVG {
 		loadGLMatrix();
 	}
 	
-	
-	//// singleton implementation ////
-	static OpenGLContext g_context;
-	IContext& IContext::instance()
-	{
-		return g_context;
+	void OpenGLContext::setImageMode( VGImageMode im ) {
+		IContext::setImageMode( im );
+		switch ( im ) {
+			case VG_DRAW_IMAGE_NORMAL:
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+				break;
+			case VG_DRAW_IMAGE_MULTIPLY:
+				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+				break;
+			case VG_DRAW_IMAGE_STENCIL:
+				break;
+			default:
+				break;
+		}
 	}
+	
+	
 	
 }
