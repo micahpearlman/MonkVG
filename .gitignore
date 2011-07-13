@@ -8,7 +8,8 @@
 *.perspective
 *.perspectivev3
 *.pbxuser
-
+project.xcworkspace/
+xcuserdata/
 
 # Generated files
 VersionX-revision.h
