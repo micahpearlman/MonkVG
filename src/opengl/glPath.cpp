@@ -83,7 +83,7 @@ namespace MonkVG {
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		glDisableClientState( GL_COLOR_ARRAY );
 
-		if( paintModes & VG_FILL_PATH ) {
+		if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 ) {
 			// draw
 			IContext::instance().fill();
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
@@ -92,7 +92,7 @@ namespace MonkVG {
 			glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		}
 		
-		if ( paintModes & VG_STROKE_PATH ) {
+		if ( (paintModes & VG_STROKE_PATH) && _strokeVBO != -1 ) {
 			// draw
 			IContext::instance().stroke();
 			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
@@ -788,7 +788,7 @@ namespace MonkVG {
 			glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
 			_numberFillVertices = _vertices.size()/2;
 			_tessVertices.clear();
-		}
+		} 
 		
 		/// build stroke vbo 
 		if ( _strokeVertices.size() > 0 ) {
