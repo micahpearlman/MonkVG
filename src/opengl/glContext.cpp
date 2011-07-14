@@ -313,10 +313,6 @@ namespace MonkVG {
 	
 	void OpenGLContext::loadGLMatrix() {
 		Matrix33& active = *getActiveMatrix();
-		// a	b	0
-		// c	d	0
-		// tx	ty	1
-		
 		GLfloat mat44[4][4];
 		for( int x = 0; x < 4; x++ )
 			for( int y = 0; y < 4; y++ )
@@ -326,24 +322,19 @@ namespace MonkVG {
 		mat44[2][2] = 1.0f;
 		mat44[3][3]	= 1.0f;
 		
-		// rotate (note transposed)
-		mat44[0][0] = active.get( 0, 0 );
-		mat44[0][1] = active.get( 1, 0 );
-		mat44[1][0]	= active.get( 0, 1 );
-		mat44[1][1] = active.get( 1, 1 );
 		
-		// scale
-		mat44[3][0] = active.get( 0, 2 );
-		mat44[3][1] = active.get( 1, 2 );
+		//		a, c, e,			// cos(a) -sin(a) tx
+		//		b, d, f,			// sin(a) cos(a)  ty
+		//		ff0, ff1, ff2;		// 0      0       1
 		
-		
-		//glMatrixMode( GL_MODELVIEW );
-		//glPushMatrix();
+		mat44[0][0] = active.a;	mat44[0][1] = active.b;
+		mat44[1][0] = active.c;	mat44[1][1] = active.d;
+		mat44[3][0] = active.e;	mat44[3][1] = active.f;
 		glLoadMatrixf( &mat44[0][0] );
 		
 	}
 	
-
+	
 	
 	void OpenGLContext::setIdentity() {
 		Matrix33* active = getActiveMatrix();
@@ -356,11 +347,8 @@ namespace MonkVG {
 		// c	d	0
 		// tx	ty	1
 		Matrix33* active = getActiveMatrix();
-		for ( int x = 0; x < 3; x++ ) {
-			for ( int y = 0; y < 3; y++ ) {
-				t[(y*3)+x] = active->get( y, x );
-			}
-		}
+		for( int i = 0; i < 9; i++ )
+			t[i] = active->m[i];
 		
 	}
 	
@@ -376,12 +364,8 @@ namespace MonkVG {
 		// tx	ty	1
 		
 		Matrix33* active = getActiveMatrix();
-		// transpose:  see above
-		for ( int x = 0; x < 3; x++ ) {
-			for ( int y = 0; y < 3; y++ ) {
-				active->set( y, x, t[(y*3)+x] );
-			}
-		}
+		for( int i = 0; i < 9; i++ )
+			active->m[i] = t[i];
 		loadGLMatrix();
 	}
 	
@@ -394,13 +378,10 @@ namespace MonkVG {
 			}
 		}
 		Matrix33* active = getActiveMatrix();
-		//m.multiply( *active );
-		//active->copy( m );
-		//active->multiply( m );
 		active->postMultiply( m );
 		loadGLMatrix();
 	}
-
+	
 	void OpenGLContext::scale( VGfloat sx, VGfloat sy ) {
 		Matrix33* active = getActiveMatrix();
 		Matrix33 scale;
@@ -418,7 +399,6 @@ namespace MonkVG {
 		translate.setTranslate( x, y );
 		Matrix33 tmp;
 		tmp.setIdentity();
-		//Matrix33::multiply( tmp, *active, translate );
 		Matrix33::multiply( tmp, translate, *active );
 		active->copy( tmp );
 		loadGLMatrix();
@@ -426,7 +406,7 @@ namespace MonkVG {
 	void OpenGLContext::rotate( VGfloat angle ) {
 		Matrix33* active = getActiveMatrix();
 		Matrix33 rotate;
-		rotate.setRotate( radians( -angle ) );
+		rotate.setRotation( radians( angle ) );
 		Matrix33 tmp;
 		tmp.setIdentity();
 		Matrix33::multiply( tmp, rotate, *active );

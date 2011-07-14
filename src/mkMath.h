@@ -14,25 +14,105 @@
 #include <cmath>
 #include <cstdio>
 #include <stdlib.h>
+#include <iostream>
+#include <iomanip>
 #include "mkCommon.h"
 
 namespace MonkVG {
 	
 	static inline VGfloat radians (VGfloat degrees) {return degrees * (M_PI/180.0f);}	
 	static inline VGfloat degrees (VGfloat radians) {return radians * (180.0f/M_PI);}
-
-//	[ sx	shx	tx
-//	 shy	sy	ty
-//	 0		0	1 ]
-//	sx and sy define scaling in the x and y directions, respectively;
-//	shx and shy define shearing in the x and y directions, respectively;
-//	tx and ty define translation in the x and y directions, respectively.
-
+	
+	//	[ sx	shx	tx
+	//	 shy	sy	ty
+	//	 0		0	1 ]
+	//	sx and sy define scaling in the x and y directions, respectively;
+	//	shx and shy define shearing in the x and y directions, respectively;
+	//	tx and ty define translation in the x and y directions, respectively.
+	
 	class Matrix33 {
 	public:
-	
+		
+		union {
+            struct {
+                float	
+				a, c, e,			// cos(a) -sin(a) tx
+				b, d, f,			// sin(a) cos(a)  ty
+				ff0, ff1, ff2;		// 0      0       1
+            };
+            float m[9];
+            float mm[3][3];
+        };
+		
+		Matrix33( float* t ) {
+            a = t[0]; c = t[1]; e = t[2];
+            b = t[3]; d = t[4]; f = t[5];
+            ff0 = t[6]; ff1 = t[7];  ff2 = t[8];
+        }
+		
+		
+		void setIdentity() {
+            // set to identity
+            a = d = ff2 = 1.0f;
+            c = e = b = f = ff0 = ff1 = 0;
+		}
+		
+        
+        void setTranslate( float x, float y ) {
+            e = x; f = y;
+        }
+        
+        void setScale( float sx, float sy ) {
+            a = sx; d = sy;
+        }
+        
+        void setRotation( float ang ) {	// assume radians
+			float cs = cosf( ang );
+			float ss = sinf( ang );
+            a = cs; c = -ss;
+            b = ss; d = cs;
+        }
+		
+		void translation( float t[2] ) const { t[0] = e; t[1] = f; }
+		void setTranslation( float t[2] ) { e = t[0]; f = t[1]; }
+		float angle() const { return acosf( a ); }
+		void setAngle( float ang ) {
+			setRotation( ang );
+		}
+		
+		void lookAt( float la[2] ) const { la[0] = a; la[1] = b; }
+		
+        
+        float* ptr() {
+            return &a;
+        }
+        
+        static void multiply( Matrix33& r, const Matrix33& a, const Matrix33& b ) {
+            for ( int z = 0; z < 9; z++ )
+                r.m[z] = 0;
+            
+            for( int i = 0; i < 3; i++ ) 
+                for( int j = 0; j < 3; j++ ) 
+                    for ( int k = 0; k < 3; k++ ) {
+                        r.mm[i][j] += a.mm[i][k] * b.mm[k][j];
+                    }
+        }
+		
+		
+		
+		void print() {
+			std::cout << ":: Matrix33 ::" << std::endl;
+			for( int i = 0; i < 3; i++ ) {
+				for( int p = 0; p < 3; p++ ) {
+					std::cout << std::setw(6) << std::setiosflags(std::ios::fixed) << std::setprecision(3) << mm[i][p];
+				}
+				std::cout << std::endl;
+			}
+		}
+		
+		
 		Matrix33() {
-			//setIdentity();
+			setIdentity();
 		}
 		
 		Matrix33( const Matrix33 &m ) {
@@ -40,28 +120,21 @@ namespace MonkVG {
 		}
 		
 		inline void set( int row, int col, VGfloat v ) {
-			_mat[row][col] = v; 
+			mm[row][col] = v; 
 		}
 		
 		inline VGfloat get( int row, int col ) const {
-			return _mat[row][col];
+			return mm[row][col];
 		}
 		
-		inline void setIdentity() {
-			for ( int i = 0; i < 3; i++ ) {
-				for ( int k = 0; k < 3; k++ ) {
-					if( i == k ) 
-						set( i, k, 1.0f );
-					else 
-						set( i, k, 0.0f );
-				}
-			}
+		inline void copy( const Matrix33& m_ ) {
+			for( int i = 0; i < 9; i++ )
+				m[i] = m_.m[i];
+			
 		}
-		inline void copy( const Matrix33& m ) {
-			for( int i = 0; i < 3; i++ )
-				for( int k = 0; k < 3; k++ )
-					set( i, k, m.get( i, k ) );
-						
+		inline void copy( float* o ) {
+			for( int i = 0; i < 9; i++ )
+				m[i] = o[i];
 		}
 		inline void transpose( ) {
 			Matrix33 tmp;
@@ -75,73 +148,20 @@ namespace MonkVG {
 			Matrix33::multiply( tmp, *this, m );
 			copy( tmp );
 		}
-
+		
 		inline void preMultiply( const Matrix33& m ) {
 			Matrix33 tmp;
 			Matrix33::multiply( tmp, m, *this );
 			copy( tmp );
 		}
 		
-		static inline void multiply( Matrix33& c, const Matrix33& a, const Matrix33& b ) {
-			c.set(0,0, a.get(0,0)*b.get(0,0)+a.get(0,1)*b.get(1,0)+a.get(0,2)*b.get(2,0));   
-			c.set(0,1, a.get(0,0)*b.get(0,1)+a.get(0,1)*b.get(1,1)+a.get(0,2)*b.get(2,1));   
-			c.set(0,2, a.get(0,0)*b.get(0,2)+a.get(0,1)*b.get(1,2)+a.get(0,2)*b.get(2,2));   
-			
-			c.set(1,0, a.get(1,0)*b.get(0,0)+a.get(1,1)*b.get(1,0)+a.get(1,2)*b.get(2,0));   
-			c.set(1,1, a.get(1,0)*b.get(0,1)+a.get(1,1)*b.get(1,1)+a.get(1,2)*b.get(2,1));   
-			c.set(1,2, a.get(1,0)*b.get(0,2)+a.get(1,1)*b.get(1,2)+a.get(1,2)*b.get(2,2));   
-			
-			c.set(2,0, a.get(2,0)*b.get(0,0)+a.get(2,1)*b.get(1,0)+a.get(2,2)*b.get(2,0));   
-			c.set(2,1, a.get(2,0)*b.get(0,1)+a.get(2,1)*b.get(1,1)+a.get(2,2)*b.get(2,1));   
-			c.set(2,2, a.get(2,0)*b.get(0,2)+a.get(2,1)*b.get(1,2)+a.get(2,2)*b.get(2,2));
-//			for (   int y = 0;  y < 3;  y ++ )
-//				for ( int x = 0;  x < 3;  x ++   )
-//				{
-//					c.set(y,x,0);// [y] [x] = 0;
-//					for ( int i = 0;  i < 3;  i ++ )
-//						c.set(y, x, c.get(y, x) + (a.get(y,i) * b.get(i,x)));//theMatrixA [y] [i] * theMatrixB [i] [x];
-//				}   			
-		}
-		
-		inline void setScale( VGfloat sx, VGfloat sy ) {
-			setIdentity();
-			set( 0, 0, sx ); set( 1, 1, sy );
-		}
-		inline void setTranslate( VGfloat tx, VGfloat ty ) {
-			setIdentity();
-			set( 0, 2, tx ); set( 1, 2, ty );
-		}
-		inline void setRotate( VGfloat a ) {
-			setIdentity();
-			set( 0, 0, cosf( a ) );	set( 0, 1, sinf( a ) );
-			set( 1, 0, -sinf( a ) );	set( 1, 1, cosf( a ) );
-		}
-		inline void addTranslate( VGfloat tx, VGfloat ty ) {
-			set( 0, 2, get(0, 2) + tx);
-			set( 1, 2, get(1, 2) + ty);
-		}
-		inline void getTranslate( VGfloat& tx, VGfloat& ty ) {
-			tx = get( 0, 2 );
-			ty = get( 1, 2 );
-		}
-		
-		void print() {
-			printf("--\n");
-			for ( int x = 0; x < 3; x++ ) {
-				printf("%f\t%f\t%f\n", _mat[x][0], _mat[x][1], _mat[x][2] );			
-			}
-		}
-		
-	private:
-	
-		VGfloat _mat[3][3];
 	};
 	
 	inline void affineTransform( float result[2], const Matrix33& m, const float v[2] )	{ 
 		result[0] = v[0] * m.get(0,0) + v[1] * m.get(0,1) + m.get(0,2);
 		result[1] = v[0] * m.get(1,0) + v[1] * m.get(1,1) + m.get(1,2); 
 	}
-
+	
 }
 
 
