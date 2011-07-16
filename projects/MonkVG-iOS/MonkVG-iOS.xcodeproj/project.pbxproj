@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29FCF5A113CE62EB0031232E /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29FCF5A013CE62EB0031232E /* boost.framework */; };
 		FA0F6A14125ECDC600FE3D55 /* priorityq-heap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB4121A088200814394 /* priorityq-heap.h */; };
 		FA0F6A1E125ECE1300FE3D55 /* priorityq.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB6121A088200814394 /* priorityq.c */; };
 		FA0F6A1F125ECE1400FE3D55 /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB7121A088200814394 /* priorityq.h */; };
@@ -26,7 +27,6 @@
 		FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDCE13BAB0E30045C681 /* mkImage.h */; };
 		FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDD113BAB2D40045C681 /* glImage.cpp */; };
 		FACFEDD413BAB2D40045C681 /* glImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDD213BAB2D40045C681 /* glImage.h */; };
-		FAE282AA121A08BB00823BCB /* MonkVG_iOS_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */; };
 		FAE282AB121A08BB00823BCB /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC95121A088200814394 /* mkBaseObject.h */; };
 		FAE282AC121A08BB00823BCB /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC96121A088200814394 /* mkCommon.h */; };
 		FAE282AD121A08BB00823BCB /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC98121A088200814394 /* mkContext.h */; };
@@ -77,7 +77,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MonkVG_iOS_Prefix.pch; sourceTree = SOURCE_ROOT; };
+		29FCF5A013CE62EB0031232E /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../Frameworks/boost.framework; sourceTree = "<group>"; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA6AEFA4127679FD004079EE /* openvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openvg.h; sourceTree = "<group>"; };
 		FA6AEFA5127679FD004079EE /* vgext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgext.h; sourceTree = "<group>"; };
@@ -156,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAE282E5121A08BB00823BCB /* Foundation.framework in Frameworks */,
+				29FCF5A113CE62EB0031232E /* boost.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,7 +175,6 @@
 			isa = PBXGroup;
 			children = (
 				FA9ACC93121A088200814394 /* Source */,
-				32C88DFF0371C24200C91783 /* Other Sources */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
@@ -185,16 +185,9 @@
 			isa = PBXGroup;
 			children = (
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
+				29FCF5A013CE62EB0031232E /* boost.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		32C88DFF0371C24200C91783 /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				AA747D9E0F9514B9006C5449 /* MonkVG_iOS_Prefix.pch */,
-			);
-			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 		FA6AEFA2127679FD004079EE /* include */ = {
@@ -338,7 +331,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAE282AA121A08BB00823BCB /* MonkVG_iOS_Prefix.pch in Headers */,
 				FAE282AB121A08BB00823BCB /* mkBaseObject.h in Headers */,
 				FAE282AC121A08BB00823BCB /* mkCommon.h in Headers */,
 				FAE282AD121A08BB00823BCB /* mkContext.h in Headers */,
@@ -499,12 +491,16 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/MonkVG_iOS.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					../../glu/include,
 					../../include,
@@ -523,9 +519,13 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				DSTROOT = /tmp/MonkVG_iOS.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../../Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = MonkVG_iOS_Prefix.pch;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
 					../../glu/include,

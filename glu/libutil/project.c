@@ -30,7 +30,12 @@
 
 #include "gluos.h"
 #include <math.h>
+
+#ifdef ANDROID
+#include <GLES/gl.h>
+#else
 #include <OpenGLES/ES1/gl.h>
+#endif // #ifdef ANDROID
 #include "glu.h"
 #include "gluint.h"
 
