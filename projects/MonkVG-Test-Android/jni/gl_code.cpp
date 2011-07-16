@@ -45,16 +45,16 @@ static void checkGlError(const char* op) {
 }
 
 extern "C" {
-    JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_created(JNIEnv * env, jobject obj);
-    JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_changed(JNIEnv * env, jobject obj,  jint width, jint height);
-    JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_step(JNIEnv * env, jobject obj);
+    JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_created(JNIEnv * env, jobject obj);
+    JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_changed(JNIEnv * env, jobject obj,  jint width, jint height);
+    JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_step(JNIEnv * env, jobject obj);
 };
 
 VGPath  _path;
 int _width = 0;
 int _height = 0;
 
-JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_created(JNIEnv * env, jobject obj)
+JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_created(JNIEnv * env, jobject obj)
 {
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
@@ -73,7 +73,7 @@ JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_created(JNIEnv * env, j
     vguEllipse( _path, 0, 0, 90.0f, 50.0f );
 }
 
-JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_changed(JNIEnv * env, jobject obj,  jint width, jint height)
+JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_changed(JNIEnv * env, jobject obj,  jint width, jint height)
 {
     LOGI("w:%d h:%d", width, height);
     _width = width;
@@ -87,15 +87,16 @@ JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_changed(JNIEnv * env, j
     glMatrixMode(GL_MODELVIEW);
 }
 
-GLfloat vertexBuffer[] = {  // Vertices of the triangle
-       100.0f,  100.0f, 0.0f,
-      50.0f, 50.0f, 0.0f,
-       150.0f, 50.0f, 0.0f
-   };
+GLfloat vertexBuffer[] =
+{
+   100.0f, 100.0f, 0.0f,
+    50.0f,  50.0f, 0.0f,
+   150.0f,  50.0f, 0.0f
+};
 
-GLubyte indexBuffer[] = { 0, 1, 2 }; // Indices to above vertices (in CCW)
+GLubyte indexBuffer[] = { 0, 1, 2 };
 
-JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_step(JNIEnv * env, jobject obj)
+JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_step(JNIEnv * env, jobject obj)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -107,9 +108,4 @@ JNIEXPORT void JNICALL Java_com_android_monkvg_GL1JNILib_step(JNIEnv * env, jobj
     vgLoadIdentity();
     vgTranslate( _width/2, _height/2 );
     vgDrawPath( _path, VG_FILL_PATH );
-    
-//    glEnableClientState(GL_VERTEX_ARRAY);
-//    glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);      
-//    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, indexBuffer);
-//    glDisableClientState(GL_VERTEX_ARRAY);
 }

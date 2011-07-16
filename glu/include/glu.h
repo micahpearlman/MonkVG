@@ -36,6 +36,10 @@
 	#include <OpenGLES/ES1/gl.h>
 #endif // #if defined(__APPLE__)
 
+#ifdef ANDROID
+#include <GLES/gl.h>
+#endif // #ifdef ANDROID 
+
 #ifndef GLAPIENTRY
 #define GLAPIENTRY
 #endif

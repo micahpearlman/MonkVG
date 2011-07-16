@@ -9,14 +9,19 @@
 #define __glImage_h__
 
 #include "mkImage.h"
+
 #if defined(__APPLE__)
-#include "TargetConditionals.h"
-#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-#include "glu.h"
-#else
-#include <OpenGL/glu.h>
-#define glOrthof glOrtho
-#endif
+    #include "TargetConditionals.h"
+    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+        #include "glu.h"
+    #else
+        #include <OpenGL/glu.h>
+        #define glOrthof glOrtho
+    #endif
+#else // #if defined(__APPLE__)
+    #if ANDROID
+        #include "glu.h"
+    #endif
 #endif // #if defined(__APPLE__)
 
 namespace MonkVG {

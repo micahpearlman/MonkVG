@@ -19,10 +19,10 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.gl2jni">
+    package="com.android.monkvg">
     <application
-            android:label="@string/gl2jni_activity">
-        <activity android:name="com.android.monkvg.GL1JNIActivity"
+            android:label="@string/monkvg_activity">
+        <activity android:name="com.android.monkvg.MonkVGActivity"
                 android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             	android:launchMode="singleTask"
             	android:configChanges="orientation|keyboardHidden">
