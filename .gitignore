@@ -14,6 +14,9 @@ xcuserdata/
 # Generated files
 VersionX-revision.h
 
+#ndk noise
+obj/
+libs/
 
 # build products
 build/
