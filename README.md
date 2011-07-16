@@ -15,15 +15,17 @@ Not even versioned yet for download.  Use git to clone:
 
 <tt>$ git clone git@github.com:micahpearlman/MonkVG.git</tt>
 
-Currently only XCode iOS and OSX projects.  
+There are currently iOS and OSX XCode 4 projects as well as Android projects (thanks Paul Holden)  
 
 TODO: standard *nix Makefiles.
-TODO: Android projects.
+
 
 ## Extensions
 
 MonkVG was originally created for games, so speed has usually been prefered over quality or full OpenVG compliance.  To improve speed there have been MonkVG specific extensions. See "vgext.h" for some of the details.
 
 
+## Contributors
 
+Paul Holden
 
