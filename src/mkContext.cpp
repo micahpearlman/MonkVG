@@ -36,35 +36,35 @@ VG_API_CALL void vgDestroyContextSH()
 {
 }
 
-VG_API_CALL void VG_API_ENTRY vgSetf (VGParamType type, VGfloat value) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgSetf (VGuint type, VGfloat value) VG_API_EXIT {
 	IContext::instance().set( type, value );
 }
 
-VG_API_CALL void VG_API_ENTRY vgSeti (VGParamType type, VGint value) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgSeti (VGuint type, VGint value) VG_API_EXIT {
 	IContext::instance().set( type, value );
 }
 
-VG_API_CALL void VG_API_ENTRY vgSetfv(VGParamType type, VGint count,
+VG_API_CALL void VG_API_ENTRY vgSetfv(VGuint type, VGint count,
 									  const VGfloat * values) VG_API_EXIT {
 	IContext::instance().set( type, values );
 }
-VG_API_CALL void VG_API_ENTRY vgSetiv(VGParamType type, VGint count,
+VG_API_CALL void VG_API_ENTRY vgSetiv(VGuint type, VGint count,
 									  const VGint * values) VG_API_EXIT {
 }
 
-VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGParamType type) VG_API_EXIT {
+VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGuint type) VG_API_EXIT {
 	return -1.0f;
 }
-VG_API_CALL VGint VG_API_ENTRY vgGeti(VGParamType type) VG_API_EXIT {
+VG_API_CALL VGint VG_API_ENTRY vgGeti(VGuint type) VG_API_EXIT {
 	return -1;
 }
-VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGParamType type) VG_API_EXIT {
+VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGuint type) VG_API_EXIT {
 	return -1;
 }
-VG_API_CALL void VG_API_ENTRY vgGetfv(VGParamType type, VGint count, VGfloat * values) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgGetfv(VGuint type, VGint count, VGfloat * values) VG_API_EXIT {
 	
 }
-VG_API_CALL void VG_API_ENTRY vgGetiv(VGParamType type, VGint count, VGint * values) VG_API_EXIT {
+VG_API_CALL void VG_API_ENTRY vgGetiv(VGuint type, VGint count, VGint * values) VG_API_EXIT {
 	
 }
 
@@ -112,7 +112,7 @@ namespace MonkVG {
 	}
 	
 	//// parameters ////
-	void IContext::set( VGParamType type, VGfloat f ) {
+	void IContext::set( VGuint type, VGfloat f ) {
 		switch ( type ) {
 			case VG_STROKE_LINE_WIDTH:
 				setStrokeLineWidth( f );
@@ -123,7 +123,7 @@ namespace MonkVG {
 		}
 	}
 	
-	void IContext::set( VGParamType type, const VGfloat * fv ) {
+	void IContext::set( VGuint type, const VGfloat * fv ) {
 		switch ( type ) {
 			case VG_CLEAR_COLOR:
 				setClearColor( fv );
@@ -138,7 +138,7 @@ namespace MonkVG {
 		}
 	}
 	
-	void IContext::set( VGParamType type, VGint i ) {
+	void IContext::set( VGuint type, VGint i ) {
 		
 		switch ( type ) {
 			case VG_MATRIX_MODE:
@@ -158,7 +158,7 @@ namespace MonkVG {
 		}
 		
 	}
-	void IContext::get( VGParamType type, VGfloat &f ) const {
+	void IContext::get( VGuint type, VGfloat &f ) const {
 		switch ( type ) {
 			case VG_STROKE_LINE_WIDTH:
 				f = getStrokeLineWidth();
@@ -170,7 +170,7 @@ namespace MonkVG {
 		
 	}
 	
-	void IContext::get( VGParamType type, VGfloat *fv ) const {
+	void IContext::get( VGuint type, VGfloat *fv ) const {
 		switch ( type ) {
 			case VG_CLEAR_COLOR:
 				getClearColor( fv );
@@ -185,7 +185,7 @@ namespace MonkVG {
 		}
 		
 	}
-	void IContext::get( VGParamType type, VGint& i ) const {
+	void IContext::get( VGuint type, VGint& i ) const {
 		i = -1;
 
 		switch ( type ) {

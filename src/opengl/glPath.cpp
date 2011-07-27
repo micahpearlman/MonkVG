@@ -333,7 +333,7 @@ namespace MonkVG {
 					VGfloat cp1y = 2.0f * cp2y - p3y;
 
 					
-					VGfloat increment = 1.0f / 16.0f;
+					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
 					//printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						v3_t c;
@@ -368,7 +368,7 @@ namespace MonkVG {
 						p3y += prev.y;
 					}
 					
-					VGfloat increment = 1.0f / 16.0f;
+					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
 					//printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						v3_t c;
@@ -409,7 +409,7 @@ namespace MonkVG {
 					
 					if ( success ) {
 						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
-						const int steps = 16;
+						const int steps = IContext::instance().getTessellationIterations();
 						VGfloat beta = 0;	// angle. todo
 						VGfloat sinbeta = sinf( beta );
 						VGfloat cosbeta = cosf( beta );
@@ -633,7 +633,7 @@ namespace MonkVG {
 					VGfloat cp1y = 2.0f * cp2y - p3y;
 					
 					
-					VGfloat increment = 1.0f / 16.0f;
+					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
 					//printf("\tcubic: ");
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						v2_t c;
@@ -668,7 +668,7 @@ namespace MonkVG {
 					}
 					
 					
-					VGfloat increment = 1.0f / 4.0f;
+					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
 					
 					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
 						v2_t c;
@@ -707,7 +707,7 @@ namespace MonkVG {
 					
 					if ( success ) {
 						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
-						const int steps = 36;
+						const int steps = IContext::instance().getTessellationIterations();
 						VGfloat beta = 0;	// angle. todo
 						VGfloat sinbeta = sinf( beta );
 						VGfloat cosbeta = cosf( beta );

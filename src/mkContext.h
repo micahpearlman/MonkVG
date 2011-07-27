@@ -90,12 +90,12 @@ namespace MonkVG {
 		virtual void resize() = 0;
 		
 		//// parameters ////
-		void set( VGParamType type, VGfloat f );
-		void set( VGParamType type, const VGfloat * values );
-		void set( VGParamType type, VGint i );
-		void get( VGParamType type, VGfloat &f ) const;
-		void get( VGParamType type, VGfloat *fv ) const;
-		void get( VGParamType type, VGint &i ) const; 
+		void set( VGuint type, VGfloat f );
+		void set( VGuint type, const VGfloat * values );
+		void set( VGuint type, VGint i );
+		void get( VGuint type, VGfloat &f ) const;
+		void get( VGuint type, VGfloat *fv ) const;
+		void get( VGuint type, VGint &i ) const; 
 		
 		//// stroke parameters ////
 		inline void setStrokeLineWidth( VGfloat w ) {

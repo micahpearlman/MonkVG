@@ -520,18 +520,18 @@ VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgFinish(void) VG_API_EXIT;
 
 /* Getters and Setters */
-VG_API_CALL void VG_API_ENTRY vgSetf (VGParamType type, VGfloat value) VG_API_EXIT;
-VG_API_CALL void VG_API_ENTRY vgSeti (VGParamType type, VGint value) VG_API_EXIT;
-VG_API_CALL void VG_API_ENTRY vgSetfv(VGParamType type, VGint count,
+VG_API_CALL void VG_API_ENTRY vgSetf (VGuint type, VGfloat value) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgSeti (VGuint type, VGint value) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgSetfv(VGuint type, VGint count,
                          const VGfloat * values) VG_API_EXIT;
-VG_API_CALL void VG_API_ENTRY vgSetiv(VGParamType type, VGint count,
+VG_API_CALL void VG_API_ENTRY vgSetiv(VGuint type, VGint count,
                          const VGint * values) VG_API_EXIT;
 
-VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGParamType type) VG_API_EXIT;
-VG_API_CALL VGint VG_API_ENTRY vgGeti(VGParamType type) VG_API_EXIT;
-VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGParamType type) VG_API_EXIT;
-VG_API_CALL void VG_API_ENTRY vgGetfv(VGParamType type, VGint count, VGfloat * values) VG_API_EXIT;
-VG_API_CALL void VG_API_ENTRY vgGetiv(VGParamType type, VGint count, VGint * values) VG_API_EXIT;
+VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGuint type) VG_API_EXIT;
+VG_API_CALL VGint VG_API_ENTRY vgGeti(VGuint type) VG_API_EXIT;
+VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGuint type) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgGetfv(VGuint type, VGint count, VGfloat * values) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgGetiv(VGuint type, VGint count, VGint * values) VG_API_EXIT;
 
 VG_API_CALL void VG_API_ENTRY vgSetParameterf(VGHandle object,
                                  VGint paramType,
