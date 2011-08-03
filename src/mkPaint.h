@@ -11,6 +11,7 @@
 #define __mkPaint_h__
 
 #include "mkBaseObject.h"
+#include <vector>
 
 namespace MonkVG {
 	
@@ -18,7 +19,8 @@ namespace MonkVG {
 	public:
 	
 		IPaint()
-			:	BaseObject()
+		:	BaseObject()
+		,	_paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
 		{}
 	
 		inline BaseObject::Type getType() const {
@@ -31,23 +33,30 @@ namespace MonkVG {
 		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
 		virtual void setParameter( const VGint p, const VGfloat f );
 		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv );
+		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
 		
 		const VGfloat* getPaintColor() const {
 			return _paintColor;
 		}
 		
-	private:
+		VGPaintType getPaintType() { return _paintType; }
+		virtual void setPaintType( VGPaintType t ) { _paintType = t; }
+		
+	protected:
 	
 		VGPaintType				_paintType;
 		VGfloat					_paintColor[4];
 		VGColorRampSpreadMode	_colorRampSpreadMode;
-		//	VGfloat					_colorRampStops[4];
 		VGboolean				_colorRampPremultiplied;
 		VGfloat					_paintLinearGradient[4];
 		VGfloat					_paintRadialGradient[5];
 		VGTilingMode			_patternTilingMode;
 		//	Image*					m_pattern;
+		struct Stop_t {
+			VGfloat a[5];
+		};
+		std::vector<Stop_t>		_colorRampStops;
+
 		
 	};
 	

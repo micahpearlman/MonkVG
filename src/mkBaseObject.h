@@ -37,7 +37,7 @@ namespace MonkVG {
 		virtual void getParameterfv( const VGint p, VGfloat *fv ) const = 0;
 		virtual void setParameter( const VGint p, const VGfloat f ) = 0;
 		virtual void setParameter( const VGint p, const VGint i ) = 0;
-		virtual void setParameter( const VGint p, const VGfloat* fv ) = 0;
+		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) = 0;
 	};
 }
 #endif

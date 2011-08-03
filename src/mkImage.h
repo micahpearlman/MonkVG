@@ -39,7 +39,7 @@ namespace MonkVG {
 		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
 		virtual void setParameter( const VGint p, const VGfloat f );
 		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv );
+		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
 		
 		virtual void setSubData( const void * data, VGint dataStride,
 						   VGImageFormat dataFormat,

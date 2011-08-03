@@ -61,8 +61,8 @@ map<VGuint, GlyphDescription>	_glyphs;
 		vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
 		
 		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
-		//vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
-		vguEllipse( _path, 0, 0, 90.0f, 50.0f );
+		vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
+		//vguEllipse( _path, 0, 0, 90.0f, 50.0f );
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
@@ -72,11 +72,32 @@ map<VGuint, GlyphDescription>	_glyphs;
 		_font = [self buildVGFontFromBitmapFont:@"arial"];
 
 		_lineHeight = 74;	// hardwired.  todo: read from file
-//		loadTiger();
-//		
-//
+		// create a linear gradient paint to apply to the path
+		_linearGradientPaint = vgCreatePaint();
+		vgSetParameteri(_linearGradientPaint, VG_PAINT_TYPE, VG_PAINT_TYPE_LINEAR_GRADIENT);
 		
+		// A linear gradient needs start and end points that describe orientation
+		// and length of the gradient.
+		float afLinearGradientPoints[4] = {
+			0.0f, 0.0f,
+			1.0f, 0.0f
+		};
+		vgSetParameterfv(_linearGradientPaint, VG_PAINT_LINEAR_GRADIENT, 4, afLinearGradientPoints);
 		
+		// Now we have to specify the colour ramp. It is described by "stops" that
+		// are given as premultiplied sRGBA colour at a position between 0 and 1.
+		// Between these stops, the colour is linearly interpolated.
+		// This colour ramp goes from red to green to blue, all opaque.
+		float afColourRampStops[] = {
+			0.0f,	1.0f, 0.0f, 0.0f, 1.0f,
+			1.0f,	0.0f, 0.0f, 0.0f, 0.0f,
+		};
+		vgSetParameterfv(_linearGradientPaint, VG_PAINT_COLOR_RAMP_STOPS, 10, afColourRampStops);
+
+		//		loadTiger();
+		//		
+		//
+
     }
 
     return self;

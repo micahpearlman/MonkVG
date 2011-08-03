@@ -85,7 +85,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IImage::setParameter( const VGint p, const VGfloat* fv ) {
+	void IImage::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		switch (p) {
 				
 			default:

@@ -29,6 +29,7 @@
 	
 	VGPath	_path;
 	VGPaint _paint;
+	VGPaint _linearGradientPaint;
 	VGImage _image;
 	VGImage	_bitmapFont;
 	VGFont	_font;

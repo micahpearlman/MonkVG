@@ -106,7 +106,7 @@ namespace MonkVG {
 		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
 		virtual void setParameter( const VGint p, const VGfloat f );
 		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv );
+		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
 		
 		//// internal data manipulators ////
 		void appendData( const VGint numSegments, const VGubyte * pathSegments, const void * pathData ) ;

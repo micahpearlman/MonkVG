@@ -36,7 +36,7 @@ VG_API_CALL void VG_API_ENTRY vgSetParameterfv(VGHandle object,
 											   VGint paramType,
 											   VGint count, const VGfloat * values) VG_API_EXIT {
 	BaseObject *obj = (BaseObject*)object;
-	obj->setParameter( paramType, values );
+	obj->setParameter( paramType, values, count );
 }
 
 

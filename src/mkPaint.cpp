@@ -45,6 +45,12 @@ namespace MonkVG {	// Internal Implementation
 
 	void IPaint::setParameter( const VGint p, const VGint v ) {
 		switch (p) {
+			case VG_PAINT_TYPE:
+				setPaintType( (VGPaintType)v );
+				break;
+			case VG_PAINT_COLOR_RAMP_SPREAD_MODE:
+				_colorRampSpreadMode = (VGColorRampSpreadMode)v;
+				break;
 			default:
 				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
@@ -60,13 +66,28 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IPaint::setParameter( const VGint p, const VGfloat* fv ) {
+	void IPaint::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		switch (p) {
 			case VG_PAINT_COLOR:
 				for( int i = 0; i < 4; i++ )
 					_paintColor[i] = fv[i];
 				break;
 
+			case VG_PAINT_LINEAR_GRADIENT:
+				for ( int i = 0; i < 4; i++ ) {
+					_paintLinearGradient[i] = fv[i];
+				}
+				break;
+			case VG_PAINT_COLOR_RAMP_STOPS:
+				for ( int j = 0; j < cnt/5; j++ ) {
+					for ( int p = 0; p < 5; p++ ) {
+						Stop_t stop;
+						stop.a[p] = fv[(j * 5) + p];
+						_colorRampStops.push_back( stop );
+					}
+				}
+				break;
+			
 			default:
 				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;

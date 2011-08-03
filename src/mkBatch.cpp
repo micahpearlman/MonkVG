@@ -55,7 +55,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IBatch::setParameter( const VGint p, const VGfloat* fv ) {
+	void IBatch::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		switch (p) {
 				
 			default:

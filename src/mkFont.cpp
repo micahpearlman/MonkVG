@@ -54,7 +54,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IFont::setParameter( const VGint p, const VGfloat* fv ) {
+	void IFont::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		switch (p) {
 			default:
 				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );

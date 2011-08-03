@@ -34,7 +34,7 @@ namespace MonkVG {
 		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
 		virtual void setParameter( const VGint p, const VGfloat f );
 		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv );
+		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
 		
 		virtual void addGlyphImage( VGuint index_, IImage* image_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] );
 		virtual void addGlyphPath( VGuint index_, IPath* path_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] );

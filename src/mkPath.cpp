@@ -142,7 +142,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IPath::setParameter( const VGint p, const VGfloat* fv ) {
+	void IPath::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
 	}
 	
