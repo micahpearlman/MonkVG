@@ -28,6 +28,80 @@ struct GlyphDescription {
 
 map<VGuint, GlyphDescription>	_glyphs;
 
+VGImage buildLinearGradientImage() {
+
+	// generated image sizes
+	const int width = 64, height = 64;
+	unsigned int* image = (unsigned int*)malloc( width * height * sizeof(unsigned int) );
+	
+	const int stopCnt = 2;
+	float stops[stopCnt][5] = {
+		{0.0f,	1.0f, 0.0f, 0.0f, 1.0f},
+		{1.0f,	0.0f, 0.0f, 1.0f, 1.0f}
+
+	};
+	
+
+	//	from OpenVG specification PDF
+	//			dx(x - x0) + dy((y - y0)
+	// g(x,y) = ------------------------
+	//				dx^2 + dy^2
+	// where dx = x1 - x0, dy = y1 - y0
+	// 
+	float p0[2] = {0 * width,0 * height}, p1[2] = {1 * width,1 * height};
+	
+	
+	float dx = p1[0] - p0[0];
+	float dy = p1[1] - p0[0];
+	float denominator = (dx * dx) + (dy * dy);
+	// todo: assert denominator != 0
+	
+	for ( int x = 0; x < width; x++ ) {
+		for ( int y = 0; y < height; y++ ) {
+			float numerator = dx * (x - p0[0]) + dy * (y - p0[1]);
+			float g = numerator / denominator;
+			
+			// determine which stops
+			float* stop0 = 0;
+			float* stop1 = 0;
+			for ( int i = 0; i < stopCnt; i++ ) {
+				if ( g >= stops[i][0] ) {
+					stop0 = stops[i];
+					stop1 = stops[i+1];
+					break;
+				}
+			}
+			
+			assert( stop0 && stop1 );
+			
+			// color = c0 + (c1 - c0)(g - x0)/(x1 - x0)
+			// where c0 = stop color 0, c1 = stop color 1
+			// where x0 = stop offset 0, x1 = stop offset 1
+			float finalcolor[4];
+			for ( int i = 0; i < 4; i++ ) {
+				finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
+			}
+			unsigned int color 
+			= (uint32_t(finalcolor[3] * 255) << 24) 
+			| (uint32_t(finalcolor[2] * 255) << 16)
+			| (uint32_t(finalcolor[1] * 255) << 8)
+			| (uint32_t(finalcolor[0] * 255) << 0);
+			
+			image[(y*width) + x] = color;
+		}
+	}
+	
+	// create openvg image
+	VGImage vgimage = vgCreateImage(VG_sRGBA_8888, width, height, 0 );
+	
+	vgImageSubData( vgimage, image, -1, VG_sRGBA_8888, 0, 0, width, height );
+	
+	free(image);
+	
+	return vgimage;
+
+}
+
 @implementation ES1Renderer
 
 
@@ -66,7 +140,7 @@ map<VGuint, GlyphDescription>	_glyphs;
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
-		_image = [self buildVGImageFromUIImage:[UIImage imageNamed:@"zero.png"]];
+		_image = buildLinearGradientImage();//[self buildVGImageFromUIImage:[UIImage imageNamed:@"zero.png"]];
 		_bitmapFont = [self buildVGImageFromUIImage:[UIImage imageNamed:@"arial.png"]];
 		
 		_font = [self buildVGFontFromBitmapFont:@"arial"];
@@ -93,6 +167,8 @@ map<VGuint, GlyphDescription>	_glyphs;
 			1.0f,	0.0f, 0.0f, 0.0f, 0.0f,
 		};
 		vgSetParameterfv(_linearGradientPaint, VG_PAINT_COLOR_RAMP_STOPS, 10, afColourRampStops);
+		
+		// build the gradient image
 
 		//		loadTiger();
 		//		

@@ -38,4 +38,8 @@ namespace MonkVG {
 			glColor4f(c[0], c[1], c[2], c[3] );
 		}
 	}
+	
+	void OpenGLPaint::buildLinearGradientImage() {
+		
+	}
 }

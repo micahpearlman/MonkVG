@@ -32,6 +32,7 @@
 	VGPaint _linearGradientPaint;
 	VGImage _image;
 	VGImage	_bitmapFont;
+	VGImage _gradientImage;
 	VGFont	_font;
 	VGfloat _lineHeight;
 	

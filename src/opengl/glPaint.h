@@ -17,12 +17,15 @@ namespace MonkVG {
 	class OpenGLPaint : public IPaint {
 	public:
 		OpenGLPaint();
-		bool isDirty() { return _isDirty; }
-		void setIsDirty( bool b ) { _isDirty = b; }
 		void setGLState();
+		void buildLinearGradientImage();
+		virtual bool isDirty() { return _isDirty; }
+		virtual void setIsDirty( bool b ) { _isDirty = b; }
 		
 	private:
-		bool	_isDirty;
+		bool		_isDirty;
+		VGImage		_gradientImage;
+		
 		
 	};
 }

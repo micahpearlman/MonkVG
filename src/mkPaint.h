@@ -21,6 +21,7 @@ namespace MonkVG {
 		IPaint()
 		:	BaseObject()
 		,	_paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
+		,	_isDirty( true )
 		{}
 	
 		inline BaseObject::Type getType() const {
@@ -42,7 +43,14 @@ namespace MonkVG {
 		VGPaintType getPaintType() { return _paintType; }
 		virtual void setPaintType( VGPaintType t ) { _paintType = t; }
 		
+		virtual bool isDirty() { return _isDirty; }
+		virtual void setIsDirty( bool b ) { _isDirty = b; }
+		
+		
 	protected:
+		
+		bool					_isDirty;
+
 	
 		VGPaintType				_paintType;
 		VGfloat					_paintColor[4];
