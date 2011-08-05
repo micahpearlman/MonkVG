@@ -33,12 +33,17 @@ VGImage buildLinearGradientImage() {
 	// generated image sizes
 	const int width = 64, height = 64;
 	unsigned int* image = (unsigned int*)malloc( width * height * sizeof(unsigned int) );
+	//	VG_COLOR_RAMP_SPREAD_PAD                    = 0x1C00,
+	//	VG_COLOR_RAMP_SPREAD_REPEAT                 = 0x1C01,
+	//	VG_COLOR_RAMP_SPREAD_REFLECT                = 0x1C02,
+
+	VGColorRampSpreadMode spreadMode = VG_COLOR_RAMP_SPREAD_REFLECT;
 	
-	const int stopCnt = 2;
+	const int stopCnt = 3;
 	float stops[stopCnt][5] = {
 		{0.0f,	1.0f, 0.0f, 0.0f, 1.0f},
+		{0.5f,	0.0f, 1.0f, 0.0f, 1.0f},
 		{1.0f,	0.0f, 0.0f, 1.0f, 1.0f}
-
 	};
 	
 
@@ -48,11 +53,11 @@ VGImage buildLinearGradientImage() {
 	//				dx^2 + dy^2
 	// where dx = x1 - x0, dy = y1 - y0
 	// 
-	float p0[2] = {0 * width,0 * height}, p1[2] = {1 * width,1 * height};
+	float p0[2] = {0.4f * width,0.0f * height}, p1[2] = {0.6f * width,0.0f * height};
 	
 	
 	float dx = p1[0] - p0[0];
-	float dy = p1[1] - p0[0];
+	float dy = p1[1] - p0[1];
 	float denominator = (dx * dx) + (dy * dy);
 	// todo: assert denominator != 0
 	
@@ -61,26 +66,97 @@ VGImage buildLinearGradientImage() {
 			float numerator = dx * (x - p0[0]) + dy * (y - p0[1]);
 			float g = numerator / denominator;
 			
-			// determine which stops
-			float* stop0 = 0;
-			float* stop1 = 0;
-			for ( int i = 0; i < stopCnt; i++ ) {
-				if ( g >= stops[i][0] ) {
-					stop0 = stops[i];
-					stop1 = stops[i+1];
-					break;
-				}
-			}
 			
-			assert( stop0 && stop1 );
 			
 			// color = c0 + (c1 - c0)(g - x0)/(x1 - x0)
 			// where c0 = stop color 0, c1 = stop color 1
 			// where x0 = stop offset 0, x1 = stop offset 1
 			float finalcolor[4];
-			for ( int i = 0; i < 4; i++ ) {
-				finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
+			float* stop0 = 0;
+			float* stop1 = 0;
+
+			
+			if ( spreadMode == VG_COLOR_RAMP_SPREAD_PAD ) {
+				if ( g < 0 ) {
+					stop0 = stops[0];
+					for ( int i = 0; i < 4; i++ ) {
+						finalcolor[i] = stop0[i+1];
+					}
+
+				} else if( g > 1 ) {
+					stop0 = stops[stopCnt -1];
+					for ( int i = 0; i < 4; i++ ) {
+						finalcolor[i] = stop0[i+1];
+					}
+
+				} else {
+					// determine which stops
+					for ( int i = 0; i < stopCnt; i++ ) {
+						if ( g >= stops[i][0] && g < stops[i+1][0] ) {
+							stop0 = stops[i];
+							stop1 = stops[i+1];
+							//printf( "stopds: %d --> %d\n", i, i+1);
+							break;
+						}
+					}
+
+					for ( int i = 0; i < 4; i++ ) {
+						finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
+					}
+
+				}
+			} else {
+				//g = fabsf(g);
+				int w = int(fabs(g));
+				
+				if ( spreadMode == VG_COLOR_RAMP_SPREAD_REPEAT ) {
+					if ( g < 0 ) {
+						g = 1 - (fabs(g) - w);
+					} else {
+						g = g - w;
+					}
+				} else if( spreadMode == VG_COLOR_RAMP_SPREAD_REFLECT ) {
+					if ( g < 0 ) {
+						if ( w % 2 == 0 ) { // even
+							g = (fabs(g) - w);
+						} else {	// odd
+							g = (1 - (fabs(g) - w));
+						}
+
+					} else {
+						if ( w % 2 == 0 ) { // even
+							g = g - w;
+						} else {	// odd
+							g = 1 - (g - w);
+						}
+					}
+					
+				}
+
+				// clamp
+				if ( g > 1 ) {
+					g = 1;
+				}
+				if ( g < 0 ) {
+					g = 0;
+				}
+
+				// determine which stops
+				for ( int i = 0; i < stopCnt; i++ ) {
+					if ( g >= stops[i][0] && g <= stops[i+1][0] ) {
+						stop0 = stops[i];
+						stop1 = stops[i+1];
+						//printf( "stopds: %d --> %d\n", i, i+1);
+						break;
+					}
+				}
+
+				assert( stop0 && stop1 );
+				for ( int i = 0; i < 4; i++ ) {
+					finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
+				}
 			}
+			
 			unsigned int color 
 			= (uint32_t(finalcolor[3] * 255) << 24) 
 			| (uint32_t(finalcolor[2] * 255) << 16)
