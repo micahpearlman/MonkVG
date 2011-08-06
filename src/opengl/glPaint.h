@@ -11,6 +11,7 @@
 #define __glPaint_h__
 
 #include "mkPaint.h"
+#include "glPlatform.h"
 
 namespace MonkVG {
 	

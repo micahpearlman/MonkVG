@@ -777,6 +777,7 @@ namespace MonkVG {
 	}
 	
 	void OpenGLPath::endOfTesselation( VGbitfield paintModes ) {
+		// TODO: BUGBUG: if in batch mode don't build the VBO!
 		
 		/// build fill vbo
 		if ( _vertices.size() > 0 ) {

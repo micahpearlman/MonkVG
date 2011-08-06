@@ -11,24 +11,10 @@
 #define __glPath_h__
 
 #include "mkPath.h"
-
-#if defined(__APPLE__)
-    #include "TargetConditionals.h"
-    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-        #include "glu.h"
-    #else
-        #include <OpenGL/glu.h>
-        #define glOrthof glOrtho
-    #endif
-#else // #if defined(__APPLE__)
-    #if ANDROID
-        #include "glu.h"
-    #endif
-#endif // #if defined(__APPLE__)
-
-
+#include "glPlatform.h"
 #include <list>
 #include <vector>
+#include "glPaint.h"
 
 namespace MonkVG {
 	
@@ -109,9 +95,6 @@ namespace MonkVG {
 		
 	private:
 		
-		
-		
-		
 		GLUtesselator*		_fillTesseleator;
 		vector<GLfloat>		_vertices;
 		vector<v2_t>		_strokeVertices;
@@ -121,6 +104,9 @@ namespace MonkVG {
 		GLuint				_strokeVBO;
 		int					_numberFillVertices;
 		int					_numberStrokeVertices;
+		OpenGLPaint*		_fillPaintForPath;
+		OpenGLPaint*			_strokePaintForPath;
+		
 		
 	private:		// tesseleator callbacks
 		static void tessBegin( GLenum type, GLvoid* user );

@@ -11,6 +11,7 @@
 #define __glContext_h__
 
 #include "mkContext.h"
+#include "glPlatform.h"
 
 namespace MonkVG {
 	
