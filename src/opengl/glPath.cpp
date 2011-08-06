@@ -245,12 +245,14 @@ namespace MonkVG {
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
-					GLdouble* c = new GLdouble[3];
-					c[0] = closeTo.x;
-					c[1] = closeTo.y;
-					c[2] = 0;
+					//GLdouble* c = new GLdouble[3];
+					v3_t c(closeTo);
+					_tessVertices.push_back( c );
+//					c[0] = closeTo.x;
+//					c[1] = closeTo.y;
+//					c[2] = 0;
 					// do not think this is necessary for the tesselator						
-					gluTessVertex( _fillTesseleator, c, c );
+					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
 					
 					if ( num_contours ) {
 						gluTessEndContour( _fillTesseleator );
