@@ -12,16 +12,21 @@
 
 #include "mkPaint.h"
 #include "glPlatform.h"
+#include "glImage.h"
 
 namespace MonkVG {
+	
 	
 	class OpenGLPaint : public IPaint {
 	public:
 		OpenGLPaint();
+		virtual ~OpenGLPaint();
 		void setGLState();
-		void buildLinearGradientImage();
+		void buildLinearGradientImage( VGfloat pathWidth, VGfloat pathHeight );
 		virtual bool isDirty() { return _isDirty; }
 		virtual void setIsDirty( bool b ) { _isDirty = b; }
+		
+		OpenGLImage* getGradientImage() { return (OpenGLImage*)_gradientImage; }
 		
 	private:
 		bool		_isDirty;

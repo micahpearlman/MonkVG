@@ -35,6 +35,11 @@ namespace MonkVG {
 	}
 	
 	void OpenGLPath::buildFillIfDirty() {
+		IPaint* currentFillPaint = IContext::instance().getFillPaint();
+		if ( currentFillPaint != _fillPaintForPath ) {
+			_fillPaintForPath = (OpenGLPaint*)currentFillPaint;
+			_isFillDirty = true;
+		}
 		// only build the fill if dirty or we are in batch build mode
 		if ( _isFillDirty || IContext::instance().currentBatch() ) {
 			buildFill();
@@ -78,17 +83,44 @@ namespace MonkVG {
 
 		glContext.beginRender();
 		
-		glDisable(GL_TEXTURE_2D);
 		glEnableClientState( GL_VERTEX_ARRAY );
-		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		glDisableClientState( GL_COLOR_ARRAY );
+		VGImageMode oldImageMode = glContext.getImageMode();
 
-		if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 ) {
+		// configure based on paint type
+		if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+			glDisable(GL_TEXTURE_2D);
+			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		} else if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ) {
+			glEnable( GL_TEXTURE_2D );
+			glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+			
+			glContext.setImageMode( VG_DRAW_IMAGE_NORMAL );
+			//vgSeti( VG_IMAGE_MODE, VG_DRAW_IMAGE_NORMAL );
+			//_fillPaintForPath->getGradientImage()->drawAtPoint( 0, 0, 0	);
+		}
+		
+
+		if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 && _fillPaintForPath) {
 			// draw
 			IContext::instance().fill();
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
+			if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+				glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
+			} else if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ) {
+				_fillPaintForPath->getGradientImage()->bind();
+				glVertexPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, v) );
+				glTexCoordPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, uv) );
+			}
 			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
+			
+			// unbind any textures being used
+			if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ) {
+				_fillPaintForPath->getGradientImage()->unbind();
+				glContext.setImageMode( oldImageMode );
+			}
+			
+			// this is important to unbind the vbo when done
 			glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		}
 		
@@ -96,7 +128,7 @@ namespace MonkVG {
 			// draw
 			IContext::instance().stroke();
 			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-			glVertexPointer( 2, GL_FLOAT, sizeof(float) * 2, 0 );
+			glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
 			glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
 			glBindBuffer( GL_ARRAY_BUFFER, 0 );			
 		}
@@ -192,6 +224,13 @@ namespace MonkVG {
 	void OpenGLPath::buildFill() {
 		
 		_vertices.clear();
+		
+		// reset the bounds
+		_minX = VG_MAX_FLOAT;
+		_minY = VG_MAX_FLOAT;
+		_width = -VG_MAX_FLOAT;
+		_height = -VG_MAX_FLOAT;
+
 		
 		CHECK_GL_ERROR;
 		
@@ -777,9 +816,13 @@ namespace MonkVG {
 	}
 	
 	void OpenGLPath::endOfTesselation( VGbitfield paintModes ) {
-		// TODO: BUGBUG: if in batch mode don't build the VBO!
 		
+		// final calculation of the width and height
+		_width = fabsf(_width - _minX);
+		_height = fabsf(_height - _minY);
+
 		/// build fill vbo
+		// TODO: BUGBUG: if in batch mode don't build the VBO!
 		if ( _vertices.size() > 0 ) {
 			if ( _fillVBO != -1 ) {
 				glDeleteBuffers( 1, &_fillVBO );
@@ -788,7 +831,30 @@ namespace MonkVG {
 			
 			glGenBuffers( 1, &_fillVBO );
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-			glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
+			if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+				glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
+			} else if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ) {
+				vector<textured_vertex_t> texturedVertices;
+				for ( vector<float>::const_iterator it = _vertices.begin(); it != _vertices.end(); it++ ) {
+					// build up the textured vertex
+					textured_vertex_t v;
+					v.v[0] = *it;
+					it++;
+					v.v[1] = *it;
+					v.uv[0] = fabsf(v.v[0] - _minX) / _width;
+					v.uv[1] = fabsf( v.v[1] - _minY ) / _height;
+					texturedVertices.push_back( v );
+				}
+				
+				glBufferData( GL_ARRAY_BUFFER, texturedVertices.size() * sizeof(textured_vertex_t), &texturedVertices[0], GL_STATIC_DRAW );
+				
+				texturedVertices.clear();
+				
+				// setup the paints linear gradient
+				_fillPaintForPath->buildLinearGradientImage( _width, _height );
+
+			}
+
 			_numberFillVertices = _vertices.size()/2;
 			_tessVertices.clear();
 		} 

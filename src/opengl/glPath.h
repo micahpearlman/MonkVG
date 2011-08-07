@@ -26,6 +26,8 @@ namespace MonkVG {
 			,	_fillTesseleator( 0 )
 			,	_strokeVBO(-1)
 			,	_fillVBO(-1)
+			,	_fillPaintForPath( 0 )
+			,	_strokePaintForPath( 0 )
 		{
 
 		}
@@ -93,6 +95,12 @@ namespace MonkVG {
 		}
 		
 		
+		struct textured_vertex_t {
+			GLfloat		v[2];
+			GLfloat		uv[2];
+		};
+
+		
 	private:
 		
 		GLUtesselator*		_fillTesseleator;
@@ -105,7 +113,7 @@ namespace MonkVG {
 		int					_numberFillVertices;
 		int					_numberStrokeVertices;
 		OpenGLPaint*		_fillPaintForPath;
-		OpenGLPaint*			_strokePaintForPath;
+		OpenGLPaint*		_strokePaintForPath;
 		
 		
 	private:		// tesseleator callbacks

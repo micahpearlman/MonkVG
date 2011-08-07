@@ -255,4 +255,18 @@ namespace MonkVG {
 	void OpenGLImage::drawAtPoint( VGint x, VGint y, VGbitfield paintModes ) {
 		drawToRect( x, y, _width, _height, paintModes );
 	}
+	
+	void OpenGLImage::bind() {
+		glEnable(GL_TEXTURE_2D);
+		// turn on blending
+		glEnable(GL_BLEND);
+		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+		
+		glBindTexture(GL_TEXTURE_2D, _name);
+
+	}
+	void OpenGLImage::unbind() {
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
 }

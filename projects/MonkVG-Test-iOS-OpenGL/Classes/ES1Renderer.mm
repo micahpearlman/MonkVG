@@ -211,17 +211,22 @@ VGImage buildLinearGradientImage() {
 		vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
 		
 		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
-		vguRect( _path, 100.0f, 100.0f, 90.0f, 50.0f );
+		vguRect( _path, 50.0f, 50.0f, 90.0f, 50.0f );
 		//vguEllipse( _path, 0, 0, 90.0f, 50.0f );
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
-		_image = buildLinearGradientImage();//[self buildVGImageFromUIImage:[UIImage imageNamed:@"zero.png"]];
+		_image = [self buildVGImageFromUIImage:[UIImage imageNamed:@"zero.png"]];
 		_bitmapFont = [self buildVGImageFromUIImage:[UIImage imageNamed:@"arial.png"]];
 		
 		_font = [self buildVGFontFromBitmapFont:@"arial"];
 
 		_lineHeight = 74;	// hardwired.  todo: read from file
+		
+		// create a path for linear gradient
+		_linearGradientPath = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
+		vguRect( _linearGradientPath, 0, 0, 50.0f, 90.0f );
+		
 		// create a linear gradient paint to apply to the path
 		_linearGradientPaint = vgCreatePaint();
 		vgSetParameteri(_linearGradientPaint, VG_PAINT_TYPE, VG_PAINT_TYPE_LINEAR_GRADIENT);
@@ -230,7 +235,7 @@ VGImage buildLinearGradientImage() {
 		// and length of the gradient.
 		float afLinearGradientPoints[4] = {
 			0.0f, 0.0f,
-			1.0f, 0.0f
+			50.0f, 0.0f
 		};
 		vgSetParameterfv(_linearGradientPaint, VG_PAINT_LINEAR_GRADIENT, 4, afLinearGradientPoints);
 		
@@ -239,13 +244,11 @@ VGImage buildLinearGradientImage() {
 		// Between these stops, the colour is linearly interpolated.
 		// This colour ramp goes from red to green to blue, all opaque.
 		float afColourRampStops[] = {
-			0.0f,	1.0f, 0.0f, 0.0f, 1.0f,
-			1.0f,	0.0f, 0.0f, 0.0f, 0.0f,
+			0.0f,	0.0f, 0.0f, 1.0f, 1.0f,
+			1.0f,	0.0f, 1.0f, 0.0f, 1.0f,
 		};
 		vgSetParameterfv(_linearGradientPaint, VG_PAINT_COLOR_RAMP_STOPS, 10, afColourRampStops);
 		
-		// build the gradient image
-
 		//		loadTiger();
 		//		
 		//
@@ -283,12 +286,14 @@ VGImage buildLinearGradientImage() {
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
 	vgLoadIdentity();
 	vgTranslate( backingWidth/2, backingHeight/2 );
+	vgSetPaint( _paint, VG_FILL_PATH );
 	vgDrawPath( _path, VG_FILL_PATH );
 
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_GLYPH_USER_TO_SURFACE);
 	vgLoadIdentity();
 	VGfloat glyphOrigin[2] = {0,0};
 	vgSetfv( VG_GLYPH_ORIGIN, 2, glyphOrigin );
+	vgScale( 0.5f, 0.5f );
 	vgTranslate( 10, backingHeight/2 );
 	
 	std::string s("Hello World! And puppies dogs?");
@@ -307,10 +312,13 @@ VGImage buildLinearGradientImage() {
 	
 	vgSeti( VG_IMAGE_MODE, VG_DRAW_IMAGE_MULTIPLY );
 	vgDrawGlyphs( _font, glyphCount, &glyphs[0], &xadj[0], &yadj[0], VG_FILL_PATH, VG_TRUE );
-//	vgDrawGlyph( _font, int('Z'), VG_FILL_PATH, VG_TRUE );
-//	vgDrawGlyph( _font, int('e'), VG_FILL_PATH, VG_TRUE );
-//	vgDrawGlyph( _font, int('r'), VG_FILL_PATH, VG_TRUE );
-//	vgDrawGlyph( _font, int('o'), VG_FILL_PATH, VG_TRUE );
+
+	// draw the gradient path
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate( backingWidth/2, backingHeight/2 );
+	vgSetPaint( _linearGradientPaint, VG_FILL_PATH );
+	vgDrawPath( _linearGradientPath, VG_FILL_PATH );
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.

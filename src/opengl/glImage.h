@@ -33,6 +33,9 @@ namespace MonkVG {
 		virtual void setSubData( const void * data, VGint dataStride,
 								VGImageFormat dataFormat,
 								VGint x, VGint y, VGint width, VGint height );
+		
+		void bind();
+		void unbind();
 
 	private:
 		GLuint						_name;

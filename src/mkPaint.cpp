@@ -80,11 +80,11 @@ namespace MonkVG {	// Internal Implementation
 				break;
 			case VG_PAINT_COLOR_RAMP_STOPS:
 				for ( int j = 0; j < cnt/5; j++ ) {
+					Stop_t stop;
 					for ( int p = 0; p < 5; p++ ) {
-						Stop_t stop;
 						stop.a[p] = fv[(j * 5) + p];
-						_colorRampStops.push_back( stop );
 					}
+					_colorRampStops.push_back( stop );
 				}
 				break;
 			
