@@ -23,6 +23,8 @@ namespace MonkVG {
 		virtual ~OpenGLPaint();
 		void setGLState();
 		void buildLinearGradientImage( VGfloat pathWidth, VGfloat pathHeight );
+		void buildRadialGradientImage( VGfloat pathWidth, VGfloat pathHeight );
+		void buildGradientImage( VGfloat pathWidth, VGfloat pathHeight );
 		virtual bool isDirty() { return _isDirty; }
 		virtual void setIsDirty( bool b ) { _isDirty = b; }
 		

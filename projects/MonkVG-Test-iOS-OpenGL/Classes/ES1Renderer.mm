@@ -28,6 +28,173 @@ struct GlyphDescription {
 
 map<VGuint, GlyphDescription>	_glyphs;
 
+VGImage buildRadialGradientImage() {
+	// generated image sizes
+	const int width = 64, height = 64;
+	const float pathWidth = 64, pathHeight = 64;
+	unsigned int* image = (unsigned int*)malloc( width * height * sizeof(unsigned int) );
+	//	VG_COLOR_RAMP_SPREAD_PAD                    = 0x1C00,
+	//	VG_COLOR_RAMP_SPREAD_REPEAT                 = 0x1C01,
+	//	VG_COLOR_RAMP_SPREAD_REFLECT                = 0x1C02,
+	
+	VGColorRampSpreadMode spreadMode = VG_COLOR_RAMP_SPREAD_PAD;
+	
+	//const int stopCnt = _colorRampStops.size();
+	const int stopCnt = 3;
+	float _colorRampStops[stopCnt][5] = {
+		{0.0f,	1.0f, 0.0f, 0.0f, 1.0f},
+		{0.5f,	0.0f, 1.0f, 0.0f, 1.0f},
+		{1.0f,	0.0f, 0.0f, 1.0f, 1.0f}
+	};
+
+	
+	//	from OpenVG specification PDF
+	//
+	// VG_PAINT_RADIAL_GRADIENT. { cx, cy, fx, fy, r }.
+	//
+	//					(dx * fx' + dy * fy') + sqrt( r^2 * (dx^2 + dy^2) - (dx * fy' - dy fx') ^ 2 )
+	//		g(x,y)	=	-----------------------------------------------------------------------------
+	//												r^2 - (fx'^2 + fy'^2)
+	// where:
+	//		fx' = fx - cx, fy' = fy - cy
+	//		dx = x - fx, dy = y - fy
+	//		
+	
+	
+	// normalize the focal point
+	float _paintRadialGradient[5] = {32,32,16,16,32 };	// { cx, cy, fx, fy, r }.
+	float fxn = (_paintRadialGradient[2]/pathWidth) * width;
+	float fyn = (_paintRadialGradient[3]/pathHeight) * height;
+	float fxp = fxn - ((_paintRadialGradient[0]/pathWidth) * width);
+	float fyp = fyn - ((_paintRadialGradient[1]/pathHeight) * height);
+	
+	// ??? normalizing radius on the path width but it could be either or???
+	float rn = (_paintRadialGradient[4]/pathWidth) * width;
+	
+	float denominator = (rn*rn) - (fxp*fxp + fyp*fyp);
+	
+	
+	for ( int x = 0; x < width; x++ ) {
+		float dx = x - fxn;
+		for ( int y = 0; y < height; y++ ) {
+			float dy = y - fyn;
+			
+			float numerator = (dx * fxp + dy * fyp);
+			float df = dx * fyp - dy * fxp;
+			numerator += sqrtf( (rn*rn) * (dx*dx + dy*dy) - (df*df)  );
+			float g = numerator / denominator;
+			
+			
+			
+			// color = c0 + (c1 - c0)(g - x0)/(x1 - x0)
+			// where c0 = stop color 0, c1 = stop color 1
+			// where x0 = stop offset 0, x1 = stop offset 1
+			float finalcolor[4];
+			float* stop0 = 0;
+			float* stop1 = 0;
+			
+			
+			if ( spreadMode == VG_COLOR_RAMP_SPREAD_PAD ) {
+				if ( g < 0 ) {
+					stop0 = _colorRampStops[0];
+					for ( int i = 0; i < 4; i++ ) {
+						finalcolor[i] = stop0[i+1];
+					}
+					
+				} else if( g > 1 ) {
+					stop0 = _colorRampStops[stopCnt -1];
+					for ( int i = 0; i < 4; i++ ) {
+						finalcolor[i] = stop0[i+1];
+					}
+					
+				} else {
+					// determine which stops
+					for ( int i = 0; i < stopCnt; i++ ) {
+						if ( g >= _colorRampStops[i][0] && g <= _colorRampStops[i+1][0] ) {
+							stop0 = _colorRampStops[i];
+							stop1 = _colorRampStops[i+1];
+							//printf( "stopds: %d --> %d\n", i, i+1);
+							break;
+						}
+					}
+					
+					for ( int i = 0; i < 4; i++ ) {
+						finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
+					}
+					
+				}
+			} else {
+				int w = int(fabsf(g));
+				
+				if ( spreadMode == VG_COLOR_RAMP_SPREAD_REPEAT ) {
+					if ( g < 0 ) {
+						g = 1 - (fabs(g) - w);
+					} else {
+						g = g - w;
+					}
+				} else if( spreadMode == VG_COLOR_RAMP_SPREAD_REFLECT ) {
+					if ( g < 0 ) {
+						if ( w % 2 == 0 ) { // even
+							g = (fabsf(g) - w);
+						} else {	// odd
+							g = (1 - (fabsf(g) - w));
+						}
+						
+					} else {
+						if ( w % 2 == 0 ) { // even
+							g = g - w;
+						} else {	// odd
+							g = 1 - (g - w);
+						}
+					}
+					
+				}
+				
+				// clamp
+				if ( g > 1 ) {
+					g = 1;
+				}
+				if ( g < 0 ) {
+					g = 0;
+				}
+				
+				// determine which stops
+				for ( int i = 0; i < stopCnt; i++ ) {
+					if ( g >= _colorRampStops[i][0] && g <= _colorRampStops[i+1][0] ) {
+						stop0 = _colorRampStops[i];
+						stop1 = _colorRampStops[i+1];
+						//printf( "stopds: %d --> %d\n", i, i+1);
+						break;
+					}
+				}
+				
+				assert( stop0 && stop1 );
+				for ( int i = 0; i < 4; i++ ) {
+					finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
+				}
+			}
+			
+			unsigned int color 
+			= (uint32_t(finalcolor[3] * 255) << 24) 
+			| (uint32_t(finalcolor[2] * 255) << 16)
+			| (uint32_t(finalcolor[1] * 255) << 8)
+			| (uint32_t(finalcolor[0] * 255) << 0);
+			
+			image[(y*width) + x] = color;
+		}
+	}
+	
+	// create openvg image
+	VGImage _gradientImage = vgCreateImage(VG_sRGBA_8888, width, height, 0 );
+	
+	vgImageSubData( _gradientImage, image, -1, VG_sRGBA_8888, 0, 0, width, height );
+	
+	free(image);
+	
+	return _gradientImage;
+
+}
+
 VGImage buildLinearGradientImage() {
 
 	// generated image sizes
@@ -212,7 +379,6 @@ VGImage buildLinearGradientImage() {
 		
 		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
 		vguRect( _path, 50.0f, 50.0f, 90.0f, 50.0f );
-		//vguEllipse( _path, 0, 0, 90.0f, 50.0f );
 		
 		vgSetf( VG_STROKE_LINE_WIDTH, 7.0f );
 		
@@ -225,7 +391,7 @@ VGImage buildLinearGradientImage() {
 		
 		// create a path for linear gradient
 		_linearGradientPath = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
-		vguRect( _linearGradientPath, 0, 0, 50.0f, 90.0f );
+		vguRect( _linearGradientPath, 0, 0, 120.0f, 40.0f );
 		
 		// create a linear gradient paint to apply to the path
 		_linearGradientPaint = vgCreatePaint();
@@ -235,7 +401,7 @@ VGImage buildLinearGradientImage() {
 		// and length of the gradient.
 		float afLinearGradientPoints[4] = {
 			0.0f, 0.0f,
-			50.0f, 0.0f
+			120.0f, 0.0f
 		};
 		vgSetParameterfv(_linearGradientPaint, VG_PAINT_LINEAR_GRADIENT, 4, afLinearGradientPoints);
 		
@@ -243,12 +409,23 @@ VGImage buildLinearGradientImage() {
 		// are given as premultiplied sRGBA colour at a position between 0 and 1.
 		// Between these stops, the colour is linearly interpolated.
 		// This colour ramp goes from red to green to blue, all opaque.
-		float afColourRampStops[] = {
-			0.0f,	0.0f, 0.0f, 1.0f, 1.0f,
-			1.0f,	0.0f, 1.0f, 0.0f, 1.0f,
+		float stops[3][5] = {
+			{0.0f,	1.0f, 0.0f, 0.0f, 1.0f},
+			{0.5f,	0.0f, 1.0f, 0.0f, 0.8f},
+			{1.0f,	0.0f, 0.0f, 1.0f, 0.4f}
 		};
-		vgSetParameterfv(_linearGradientPaint, VG_PAINT_COLOR_RAMP_STOPS, 10, afColourRampStops);
+		vgSetParameterfv(_linearGradientPaint, VG_PAINT_COLOR_RAMP_STOPS, 15, &stops[0][0]);
 		
+		// setup radial gradient
+		_radialGradientPath = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
+		vguEllipse( _radialGradientPath, 0, 0, 90.0f, 50.0f );
+		
+		
+		_radialGradientPaint = vgCreatePaint();
+		vgSetParameteri(_radialGradientPaint, VG_PAINT_TYPE, VG_PAINT_TYPE_RADIAL_GRADIENT);
+		float afRadialGradient[5] = {45,25,45,25,45.0f };	// { cx, cy, fx, fy, r }.
+		vgSetParameterfv(_radialGradientPaint, VG_PAINT_RADIAL_GRADIENT, 5, afRadialGradient);
+		vgSetParameterfv(_radialGradientPaint, VG_PAINT_COLOR_RAMP_STOPS, 15, &stops[0][0]);
 		//		loadTiger();
 		//		
 		//
@@ -276,19 +453,21 @@ VGImage buildLinearGradientImage() {
 	vgClear(0,0,backingWidth,backingHeight);
 	
 	
-	
+	/// draw the image
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
 	vgSeti( VG_IMAGE_MODE, VG_DRAW_IMAGE_NORMAL );
 	vgLoadIdentity();
 	vgTranslate( backingWidth/2, backingHeight/2 );
 	vgDrawImage( _image );
 
+	/// draw the basic path
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
 	vgLoadIdentity();
 	vgTranslate( backingWidth/2, backingHeight/2 );
 	vgSetPaint( _paint, VG_FILL_PATH );
 	vgDrawPath( _path, VG_FILL_PATH );
 
+	/// draw the text
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_GLYPH_USER_TO_SURFACE);
 	vgLoadIdentity();
 	VGfloat glyphOrigin[2] = {0,0};
@@ -319,6 +498,12 @@ VGImage buildLinearGradientImage() {
 	vgTranslate( backingWidth/2, backingHeight/2 );
 	vgSetPaint( _linearGradientPaint, VG_FILL_PATH );
 	vgDrawPath( _linearGradientPath, VG_FILL_PATH );
+	
+	// draw radial gradient
+	vgLoadIdentity();
+	vgTranslate( 50, backingHeight/2 + 20 );
+	vgSetPaint( _radialGradientPaint, VG_FILL_PATH );
+	vgDrawPath( _radialGradientPath, VG_FILL_PATH );
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.

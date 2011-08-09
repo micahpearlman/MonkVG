@@ -78,6 +78,11 @@ namespace MonkVG {	// Internal Implementation
 					_paintLinearGradient[i] = fv[i];
 				}
 				break;
+			case VG_PAINT_RADIAL_GRADIENT:
+				for ( int i = 0; i < 5; i++ ) {
+					_paintRadialGradient[i] = fv[i];
+				}
+				break;
 			case VG_PAINT_COLOR_RAMP_STOPS:
 				for ( int j = 0; j < cnt/5; j++ ) {
 					Stop_t stop;

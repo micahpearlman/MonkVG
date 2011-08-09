@@ -30,10 +30,12 @@
 	VGPath	_path;
 	VGPaint _paint;
 	VGPaint _linearGradientPaint;
+	VGPaint _radialGradientPaint;
 	VGImage _image;
 	VGImage	_bitmapFont;
 	//	VGImage _gradientImage;
 	VGPath _linearGradientPath;
+	VGPath _radialGradientPath;
 	VGFont	_font;
 	VGfloat _lineHeight;
 	

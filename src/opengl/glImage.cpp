@@ -115,6 +115,8 @@ namespace MonkVG {
 	}
 
 	void OpenGLImage::draw() {
+		
+		
 		GLfloat		coordinates[] = {	_s[0],	_t[1],
 										_s[1],	_t[1],
 										_s[0],	_t[0],
