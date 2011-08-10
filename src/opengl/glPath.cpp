@@ -80,7 +80,7 @@ namespace MonkVG {
 			return true;		// creating a batch so bail from here
 		}
 
-
+		
 		glContext.beginRender();
 		
 		glEnableClientState( GL_VERTEX_ARRAY );

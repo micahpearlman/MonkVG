@@ -452,13 +452,13 @@ VGImage buildLinearGradientImage() {
 	vgSetfv(VG_CLEAR_COLOR, 4, clearColor);
 	vgClear(0,0,backingWidth,backingHeight);
 	
-	
 	/// draw the image
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
 	vgSeti( VG_IMAGE_MODE, VG_DRAW_IMAGE_NORMAL );
 	vgLoadIdentity();
 	vgTranslate( backingWidth/2, backingHeight/2 );
 	vgDrawImage( _image );
+	
 
 	/// draw the basic path
 	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
@@ -504,7 +504,7 @@ VGImage buildLinearGradientImage() {
 	vgTranslate( 50, backingHeight/2 + 20 );
 	vgSetPaint( _radialGradientPaint, VG_FILL_PATH );
 	vgDrawPath( _radialGradientPath, VG_FILL_PATH );
-
+	
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.
     glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);

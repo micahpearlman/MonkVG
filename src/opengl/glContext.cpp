@@ -279,7 +279,7 @@ namespace MonkVG {
 	
 	void OpenGLContext::fill() {
 		
-		if ( _fill_paint ) {
+		if ( _fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
 			OpenGLPaint* glPaint = (OpenGLPaint*)_fill_paint;
 			glPaint->setGLState();
 			glPaint->setIsDirty( false );

@@ -121,6 +121,7 @@ namespace MonkVG {
 										_s[1],	_t[1],
 										_s[0],	_t[0],
 										_s[1],	_t[0] };
+		
 		GLfloat	w = (GLfloat)_width;
 		GLfloat h = (GLfloat)_height;
 		GLfloat x = 0, y = 0;
@@ -138,11 +139,13 @@ namespace MonkVG {
 			const VGfloat* color = fillPaint->getPaintColor();
 			glColor4f( color[0], color[1], color[2], color[3] );
 		}
-		
-		glEnable(GL_TEXTURE_2D);
-		// turn on blending
-		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+
+		bind();
+//		glEnable(GL_TEXTURE_2D);
+//		// turn on blending
+//		glEnable(GL_BLEND);
+//		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+//		glBindTexture(GL_TEXTURE_2D, _name);
 
 		
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -153,7 +156,7 @@ namespace MonkVG {
 		
 
 		
-		glBindTexture(GL_TEXTURE_2D, _name);
+		
 		glVertexPointer(3, GL_FLOAT, 0, vertices);
 		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

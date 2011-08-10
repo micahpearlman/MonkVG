@@ -10,6 +10,7 @@
 
 #include "mkImage.h"
 #include "glPlatform.h"
+#include <vector>
 
 namespace MonkVG {
 	class OpenGLImage : public IImage {
@@ -38,8 +39,7 @@ namespace MonkVG {
 		void unbind();
 
 	private:
-		GLuint						_name;
-		
+		GLuint		_name;
 	};
 }
 
