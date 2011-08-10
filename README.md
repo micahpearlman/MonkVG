@@ -31,25 +31,25 @@ MonkVG was originally created for games, so speed has usually been prefered over
 
 ## What is implemented
 
-  	- Most all path segment commands including: moves, lines, bezier curves, elliptical arcs.
-	- Robust contour tesselation supporting both fill rules.
-	- Very basic stroking.
-	- Most paints including: Solid color fill, linear and radial gradients.  
-	- Bitmap font rendering.
-	- Bitmap image rendering.
-	- OpenVG utility library (see vgu.h)
+- Most all path segment commands including: moves, lines, bezier curves, elliptical arcs.
+- Robust contour tesselation supporting both fill rules.
+- Very basic stroking.
+- Most paints including: Solid color fill, linear and radial gradients.  
+- Bitmap font rendering.
+- Bitmap image rendering.
+- OpenVG utility library (see vgu.h)
 	
 ## TODO
-	- Pattern fills and strokes.
-	- Gradient fills on strokes (works for fills).
-	- Stroke font rendering (may work just untested).
-	- Various blending modes (somewhat working already).
-	- Scissoring and masking.
-	- Improve stroking geometry generation.
+- Pattern fills and strokes.
+- Gradient fills on strokes (works for fills).
+- Stroke font rendering (may work just untested).
+- Various blending modes (somewhat working already).
+- Scissoring and masking.
+- Improve stroking geometry generation.
 
 ## Probably never support
-	- Image filters.
-	- Anti-aliasing. (Though this can be supported outside OpenVG.  For example iOS fullscreen AA glRenderbufferStorageMultisampleAPPLE method)
+- Image filters.
+- Anti-aliasing. (Though this can be supported outside OpenVG.  For example iOS fullscreen AA glRenderbufferStorageMultisampleAPPLE method)
 
 ## Contributors
 
