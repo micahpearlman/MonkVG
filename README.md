@@ -27,5 +27,5 @@ MonkVG was originally created for games, so speed has usually been prefered over
 
 ## Contributors
 
-Paul Holden
+Paul Holden (Android Port)
 
