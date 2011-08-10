@@ -11,8 +11,8 @@ It can be found at GitHub http://github.com/micahpearlman/MonkVG
 
 Projects using MonkVG include:
 
-	- MonkSWF: A flash swf parser and renderer. https://github.com/micahpearlman/MonkSWF
-	- MonkSVG: A SVG parser and renderer.  https://github.com/micahpearlman/MonkSVG
+- MonkSWF: A flash swf parser and renderer. https://github.com/micahpearlman/MonkSWF
+- MonkSVG: A SVG parser and renderer.  https://github.com/micahpearlman/MonkSVG
 
 ## INSTALLATION
 
