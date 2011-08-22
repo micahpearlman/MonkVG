@@ -369,8 +369,10 @@ VGImage buildLinearGradientImage() {
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, colorRenderbuffer);
 		
+		// setup the OpenVG context
 		vgCreateContextSH( 320, 480 );
 		
+		// create a paint
 		_paint = vgCreatePaint();
 		vgSetPaint(_paint, VG_FILL_PATH );
 		
