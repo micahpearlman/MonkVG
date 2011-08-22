@@ -30,5 +30,8 @@
 //#include <gl\glu.h>		// Header File For The GLu32 Library	
 #endif // #if defined(__APPLE__)
 
+#ifndef APIENTRY
+#define APIENTRY
+#endif // APIENTRY
 
 #endif
