@@ -3,7 +3,7 @@ MonkVG -- An OpenVG implementation
 
 ## DESCRIPTION
 
-MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an OpenGL ES backend that should be compatible with any HW that supports OpenGL ES 1.1 which includes most iOS and Android devices. 
+MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an OpenGL ES backend that should be compatible with any HW that supports OpenGL ES 1.1 which includes most iOS and Android devices as well as OSX and Windows platforms. 
 
 This is an open source BSD licensed project that is in active development. Contributors and sponsors welcome.
 
@@ -54,6 +54,7 @@ MonkVG was originally created for games, so speed has usually been prefered over
 ## Contributors
 
 Paul Holden (Android Port)
+Vincent Richomme (Windows Port)
 
 ## Simple Example
 
