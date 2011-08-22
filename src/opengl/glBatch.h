@@ -18,10 +18,14 @@
         #include <OpenGL/glu.h>
         #define glOrthof glOrtho
     #endif
-#else // #if defined(__APPLE__)
-    #if ANDROID
-        #include "glu.h"
-    #endif
+#elif ANDROID
+#include "glu.h"
+#elif WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <GL/glew.h>
+#define glOrthof glOrthofOES
+//#include <gl\gl.h>		// Header File For The OpenGL32 Library
+//#include <gl\glu.h>		// Header File For The GLu32 Library	
 #endif // #if defined(__APPLE__)
 
 #include <vector>

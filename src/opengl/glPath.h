@@ -50,20 +50,20 @@ namespace MonkVG {
 			
 			// calculate the bounds
 			if ( v[0] < _minX ) {
-				_minX = v[0];
+				_minX = (VGfloat)v[0];
 			}
 			if ( v[0] > _width ) {
-				_width = v[0];
+				_width = (VGfloat)v[0];
 			}
 			if ( v[1] < _minY ) {
-				_minY = v[1];
+				_minY = (VGfloat)v[1];
 			}
 			if ( v[1] > _height ) {
-				_height = v[1];
+				_height = (VGfloat)v[1];
 			}
 			
-			_vertices.push_back( v[0] );
-			_vertices.push_back( v[1] );
+			_vertices.push_back( (VGfloat)v[0] );
+			_vertices.push_back( (VGfloat)v[1] );
 		}
 		
 		GLdouble* tessVerticesBackPtr() {

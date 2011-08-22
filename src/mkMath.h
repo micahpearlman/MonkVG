@@ -18,10 +18,14 @@
 #include <iomanip>
 #include "mkCommon.h"
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 namespace MonkVG {
 	
-	static inline VGfloat radians (VGfloat degrees) {return degrees * (M_PI/180.0f);}	
-	static inline VGfloat degrees (VGfloat radians) {return radians * (180.0f/M_PI);}
+	static inline VGfloat radians (VGfloat degrees) {return (VGfloat)(degrees * (M_PI/180.0f));}	
+	static inline VGfloat degrees (VGfloat radians) {return (VGfloat)(radians * (180.0f/M_PI));}
 	
 	//	[ sx	shx	tx
 	//	 shy	sy	ty
@@ -201,8 +205,8 @@ static inline int RI_INT_CLAMP(int a, int l, int h)     { RI_ASSERT(l <= h); ret
 
 static inline int RI_FLOOR_TO_INT(float value){
 	if(value<0)
-		return floor(value);
+		return (int)floor(value);
     
-	return value;
+	return (int)value;
 }
 #endif // __mkMath_h__
