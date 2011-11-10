@@ -58,6 +58,9 @@ Vincent Richomme (Windows Port)
 
 ## Simple Example
 
+NOTE:  MonkVG will not create a OpenGL context, it is the applications responsibility to create there own OpenGL context.
+Also, if your application does any other OpenGL rendering it should save off the GL state and then restore before calling any MonkVG methods.
+
 <tt>
 	
 	VGPaint _paint;
