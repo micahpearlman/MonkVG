@@ -91,7 +91,7 @@ namespace MonkVG {
 		if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
 			glDisable(GL_TEXTURE_2D);
 			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-		} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT) ) {
+		} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 			glEnable( GL_TEXTURE_2D );
 			glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 			
@@ -106,7 +106,7 @@ namespace MonkVG {
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
 				glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-			} else if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT) ) {
+			} else if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 				_fillPaintForPath->getGradientImage()->bind();
 				glVertexPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, v) );
 				glTexCoordPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, uv) );
@@ -114,7 +114,7 @@ namespace MonkVG {
 			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
 			
 			// unbind any textures being used
-			if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT) ) {
+			if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 				_fillPaintForPath->getGradientImage()->unbind();
 				glContext.setImageMode( oldImageMode );
 				
@@ -836,7 +836,7 @@ namespace MonkVG {
 			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
 				glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
-			} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT) ) {
+			} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 				vector<textured_vertex_t> texturedVertices;
 				for ( vector<float>::const_iterator it = _vertices.begin(); it != _vertices.end(); it++ ) {
 					// build up the textured vertex

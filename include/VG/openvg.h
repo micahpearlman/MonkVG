@@ -341,6 +341,9 @@ typedef enum {
 
   /* Pattern paint parameters */
   VG_PAINT_PATTERN_TILING_MODE                = 0x1A06,
+  
+  /* 2x3 gradient paint parameters */
+  VG_PAINT_2x3_GRADIENT                    = 0x1A08,
 
   VG_PAINT_PARAM_TYPE_FORCE_SIZE              = VG_MAX_ENUM
 } VGPaintParamType;
@@ -350,6 +353,10 @@ typedef enum {
   VG_PAINT_TYPE_LINEAR_GRADIENT               = 0x1B01,
   VG_PAINT_TYPE_RADIAL_GRADIENT               = 0x1B02,
   VG_PAINT_TYPE_PATTERN                       = 0x1B03,
+
+  /* 2x3 matrix gradients */
+  VG_PAINT_TYPE_LINEAR_2x3_GRADIENT               = 0x1B04,
+  VG_PAINT_TYPE_RADIAL_2x3_GRADIENT               = 0x1B05,
 
   VG_PAINT_TYPE_FORCE_SIZE                    = VG_MAX_ENUM
 } VGPaintType;
