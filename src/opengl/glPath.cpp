@@ -152,6 +152,11 @@ namespace MonkVG {
 		+	x3 * (t * t * t);
 		return x;	
 	}
+    
+    static inline VGfloat calcQuadBezier1d( VGfloat start, VGfloat control, VGfloat end, VGfloat time ) {
+        float inverseTime = 1.0f - time;
+        return (powf(inverseTime, 2.0f) * start) + (2.0f * inverseTime * time * control) + (powf(time, 2.0f) * end);
+    }
 	
 #ifndef M_PI 
 #define M_PI 3.14159265358979323846 
@@ -427,6 +432,35 @@ namespace MonkVG {
 					coords.y = p3y;
 					
 				} break;
+                    
+                case (VG_QUAD_TO >> 1):
+                {
+					prev = coords;
+					VGfloat cpx = *coordsIter; coordsIter++;
+					VGfloat cpy = *coordsIter; coordsIter++;
+					VGfloat px = *coordsIter; coordsIter++;
+					VGfloat py = *coordsIter; coordsIter++;
+					
+					if ( isRelative ) {
+						cpx += prev.x;
+						cpy += prev.y;
+						px += prev.x;
+						py += prev.y;
+					}
+					
+					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
+					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+						v3_t c;
+						c.x = calcQuadBezier1d( coords.x, cpx, px, t );
+						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
+						_tessVertices.push_back( c );
+						gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+					}
+                    
+					coords.x = px;
+					coords.y = py;
+   
+                } break;
 				
 				case (VG_SCCWARC_TO >> 1):
 				case (VG_SCWARC_TO >> 1):
