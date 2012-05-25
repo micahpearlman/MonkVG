@@ -19,6 +19,7 @@ namespace MonkVG {
 			   VGint width, VGint height,
 			   VGbitfield allowedQuality );
 		IImage( IImage& image );
+        virtual ~IImage() {}
 		
 		inline BaseObject::Type getType() const {
 			return BaseObject::kImageType;
