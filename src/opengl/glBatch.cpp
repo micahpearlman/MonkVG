@@ -119,7 +119,7 @@ namespace MonkVG {
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
 		glContext.beginRender();
 
-		glDisable( GL_TEXTURE );
+		glDisable( GL_TEXTURE_2D );
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glEnableClientState( GL_COLOR_ARRAY );
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
