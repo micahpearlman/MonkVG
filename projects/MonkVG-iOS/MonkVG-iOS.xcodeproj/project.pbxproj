@@ -12,10 +12,10 @@
 		FA0F6A1E125ECE1300FE3D55 /* priorityq.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB6121A088200814394 /* priorityq.c */; };
 		FA0F6A1F125ECE1400FE3D55 /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB7121A088200814394 /* priorityq.h */; };
 		FA34EB4B13EDC98C006F9CA4 /* glPlatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA34EB4A13EDC98B006F9CA4 /* glPlatform.h */; };
-		FA6AEFAC127679FD004079EE /* openvg.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA4127679FD004079EE /* openvg.h */; };
-		FA6AEFAD127679FD004079EE /* vgext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA5127679FD004079EE /* vgext.h */; };
-		FA6AEFAE127679FD004079EE /* vgplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA6127679FD004079EE /* vgplatform.h */; };
-		FA6AEFAF127679FD004079EE /* vgu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA7127679FD004079EE /* vgu.h */; };
+		FA6AEFAC127679FD004079EE /* openvg.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA4127679FD004079EE /* openvg.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FA6AEFAD127679FD004079EE /* vgext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA5127679FD004079EE /* vgext.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FA6AEFAE127679FD004079EE /* vgplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA6127679FD004079EE /* vgplatform.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FA6AEFAF127679FD004079EE /* vgu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6AEFA7127679FD004079EE /* vgu.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FA712FBD13B91A39002E9FDC /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA712FBB13B91A39002E9FDC /* mkBatch.cpp */; };
 		FA712FBE13B91A39002E9FDC /* mkBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = FA712FBC13B91A39002E9FDC /* mkBatch.h */; };
 		FA712FC113B91D36002E9FDC /* glBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA712FBF13B91D36002E9FDC /* glBatch.cpp */; };
@@ -334,6 +334,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA6AEFAC127679FD004079EE /* openvg.h in Headers */,
+				FA6AEFAD127679FD004079EE /* vgext.h in Headers */,
+				FA6AEFAE127679FD004079EE /* vgplatform.h in Headers */,
+				FA6AEFAF127679FD004079EE /* vgu.h in Headers */,
 				FAE282AB121A08BB00823BCB /* mkBaseObject.h in Headers */,
 				FAE282AC121A08BB00823BCB /* mkCommon.h in Headers */,
 				FAE282AD121A08BB00823BCB /* mkContext.h in Headers */,
@@ -359,10 +363,6 @@
 				FAE282C3121A08BB00823BCB /* glPath.h in Headers */,
 				FA0F6A14125ECDC600FE3D55 /* priorityq-heap.h in Headers */,
 				FA0F6A1F125ECE1400FE3D55 /* priorityq.h in Headers */,
-				FA6AEFAC127679FD004079EE /* openvg.h in Headers */,
-				FA6AEFAD127679FD004079EE /* vgext.h in Headers */,
-				FA6AEFAE127679FD004079EE /* vgplatform.h in Headers */,
-				FA6AEFAF127679FD004079EE /* vgu.h in Headers */,
 				FA712FBE13B91A39002E9FDC /* mkBatch.h in Headers */,
 				FA712FC213B91D36002E9FDC /* glBatch.h in Headers */,
 				FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */,
@@ -470,7 +470,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../include;
+				HEADER_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 			};
@@ -483,7 +483,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../include;
+				HEADER_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 			};
@@ -507,12 +507,13 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
-					../../glu/include,
-					../../include,
-					/opt/local/include,
+					"$(inherited)",
+					"\"$(TARGET_BUILD_DIR)/include\"",
+					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
+				PUBLIC_HEADERS_FOLDER_PATH = include/VG;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
@@ -534,12 +535,13 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
-					../../glu/include,
-					../../include,
-					/opt/local/include,
+					"$(inherited)",
+					"\"$(TARGET_BUILD_DIR)/include\"",
+					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
+				PUBLIC_HEADERS_FOLDER_PATH = include/VG;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
