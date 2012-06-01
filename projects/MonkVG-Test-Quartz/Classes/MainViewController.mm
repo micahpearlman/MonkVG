@@ -8,8 +8,8 @@
 
 #import "MainViewController.h"
 #import "MainView.h"
-#include "VG/openvg.h"
-#include "VG/vgu.h"
+#include "MonkVG/openvg.h"
+#include "MonkVG/vgu.h"
 
 extern "C" void loadTiger();
 
