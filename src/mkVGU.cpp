@@ -39,8 +39,8 @@
   * \brief	Implementation of the VGU utility library for OpenVG
   *//*-------------------------------------------------------------------*/
 
-#include "VG/vgu.h"
-#include "VG/openvg.h"
+#include "MonkVG/vgu.h"
+#include "MonkVG/openvg.h"
 #include "mkCommon.h"
 #include "mkMath.h"
 

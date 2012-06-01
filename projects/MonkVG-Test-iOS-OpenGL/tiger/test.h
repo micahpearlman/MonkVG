@@ -4,8 +4,8 @@
 #include <stdarg.h>
 
 
-#include <vg/openvg.h>
-#include <vg/vgu.h>
+#include <MonkVG/openvg.h>
+#include <MonkVG/vgu.h>
 
 
 VGPath testCreatePath();

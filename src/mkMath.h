@@ -10,7 +10,7 @@
 #ifndef __mkMath_h__
 #define __mkMath_h__
 
-#include "VG/openvg.h"
+#include "MonkVG/openvg.h"
 #include <cmath>
 #include <cstdio>
 #include <stdlib.h>

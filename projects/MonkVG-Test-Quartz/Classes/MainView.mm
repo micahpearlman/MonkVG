@@ -8,8 +8,8 @@
 
 #import "MainView.h"
 #import <QuartzCore/QuartzCore.h>
-#include "VG/openvg.h"
-#include "VG/vgu.h"
+#include "MonkVG/openvg.h"
+#include "MonkVG/vgu.h"
 
 extern "C" void loadTiger();
 extern "C" void display(float dt);

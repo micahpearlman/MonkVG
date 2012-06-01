@@ -10,7 +10,7 @@
 #ifndef __mkBaseObject_h__
 #define __mkBaseObject_h__
 
-#include "VG/openvg.h"
+#include "MonkVG/openvg.h"
 
 namespace MonkVG {
 	
