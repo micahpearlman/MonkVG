@@ -195,13 +195,13 @@
 		FA6AEFA2127679FD004079EE /* include */ = {
 			isa = PBXGroup;
 			children = (
-				FA6AEFA3127679FD004079EE /* VG */,
+				FA6AEFA3127679FD004079EE /* MonkVG */,
 			);
 			name = include;
 			path = ../../include;
 			sourceTree = SOURCE_ROOT;
 		};
-		FA6AEFA3127679FD004079EE /* VG */ = {
+		FA6AEFA3127679FD004079EE /* MonkVG */ = {
 			isa = PBXGroup;
 			children = (
 				FA6AEFA4127679FD004079EE /* openvg.h */,
@@ -209,7 +209,7 @@
 				FA6AEFA6127679FD004079EE /* vgplatform.h */,
 				FA6AEFA7127679FD004079EE /* vgu.h */,
 			);
-			path = VG;
+			path = MonkVG;
 			sourceTree = "<group>";
 		};
 		FA9ACC93121A088200814394 /* Source */ = {
@@ -513,7 +513,7 @@
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
-				PUBLIC_HEADERS_FOLDER_PATH = include/VG;
+				PUBLIC_HEADERS_FOLDER_PATH = include/MonkVG;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
@@ -541,7 +541,7 @@
 				);
 				INSTALL_PATH = "";
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
-				PUBLIC_HEADERS_FOLDER_PATH = include/VG;
+				PUBLIC_HEADERS_FOLDER_PATH = include/MonkVG;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};

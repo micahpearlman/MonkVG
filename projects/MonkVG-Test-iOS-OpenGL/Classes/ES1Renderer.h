@@ -10,8 +10,8 @@
 
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
-#include <vg/openvg.h>
-#include <vg/vgu.h>
+#include <MonkVG/openvg.h>
+#include <MonkVG/vgu.h>
 
 //class SVGHandler;
 

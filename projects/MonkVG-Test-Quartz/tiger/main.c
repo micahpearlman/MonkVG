@@ -45,8 +45,8 @@
 #	include "vgu.h"
 #	include "egl.h"
 #else
-#	include "VG/openvg.h"
-#	include "VG/vgu.h"
+#	include "MonkVG/openvg.h"
+#	include "MonkVG/vgu.h"
 #	include "EGL/egl.h"
 #endif
 
