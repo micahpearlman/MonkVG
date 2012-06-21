@@ -73,6 +73,19 @@ VG_API_CALL void VG_API_ENTRY vgClear(VGint x, VGint y, VGint width, VGint heigh
 	IContext::instance().clear( x, y, width, height );
 }
 
+VG_API_CALL void VG_API_ENTRY vgMask(VGHandle mask, VGMaskOperation operation,VGint x, VGint y,
+		VGint width, VGint height) VG_API_EXIT {
+
+}
+
+
+/* Finish and Flush */
+VG_API_CALL void VG_API_ENTRY vgFinish(void) VG_API_EXIT {
+	glFinish();
+}
+VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT {
+	glFlush();
+}
 
 /*--------------------------------------------------
  * Returns the oldest error pending on the current

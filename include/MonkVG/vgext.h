@@ -40,8 +40,8 @@
 extern "C" {
 #endif
 
-#include <MonkVG/openvg.h>
-#include <MonkVG/vgu.h>
+#include"openvg.h"
+#include "vgu.h"
 
 #ifndef VG_API_ENTRYP
 #   define VG_API_ENTRYP VG_API_ENTRY*
