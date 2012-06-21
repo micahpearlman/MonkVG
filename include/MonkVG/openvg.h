@@ -34,7 +34,7 @@
 #ifndef _OPENVG_H
 #define _OPENVG_H
 
-#include <MonkVG/vgplatform.h>
+#include "vgplatform.h"
 
 #ifdef __cplusplus
 extern "C" {

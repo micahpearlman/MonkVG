@@ -36,3 +36,20 @@ CVS
 Backup[ ]of[ ]*.pages/
 Backup[ ]of[ ]*.key/
 Backup[ ]of[ ]*.numbers/
+
+# autotools stuff
+configure
+missing
+install-sh
+Makefile
+*.in
+*.m4
+*.cache
+config.*
+ltmain.sh
+depcomp
+*.la
+*.lo
+.libs/
+.deps/
+libtool

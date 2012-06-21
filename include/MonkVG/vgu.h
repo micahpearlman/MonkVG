@@ -38,7 +38,7 @@
 extern "C" { 
 #endif
 
-#include <MonkVG/openvg.h>
+#include "openvg.h"
 
 #define VGU_VERSION_1_0 1
 #define VGU_VERSION_1_1 2
