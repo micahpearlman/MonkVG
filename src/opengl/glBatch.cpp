@@ -113,6 +113,15 @@ namespace MonkVG {
 		_vertices.clear();
 		
 	}
+    
+    void OpenGLBatch::dump( void **vertices, size_t *size ) {
+        
+        *size = _vertices.size() * sizeof( vertex_t );
+        *vertices = std::malloc( *size );
+        
+        std::memcpy( *vertices, &_vertices[0], *size );
+        
+    }
 	
 	void OpenGLBatch::draw() {
 		// get the native OpenGL context
@@ -134,4 +143,5 @@ namespace MonkVG {
 		glContext.endRender();
 
 	}
+    
 }

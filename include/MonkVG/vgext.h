@@ -36,6 +36,8 @@
 #ifndef _VGEXT_H
 #define _VGEXT_H
 
+#include <cstring>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,6 +74,7 @@ extern "C" {
 	VG_API_CALL void VG_API_ENTRY vgBeginBatchMNK( VGBatchMNK batch ) VG_API_EXIT;
 	VG_API_CALL void VG_API_ENTRY vgEndBatchMNK( VGBatchMNK batch ) VG_API_EXIT;
 	VG_API_CALL void VG_API_ENTRY vgDrawBatchMNK( VGBatchMNK batch ) VG_API_EXIT;
+    VG_API_CALL void VG_API_ENTRY vgDumpBatchMNK( VGBatchMNK batch, void **vertices, size_t *size ) VG_API_EXIT;
   
 	
 

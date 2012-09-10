@@ -301,6 +301,9 @@ namespace MonkVG {
 		assert( _currentBatch == 0 );	// can't have multiple batches going on at once
 		_currentBatch = batch;
 	}
+    void OpenGLContext::dumpBatch( IBatch *batch, void **vertices, size_t *size ) {
+        _currentBatch->dump( vertices, size );
+    }
 	void OpenGLContext::endBatch( IBatch* batch ) {
 		_currentBatch->finalize();
 		_currentBatch = 0;

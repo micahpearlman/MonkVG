@@ -80,6 +80,7 @@ namespace MonkVG {
 		
 		/// batch drawing
 		virtual void startBatch( IBatch* batch );
+        virtual void dumpBatch( IBatch* batch, void **vertices, size_t *size );
 		virtual void endBatch( IBatch* batch );
 		
 		/// image
