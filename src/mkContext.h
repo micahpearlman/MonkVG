@@ -184,6 +184,10 @@ namespace MonkVG {
 		/// image
 		virtual VGImageMode getImageMode() const { return _imageMode; }
 		virtual void setImageMode( VGImageMode im ) { _imageMode = im; }
+        
+        /// renderer
+        virtual VGRenderingBackendTypeMNK getRenderingBackendType() const { return _backendRenderer; }
+        virtual void setRenderingBackendType( VGRenderingBackendTypeMNK backendRenderer ) { _backendRenderer = backendRenderer; }
 	
 	protected:
 	
@@ -221,6 +225,9 @@ namespace MonkVG {
 
 		// error 
 		VGErrorCode			_error;
+        
+        // renderer
+        VGRenderingBackendTypeMNK   _backendRenderer;
 	};
 }
 

@@ -17,11 +17,11 @@ namespace MonkVG {
 	:	IImage(format, width, height, allowedQuality )
 	,	_name( 0 )
 	{
-		glEnable(GL_TEXTURE_2D);
-		glGenTextures(1, &_name);
-		glBindTexture(GL_TEXTURE_2D, _name);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		GL->glEnable(GL_TEXTURE_2D);
+		GL->glGenTextures(1, &_name);
+		GL->glBindTexture(GL_TEXTURE_2D, _name);
+		GL->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		GL->glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 		
 		//		/* RGB{A,X} channel ordering */
 		//		VG_sRGBX_8888                               =  0,
@@ -43,13 +43,13 @@ namespace MonkVG {
 		switch(format) {
 				
 			case VG_sRGBA_8888:
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+				GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 				break;
 			case VG_sRGB_565:
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, 0);
+				GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, 0);
 				break;
 			case VG_A_8:
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
+				GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
 				break;
 			default:
 				IContext::instance().setError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
@@ -68,7 +68,7 @@ namespace MonkVG {
 	
 	OpenGLImage::~OpenGLImage() {
 		if( !_parent && _name ) {
-			glDeleteTextures( 1, &_name );
+			GL->glDeleteTextures( 1, &_name );
 			_name = 0;
 		}
 	}
@@ -91,18 +91,18 @@ namespace MonkVG {
 								 VGint x, VGint y, VGint width, VGint height ) {
 		assert( _name );
 		
-		glBindTexture(GL_TEXTURE_2D, _name);
+		GL->glBindTexture(GL_TEXTURE_2D, _name);
 		
 		switch(dataFormat) {
 				
 			case VG_sRGBA_8888:
-				glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data );
+				GL->glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data );
 				break;
 			case VG_sRGB_565:
-				glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data );
+				GL->glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, data );
 				break;
 			case VG_A_8:
-				glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_ALPHA, GL_UNSIGNED_BYTE, data );
+				GL->glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_ALPHA, GL_UNSIGNED_BYTE, data );
 				break;
 			default:
 				IContext::instance().setError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
@@ -137,7 +137,7 @@ namespace MonkVG {
 			// set the color to the current fill paint color
 			IPaint* fillPaint = IContext::instance().getFillPaint();
 			const VGfloat* color = fillPaint->getPaintColor();
-			glColor4f( color[0], color[1], color[2], color[3] );
+			GL->glColor4f( color[0], color[1], color[2], color[3] );
 		}
 
 		bind();
@@ -148,20 +148,20 @@ namespace MonkVG {
 //		glBindTexture(GL_TEXTURE_2D, _name);
 
 		
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState( GL_COLOR_ARRAY );
+		GL->glEnableClientState(GL_VERTEX_ARRAY);
+		GL->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		GL->glDisableClientState( GL_COLOR_ARRAY );
 		
-		glDisable( GL_CULL_FACE );
+		GL->glDisable( GL_CULL_FACE );
 		
 
 		
 		
-		glVertexPointer(3, GL_FLOAT, 0, vertices);
-		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		GL->glVertexPointer(3, GL_FLOAT, 0, vertices);
+		GL->glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+		GL->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		
-		glBindTexture(GL_TEXTURE_2D, 0);
+		GL->glBindTexture(GL_TEXTURE_2D, 0);
 
 	}
 	
@@ -188,29 +188,29 @@ namespace MonkVG {
 			// set the color to the current fill paint color
 			IPaint* fillPaint = IContext::instance().getFillPaint();
 			const VGfloat* color = fillPaint->getPaintColor();
-			glColor4f( color[0], color[1], color[2], color[3] );
+			GL->glColor4f( color[0], color[1], color[2], color[3] );
 		}
 
 		
-		glEnable(GL_TEXTURE_2D);
+		GL->glEnable(GL_TEXTURE_2D);
 		// turn on blending
-		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+		GL->glEnable(GL_BLEND);
+		GL->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 		
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState( GL_COLOR_ARRAY );
+		GL->glEnableClientState(GL_VERTEX_ARRAY);
+		GL->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		GL->glDisableClientState( GL_COLOR_ARRAY );
 		
-		glDisable( GL_CULL_FACE );
+		GL->glDisable( GL_CULL_FACE );
 		
 		
 		
-		glBindTexture(GL_TEXTURE_2D, _name);
-		glVertexPointer(3, GL_FLOAT, 0, vertices);
-		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		GL->glBindTexture(GL_TEXTURE_2D, _name);
+		GL->glVertexPointer(3, GL_FLOAT, 0, vertices);
+		GL->glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+		GL->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		
-		glBindTexture(GL_TEXTURE_2D, 0);
+		GL->glBindTexture(GL_TEXTURE_2D, 0);
 
 		
 	}
@@ -235,25 +235,25 @@ namespace MonkVG {
 		}
 
 		
-		glEnable(GL_TEXTURE_2D);
+		GL->glEnable(GL_TEXTURE_2D);
 		// turn on blending
-		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+		GL->glEnable(GL_BLEND);
+		GL->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 		
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState( GL_COLOR_ARRAY );
+		GL->glEnableClientState(GL_VERTEX_ARRAY);
+		GL->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		GL->glDisableClientState( GL_COLOR_ARRAY );
 		
-		glDisable( GL_CULL_FACE );
+		GL->glDisable( GL_CULL_FACE );
 		
 		
 		
-		glBindTexture(GL_TEXTURE_2D, _name);
-		glVertexPointer(3, GL_FLOAT, 0, vertices);
-		glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		GL->glBindTexture(GL_TEXTURE_2D, _name);
+		GL->glVertexPointer(3, GL_FLOAT, 0, vertices);
+		GL->glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+		GL->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		
-		glBindTexture(GL_TEXTURE_2D, 0);
+		GL->glBindTexture(GL_TEXTURE_2D, 0);
 
 	}
 	
@@ -262,16 +262,16 @@ namespace MonkVG {
 	}
 	
 	void OpenGLImage::bind() {
-		glEnable(GL_TEXTURE_2D);
+		GL->glEnable(GL_TEXTURE_2D);
 		// turn on blending
-		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+		GL->glEnable(GL_BLEND);
+		GL->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
 		
-		glBindTexture(GL_TEXTURE_2D, _name);
+		GL->glBindTexture(GL_TEXTURE_2D, _name);
 
 	}
 	void OpenGLImage::unbind() {
-		glBindTexture(GL_TEXTURE_2D, 0);
+		GL->glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 }

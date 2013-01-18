@@ -12,6 +12,7 @@
 #import <OpenGLES/ES1/glext.h>
 #include <MonkVG/openvg.h>
 #include <MonkVG/vgu.h>
+#include <MonkVG/vgext.h>
 
 //class SVGHandler;
 

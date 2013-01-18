@@ -24,12 +24,12 @@ namespace MonkVG {
 		
 		// delete vbo buffers
 		if ( _strokeVBO != -1 ) {
-			glDeleteBuffers( 1, &_strokeVBO );
+			GL->glDeleteBuffers( 1, &_strokeVBO );
 			_strokeVBO = -1;
 		}
 		
 		if ( _fillVBO != -1 ) {
-			glDeleteBuffers( 1, &_fillVBO );
+			GL->glDeleteBuffers( 1, &_fillVBO );
 			_fillVBO = -1;
 		}
 	}
@@ -83,17 +83,17 @@ namespace MonkVG {
 		
 		glContext.beginRender();
 		
-		glEnableClientState( GL_VERTEX_ARRAY );
-		glDisableClientState( GL_COLOR_ARRAY );
+		GL->glEnableClientState( GL_VERTEX_ARRAY );
+		GL->glDisableClientState( GL_COLOR_ARRAY );
 		VGImageMode oldImageMode = glContext.getImageMode();
 
 		// configure based on paint type
 		if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-			glDisable(GL_TEXTURE_2D);
-			glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+			GL->glDisable(GL_TEXTURE_2D);
+			GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
-			glEnable( GL_TEXTURE_2D );
-			glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+			GL->glEnable( GL_TEXTURE_2D );
+			GL->glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 			
 			glContext.setImageMode( VG_DRAW_IMAGE_NORMAL );
 			
@@ -103,37 +103,37 @@ namespace MonkVG {
 		if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 && _fillPaintForPath) {
 			// draw
 			IContext::instance().fill();
-			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-				glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
+				GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
 			} else if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 				_fillPaintForPath->getGradientImage()->bind();
-				glVertexPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, v) );
-				glTexCoordPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, uv) );
+				GL->glVertexPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, v) );
+				GL->glTexCoordPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, uv) );
 			}
-			glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
+			GL->glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
 			
 			// unbind any textures being used
 			if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 				_fillPaintForPath->getGradientImage()->unbind();
 				glContext.setImageMode( oldImageMode );
 				
-				glDisable(GL_TEXTURE_2D);
-				glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+				GL->glDisable(GL_TEXTURE_2D);
+				GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 			}
 			
 			// this is important to unbind the vbo when done
-			glBindBuffer( GL_ARRAY_BUFFER, 0 );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		}
 		
 		if ( (paintModes & VG_STROKE_PATH) && _strokeVBO != -1 ) {
 			// draw
 			IContext::instance().stroke();
-			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-			glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-			glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
-			glBindBuffer( GL_ARRAY_BUFFER, 0 );			
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
+			GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
+			GL->glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );			
 		}
 		
 		glContext.endRender();
@@ -862,14 +862,14 @@ namespace MonkVG {
 		// TODO: BUGBUG: if in batch mode don't build the VBO!
 		if ( _vertices.size() > 0 ) {
 			if ( _fillVBO != -1 ) {
-				glDeleteBuffers( 1, &_fillVBO );
+				GL->glDeleteBuffers( 1, &_fillVBO );
 				_fillVBO = -1;
 			}
 			
-			glGenBuffers( 1, &_fillVBO );
-			glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
+			GL->glGenBuffers( 1, &_fillVBO );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
 			if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-				glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
+				GL->glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
 			} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 				vector<textured_vertex_t> texturedVertices;
 				for ( vector<float>::const_iterator it = _vertices.begin(); it != _vertices.end(); it++ ) {
@@ -883,7 +883,7 @@ namespace MonkVG {
 					texturedVertices.push_back( v );
 				}
 				
-				glBufferData( GL_ARRAY_BUFFER, texturedVertices.size() * sizeof(textured_vertex_t), &texturedVertices[0], GL_STATIC_DRAW );
+				GL->glBufferData( GL_ARRAY_BUFFER, texturedVertices.size() * sizeof(textured_vertex_t), &texturedVertices[0], GL_STATIC_DRAW );
 				
 				texturedVertices.clear();
 				
@@ -900,13 +900,13 @@ namespace MonkVG {
 		if ( _strokeVertices.size() > 0 ) {
 			// build the vertex buffer object VBO
 			if ( _strokeVBO != -1 ) {
-				glDeleteBuffers( 1, &_strokeVBO );
+				GL->glDeleteBuffers( 1, &_strokeVBO );
 				_strokeVBO = -1;
 			}
 			
-			glGenBuffers( 1, &_strokeVBO );
-			glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-			glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
+			GL->glGenBuffers( 1, &_strokeVBO );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
+			GL->glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
 			_numberStrokeVertices = _strokeVertices.size();
 
 		}
@@ -1043,7 +1043,7 @@ namespace MonkVG {
 			_fillTesseleator = 0;
 		}
 		
-		glDeleteBuffers( 1, &_fillVBO );
+		GL->glDeleteBuffers( 1, &_fillVBO );
 	}
 	
 }

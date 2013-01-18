@@ -13,8 +13,10 @@ using namespace MonkVG;
 
 //static VGContext *g_context = NULL;
 
-VG_API_CALL VGboolean vgCreateContextSH(VGint width, VGint height)
+VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height, VGRenderingBackendTypeMNK backend )
 {
+    IContext::instance().setRenderingBackendType( backend );
+    
 	IContext::instance().Initialize();
 
 	IContext::instance().setWidth( width );
@@ -24,7 +26,7 @@ VG_API_CALL VGboolean vgCreateContextSH(VGint width, VGint height)
 	return VG_TRUE;
 }
 
-VG_API_CALL void vgResizeSurfaceSH(VGint width, VGint height)
+VG_API_CALL void vgResizeSurfaceMNK(VGint width, VGint height)
 {
 	IContext::instance().setWidth( width );
 	IContext::instance().setHeight( height );
@@ -32,7 +34,7 @@ VG_API_CALL void vgResizeSurfaceSH(VGint width, VGint height)
 
 }
 
-VG_API_CALL void vgDestroyContextSH()
+VG_API_CALL void vgDestroyContext()
 {
 }
 

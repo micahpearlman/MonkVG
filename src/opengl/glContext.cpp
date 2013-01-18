@@ -74,28 +74,37 @@ namespace MonkVG {
 	bool OpenGLContext::Initialize() {
 	
 		CHECK_GL_ERROR;
+        
+        // create the gl backend context dependent on user selected backend
+        if ( getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES11 ) {
+            _gl = new OpenGLES::OpenGLES1::OpenGLES11Context();
+        } else if ( getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES20 ) {
+            _gl = new OpenGLES::OpenGLES2::OpenGLES20Context();
+        } else {    // error
+            MK_ASSERT( !"ERROR: No OpenGL rendering backend selected" );
+        }
 		
 		// get viewport to restore back when we are done
-		glGetIntegerv( GL_VIEWPORT, _viewport );
-		glGetFloatv( GL_PROJECTION_MATRIX, _projection );
-		glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+		gl()->glGetIntegerv( GL_VIEWPORT, _viewport );
+		gl()->glGetFloatv( GL_PROJECTION_MATRIX, _projection );
+		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
 		
 		// get the color to back up when we are done
-		glGetFloatv( GL_CURRENT_COLOR, _color );
+		gl()->glGetFloatv( GL_CURRENT_COLOR, _color );
 		
 		resize();
 		
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_TEXTURE_2D);
+		gl()->glDisable(GL_CULL_FACE);
+		gl()->glDisable(GL_TEXTURE_2D);
 		
 		// turn on blending
-		glEnable(GL_BLEND);
-		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	
+		gl()->glEnable(GL_BLEND);
+		gl()->glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		glDisable(GL_TEXTURE_2D);
-		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-		glDisableClientState( GL_COLOR_ARRAY );
-		glEnableClientState( GL_VERTEX_ARRAY );
+		gl()->glDisable(GL_TEXTURE_2D);
+		gl()->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		gl()->glDisableClientState( GL_COLOR_ARRAY );
+		gl()->glEnableClientState( GL_VERTEX_ARRAY );
 		
 		
 		CHECK_GL_ERROR;
@@ -105,16 +114,16 @@ namespace MonkVG {
 	
 	void OpenGLContext::resize() {
 		// setup GL projection 
-		glViewport(0,0, _width, _height);
+		gl()->glViewport(0,0, _width, _height);
 		
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrthof(0, _width,		// left, right
+		gl()->glMatrixMode(GL_PROJECTION);
+		gl()->glLoadIdentity();
+		gl()->glOrthof(0, _width,		// left, right
 				 0, _height,	// top, botton
 				 -1, 1);		// near value, far value (depth)
 		
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+		gl()->glMatrixMode(GL_MODELVIEW);
+		gl()->glLoadIdentity();
 	}
 	
 	
@@ -330,7 +339,7 @@ namespace MonkVG {
 		mat44[0][0] = active.a;	mat44[0][1] = active.b;
 		mat44[1][0] = active.c;	mat44[1][1] = active.d;
 		mat44[3][0] = active.e;	mat44[3][1] = active.f;
-		glLoadMatrixf( &mat44[0][0] );
+		gl()->glLoadMatrixf( &mat44[0][0] );
 		
 	}
 	
@@ -418,10 +427,10 @@ namespace MonkVG {
 		IContext::setImageMode( im );
 		switch ( im ) {
 			case VG_DRAW_IMAGE_NORMAL:
-				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+				gl()->glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 				break;
 			case VG_DRAW_IMAGE_MULTIPLY:
-				glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+				gl()->glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 				break;
 			case VG_DRAW_IMAGE_STENCIL:
 				break;

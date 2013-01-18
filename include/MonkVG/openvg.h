@@ -756,10 +756,6 @@ VG_API_CALL VGHardwareQueryResult VG_API_ENTRY vgHardwareQuery(VGHardwareQueryTy
 /* Renderer and Extension Information */
 VG_API_CALL const VGubyte * VG_API_ENTRY vgGetString(VGStringID name) VG_API_EXIT;
 
-/* context -micah */
-VG_API_CALL VGboolean vgCreateContextSH(VGint width, VGint height);
-VG_API_CALL void vgResizeSurfaceSH(VGint width, VGint height);
-VG_API_CALL void vgDestroyContextSH(void);
 
 #ifdef __cplusplus 
 } /* extern "C" */

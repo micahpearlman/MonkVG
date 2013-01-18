@@ -18,7 +18,7 @@ namespace MonkVG {
 	{}
 	OpenGLBatch::~OpenGLBatch() {
 		if ( _vbo != -1 ) {
-			glDeleteBuffers( 1, &_vbo );
+			GL->glDeleteBuffers( 1, &_vbo );
 			_vbo = -1;
 		}
 	}
@@ -106,9 +106,9 @@ namespace MonkVG {
 			_vbo = -1;
 		}
 		
-		glGenBuffers( 1, &_vbo );
-		glBindBuffer( GL_ARRAY_BUFFER, _vbo );
-		glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(vertex_t), &_vertices[0], GL_STATIC_DRAW );
+		GL->glGenBuffers( 1, &_vbo );
+		GL->glBindBuffer( GL_ARRAY_BUFFER, _vbo );
+		GL->glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(vertex_t), &_vertices[0], GL_STATIC_DRAW );
 		_vertexCount = _vertices.size();
 		_vertices.clear();
 		
@@ -119,17 +119,17 @@ namespace MonkVG {
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
 		glContext.beginRender();
 
-		glDisable( GL_TEXTURE_2D );
-		glEnableClientState( GL_VERTEX_ARRAY );
-		glEnableClientState( GL_COLOR_ARRAY );
-		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		GL->glDisable( GL_TEXTURE_2D );
+		GL->glEnableClientState( GL_VERTEX_ARRAY );
+		GL->glEnableClientState( GL_COLOR_ARRAY );
+		GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 		// draw
-		glBindBuffer( GL_ARRAY_BUFFER, _vbo );
-		glVertexPointer( 2, GL_FLOAT, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, v) );
-		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, color) );
-		glDrawArrays( GL_TRIANGLES, 0, _vertexCount );
-		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		GL->glBindBuffer( GL_ARRAY_BUFFER, _vbo );
+		GL->glVertexPointer( 2, GL_FLOAT, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, v) );
+		GL->glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, color) );
+		GL->glDrawArrays( GL_TRIANGLES, 0, _vertexCount );
+		GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		
 		glContext.endRender();
 

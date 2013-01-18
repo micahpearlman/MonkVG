@@ -10,40 +10,42 @@
 #define MonkVG_iOS_glPlatform_h
 
 #if defined(__APPLE__)
-#include "TargetConditionals.h"
-#if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-#include "glu.h"
-#else
-#include <OpenGL/glu.h>
-#define glOrthof glOrtho
-#endif
+
+    #include "TargetConditionals.h"
+    #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+        #include "glu.h"
+    #else   // OSX
+        #include <OpenGL/glu.h>
+        #define glOrthof glOrtho
+    #endif
+
 #elif ANDROID
-#include "glu.h"
+
+    #include "glu.h"
+
 #elif WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <stdint.h>
-#include <GL/glew.h>
-//#include <GL/freeglut.h>
-#pragma comment(lib,"glew32.lib")
-//#include <gl\gl.h>		// Header File For The OpenGL32 Library
-//#include <gl\glu.h>		// Header File For The GLu32 Library	
+
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
+    #include <stdint.h>
+    #include <GL/glew.h>
+    #pragma comment(lib,"glew32.lib")
 
 #elif __linux__
 
-#define GL_GLEXT_PROTOTYPES 1
+    #define GL_GLEXT_PROTOTYPES 1
+    #include <sys/types.h>
+    #include <stdlib.h>
+    #include <GL/glew.h>
+    #define glOrthof glOrthofOES
+    #include <GL/gl.h>
+    #include <GL/glext.h>
+    #include <GL/glu.h>
 
-#include <sys/types.h>
-#include <stdlib.h>
-#include <GL/glew.h>
-#define glOrthof glOrthofOES
-#include <GL/gl.h>
-#include <GL/glext.h>
-#include <GL/glu.h>
 #endif // #if defined(__APPLE__)
 
 #ifndef APIENTRY
-#define APIENTRY
+    #define APIENTRY
 #endif // APIENTRY
 
 #endif

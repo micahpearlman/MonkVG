@@ -12,8 +12,13 @@
 
 #include "mkContext.h"
 #include "glPlatform.h"
+#include "OpenGLES11Context.h"
+#include "OpenGLES20Context.h"
+
 
 namespace MonkVG {
+    
+#define GL (((OpenGLContext*)&IContext::instance())->gl())
 	
 	// todo: setup debug and release versions
 	//#define CHECK_GL_ERROR OpenGLContext::checkGLError()
@@ -84,7 +89,10 @@ namespace MonkVG {
 		
 		/// image
 		virtual void setImageMode( VGImageMode im );
-
+        
+        
+        OpenGLES::OpenGLESContext* getGLESBackendContext() { return _gl; }
+        OpenGLES::OpenGLESContext* gl() { return getGLESBackendContext(); }
 
 	private:
 		
@@ -93,6 +101,9 @@ namespace MonkVG {
 		float	_projection[16];
 		float	_modelview[16];
 		float	_color[4];
+        
+        // the gl context
+        OpenGLES::OpenGLESContext*  _gl;
 	};
 }
 

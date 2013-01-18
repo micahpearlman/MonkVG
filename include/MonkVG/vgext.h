@@ -62,6 +62,12 @@ extern "C" {
 		VG_TESSELLATION_ITERATIONS_MNK	= 0x1170,
 		VG_PARAM_TYPE_MNK_FORCE_SIZE	= VG_MAX_ENUM
 	} VGParamTypeMNK;
+    
+    typedef enum {
+        VG_RENDERING_BACKEND_TYPE_OPENGLES11              = 0,
+        VG_RENDERING_BACKEND_TYPE_OPENGLES20              = 1,
+        VG_RENDERING_BACKEND_TYPE_FORCE_SIZE              = VG_MAX_ENUM
+    } VGRenderingBackendTypeMNK;
 	
 	/* batches are a method for significantly speeding up rendering of collections of static paths
 	 */
@@ -73,7 +79,11 @@ extern "C" {
 	VG_API_CALL void VG_API_ENTRY vgEndBatchMNK( VGBatchMNK batch ) VG_API_EXIT;
 	VG_API_CALL void VG_API_ENTRY vgDrawBatchMNK( VGBatchMNK batch ) VG_API_EXIT;
   
-	
+	/* context MonkVG */
+    VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height, VGRenderingBackendTypeMNK backend );
+    VG_API_CALL void vgResizeSurfaceMNK( VGint width, VGint height );
+    VG_API_CALL void vgDestroyContextMNK( void );
+
 
 #ifdef __cplusplus 
 } /* extern "C" */

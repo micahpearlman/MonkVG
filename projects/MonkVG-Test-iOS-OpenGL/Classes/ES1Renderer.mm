@@ -53,8 +53,8 @@ map<VGuint, GlyphDescription>	_glyphs;
         glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);
         glFramebufferRenderbufferOES(GL_FRAMEBUFFER_OES, GL_COLOR_ATTACHMENT0_OES, GL_RENDERBUFFER_OES, colorRenderbuffer);
 		
-		// setup the OpenVG context
-		vgCreateContextSH( 320, 480 );
+		// setup the OpenVG context with a OpenGL ES 1.1 rendering backend
+		vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
 		
 		// create a paint
 		_paint = vgCreatePaint();
@@ -217,7 +217,7 @@ map<VGuint, GlyphDescription>	_glyphs;
         return NO;
     }
 	
-	vgResizeSurfaceSH( backingWidth, backingHeight );
+	vgResizeSurfaceMNK( backingWidth, backingHeight );
 
     return YES;
 }

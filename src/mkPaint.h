@@ -60,7 +60,7 @@ namespace MonkVG {
 		VGfloat					_paintRadialGradient[5];
 		VGfloat					_paint2x3Gradient[6];
 		VGTilingMode			_patternTilingMode;
-		//	Image*					m_pattern;
+
 		struct Stop_t {
 			VGfloat a[5];
 		};
