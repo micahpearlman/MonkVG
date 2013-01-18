@@ -24,6 +24,63 @@
 		FAA5DB8713BBB00F00326F9D /* mkFont.h in Headers */ = {isa = PBXBuildFile; fileRef = FAA5DB8513BBB00F00326F9D /* mkFont.h */; };
 		FAA5DB8A13BBB1EE00326F9D /* glFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FAA5DB8813BBB1EE00326F9D /* glFont.cpp */; };
 		FAA5DB8B13BBB1EE00326F9D /* glFont.h in Headers */ = {isa = PBXBuildFile; fileRef = FAA5DB8913BBB1EE00326F9D /* glFont.h */; };
+		FACCFE1916A8D31700A0E7D9 /* OpenGLES11Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDD816A8D31700A0E7D9 /* OpenGLES11Context.cpp */; };
+		FACCFE1A16A8D31700A0E7D9 /* OpenGLES11Context.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDD916A8D31700A0E7D9 /* OpenGLES11Context.h */; };
+		FACCFE1B16A8D31700A0E7D9 /* OpenGLES11Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDDA16A8D31700A0E7D9 /* OpenGLES11Implementation.cpp */; };
+		FACCFE1C16A8D31700A0E7D9 /* OpenGLES11Implementation.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDDB16A8D31700A0E7D9 /* OpenGLES11Implementation.h */; };
+		FACCFE1D16A8D31700A0E7D9 /* Attribute.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDDD16A8D31700A0E7D9 /* Attribute.cpp */; };
+		FACCFE1E16A8D31700A0E7D9 /* Attribute.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDDE16A8D31700A0E7D9 /* Attribute.h */; };
+		FACCFE1F16A8D31700A0E7D9 /* MatrixStack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDDF16A8D31700A0E7D9 /* MatrixStack.cpp */; };
+		FACCFE2016A8D31700A0E7D9 /* MatrixStack.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDE016A8D31700A0E7D9 /* MatrixStack.h */; };
+		FACCFE2116A8D31700A0E7D9 /* OpenGLES20Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDE116A8D31700A0E7D9 /* OpenGLES20Context.cpp */; };
+		FACCFE2216A8D31700A0E7D9 /* OpenGLES20Context.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDE216A8D31700A0E7D9 /* OpenGLES20Context.h */; };
+		FACCFE2316A8D31700A0E7D9 /* OpenGLES20Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDE316A8D31700A0E7D9 /* OpenGLES20Implementation.cpp */; };
+		FACCFE2416A8D31700A0E7D9 /* OpenGLES20Implementation.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDE416A8D31700A0E7D9 /* OpenGLES20Implementation.h */; };
+		FACCFE2516A8D31700A0E7D9 /* OpenGLESState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDE516A8D31700A0E7D9 /* OpenGLESState.cpp */; };
+		FACCFE2616A8D31700A0E7D9 /* OpenGLESState.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDE616A8D31700A0E7D9 /* OpenGLESState.h */; };
+		FACCFE2716A8D31700A0E7D9 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDE716A8D31700A0E7D9 /* Shader.cpp */; };
+		FACCFE2816A8D31700A0E7D9 /* Shader.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDE816A8D31700A0E7D9 /* Shader.h */; };
+		FACCFE2916A8D31700A0E7D9 /* ShaderFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDE916A8D31700A0E7D9 /* ShaderFile.cpp */; };
+		FACCFE2A16A8D31700A0E7D9 /* ShaderFile.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDEA16A8D31700A0E7D9 /* ShaderFile.h */; };
+		FACCFE2B16A8D31700A0E7D9 /* ShaderProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDEB16A8D31700A0E7D9 /* ShaderProgram.cpp */; };
+		FACCFE2C16A8D31700A0E7D9 /* ShaderProgram.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFDEC16A8D31700A0E7D9 /* ShaderProgram.h */; };
+		FACCFE2D16A8D31700A0E7D9 /* alphaTest.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDEE16A8D31700A0E7D9 /* alphaTest.frag */; };
+		FACCFE2E16A8D31700A0E7D9 /* clipPlane.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDEF16A8D31700A0E7D9 /* clipPlane.frag */; };
+		FACCFE2F16A8D31700A0E7D9 /* clipPlane.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF016A8D31700A0E7D9 /* clipPlane.vert */; };
+		FACCFE3016A8D31700A0E7D9 /* lighting.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF216A8D31700A0E7D9 /* lighting.frag */; };
+		FACCFE3116A8D31700A0E7D9 /* lighting.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF316A8D31700A0E7D9 /* lighting.vert */; };
+		FACCFE3216A8D31700A0E7D9 /* lightingPerFragment.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF416A8D31700A0E7D9 /* lightingPerFragment.frag */; };
+		FACCFE3316A8D31700A0E7D9 /* lightingPerFragment.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF516A8D31700A0E7D9 /* lightingPerFragment.vert */; };
+		FACCFE3416A8D31700A0E7D9 /* lightingPerVertex.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF616A8D31700A0E7D9 /* lightingPerVertex.vert */; };
+		FACCFE3516A8D31700A0E7D9 /* main.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF716A8D31700A0E7D9 /* main.frag */; };
+		FACCFE3616A8D31700A0E7D9 /* main.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF816A8D31700A0E7D9 /* main.vert */; };
+		FACCFE3716A8D31700A0E7D9 /* postprocess.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDF916A8D31700A0E7D9 /* postprocess.frag */; };
+		FACCFE3816A8D31700A0E7D9 /* postprocess.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDFA16A8D31700A0E7D9 /* postprocess.vert */; };
+		FACCFE3916A8D31700A0E7D9 /* texture.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDFB16A8D31700A0E7D9 /* texture.frag */; };
+		FACCFE3A16A8D31700A0E7D9 /* texture.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDFC16A8D31700A0E7D9 /* texture.vert */; };
+		FACCFE3B16A8D31700A0E7D9 /* texture0.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDFD16A8D31700A0E7D9 /* texture0.frag */; };
+		FACCFE3C16A8D31700A0E7D9 /* texture0.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDFE16A8D31700A0E7D9 /* texture0.vert */; };
+		FACCFE3D16A8D31700A0E7D9 /* texture1.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFDFF16A8D31700A0E7D9 /* texture1.frag */; };
+		FACCFE3E16A8D31700A0E7D9 /* texture1.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0016A8D31700A0E7D9 /* texture1.vert */; };
+		FACCFE3F16A8D31700A0E7D9 /* texture2.frag in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0116A8D31700A0E7D9 /* texture2.frag */; };
+		FACCFE4016A8D31700A0E7D9 /* texture2.vert in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0216A8D31700A0E7D9 /* texture2.vert */; };
+		FACCFE4116A8D31700A0E7D9 /* ShaderSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0316A8D31700A0E7D9 /* ShaderSource.cpp */; };
+		FACCFE4216A8D31700A0E7D9 /* ShaderSource.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE0416A8D31700A0E7D9 /* ShaderSource.h */; };
+		FACCFE4316A8D31700A0E7D9 /* Uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0516A8D31700A0E7D9 /* Uniform.cpp */; };
+		FACCFE4416A8D31700A0E7D9 /* Uniform.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE0616A8D31700A0E7D9 /* Uniform.h */; };
+		FACCFE4516A8D31700A0E7D9 /* OpenGLESConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0716A8D31700A0E7D9 /* OpenGLESConfig.cpp */; };
+		FACCFE4616A8D31700A0E7D9 /* OpenGLESConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE0816A8D31700A0E7D9 /* OpenGLESConfig.h */; };
+		FACCFE4716A8D31700A0E7D9 /* OpenGLESContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0916A8D31700A0E7D9 /* OpenGLESContext.cpp */; };
+		FACCFE4816A8D31700A0E7D9 /* OpenGLESContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE0A16A8D31700A0E7D9 /* OpenGLESContext.h */; };
+		FACCFE4916A8D31700A0E7D9 /* OpenGLESFile.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE0B16A8D31700A0E7D9 /* OpenGLESFile.h */; };
+		FACCFE4A16A8D31700A0E7D9 /* OpenGLESFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0C16A8D31700A0E7D9 /* OpenGLESFile.cpp */; };
+		FACCFE4B16A8D31700A0E7D9 /* OpenGLESImplementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE0D16A8D31700A0E7D9 /* OpenGLESImplementation.cpp */; };
+		FACCFE4C16A8D31700A0E7D9 /* OpenGLESImplementation.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE0E16A8D31700A0E7D9 /* OpenGLESImplementation.h */; };
+		FACCFE4D16A8D31700A0E7D9 /* OpenGLESMath.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE0F16A8D31700A0E7D9 /* OpenGLESMath.h */; };
+		FACCFE4E16A8D31700A0E7D9 /* OpenGLESString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE1016A8D31700A0E7D9 /* OpenGLESString.cpp */; };
+		FACCFE4F16A8D31700A0E7D9 /* OpenGLESString.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE1116A8D31700A0E7D9 /* OpenGLESString.h */; };
+		FACCFE5016A8D31700A0E7D9 /* OpenGLESUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE1216A8D31700A0E7D9 /* OpenGLESUtil.cpp */; };
+		FACCFE5116A8D31700A0E7D9 /* OpenGLESUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE1316A8D31700A0E7D9 /* OpenGLESUtil.h */; };
 		FACFEDCF13BAB0E30045C681 /* mkImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDCD13BAB0E30045C681 /* mkImage.cpp */; };
 		FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDCE13BAB0E30045C681 /* mkImage.h */; };
 		FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDD113BAB2D40045C681 /* glImage.cpp */; };
@@ -145,6 +202,64 @@
 		FAA5DB8513BBB00F00326F9D /* mkFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkFont.h; path = ../../src/mkFont.h; sourceTree = "<group>"; };
 		FAA5DB8813BBB1EE00326F9D /* glFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glFont.cpp; sourceTree = "<group>"; };
 		FAA5DB8913BBB1EE00326F9D /* glFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glFont.h; sourceTree = "<group>"; };
+		FACCFDD816A8D31700A0E7D9 /* OpenGLES11Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES11Context.cpp; sourceTree = "<group>"; };
+		FACCFDD916A8D31700A0E7D9 /* OpenGLES11Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES11Context.h; sourceTree = "<group>"; };
+		FACCFDDA16A8D31700A0E7D9 /* OpenGLES11Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES11Implementation.cpp; sourceTree = "<group>"; };
+		FACCFDDB16A8D31700A0E7D9 /* OpenGLES11Implementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES11Implementation.h; sourceTree = "<group>"; };
+		FACCFDDD16A8D31700A0E7D9 /* Attribute.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Attribute.cpp; sourceTree = "<group>"; };
+		FACCFDDE16A8D31700A0E7D9 /* Attribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Attribute.h; sourceTree = "<group>"; };
+		FACCFDDF16A8D31700A0E7D9 /* MatrixStack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MatrixStack.cpp; sourceTree = "<group>"; };
+		FACCFDE016A8D31700A0E7D9 /* MatrixStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatrixStack.h; sourceTree = "<group>"; };
+		FACCFDE116A8D31700A0E7D9 /* OpenGLES20Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20Context.cpp; sourceTree = "<group>"; };
+		FACCFDE216A8D31700A0E7D9 /* OpenGLES20Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20Context.h; sourceTree = "<group>"; };
+		FACCFDE316A8D31700A0E7D9 /* OpenGLES20Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES20Implementation.cpp; sourceTree = "<group>"; };
+		FACCFDE416A8D31700A0E7D9 /* OpenGLES20Implementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES20Implementation.h; sourceTree = "<group>"; };
+		FACCFDE516A8D31700A0E7D9 /* OpenGLESState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESState.cpp; sourceTree = "<group>"; };
+		FACCFDE616A8D31700A0E7D9 /* OpenGLESState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESState.h; sourceTree = "<group>"; };
+		FACCFDE716A8D31700A0E7D9 /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
+		FACCFDE816A8D31700A0E7D9 /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		FACCFDE916A8D31700A0E7D9 /* ShaderFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderFile.cpp; sourceTree = "<group>"; };
+		FACCFDEA16A8D31700A0E7D9 /* ShaderFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderFile.h; sourceTree = "<group>"; };
+		FACCFDEB16A8D31700A0E7D9 /* ShaderProgram.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderProgram.cpp; sourceTree = "<group>"; };
+		FACCFDEC16A8D31700A0E7D9 /* ShaderProgram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderProgram.h; sourceTree = "<group>"; };
+		FACCFDEE16A8D31700A0E7D9 /* alphaTest.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = alphaTest.frag; sourceTree = "<group>"; };
+		FACCFDEF16A8D31700A0E7D9 /* clipPlane.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = clipPlane.frag; sourceTree = "<group>"; };
+		FACCFDF016A8D31700A0E7D9 /* clipPlane.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = clipPlane.vert; sourceTree = "<group>"; };
+		FACCFDF116A8D31700A0E7D9 /* fog.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fog.glsl; sourceTree = "<group>"; };
+		FACCFDF216A8D31700A0E7D9 /* lighting.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lighting.frag; sourceTree = "<group>"; };
+		FACCFDF316A8D31700A0E7D9 /* lighting.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lighting.vert; sourceTree = "<group>"; };
+		FACCFDF416A8D31700A0E7D9 /* lightingPerFragment.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingPerFragment.frag; sourceTree = "<group>"; };
+		FACCFDF516A8D31700A0E7D9 /* lightingPerFragment.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingPerFragment.vert; sourceTree = "<group>"; };
+		FACCFDF616A8D31700A0E7D9 /* lightingPerVertex.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = lightingPerVertex.vert; sourceTree = "<group>"; };
+		FACCFDF716A8D31700A0E7D9 /* main.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = main.frag; sourceTree = "<group>"; };
+		FACCFDF816A8D31700A0E7D9 /* main.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = main.vert; sourceTree = "<group>"; };
+		FACCFDF916A8D31700A0E7D9 /* postprocess.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = postprocess.frag; sourceTree = "<group>"; };
+		FACCFDFA16A8D31700A0E7D9 /* postprocess.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = postprocess.vert; sourceTree = "<group>"; };
+		FACCFDFB16A8D31700A0E7D9 /* texture.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture.frag; sourceTree = "<group>"; };
+		FACCFDFC16A8D31700A0E7D9 /* texture.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture.vert; sourceTree = "<group>"; };
+		FACCFDFD16A8D31700A0E7D9 /* texture0.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture0.frag; sourceTree = "<group>"; };
+		FACCFDFE16A8D31700A0E7D9 /* texture0.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture0.vert; sourceTree = "<group>"; };
+		FACCFDFF16A8D31700A0E7D9 /* texture1.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture1.frag; sourceTree = "<group>"; };
+		FACCFE0016A8D31700A0E7D9 /* texture1.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture1.vert; sourceTree = "<group>"; };
+		FACCFE0116A8D31700A0E7D9 /* texture2.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture2.frag; sourceTree = "<group>"; };
+		FACCFE0216A8D31700A0E7D9 /* texture2.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = texture2.vert; sourceTree = "<group>"; };
+		FACCFE0316A8D31700A0E7D9 /* ShaderSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderSource.cpp; sourceTree = "<group>"; };
+		FACCFE0416A8D31700A0E7D9 /* ShaderSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderSource.h; sourceTree = "<group>"; };
+		FACCFE0516A8D31700A0E7D9 /* Uniform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Uniform.cpp; sourceTree = "<group>"; };
+		FACCFE0616A8D31700A0E7D9 /* Uniform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Uniform.h; sourceTree = "<group>"; };
+		FACCFE0716A8D31700A0E7D9 /* OpenGLESConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESConfig.cpp; sourceTree = "<group>"; };
+		FACCFE0816A8D31700A0E7D9 /* OpenGLESConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESConfig.h; sourceTree = "<group>"; };
+		FACCFE0916A8D31700A0E7D9 /* OpenGLESContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESContext.cpp; sourceTree = "<group>"; };
+		FACCFE0A16A8D31700A0E7D9 /* OpenGLESContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESContext.h; sourceTree = "<group>"; };
+		FACCFE0B16A8D31700A0E7D9 /* OpenGLESFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESFile.h; sourceTree = "<group>"; };
+		FACCFE0C16A8D31700A0E7D9 /* OpenGLESFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESFile.cpp; sourceTree = "<group>"; };
+		FACCFE0D16A8D31700A0E7D9 /* OpenGLESImplementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESImplementation.cpp; sourceTree = "<group>"; };
+		FACCFE0E16A8D31700A0E7D9 /* OpenGLESImplementation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESImplementation.h; sourceTree = "<group>"; };
+		FACCFE0F16A8D31700A0E7D9 /* OpenGLESMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESMath.h; sourceTree = "<group>"; };
+		FACCFE1016A8D31700A0E7D9 /* OpenGLESString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESString.cpp; sourceTree = "<group>"; };
+		FACCFE1116A8D31700A0E7D9 /* OpenGLESString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESString.h; sourceTree = "<group>"; };
+		FACCFE1216A8D31700A0E7D9 /* OpenGLESUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESUtil.cpp; sourceTree = "<group>"; };
+		FACCFE1316A8D31700A0E7D9 /* OpenGLESUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESUtil.h; sourceTree = "<group>"; };
 		FACFEDCD13BAB0E30045C681 /* mkImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkImage.cpp; path = ../../src/mkImage.cpp; sourceTree = "<group>"; };
 		FACFEDCE13BAB0E30045C681 /* mkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkImage.h; path = ../../src/mkImage.h; sourceTree = "<group>"; };
 		FACFEDD113BAB2D40045C681 /* glImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glImage.cpp; sourceTree = "<group>"; };
@@ -176,6 +291,7 @@
 		0867D691FE84028FC02AAC07 /* MonkVG-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				FACCFDC916A8D2DC00A0E7D9 /* ThirdParty */,
 				FA9ACC93121A088200814394 /* Source */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
 				034768DFFF38A50411DB9C8B /* Products */,
@@ -327,6 +443,120 @@
 			path = libutil;
 			sourceTree = "<group>";
 		};
+		FACCFDC916A8D2DC00A0E7D9 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFDCA16A8D31700A0E7D9 /* gles2-bc */,
+			);
+			name = ThirdParty;
+			sourceTree = "<group>";
+		};
+		FACCFDCA16A8D31700A0E7D9 /* gles2-bc */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFDD516A8D31700A0E7D9 /* Sources */,
+			);
+			name = "gles2-bc";
+			path = "../../thirdparty/gles2-bc";
+			sourceTree = "<group>";
+		};
+		FACCFDD516A8D31700A0E7D9 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFDD616A8D31700A0E7D9 /* OpenGLES */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		FACCFDD616A8D31700A0E7D9 /* OpenGLES */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFDD716A8D31700A0E7D9 /* OpenGLES11 */,
+				FACCFDDC16A8D31700A0E7D9 /* OpenGLES20 */,
+				FACCFE0716A8D31700A0E7D9 /* OpenGLESConfig.cpp */,
+				FACCFE0816A8D31700A0E7D9 /* OpenGLESConfig.h */,
+				FACCFE0916A8D31700A0E7D9 /* OpenGLESContext.cpp */,
+				FACCFE0A16A8D31700A0E7D9 /* OpenGLESContext.h */,
+				FACCFE0B16A8D31700A0E7D9 /* OpenGLESFile.h */,
+				FACCFE0C16A8D31700A0E7D9 /* OpenGLESFile.cpp */,
+				FACCFE0D16A8D31700A0E7D9 /* OpenGLESImplementation.cpp */,
+				FACCFE0E16A8D31700A0E7D9 /* OpenGLESImplementation.h */,
+				FACCFE0F16A8D31700A0E7D9 /* OpenGLESMath.h */,
+				FACCFE1016A8D31700A0E7D9 /* OpenGLESString.cpp */,
+				FACCFE1116A8D31700A0E7D9 /* OpenGLESString.h */,
+				FACCFE1216A8D31700A0E7D9 /* OpenGLESUtil.cpp */,
+				FACCFE1316A8D31700A0E7D9 /* OpenGLESUtil.h */,
+			);
+			path = OpenGLES;
+			sourceTree = "<group>";
+		};
+		FACCFDD716A8D31700A0E7D9 /* OpenGLES11 */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFDD816A8D31700A0E7D9 /* OpenGLES11Context.cpp */,
+				FACCFDD916A8D31700A0E7D9 /* OpenGLES11Context.h */,
+				FACCFDDA16A8D31700A0E7D9 /* OpenGLES11Implementation.cpp */,
+				FACCFDDB16A8D31700A0E7D9 /* OpenGLES11Implementation.h */,
+			);
+			path = OpenGLES11;
+			sourceTree = "<group>";
+		};
+		FACCFDDC16A8D31700A0E7D9 /* OpenGLES20 */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFDDD16A8D31700A0E7D9 /* Attribute.cpp */,
+				FACCFDDE16A8D31700A0E7D9 /* Attribute.h */,
+				FACCFDDF16A8D31700A0E7D9 /* MatrixStack.cpp */,
+				FACCFDE016A8D31700A0E7D9 /* MatrixStack.h */,
+				FACCFDE116A8D31700A0E7D9 /* OpenGLES20Context.cpp */,
+				FACCFDE216A8D31700A0E7D9 /* OpenGLES20Context.h */,
+				FACCFDE316A8D31700A0E7D9 /* OpenGLES20Implementation.cpp */,
+				FACCFDE416A8D31700A0E7D9 /* OpenGLES20Implementation.h */,
+				FACCFDE516A8D31700A0E7D9 /* OpenGLESState.cpp */,
+				FACCFDE616A8D31700A0E7D9 /* OpenGLESState.h */,
+				FACCFDE716A8D31700A0E7D9 /* Shader.cpp */,
+				FACCFDE816A8D31700A0E7D9 /* Shader.h */,
+				FACCFDE916A8D31700A0E7D9 /* ShaderFile.cpp */,
+				FACCFDEA16A8D31700A0E7D9 /* ShaderFile.h */,
+				FACCFDEB16A8D31700A0E7D9 /* ShaderProgram.cpp */,
+				FACCFDEC16A8D31700A0E7D9 /* ShaderProgram.h */,
+				FACCFDED16A8D31700A0E7D9 /* shaders */,
+				FACCFE0316A8D31700A0E7D9 /* ShaderSource.cpp */,
+				FACCFE0416A8D31700A0E7D9 /* ShaderSource.h */,
+				FACCFE0516A8D31700A0E7D9 /* Uniform.cpp */,
+				FACCFE0616A8D31700A0E7D9 /* Uniform.h */,
+			);
+			path = OpenGLES20;
+			sourceTree = "<group>";
+		};
+		FACCFDED16A8D31700A0E7D9 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFDEE16A8D31700A0E7D9 /* alphaTest.frag */,
+				FACCFDEF16A8D31700A0E7D9 /* clipPlane.frag */,
+				FACCFDF016A8D31700A0E7D9 /* clipPlane.vert */,
+				FACCFDF116A8D31700A0E7D9 /* fog.glsl */,
+				FACCFDF216A8D31700A0E7D9 /* lighting.frag */,
+				FACCFDF316A8D31700A0E7D9 /* lighting.vert */,
+				FACCFDF416A8D31700A0E7D9 /* lightingPerFragment.frag */,
+				FACCFDF516A8D31700A0E7D9 /* lightingPerFragment.vert */,
+				FACCFDF616A8D31700A0E7D9 /* lightingPerVertex.vert */,
+				FACCFDF716A8D31700A0E7D9 /* main.frag */,
+				FACCFDF816A8D31700A0E7D9 /* main.vert */,
+				FACCFDF916A8D31700A0E7D9 /* postprocess.frag */,
+				FACCFDFA16A8D31700A0E7D9 /* postprocess.vert */,
+				FACCFDFB16A8D31700A0E7D9 /* texture.frag */,
+				FACCFDFC16A8D31700A0E7D9 /* texture.vert */,
+				FACCFDFD16A8D31700A0E7D9 /* texture0.frag */,
+				FACCFDFE16A8D31700A0E7D9 /* texture0.vert */,
+				FACCFDFF16A8D31700A0E7D9 /* texture1.frag */,
+				FACCFE0016A8D31700A0E7D9 /* texture1.vert */,
+				FACCFE0116A8D31700A0E7D9 /* texture2.frag */,
+				FACCFE0216A8D31700A0E7D9 /* texture2.vert */,
+			);
+			path = shaders;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -370,6 +600,25 @@
 				FAA5DB8713BBB00F00326F9D /* mkFont.h in Headers */,
 				FAA5DB8B13BBB1EE00326F9D /* glFont.h in Headers */,
 				FA34EB4B13EDC98C006F9CA4 /* glPlatform.h in Headers */,
+				FACCFE1A16A8D31700A0E7D9 /* OpenGLES11Context.h in Headers */,
+				FACCFE1C16A8D31700A0E7D9 /* OpenGLES11Implementation.h in Headers */,
+				FACCFE1E16A8D31700A0E7D9 /* Attribute.h in Headers */,
+				FACCFE2016A8D31700A0E7D9 /* MatrixStack.h in Headers */,
+				FACCFE2216A8D31700A0E7D9 /* OpenGLES20Context.h in Headers */,
+				FACCFE2416A8D31700A0E7D9 /* OpenGLES20Implementation.h in Headers */,
+				FACCFE2616A8D31700A0E7D9 /* OpenGLESState.h in Headers */,
+				FACCFE2816A8D31700A0E7D9 /* Shader.h in Headers */,
+				FACCFE2A16A8D31700A0E7D9 /* ShaderFile.h in Headers */,
+				FACCFE2C16A8D31700A0E7D9 /* ShaderProgram.h in Headers */,
+				FACCFE4216A8D31700A0E7D9 /* ShaderSource.h in Headers */,
+				FACCFE4416A8D31700A0E7D9 /* Uniform.h in Headers */,
+				FACCFE4616A8D31700A0E7D9 /* OpenGLESConfig.h in Headers */,
+				FACCFE4816A8D31700A0E7D9 /* OpenGLESContext.h in Headers */,
+				FACCFE4916A8D31700A0E7D9 /* OpenGLESFile.h in Headers */,
+				FACCFE4C16A8D31700A0E7D9 /* OpenGLESImplementation.h in Headers */,
+				FACCFE4D16A8D31700A0E7D9 /* OpenGLESMath.h in Headers */,
+				FACCFE4F16A8D31700A0E7D9 /* OpenGLESString.h in Headers */,
+				FACCFE5116A8D31700A0E7D9 /* OpenGLESUtil.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +705,44 @@
 				FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */,
 				FAA5DB8613BBB00F00326F9D /* mkFont.cpp in Sources */,
 				FAA5DB8A13BBB1EE00326F9D /* glFont.cpp in Sources */,
+				FACCFE1916A8D31700A0E7D9 /* OpenGLES11Context.cpp in Sources */,
+				FACCFE1B16A8D31700A0E7D9 /* OpenGLES11Implementation.cpp in Sources */,
+				FACCFE1D16A8D31700A0E7D9 /* Attribute.cpp in Sources */,
+				FACCFE1F16A8D31700A0E7D9 /* MatrixStack.cpp in Sources */,
+				FACCFE2116A8D31700A0E7D9 /* OpenGLES20Context.cpp in Sources */,
+				FACCFE2316A8D31700A0E7D9 /* OpenGLES20Implementation.cpp in Sources */,
+				FACCFE2516A8D31700A0E7D9 /* OpenGLESState.cpp in Sources */,
+				FACCFE2716A8D31700A0E7D9 /* Shader.cpp in Sources */,
+				FACCFE2916A8D31700A0E7D9 /* ShaderFile.cpp in Sources */,
+				FACCFE2B16A8D31700A0E7D9 /* ShaderProgram.cpp in Sources */,
+				FACCFE2D16A8D31700A0E7D9 /* alphaTest.frag in Sources */,
+				FACCFE2E16A8D31700A0E7D9 /* clipPlane.frag in Sources */,
+				FACCFE2F16A8D31700A0E7D9 /* clipPlane.vert in Sources */,
+				FACCFE3016A8D31700A0E7D9 /* lighting.frag in Sources */,
+				FACCFE3116A8D31700A0E7D9 /* lighting.vert in Sources */,
+				FACCFE3216A8D31700A0E7D9 /* lightingPerFragment.frag in Sources */,
+				FACCFE3316A8D31700A0E7D9 /* lightingPerFragment.vert in Sources */,
+				FACCFE3416A8D31700A0E7D9 /* lightingPerVertex.vert in Sources */,
+				FACCFE3516A8D31700A0E7D9 /* main.frag in Sources */,
+				FACCFE3616A8D31700A0E7D9 /* main.vert in Sources */,
+				FACCFE3716A8D31700A0E7D9 /* postprocess.frag in Sources */,
+				FACCFE3816A8D31700A0E7D9 /* postprocess.vert in Sources */,
+				FACCFE3916A8D31700A0E7D9 /* texture.frag in Sources */,
+				FACCFE3A16A8D31700A0E7D9 /* texture.vert in Sources */,
+				FACCFE3B16A8D31700A0E7D9 /* texture0.frag in Sources */,
+				FACCFE3C16A8D31700A0E7D9 /* texture0.vert in Sources */,
+				FACCFE3D16A8D31700A0E7D9 /* texture1.frag in Sources */,
+				FACCFE3E16A8D31700A0E7D9 /* texture1.vert in Sources */,
+				FACCFE3F16A8D31700A0E7D9 /* texture2.frag in Sources */,
+				FACCFE4016A8D31700A0E7D9 /* texture2.vert in Sources */,
+				FACCFE4116A8D31700A0E7D9 /* ShaderSource.cpp in Sources */,
+				FACCFE4316A8D31700A0E7D9 /* Uniform.cpp in Sources */,
+				FACCFE4516A8D31700A0E7D9 /* OpenGLESConfig.cpp in Sources */,
+				FACCFE4716A8D31700A0E7D9 /* OpenGLESContext.cpp in Sources */,
+				FACCFE4A16A8D31700A0E7D9 /* OpenGLESFile.cpp in Sources */,
+				FACCFE4B16A8D31700A0E7D9 /* OpenGLESImplementation.cpp in Sources */,
+				FACCFE4E16A8D31700A0E7D9 /* OpenGLESString.cpp in Sources */,
+				FACCFE5016A8D31700A0E7D9 /* OpenGLESUtil.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

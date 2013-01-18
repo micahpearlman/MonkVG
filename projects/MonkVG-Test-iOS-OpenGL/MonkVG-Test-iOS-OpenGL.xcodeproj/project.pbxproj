@@ -143,7 +143,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				FACFEDD913BAC5A70045C681 /* CoreGraphics.framework */,
 				FAE28301121A095500823BCB /* MonkVG-iOS.xcodeproj */,
 				FAB144731214867E004DF07F /* tiger */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -186,6 +185,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FACFEDD913BAC5A70045C681 /* CoreGraphics.framework */,
 				28FD15070DC6FC5B0079059D /* QuartzCore.framework */,
 				28FD14FF0DC6FC520079059D /* OpenGLES.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
