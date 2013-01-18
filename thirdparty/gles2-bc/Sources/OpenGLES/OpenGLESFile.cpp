@@ -18,6 +18,9 @@
 #include "Util.h"
 #include <stdio.h>
 
+#include "all_shaders.h"
+
+#include "fmemopen.h"   // BUGBUG: you're platform shoud support this somehow
 
 using namespace OpenGLES;
 
@@ -25,12 +28,26 @@ std::string OpenGLESFile::rootPath( "/" );
 
 OpenGLESFile::OpenGLESFile(std::string n) : name()
 {
+    // see if this is actually compiled into source as a header
+    for ( int i = 0; i < SHADERMAP_CNT; i++) {
+        if ( shaders[i].name == n ) {
+            name = n;
+            inMemoryIdx = i;
+            return;     // found it in memory 
+        }
+    }
+    inMemoryIdx = -1; // not in memory, just a plain old file
 	name = OpenGLESFile::rootPath + n;
 }
 
 bool OpenGLESFile::open() 
 {
-	fp = fopen(name.c_str(), "r");
+    if ( inMemoryIdx != -1 ) {  // read from memory
+        fp = fmemopen(shaders[inMemoryIdx].shader, shaders[inMemoryIdx].len, "r");
+    } else {
+        fp = fopen(name.c_str(), "r");
+    }
+	
 	return fp;
 }
 

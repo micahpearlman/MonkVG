@@ -81,6 +81,29 @@
 		FACCFE4F16A8D31700A0E7D9 /* OpenGLESString.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE1116A8D31700A0E7D9 /* OpenGLESString.h */; };
 		FACCFE5016A8D31700A0E7D9 /* OpenGLESUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACCFE1216A8D31700A0E7D9 /* OpenGLESUtil.cpp */; };
 		FACCFE5116A8D31700A0E7D9 /* OpenGLESUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE1316A8D31700A0E7D9 /* OpenGLESUtil.h */; };
+		FACCFE5D16A8DC2800A0E7D9 /* clipPlane.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5316A8DC2700A0E7D9 /* clipPlane.vert.h */; };
+		FACCFE5E16A8DC2800A0E7D9 /* lighting.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5416A8DC2700A0E7D9 /* lighting.vert.h */; };
+		FACCFE5F16A8DC2800A0E7D9 /* lightingPerFragment.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5516A8DC2700A0E7D9 /* lightingPerFragment.vert.h */; };
+		FACCFE6016A8DC2800A0E7D9 /* lightingPerVertex.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5616A8DC2700A0E7D9 /* lightingPerVertex.vert.h */; };
+		FACCFE6116A8DC2800A0E7D9 /* main.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5716A8DC2700A0E7D9 /* main.vert.h */; };
+		FACCFE6216A8DC2800A0E7D9 /* postprocess.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5816A8DC2700A0E7D9 /* postprocess.vert.h */; };
+		FACCFE6316A8DC2800A0E7D9 /* texture.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5916A8DC2700A0E7D9 /* texture.vert.h */; };
+		FACCFE6416A8DC2800A0E7D9 /* texture0.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5A16A8DC2700A0E7D9 /* texture0.vert.h */; };
+		FACCFE6516A8DC2800A0E7D9 /* texture1.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5B16A8DC2700A0E7D9 /* texture1.vert.h */; };
+		FACCFE6616A8DC2800A0E7D9 /* texture2.vert.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE5C16A8DC2800A0E7D9 /* texture2.vert.h */; };
+		FACCFE7216A8DD4500A0E7D9 /* alphaTest.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6816A8DD4300A0E7D9 /* alphaTest.frag.h */; };
+		FACCFE7316A8DD4500A0E7D9 /* clipPlane.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6916A8DD4300A0E7D9 /* clipPlane.frag.h */; };
+		FACCFE7416A8DD4500A0E7D9 /* lighting.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6A16A8DD4300A0E7D9 /* lighting.frag.h */; };
+		FACCFE7516A8DD4500A0E7D9 /* lightingPerFragment.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6B16A8DD4300A0E7D9 /* lightingPerFragment.frag.h */; };
+		FACCFE7616A8DD4500A0E7D9 /* main.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6C16A8DD4400A0E7D9 /* main.frag.h */; };
+		FACCFE7716A8DD4500A0E7D9 /* postprocess.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6D16A8DD4400A0E7D9 /* postprocess.frag.h */; };
+		FACCFE7816A8DD4500A0E7D9 /* texture.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6E16A8DD4400A0E7D9 /* texture.frag.h */; };
+		FACCFE7916A8DD4500A0E7D9 /* texture0.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE6F16A8DD4500A0E7D9 /* texture0.frag.h */; };
+		FACCFE7A16A8DD4500A0E7D9 /* texture1.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE7016A8DD4500A0E7D9 /* texture1.frag.h */; };
+		FACCFE7B16A8DD4500A0E7D9 /* texture2.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE7116A8DD4500A0E7D9 /* texture2.frag.h */; };
+		FACCFECF16A8DE0000A0E7D9 /* all_shaders.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFECE16A8DE0000A0E7D9 /* all_shaders.h */; };
+		FACCFED416A8ECFC00A0E7D9 /* fmemopen.c in Sources */ = {isa = PBXBuildFile; fileRef = FACCFED116A8ECFC00A0E7D9 /* fmemopen.c */; };
+		FACCFED516A8ECFC00A0E7D9 /* fmemopen.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFED216A8ECFC00A0E7D9 /* fmemopen.h */; };
 		FACFEDCF13BAB0E30045C681 /* mkImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDCD13BAB0E30045C681 /* mkImage.cpp */; };
 		FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDCE13BAB0E30045C681 /* mkImage.h */; };
 		FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDD113BAB2D40045C681 /* glImage.cpp */; };
@@ -133,6 +156,31 @@
 		FAE282E0121A08BB00823BCB /* glPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCCB121A088200814394 /* glPath.cpp */; };
 		FAE282E5121A08BB00823BCB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AACBBE490F95108600F1A2B1 /* Foundation.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		FACCFE5216A8D9D800A0E7D9 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.vert";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_PATH).h",
+			);
+			script = "cd ${INPUT_FILE_DIR}\nxxd -i ${INPUT_FILE_NAME} | sed s/}\\;/,0x00}\\;/ > ${INPUT_FILE_PATH}.h";
+		};
+		FACCFE6716A8DD1100A0E7D9 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.frag";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(INPUT_FILE_PATH).h",
+			);
+			script = "cd ${INPUT_FILE_DIR}\nxxd -i ${INPUT_FILE_NAME} | sed s/}\\;/,0x00}\\;/ > ${INPUT_FILE_PATH}.h";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
 		29FCF5A013CE62EB0031232E /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../Frameworks/boost.framework; sourceTree = "<group>"; };
@@ -260,6 +308,30 @@
 		FACCFE1116A8D31700A0E7D9 /* OpenGLESString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESString.h; sourceTree = "<group>"; };
 		FACCFE1216A8D31700A0E7D9 /* OpenGLESUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLESUtil.cpp; sourceTree = "<group>"; };
 		FACCFE1316A8D31700A0E7D9 /* OpenGLESUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESUtil.h; sourceTree = "<group>"; };
+		FACCFE5316A8DC2700A0E7D9 /* clipPlane.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clipPlane.vert.h; sourceTree = "<group>"; };
+		FACCFE5416A8DC2700A0E7D9 /* lighting.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lighting.vert.h; sourceTree = "<group>"; };
+		FACCFE5516A8DC2700A0E7D9 /* lightingPerFragment.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightingPerFragment.vert.h; sourceTree = "<group>"; };
+		FACCFE5616A8DC2700A0E7D9 /* lightingPerVertex.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightingPerVertex.vert.h; sourceTree = "<group>"; };
+		FACCFE5716A8DC2700A0E7D9 /* main.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.vert.h; sourceTree = "<group>"; };
+		FACCFE5816A8DC2700A0E7D9 /* postprocess.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = postprocess.vert.h; sourceTree = "<group>"; };
+		FACCFE5916A8DC2700A0E7D9 /* texture.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture.vert.h; sourceTree = "<group>"; };
+		FACCFE5A16A8DC2700A0E7D9 /* texture0.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture0.vert.h; sourceTree = "<group>"; };
+		FACCFE5B16A8DC2700A0E7D9 /* texture1.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture1.vert.h; sourceTree = "<group>"; };
+		FACCFE5C16A8DC2800A0E7D9 /* texture2.vert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture2.vert.h; sourceTree = "<group>"; };
+		FACCFE6816A8DD4300A0E7D9 /* alphaTest.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alphaTest.frag.h; sourceTree = "<group>"; };
+		FACCFE6916A8DD4300A0E7D9 /* clipPlane.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = clipPlane.frag.h; sourceTree = "<group>"; };
+		FACCFE6A16A8DD4300A0E7D9 /* lighting.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lighting.frag.h; sourceTree = "<group>"; };
+		FACCFE6B16A8DD4300A0E7D9 /* lightingPerFragment.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightingPerFragment.frag.h; sourceTree = "<group>"; };
+		FACCFE6C16A8DD4400A0E7D9 /* main.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.frag.h; sourceTree = "<group>"; };
+		FACCFE6D16A8DD4400A0E7D9 /* postprocess.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = postprocess.frag.h; sourceTree = "<group>"; };
+		FACCFE6E16A8DD4400A0E7D9 /* texture.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture.frag.h; sourceTree = "<group>"; };
+		FACCFE6F16A8DD4500A0E7D9 /* texture0.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture0.frag.h; sourceTree = "<group>"; };
+		FACCFE7016A8DD4500A0E7D9 /* texture1.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture1.frag.h; sourceTree = "<group>"; };
+		FACCFE7116A8DD4500A0E7D9 /* texture2.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture2.frag.h; sourceTree = "<group>"; };
+		FACCFECE16A8DE0000A0E7D9 /* all_shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = all_shaders.h; sourceTree = "<group>"; };
+		FACCFED116A8ECFC00A0E7D9 /* fmemopen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fmemopen.c; sourceTree = "<group>"; };
+		FACCFED216A8ECFC00A0E7D9 /* fmemopen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmemopen.h; sourceTree = "<group>"; };
+		FACCFED316A8ECFC00A0E7D9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		FACFEDCD13BAB0E30045C681 /* mkImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkImage.cpp; path = ../../src/mkImage.cpp; sourceTree = "<group>"; };
 		FACFEDCE13BAB0E30045C681 /* mkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkImage.h; path = ../../src/mkImage.h; sourceTree = "<group>"; };
 		FACFEDD113BAB2D40045C681 /* glImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glImage.cpp; sourceTree = "<group>"; };
@@ -446,6 +518,7 @@
 		FACCFDC916A8D2DC00A0E7D9 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				FACCFED016A8ECFB00A0E7D9 /* fmemopen */,
 				FACCFDCA16A8D31700A0E7D9 /* gles2-bc */,
 			);
 			name = ThirdParty;
@@ -532,6 +605,26 @@
 		FACCFDED16A8D31700A0E7D9 /* shaders */ = {
 			isa = PBXGroup;
 			children = (
+				FACCFE6816A8DD4300A0E7D9 /* alphaTest.frag.h */,
+				FACCFE6916A8DD4300A0E7D9 /* clipPlane.frag.h */,
+				FACCFE6A16A8DD4300A0E7D9 /* lighting.frag.h */,
+				FACCFE6B16A8DD4300A0E7D9 /* lightingPerFragment.frag.h */,
+				FACCFE6C16A8DD4400A0E7D9 /* main.frag.h */,
+				FACCFE6D16A8DD4400A0E7D9 /* postprocess.frag.h */,
+				FACCFE6E16A8DD4400A0E7D9 /* texture.frag.h */,
+				FACCFE6F16A8DD4500A0E7D9 /* texture0.frag.h */,
+				FACCFE7016A8DD4500A0E7D9 /* texture1.frag.h */,
+				FACCFE7116A8DD4500A0E7D9 /* texture2.frag.h */,
+				FACCFE5316A8DC2700A0E7D9 /* clipPlane.vert.h */,
+				FACCFE5416A8DC2700A0E7D9 /* lighting.vert.h */,
+				FACCFE5516A8DC2700A0E7D9 /* lightingPerFragment.vert.h */,
+				FACCFE5616A8DC2700A0E7D9 /* lightingPerVertex.vert.h */,
+				FACCFE5716A8DC2700A0E7D9 /* main.vert.h */,
+				FACCFE5816A8DC2700A0E7D9 /* postprocess.vert.h */,
+				FACCFE5916A8DC2700A0E7D9 /* texture.vert.h */,
+				FACCFE5A16A8DC2700A0E7D9 /* texture0.vert.h */,
+				FACCFE5B16A8DC2700A0E7D9 /* texture1.vert.h */,
+				FACCFE5C16A8DC2800A0E7D9 /* texture2.vert.h */,
 				FACCFDEE16A8D31700A0E7D9 /* alphaTest.frag */,
 				FACCFDEF16A8D31700A0E7D9 /* clipPlane.frag */,
 				FACCFDF016A8D31700A0E7D9 /* clipPlane.vert */,
@@ -553,8 +646,20 @@
 				FACCFE0016A8D31700A0E7D9 /* texture1.vert */,
 				FACCFE0116A8D31700A0E7D9 /* texture2.frag */,
 				FACCFE0216A8D31700A0E7D9 /* texture2.vert */,
+				FACCFECE16A8DE0000A0E7D9 /* all_shaders.h */,
 			);
 			path = shaders;
+			sourceTree = "<group>";
+		};
+		FACCFED016A8ECFB00A0E7D9 /* fmemopen */ = {
+			isa = PBXGroup;
+			children = (
+				FACCFED116A8ECFC00A0E7D9 /* fmemopen.c */,
+				FACCFED216A8ECFC00A0E7D9 /* fmemopen.h */,
+				FACCFED316A8ECFC00A0E7D9 /* README.md */,
+			);
+			name = fmemopen;
+			path = ../../thirdparty/fmemopen;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -619,6 +724,28 @@
 				FACCFE4D16A8D31700A0E7D9 /* OpenGLESMath.h in Headers */,
 				FACCFE4F16A8D31700A0E7D9 /* OpenGLESString.h in Headers */,
 				FACCFE5116A8D31700A0E7D9 /* OpenGLESUtil.h in Headers */,
+				FACCFE5D16A8DC2800A0E7D9 /* clipPlane.vert.h in Headers */,
+				FACCFE5E16A8DC2800A0E7D9 /* lighting.vert.h in Headers */,
+				FACCFE5F16A8DC2800A0E7D9 /* lightingPerFragment.vert.h in Headers */,
+				FACCFE6016A8DC2800A0E7D9 /* lightingPerVertex.vert.h in Headers */,
+				FACCFE6116A8DC2800A0E7D9 /* main.vert.h in Headers */,
+				FACCFE6216A8DC2800A0E7D9 /* postprocess.vert.h in Headers */,
+				FACCFE6316A8DC2800A0E7D9 /* texture.vert.h in Headers */,
+				FACCFE6416A8DC2800A0E7D9 /* texture0.vert.h in Headers */,
+				FACCFE6516A8DC2800A0E7D9 /* texture1.vert.h in Headers */,
+				FACCFE6616A8DC2800A0E7D9 /* texture2.vert.h in Headers */,
+				FACCFE7216A8DD4500A0E7D9 /* alphaTest.frag.h in Headers */,
+				FACCFE7316A8DD4500A0E7D9 /* clipPlane.frag.h in Headers */,
+				FACCFE7416A8DD4500A0E7D9 /* lighting.frag.h in Headers */,
+				FACCFE7516A8DD4500A0E7D9 /* lightingPerFragment.frag.h in Headers */,
+				FACCFE7616A8DD4500A0E7D9 /* main.frag.h in Headers */,
+				FACCFE7716A8DD4500A0E7D9 /* postprocess.frag.h in Headers */,
+				FACCFE7816A8DD4500A0E7D9 /* texture.frag.h in Headers */,
+				FACCFE7916A8DD4500A0E7D9 /* texture0.frag.h in Headers */,
+				FACCFE7A16A8DD4500A0E7D9 /* texture1.frag.h in Headers */,
+				FACCFE7B16A8DD4500A0E7D9 /* texture2.frag.h in Headers */,
+				FACCFECF16A8DE0000A0E7D9 /* all_shaders.h in Headers */,
+				FACCFED516A8ECFC00A0E7D9 /* fmemopen.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,6 +761,8 @@
 				FAE282E4121A08BB00823BCB /* Frameworks */,
 			);
 			buildRules = (
+				FACCFE6716A8DD1100A0E7D9 /* PBXBuildRule */,
+				FACCFE5216A8D9D800A0E7D9 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -743,6 +872,7 @@
 				FACCFE4B16A8D31700A0E7D9 /* OpenGLESImplementation.cpp in Sources */,
 				FACCFE4E16A8D31700A0E7D9 /* OpenGLESString.cpp in Sources */,
 				FACCFE5016A8D31700A0E7D9 /* OpenGLESUtil.cpp in Sources */,
+				FACCFED416A8ECFC00A0E7D9 /* fmemopen.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

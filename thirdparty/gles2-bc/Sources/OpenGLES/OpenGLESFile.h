@@ -40,6 +40,7 @@ namespace OpenGLES {
 	private:
 		std::string name;
 		FILE *fp;
+        int inMemoryIdx;
         
         static std::string rootPath;
 	};
