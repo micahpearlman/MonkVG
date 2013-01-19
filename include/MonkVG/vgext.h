@@ -60,6 +60,11 @@ extern "C" {
 	 */
 	typedef enum {
 		VG_TESSELLATION_ITERATIONS_MNK	= 0x1170,
+        
+        /* the rendering buffer dimensions */
+        VG_BACKING_WIDTH_MNK            = 0x1171,
+        VG_BACKING_HEIGHT_MNK           = 0x1172,
+        
 		VG_PARAM_TYPE_MNK_FORCE_SIZE	= VG_MAX_ENUM
 	} VGParamTypeMNK;
     

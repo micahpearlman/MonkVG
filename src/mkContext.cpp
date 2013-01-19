@@ -55,17 +55,25 @@ VG_API_CALL void VG_API_ENTRY vgSetiv(VGuint type, VGint count,
 }
 
 VG_API_CALL VGfloat VG_API_ENTRY vgGetf(VGuint type) VG_API_EXIT {
-	return -1.0f;
+    VGfloat ret = -1;
+    IContext::instance().get( type, ret );
+    return ret;
 }
+
 VG_API_CALL VGint VG_API_ENTRY vgGeti(VGuint type) VG_API_EXIT {
-	return -1;
+    VGint ret = -1;
+    IContext::instance().get( type, ret );
+    return ret;
 }
+
 VG_API_CALL VGint VG_API_ENTRY vgGetVectorSize(VGuint type) VG_API_EXIT {
 	return -1;
 }
+
 VG_API_CALL void VG_API_ENTRY vgGetfv(VGuint type, VGint count, VGfloat * values) VG_API_EXIT {
 	
 }
+
 VG_API_CALL void VG_API_ENTRY vgGetiv(VGuint type, VGint count, VGint * values) VG_API_EXIT {
 	
 }
@@ -216,6 +224,12 @@ namespace MonkVG {
 			case VG_IMAGE_MODE:
 				i = getImageMode( );
 				break;
+            case VG_BACKING_WIDTH_MNK:
+                i = getWidth();
+                break;
+            case VG_BACKING_HEIGHT_MNK:
+                i = getHeight();
+                break;
 				
 			default:
 				break;
