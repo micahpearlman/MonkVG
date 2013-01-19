@@ -10,9 +10,6 @@
 
 #import <OpenGLES/ES1/gl.h>
 #import <OpenGLES/ES1/glext.h>
-#include <MonkVG/openvg.h>
-#include <MonkVG/vgu.h>
-#include <MonkVG/vgext.h>
 
 //class SVGHandler;
 
@@ -28,23 +25,10 @@
     // The OpenGL ES names for the framebuffer and renderbuffer used to render to this view
     GLuint defaultFramebuffer, colorRenderbuffer;
 	
-	VGPath	_path;
-	VGPaint _paint;
-	VGPaint _linearGradientPaint;
-	VGPaint _radialGradientPaint;
-	VGImage _image;
-	VGImage	_bitmapFont;
-	//	VGImage _gradientImage;
-	VGPath _linearGradientPath;
-	VGPath _radialGradientPath;
-	VGFont	_font;
-	VGfloat _lineHeight;
 	
 }
 
 - (void)render;
 - (BOOL)resizeFromLayer:(CAEAGLLayer *)layer;
-- (VGImage) buildVGImageFromUIImage:(UIImage *)uiImage;
-- (VGFont) buildVGFontFromBitmapFont:(NSString*)fontName;
 
 @end
