@@ -224,10 +224,10 @@ namespace MonkVG {
 			case VG_IMAGE_MODE:
 				i = getImageMode( );
 				break;
-            case VG_BACKING_WIDTH_MNK:
+            case VG_SURFACE_WIDTH_MNK:
                 i = getWidth();
                 break;
-            case VG_BACKING_HEIGHT_MNK:
+            case VG_SURFACE_HEIGHT_MNK:
                 i = getHeight();
                 break;
 				

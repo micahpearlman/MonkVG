@@ -7,6 +7,8 @@
 //
 
 #import "ES2Renderer.h"
+#import <MonkVG/openvg.h>
+#import <MonkVG/vgext.h>
 
 // uniform index
 enum {
@@ -22,12 +24,18 @@ enum {
     NUM_ATTRIBUTES
 };
 
-@interface ES2Renderer (PrivateMethods)
+#import "MonkVGExample.h"
+
+@interface ES2Renderer () {
+    MonkVGExample* monkVGExample;
+}
 - (BOOL)loadShaders;
 - (BOOL)compileShader:(GLuint *)shader type:(GLenum)type file:(NSString *)file;
 - (BOOL)linkProgram:(GLuint)prog;
 - (BOOL)validateProgram:(GLuint)prog;
+
 @end
+
 
 @implementation ES2Renderer
 
@@ -50,6 +58,12 @@ enum {
         glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+        
+        // setup the OpenVG context with a OpenGL ES 1.1 rendering backend
+		vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES20 );
+        
+        monkVGExample = [[[MonkVGExample alloc] init] retain];
+
     }
 
     return self;
@@ -87,6 +101,7 @@ enum {
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    /*
     // Use shader program
     glUseProgram(program);
 
@@ -109,9 +124,13 @@ enum {
         return;
     }
 #endif
-
+     
+    
     // Draw
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+     */
+    
+    [monkVGExample render];
 
     // This application only creates a single color renderbuffer which is already bound at this point.
     // This call is redundant, but needed if dealing with multiple renderbuffers.
@@ -287,6 +306,10 @@ enum {
         NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
         return NO;
     }
+    
+    // tell MonkVG that the the render surface size has changed
+	vgResizeSurfaceMNK( backingWidth, backingHeight );
+
 
     return YES;
 }

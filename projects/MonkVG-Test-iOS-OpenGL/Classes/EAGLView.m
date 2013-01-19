@@ -34,7 +34,7 @@
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                         [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
 
-        renderer = [[ES1Renderer alloc] init];
+        renderer = [[ES2Renderer alloc] init];
 
         if (!renderer)
         {

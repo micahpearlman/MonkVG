@@ -126,8 +126,8 @@ map<VGuint, GlyphDescription>	_glyphs;
 - (void) render {
     
     // get the width and height of the screen
-    VGint backingWidth = vgGeti( VG_BACKING_WIDTH_MNK );
-    VGint backingHeight = vgGeti( VG_BACKING_HEIGHT_MNK );;
+    VGint backingWidth = vgGeti( VG_SURFACE_WIDTH_MNK );
+    VGint backingHeight = vgGeti( VG_SURFACE_HEIGHT_MNK );;
     
     
     VGfloat clearColor[] = {1,1,1,1};

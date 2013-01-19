@@ -84,6 +84,7 @@
         return NO;
     }
 	
+    // tell MonkVG that the the render surface size has changed
 	vgResizeSurfaceMNK( backingWidth, backingHeight );
 
     return YES;
