@@ -109,7 +109,9 @@ void OpenGLES20Context::glClientActiveTexture (GLenum texture)
 
 void OpenGLES20Context::glColor4f (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
-	LOG_MESSAGE(__FILE__, __LINE__, "ERROR: Not implemented.");
+	//LOG_MESSAGE(__FILE__, __LINE__, "ERROR: Not implemented.");
+    Vector4<GLfloat> color( red, green, blue, alpha );
+    openGLESState.setUniformColor(color);
 }
 
 void OpenGLES20Context::glColor4x (GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
@@ -1047,6 +1049,15 @@ void OpenGLES20Context::glGetFloatv(GLenum pname, GLfloat *params)
 				params[i] = matrixStack.getModelViewMatrix()->m[i];
 			}
 			break;
+        case GL_CURRENT_COLOR: {
+            Vector4<GLfloat> c;
+            openGLESState.getUniformColor(c);
+            params[0] = c[0];
+            params[1] = c[1];
+            params[2] = c[2];
+            params[3] = c[3];
+             
+        } break;
 		default:
 			::glGetFloatv(pname, params);
 			break;

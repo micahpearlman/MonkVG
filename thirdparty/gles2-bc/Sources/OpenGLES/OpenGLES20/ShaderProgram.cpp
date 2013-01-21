@@ -420,6 +420,8 @@ GLuint ShaderProgram::createProgram(Shader *vertexShader, Shader *fragmentShader
 			id = UniformId::CLIP_PLANE4_EQUATION;
 		} else if (strcmp(uniformName,"u_clipPlane5Equation") == 0) {
 			id = UniformId::CLIP_PLANE5_EQUATION;
+        } else if (strcmp(uniformName,"u_color") == 0) {
+            id = UniformId::COLOR;
 		} else {
 			LOG_MESSAGE(__FILE__, __LINE__, OpenGLESString("ERROR: Missing ") + uniformName);
 			return 0;

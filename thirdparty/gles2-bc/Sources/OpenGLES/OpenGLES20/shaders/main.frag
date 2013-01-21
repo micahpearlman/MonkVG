@@ -66,6 +66,7 @@ uniform vec3 u_fogColor;
 uniform int u_fogHint;
 uniform bool u_alphaTestEnabled;
 uniform bool u_lightingEnabled;
+uniform vec4 u_color;
 
 // Varyings
 varying vec4 v_frontColor;
@@ -101,7 +102,7 @@ void main()
 	if (u_lightingEnabled) {
 		calcLighting(color);
 	} else {
-		color = v_frontColor;
+		color = u_color; ///v_frontColor;
 	}
 #endif
 	
@@ -143,5 +144,12 @@ void main()
 	#endif
 #endif
 	
+    
+    
+#if TEXTURE0_ENABLED != 0 || TEXTURE1_ENABLED != 0 || TEXTURE2_ENABLED != 0
 	gl_FragColor = color;
+#else
+    gl_FragColor = color * u_color;
+#endif
+
 }

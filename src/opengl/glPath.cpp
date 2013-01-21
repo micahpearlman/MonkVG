@@ -94,6 +94,7 @@ namespace MonkVG {
 		} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 			GL->glEnable( GL_TEXTURE_2D );
 			GL->glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+            //GL->glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture with GL_REPLACE we don't use the current glColor
 			
 			glContext.setImageMode( VG_DRAW_IMAGE_NORMAL );
 			

@@ -231,6 +231,9 @@ namespace OpenGLES {
 				CLIP_PLANE3_EQUATION,
 				CLIP_PLANE4_EQUATION,
 				CLIP_PLANE5_EQUATION,
+                
+                COLOR,
+                
 				GLOBAL_AMBIENT_COLOR,
 				
 				FIRST_STATE_UNIFORM_BOOL = POSITION_ENABLED,
@@ -510,6 +513,9 @@ namespace OpenGLES {
 			void getClipPlane(GLenum clipPlaneIndex, GLfloat eqn[4]);
 			void setTextureMatrix(int index, Matrix4x4<GLfloat> mat);
 			void setTextureMatrix(int index, bool enabled);
+            
+            void setUniformColor(Vector4<GLfloat> vec );
+            void getUniformColor(Vector4<GLfloat>& vec );
 			
 			int getCachedShaderAmount();
 			
