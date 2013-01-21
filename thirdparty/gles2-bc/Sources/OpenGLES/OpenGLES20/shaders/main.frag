@@ -97,7 +97,7 @@ void main()
 #if LIGHTING_ENABLED == 1
 	calcLighting(color);
 #elif LIGHTING_ENABLED == 0
-	color = v_frontColor;
+	color = u_color; //v_frontColor;
 #else
 	if (u_lightingEnabled) {
 		calcLighting(color);
