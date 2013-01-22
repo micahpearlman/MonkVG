@@ -3,7 +3,7 @@ MonkVG -- An OpenVG implementation
 
 ## Overview
 
-MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an OpenGL ES backend that should be compatible with any HW that supports OpenGL ES 1.1 which includes most iOS and Android devices as well as OSX and Windows platforms. 
+MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an OpenGL ES (1.1 or 2.0) backend that should be compatible with any HW that supports OpenGL ES 1.1 which includes most iOS and Android devices as well as OSX and Windows platforms. 
 
 This is an open source BSD licensed project that is in active development. Contributors and sponsors welcome.
 
@@ -11,23 +11,20 @@ It can be found at GitHub http://github.com/micahpearlman/MonkVG
 
 Projects using MonkVG include:
 
-- MonkSWF: A flash swf parser and renderer. https://github.com/micahpearlman/MonkSWF
 - MonkSVG: A SVG parser and renderer.  https://github.com/micahpearlman/MonkSVG
+- CCSVG: A SVG renderer for Cocos2D. https://github.com/lukelutman/CCSVG
+
+## Whats New
+
+- (1/22/2012) Now supports OpenGL ES 1.1 *AND* 2.0
 
 ## Installation
 
-Not even versioned yet for download.  Use git to clone:  
+Use git to clone:  
 
 <tt>$ git clone git@github.com:micahpearlman/MonkVG.git</tt>
 
 There are currently iOS and OSX XCode 4 projects as well as contributed Android projects (thanks Paul Holden)and Windows project (thanks Vincent Richomme).
-
-TODO: standard *nix Makefiles.
-
-
-## Extensions
-
-MonkVG was originally created for games, so speed has usually been prefered over quality or full OpenVG compliance.  To improve speed there have been MonkVG specific extensions. See "vgext.h" for some of the details.
 
 ## What is implemented
 
@@ -51,6 +48,10 @@ MonkVG was originally created for games, so speed has usually been prefered over
 - Image filters.
 - Anti-aliasing. (Though this can be supported outside OpenVG.  For example iOS fullscreen AA glRenderbufferStorageMultisampleAPPLE method)
 
+## Extensions
+
+MonkVG was originally created for games, so speed has usually been prefered over quality or full OpenVG compliance.  To improve speed there have been MonkVG specific extensions. See "vgext.h" for some of the details.
+
 ## Contributors
 
 Paul Holden (Android Port)  
@@ -70,7 +71,11 @@ Also, if your application does any other OpenGL rendering it should save off the
 	void init() {
 		... setup platform specific opengl ...
 		// setup the OpenVG context
-		vgCreateContextSH( 320, 480 );
+		vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES20 );
+		
+		...OR... for OpenGL ES 1.1
+		
+		vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
 		
 		// create a paint
 		_paint = vgCreatePaint();
@@ -86,7 +91,9 @@ Also, if your application does any other OpenGL rendering it should save off the
 	}
 	
 	void draw() {
+		... save any GL state here ...
 		... start opengl context ...
+		
 		/// draw the basic path
 		vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
 		vgLoadIdentity();
@@ -95,6 +102,7 @@ Also, if your application does any other OpenGL rendering it should save off the
 		vgDrawPath( _path, VG_FILL_PATH );
 		
 		... end opengl context ...
+		... restore and GL state here ...
 	}
 </tt>
 
