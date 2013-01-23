@@ -17,6 +17,8 @@
 #ifndef OpenGLESUtil_H_
 #define OpenGLESUtil_H_
 
+//#define OPENGLES_DEBUG  1
+
 #ifdef OPENGLES_DEBUG
 #define CHECK_GL_ERROR(X, Y, Z) OpenGLESUtil::checkGlError(X, Y, Z)
 #define LOG_DEBUG_MESSAGE(...) OpenGLESUtil::logMessage(__VA_ARGS__)

@@ -40,6 +40,8 @@ namespace OpenGLES {
 			void use();
 			void unuse();
 			void validate();
+            
+            bool isCurrent();
 			
 			std::vector<AttributeSimple *> *getActiveAttributes();
 			std::vector<UniformSimple *> *getActiveUniforms();

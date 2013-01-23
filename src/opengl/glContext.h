@@ -22,7 +22,7 @@ namespace MonkVG {
 	
 	// todo: setup debug and release versions
 	//#define CHECK_GL_ERROR OpenGLContext::checkGLError()
-	#define CHECK_GL_ERROR 
+	#define CHECK_GL_ERROR
 	class OpenGLContext : public IContext {
 	public:
 	

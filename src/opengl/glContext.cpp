@@ -86,8 +86,8 @@ namespace MonkVG {
 		
 		// get viewport to restore back when we are done
 		gl()->glGetIntegerv( GL_VIEWPORT, _viewport );
-		gl()->glGetFloatv( GL_PROJECTION_MATRIX, _projection );
-		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+//fixme?		gl()->glGetFloatv( GL_PROJECTION_MATRIX, _projection );
+//fixme?		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
 		
 		// get the color to back up when we are done
 		gl()->glGetFloatv( GL_CURRENT_COLOR, _color );

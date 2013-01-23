@@ -976,7 +976,8 @@ void OpenGLESState::setCurrentProgram()
 		stateShaderPrograms.push_back(currentStateShaderProgram);
 	}
 	
-	if (currentStateShaderProgram != oldStateShaderProgram) {
+    
+	if (currentStateShaderProgram != oldStateShaderProgram || currentStateShaderProgram->shaderProgram->isCurrent() == false ) {
 		currentStateShaderProgram->shaderProgram->use();
 		setActiveUniformLocations(currentStateShaderProgram->shaderProgram->getActiveUniforms());
 		setActiveAttributeLocations(currentStateShaderProgram->shaderProgram->getActiveAttributes());

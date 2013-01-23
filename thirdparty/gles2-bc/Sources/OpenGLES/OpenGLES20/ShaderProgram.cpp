@@ -538,6 +538,13 @@ void ShaderProgram::validate()
 	}
 }
 
+bool ShaderProgram::isCurrent()
+{
+    GLuint currentProgram;
+    glGetIntegerv(GL_CURRENT_PROGRAM, (GLint*) &currentProgram);
+    return program == currentProgram;
+}
+
 std::vector<AttributeSimple *>* ShaderProgram::getActiveAttributes()
 {
 	return &attributes;
