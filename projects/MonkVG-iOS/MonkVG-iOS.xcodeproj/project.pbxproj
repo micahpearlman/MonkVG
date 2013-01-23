@@ -933,6 +933,7 @@
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkVG;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 arm7s";
 			};
 			name = Debug;
 		};
@@ -961,6 +962,7 @@
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkVG;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "armv7 arm7s";
 			};
 			name = Release;
 		};
