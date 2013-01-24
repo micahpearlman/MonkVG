@@ -89,4 +89,7 @@ VG_API_CALL void VG_API_ENTRY vgEndBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
 VG_API_CALL void VG_API_ENTRY vgDrawBatchMNK( VGBatchMNK batch ) VG_API_EXIT {
 	((IBatch*)batch)->draw();
 }
+VG_API_CALL void VG_API_ENTRY vgDumpBatchMNK( VGBatchMNK batch, void **vertices, size_t * size ) VG_API_EXIT {
+    IContext::instance().dumpBatch( (IBatch *)batch, vertices, size );
+}
 

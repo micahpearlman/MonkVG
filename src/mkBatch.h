@@ -8,6 +8,7 @@
 #ifndef __mkBatch_h__
 #define __mkBatch_h__
 
+#include <stdlib.h>
 #include "mkBaseObject.h"
 
 namespace MonkVG {
@@ -32,6 +33,7 @@ namespace MonkVG {
 		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
 		
 		virtual void draw() = 0;
+        virtual void dump( void **vertices, size_t *size ) = 0;
 		virtual void finalize() = 0;
 		
 		virtual ~IBatch() {}

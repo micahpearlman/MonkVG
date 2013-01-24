@@ -174,6 +174,7 @@ namespace MonkVG {
 		
 		/// batch drawing
 		virtual void startBatch( IBatch* batch ) = 0;
+        virtual void dumpBatch( IBatch* batch, void **vertices, size_t *size ) = 0;
 		virtual void endBatch( IBatch* batch ) = 0;
 		IBatch* currentBatch() { return _currentBatch; }
 		

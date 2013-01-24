@@ -47,6 +47,7 @@ namespace MonkVG {
 		virtual ~OpenGLBatch();
 		
 		virtual void draw();
+        virtual void dump( void **vertices, size_t *size );
 		virtual void finalize();
 		
 		void addPathVertexData( GLfloat* fillVerts, size_t fillVertCnt, GLfloat* strokeVerts, size_t strokeVertCnt, VGbitfield paintModes );
