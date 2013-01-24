@@ -36,7 +36,6 @@
 #ifndef _VGEXT_H
 #define _VGEXT_H
 
-#include <cstring>
 
 #ifdef __cplusplus
 extern "C" {
