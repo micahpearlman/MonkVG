@@ -17,7 +17,9 @@
 #ifndef ShaderFile_H_
 #define ShaderFile_H_
 
-#include <OpenGLES/ES2/gl.h>
+//#include <OpenGLES/ES2/gl.h>
+#define INCLUDE_ES1_HEADERS 0
+#include "OpenGLESPlatform.h"
 #include <string>
 #include "OpenGLESFile.h"
 

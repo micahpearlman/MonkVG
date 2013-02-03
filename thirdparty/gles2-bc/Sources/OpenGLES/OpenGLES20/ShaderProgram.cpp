@@ -55,8 +55,9 @@ GLuint ShaderProgram::createProgram(Shader *vertexShader, Shader *fragmentShader
 {
 	GLuint vertexShaderId = vertexShader->compile();
 	GLuint fragmentShaderId = fragmentShader->compile();
-	
+#if PLATFORM_IS_GLES	
 	glReleaseShaderCompiler();
+#endif
 	
 	GLuint program = glCreateProgram();
 	

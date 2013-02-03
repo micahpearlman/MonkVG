@@ -17,8 +17,10 @@
 #include "OpenGLES11Context.h"
 #include "OpenGLESUtil.h"
 #include "OpenGLES11Implementation.h"
-#include <OpenGLES/ES1/gl.h>
-#include <OpenGLES/ES1/glext.h>
+#define INCLUDE_ES1_HEADERS 1
+#include "OpenGLESPlatform.h"
+//#include <OpenGLES/ES1/gl.h>
+//#include <OpenGLES/ES1/glext.h>
 
 using namespace OpenGLES::OpenGLES1;
 
@@ -46,8 +48,10 @@ void OpenGLES11Context::glAlphaFunc (GLenum func, GLclampf ref)
 
 void OpenGLES11Context::glAlphaFuncx (GLenum func, GLclampx ref)
 {
+#if PLATFORM_IS_GLES
 	::glAlphaFuncx(func, ref);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glBindTexture (GLenum target, GLuint texture)
@@ -76,20 +80,26 @@ void OpenGLES11Context::glClearColor (GLclampf red, GLclampf green, GLclampf blu
 
 void OpenGLES11Context::glClearColorx (GLclampx red, GLclampx green, GLclampx blue, GLclampx alpha)
 {
+#if PLATFORM_IS_GLES
 	::glClearColorx(red, green, blue, alpha);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glClearDepthf (GLclampf depth)
 {
+#if PLATFORM_IS_GLES    
 	::glClearDepthf(depth);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
-void OpenGLES11Context::glClearDepthx (GLclampx depth) 
+void OpenGLES11Context::glClearDepthx (GLclampx depth)
 {
+#if PLATFORM_IS_GLES    
 	::glClearDepthx(depth);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glClearStencil (GLint s)
@@ -112,8 +122,10 @@ void OpenGLES11Context::glColor4f (GLfloat red, GLfloat green, GLfloat blue, GLf
 
 void OpenGLES11Context::glColor4x (GLfixed red, GLfixed green, GLfixed blue, GLfixed alpha)
 {
+#if PLATFORM_IS_GLES    
 	::glColor4x(red, green, blue, alpha);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glColorMask (GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
@@ -178,14 +190,18 @@ void OpenGLES11Context::glDepthMask (GLboolean flag)
 
 void OpenGLES11Context::glDepthRangef (GLclampf zNear, GLclampf zFar)
 {
+#if PLATFORM_IS_GLES    
 	::glDepthRangef(zNear, zFar);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glDepthRangex (GLclampx zNear, GLclampx zFar)
 {
+#if PLATFORM_IS_GLES    
 	::glDepthRangex(zNear, zFar);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glDisable (GLenum cap)
@@ -250,14 +266,18 @@ void OpenGLES11Context::glFogfv (GLenum pname, const GLfloat *params)
 
 void OpenGLES11Context::glFogx (GLenum pname, GLfixed param)
 {
+#if PLATFORM_IS_GLES    
 	::glFogx(pname, param);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glFogxv (GLenum pname, const GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glFogxv(pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glFrontFace (GLenum mode)
@@ -268,14 +288,18 @@ void OpenGLES11Context::glFrontFace (GLenum mode)
 
 void OpenGLES11Context::glFrustumf (GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
+#if PLATFORM_IS_GLES    
 	::glFrustumf(left, right, bottom, top, zNear, zFar);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glFrustumx (GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
 {
+#if PLATFORM_IS_GLES    
 	::glFrustumx(left, right, bottom, top, zNear, zFar);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGenTextures (GLsizei n, GLuint *textures)
@@ -335,14 +359,18 @@ void OpenGLES11Context::glLightModelfv (GLenum pname, const GLfloat *params)
 
 void OpenGLES11Context::glLightModelx (GLenum pname, GLfixed param)
 {
+#if PLATFORM_IS_GLES    
 	::glLightModelx(pname, param);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glLightModelxv (GLenum pname, const GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glLightModelxv(pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glLightf (GLenum light, GLenum pname, GLfloat param)
@@ -359,14 +387,18 @@ void OpenGLES11Context::glLightfv (GLenum light, GLenum pname, const GLfloat *pa
 
 void OpenGLES11Context::glLightx (GLenum light, GLenum pname, GLfixed param)
 {
+#if PLATFORM_IS_GLES    
 	::glLightx(light, pname, param);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glLightxv (GLenum light, GLenum pname, const GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glLightxv(light, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glLineWidth (GLfloat width)
@@ -377,8 +409,10 @@ void OpenGLES11Context::glLineWidth (GLfloat width)
 
 void OpenGLES11Context::glLineWidthx (GLfixed width)
 {
+#if PLATFORM_IS_GLES    
 	::glLineWidthx(width);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glLoadIdentity()
@@ -395,8 +429,10 @@ void OpenGLES11Context::glLoadMatrixf (const GLfloat *m)
 
 void OpenGLES11Context::glLoadMatrixx (const GLfixed *m)
 {
+#if PLATFORM_IS_GLES    
 	::glLoadMatrixx(m);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glLogicOp (GLenum opcode)
@@ -419,14 +455,18 @@ void OpenGLES11Context::glMaterialfv (GLenum face, GLenum pname, const GLfloat *
 
 void OpenGLES11Context::glMaterialx (GLenum face, GLenum pname, GLfixed param)
 {
+#if PLATFORM_IS_GLES    
 	::glMaterialx(face, pname, param);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glMaterialxv (GLenum face, GLenum pname, const GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glMaterialxv(face, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glMatrixMode (GLenum mode)
@@ -443,8 +483,10 @@ void OpenGLES11Context::glMultMatrixf (const GLfloat *m)
 
 void OpenGLES11Context::glMultMatrixx (const GLfixed *m)
 {
+#if PLATFORM_IS_GLES    
 	::glMultMatrixx(m);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glMultiTexCoord4f (GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q)
@@ -455,8 +497,10 @@ void OpenGLES11Context::glMultiTexCoord4f (GLenum target, GLfloat s, GLfloat t, 
 
 void OpenGLES11Context::glMultiTexCoord4x (GLenum target, GLfixed s, GLfixed t, GLfixed r, GLfixed q)
 {
+#if PLATFORM_IS_GLES    
 	::glMultiTexCoord4x(target, s, t, r, q);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glNormal3f (GLfloat nx, GLfloat ny, GLfloat nz)
@@ -467,8 +511,10 @@ void OpenGLES11Context::glNormal3f (GLfloat nx, GLfloat ny, GLfloat nz)
 
 void OpenGLES11Context::glNormal3x (GLfixed nx, GLfixed ny, GLfixed nz)
 {
+#if PLATFORM_IS_GLES    
 	::glNormal3x(nx, ny, nz);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glNormalPointer (GLenum type, GLsizei stride, const GLvoid *pointer)
@@ -479,14 +525,20 @@ void OpenGLES11Context::glNormalPointer (GLenum type, GLsizei stride, const GLvo
 
 void OpenGLES11Context::glOrthof (GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
 {
+#if PLATFORM_IS_GLES    
 	::glOrthof(left, right, bottom, top, zNear, zFar);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glOrtho(left, right, bottom, top, zNear, zFar);
+#endif
 }
 
 void OpenGLES11Context::glOrthox (GLfixed left, GLfixed right, GLfixed bottom, GLfixed top, GLfixed zNear, GLfixed zFar)
 {
+#if PLATFORM_IS_GLES    
 	::glOrthox(left, right, bottom, top, zNear, zFar);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glPixelStorei (GLenum pname, GLint param)
@@ -503,8 +555,10 @@ void OpenGLES11Context::glPointSize (GLfloat size)
 
 void OpenGLES11Context::glPointSizex (GLfixed size)
 {
+#if PLATFORM_IS_GLES    
 	::glPointSizex(size);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glPolygonOffset (GLfloat factor, GLfloat units)
@@ -515,8 +569,10 @@ void OpenGLES11Context::glPolygonOffset (GLfloat factor, GLfloat units)
 
 void OpenGLES11Context::glPolygonOffsetx (GLfixed factor, GLfixed units)
 {
+#if PLATFORM_IS_GLES    
 	::glPolygonOffsetx(factor, units);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glPopMatrix()
@@ -545,8 +601,10 @@ void OpenGLES11Context::glRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z
 
 void OpenGLES11Context::glRotatex(GLfixed angle, GLfixed x, GLfixed y, GLfixed z)
 {
+#if PLATFORM_IS_GLES    
 	::glRotatex(angle, x, y, z);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glSampleCoverage (GLclampf value, GLboolean invert)
@@ -557,8 +615,10 @@ void OpenGLES11Context::glSampleCoverage (GLclampf value, GLboolean invert)
 
 void OpenGLES11Context::glSampleCoveragex (GLclampx value, GLboolean invert)
 {
+#if PLATFORM_IS_GLES    
 	::glSampleCoveragex(value, invert);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glScalef (GLfloat x, GLfloat y, GLfloat z)
@@ -569,8 +629,10 @@ void OpenGLES11Context::glScalef (GLfloat x, GLfloat y, GLfloat z)
 
 void OpenGLES11Context::glScalex (GLfixed x, GLfixed y, GLfixed z)
 {
+#if PLATFORM_IS_GLES    
 	::glScalex(x, y, z);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glScissor (GLint x, GLint y, GLsizei width, GLsizei height)
@@ -631,14 +693,18 @@ void OpenGLES11Context::glTexEnvfv (GLenum target, GLenum pname, const GLfloat *
 
 void OpenGLES11Context::glTexEnvx (GLenum target, GLenum pname, GLfixed param)
 {
+#if PLATFORM_IS_GLES    
 	::glTexEnvx(target, pname, param);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glTexEnvxv (GLenum target, GLenum pname, const GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glTexEnvxv(target, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
@@ -655,8 +721,10 @@ void OpenGLES11Context::glTexParameterf (GLenum target, GLenum pname, GLfloat pa
 
 void OpenGLES11Context::glTexParameterx (GLenum target, GLenum pname, GLfixed param)
 {
+#if PLATFORM_IS_GLES    
 	::glTexParameterx(target, pname, param);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glTexSubImage2D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *pixels)
@@ -673,8 +741,10 @@ void OpenGLES11Context::glTranslatef(GLfloat x, GLfloat y, GLfloat z)
 
 void OpenGLES11Context::glTranslatex(GLfixed x, GLfixed y, GLfixed z)
 {
+#if PLATFORM_IS_GLES    
 	::glTranslatex(x, y, z);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
@@ -711,14 +781,18 @@ void OpenGLES11Context::glBufferSubData (GLenum target, GLintptr offset, GLsizei
 
 void OpenGLES11Context::glClipPlanef(GLenum plane, const GLfloat *equation)
 {
+#if PLATFORM_IS_GLES    
 	::glClipPlanef(plane, equation);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glClipPlanex (GLenum plane, const GLfixed *equation)
 {
+#if PLATFORM_IS_GLES    
 	::glClipPlanex(plane, equation);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glColor4ub(GLubyte red, GLubyte green, GLubyte blue, GLubyte alpha)
@@ -735,50 +809,68 @@ void OpenGLES11Context::glDeleteBuffers (GLsizei n, const GLuint *buffers)
 
 void OpenGLES11Context::glDrawTexsOES (GLshort x, GLshort y, GLshort z, GLshort width, GLshort height)
 {
+#if PLATFORM_IS_GLES
 	::glDrawTexsOES(x, y, z, width, height);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glDrawTexiOES (GLint x, GLint y, GLint z, GLint width, GLint height)
 {
+#if PLATFORM_IS_GLES    
 	::glDrawTexiOES(x, y, z, width, height);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
+    
+
 }
 
 void OpenGLES11Context::glDrawTexxOES (GLfixed x, GLfixed y, GLfixed z, GLfixed width, GLfixed height)
 {
+#if PLATFORM_IS_GLES    
 	::glDrawTexxOES(x, y, z, width, height);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glDrawTexsvOES (const GLshort *coords)
 {
+#if PLATFORM_IS_GLES    
 	::glDrawTexsvOES(coords);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glDrawTexivOES (const GLint *coords)
 {
+#if PLATFORM_IS_GLES    
 	::glDrawTexivOES(coords);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
-void OpenGLES11Context::glDrawTexxvOES (const GLfixed *coords) 
+void OpenGLES11Context::glDrawTexxvOES (const GLfixed *coords)
 {
+#if PLATFORM_IS_GLES    
 	::glDrawTexxvOES(coords);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glDrawTexfOES (GLfloat x, GLfloat y, GLfloat z, GLfloat width, GLfloat height)
 {
+#if PLATFORM_IS_GLES    
 	::glDrawTexfOES(x, y, z, width, height);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glDrawTexfvOES (const GLfloat *coords)
 {
+#if PLATFORM_IS_GLES    
 	::glDrawTexfvOES(coords);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGenBuffers (GLsizei n, GLuint *buffers)
@@ -789,8 +881,10 @@ void OpenGLES11Context::glGenBuffers (GLsizei n, GLuint *buffers)
 
 void OpenGLES11Context::glGetClipPlanef(GLenum pname, GLfloat eqn[4])
 {
+#if PLATFORM_IS_GLES    
 	::glGetClipPlanef(pname, eqn);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGetFloatv(GLenum pname, GLfloat *params)
@@ -807,8 +901,10 @@ void OpenGLES11Context::glGetLightfv (GLenum light, GLenum pname, GLfloat *param
 
 void OpenGLES11Context::glGetLightxv (GLenum light, GLenum pname, GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glGetLightxv(light, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGetMaterialfv (GLenum face, GLenum pname, GLfloat *params)
@@ -819,8 +915,10 @@ void OpenGLES11Context::glGetMaterialfv (GLenum face, GLenum pname, GLfloat *par
 
 void OpenGLES11Context::glGetMaterialxv (GLenum face, GLenum pname, GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glGetMaterialxv(face, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGetTexEnvfv (GLenum env, GLenum pname, GLfloat *params)
@@ -837,8 +935,10 @@ void OpenGLES11Context::glGetTexEnviv (GLenum env, GLenum pname, GLint *params)
 
 void OpenGLES11Context::glGetTexEnvxv (GLenum env, GLenum pname, GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glGetTexEnvxv(env, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGetTexParameterfv (GLenum target, GLenum pname, GLfloat *params)
@@ -855,8 +955,10 @@ void OpenGLES11Context::glGetTexParameteriv (GLenum target, GLenum pname, GLint 
 
 void OpenGLES11Context::glGetTexParameterxv (GLenum target, GLenum pname, GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glTexParameterxv(target, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGetBooleanv (GLenum pname, GLboolean *params)
@@ -873,8 +975,10 @@ void OpenGLES11Context::glGetBufferParameteriv (GLenum target, GLenum pname, GLi
 
 void OpenGLES11Context::glGetFixedv (GLenum pname, GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glGetFixedv(pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glGetPointerv (GLenum pname, void **params)
@@ -912,14 +1016,18 @@ void OpenGLES11Context::glPointParameterfv (GLenum pname, const GLfloat *params)
 
 void OpenGLES11Context::glPointParameterx (GLenum pname, GLfixed param)
 {
+#if PLATFORM_IS_GLES    
 	::glPointParameterx(pname, param);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glPointParameterxv (GLenum pname, const GLfixed *params)
 {
+#if PLATFORM_IS_GLES    
 	::glPointParameterxv(pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glTexEnvi (GLenum target, GLenum pname, GLint param)
@@ -963,32 +1071,42 @@ void OpenGLES11Context::glTexParameteriv (GLenum target, GLenum pname, const GLi
 
 void OpenGLES11Context::glCurrentPaletteMatrixOES (GLuint matrixpaletteindex)
 {
+#if PLATFORM_IS_GLES    
 	::glCurrentPaletteMatrixOES(matrixpaletteindex);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glLoadPaletteFromModelViewMatrixOES (void)
 {
+#if PLATFORM_IS_GLES    
 	::glLoadPaletteFromModelViewMatrixOES();
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glMatrixIndexPointerOES (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
+#if PLATFORM_IS_GLES    
 	::glMatrixIndexPointerOES(size, type, stride, pointer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glWeightPointerOES (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
+#if PLATFORM_IS_GLES    
 	::glWeightPointerOES(size, type, stride, pointer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glPointSizePointerOES (GLenum type, GLsizei stride, const GLvoid *pointer)
 {
+#if PLATFORM_IS_GLES    
 	::glPointSizePointerOES(type, stride, pointer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES11Context::glAttachShader (GLuint program, GLuint shader)
@@ -1003,14 +1121,22 @@ void OpenGLES11Context::glBindAttribLocation (GLuint program, GLuint index, cons
 
 void OpenGLES11Context::glBindFramebuffer (GLenum target, GLuint framebuffer)
 {
+#if PLATFORM_IS_GLES    
 	::glBindFramebufferOES(target, framebuffer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glBindFramebuffer(target, framebuffer);
+#endif
 }
 
 void OpenGLES11Context::glBindRenderbuffer (GLenum target, GLuint renderbuffer)
 {
+#if PLATFORM_IS_GLES    
 	::glBindRenderbufferOES(target, renderbuffer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glBindRenderbuffer(target, renderbuffer);
+#endif
 }
 
 void OpenGLES11Context::glBlendColor (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
@@ -1024,7 +1150,7 @@ void OpenGLES11Context::glBlendEquation ( GLenum mode )
 	::glBlendEquationOES(mode);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
 #else
-	Util::logMessage(__FILE__, __LINE__, "WARNING: No effect in OpenGL ES 1.x");
+	LOG_DEBUG_MESSAGE(__FILE__, __LINE__, "WARNING: No effect in OpenGL ES 1.x");
 #endif
 }
 
@@ -1048,7 +1174,11 @@ void OpenGLES11Context::glBlendFuncSeparate (GLenum srcRGB, GLenum dstRGB, GLenu
 
 GLenum OpenGLES11Context::glCheckFramebufferStatus (GLenum target)
 {
+#if PLATFORM_IS_GLES    
 	return ::glCheckFramebufferStatusOES(target);
+#else
+    return ::glCheckFramebufferStatus(target);
+#endif
 }
 
 void OpenGLES11Context::glCompileShader (GLuint shader)
@@ -1070,8 +1200,12 @@ GLuint OpenGLES11Context::glCreateShader (GLenum type)
 
 void OpenGLES11Context::glDeleteFramebuffers (GLsizei n, const GLuint* framebuffers)
 {
+#if PLATFORM_IS_GLES    
 	::glDeleteFramebuffersOES(n, framebuffers);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glDeleteFramebuffers(n, framebuffers);
+#endif
 }
 
 void OpenGLES11Context::glDeleteProgram (GLuint program)
@@ -1081,8 +1215,12 @@ void OpenGLES11Context::glDeleteProgram (GLuint program)
 
 void OpenGLES11Context::glDeleteRenderbuffers (GLsizei n, const GLuint* renderbuffers)
 {
+#if PLATFORM_IS_GLES    
 	::glDeleteRenderbuffersOES(n, renderbuffers);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glDeleteRenderbuffers(n, renderbuffers);
+#endif
 }
 
 void OpenGLES11Context::glDeleteShader (GLuint shader)
@@ -1107,14 +1245,22 @@ void OpenGLES11Context::glEnableVertexAttribArray (GLuint index)
 
 void OpenGLES11Context::glFramebufferRenderbuffer (GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer)
 {
+#if PLATFORM_IS_GLES    
 	::glFramebufferRenderbufferOES(target, attachment, renderbuffertarget, renderbuffer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
+#endif
 }
 
 void OpenGLES11Context::glFramebufferTexture2D (GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
 {
+#if PLATFORM_IS_GLES    
 	::glFramebufferTexture2DOES(target, attachment, textarget, texture, level);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glFramebufferTexture2D(target, attachment, textarget, texture, level);
+#endif
 }
 
 void OpenGLES11Context::glGenerateMipmap (GLenum target)
@@ -1128,14 +1274,22 @@ void OpenGLES11Context::glGenerateMipmap (GLenum target)
 
 void OpenGLES11Context::glGenFramebuffers (GLsizei n, GLuint* framebuffers)
 {
+#if PLATFORM_IS_GLES    
 	::glGenFramebuffersOES(n, framebuffers);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glGenFramebuffers(n, framebuffers);
+#endif
 }
 
 void OpenGLES11Context::glGenRenderbuffers (GLsizei n, GLuint* renderbuffers)
 {
+#if PLATFORM_IS_GLES    
 	::glGenRenderbuffersOES(n, renderbuffers);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glGenRenderbuffers(n, renderbuffers);
+#endif
 }
 
 void OpenGLES11Context::glGetActiveAttrib (GLuint program, GLuint index, GLsizei bufsize, GLsizei* length, GLint* size, GLenum* type, GLchar* name)
@@ -1161,8 +1315,12 @@ int OpenGLES11Context::glGetAttribLocation (GLuint program, const GLchar* name)
 
 void OpenGLES11Context::glGetFramebufferAttachmentParameteriv (GLenum target, GLenum attachment, GLenum pname, GLint* params)
 {
+#if PLATFORM_IS_GLES    
 	::glGetFramebufferAttachmentParameterivOES(target, attachment, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+#endif
 }
 
 void OpenGLES11Context::glGetProgramiv (GLuint program, GLenum pname, GLint* params)
@@ -1177,8 +1335,12 @@ void OpenGLES11Context::glGetProgramInfoLog (GLuint program, GLsizei bufsize, GL
 
 void OpenGLES11Context::glGetRenderbufferParameteriv (GLenum target, GLenum pname, GLint* params)
 {
+#if PLATFORM_IS_GLES    
 	::glGetRenderbufferParameterivOES(target, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glGetRenderbufferParameteriv(target, pname, params);
+#endif
 }
 
 void OpenGLES11Context::glGetShaderiv (GLuint shader, GLenum pname, GLint* params)
@@ -1234,7 +1396,11 @@ void OpenGLES11Context::glGetVertexAttribPointerv (GLuint index, GLenum pname, G
 
 GLboolean OpenGLES11Context::glIsFramebuffer (GLuint framebuffer)
 {
+#if PLATFORM_IS_GLES
 	return ::glIsFramebufferOES(framebuffer);
+#else
+    return ::glIsFramebuffer(framebuffer);
+#endif
 }
 
 GLboolean OpenGLES11Context::glIsProgram (GLuint program)
@@ -1245,7 +1411,11 @@ GLboolean OpenGLES11Context::glIsProgram (GLuint program)
 
 GLboolean OpenGLES11Context::glIsRenderbuffer (GLuint renderbuffer)
 {
+#if PLATFORM_IS_GLES    
 	return ::glIsRenderbufferOES(renderbuffer);
+#else
+    return ::glIsRenderbuffer(renderbuffer);
+#endif
 }
 
 GLboolean OpenGLES11Context::glIsShader (GLuint shader)
@@ -1266,8 +1436,12 @@ void OpenGLES11Context::glReleaseShaderCompiler (void)
 
 void OpenGLES11Context::glRenderbufferStorage (GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
 {
+#if PLATFORM_IS_GLES    
 	::glRenderbufferStorageOES(target, internalformat, width, height);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glRenderbufferStorage(target, internalformat, width, height);
+#endif
 }
 
 void OpenGLES11Context::glShaderBinary (GLsizei n, const GLuint* shaders, GLenum binaryformat, const GLvoid* binary, GLsizei length)
@@ -1454,16 +1628,28 @@ void OpenGLES11Context::glVertexAttribPointer (GLuint indx, GLint size, GLenum t
 // OpenGL ES 1/2 Extensions
 void OpenGLES11Context::glGetBufferPointervOES (GLenum target, GLenum pname, GLvoid **params)
 {
+#if PLATFORM_IS_GLES    
 	::glGetBufferPointervOES(target, pname, params);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#else
+    ::glGetBufferPointerv(target, pname, params);
+#endif
 }
 
 GLvoid * OpenGLES11Context::glMapBufferOES (GLenum target, GLenum access)
 {
+#if PLATFORM_IS_GLES    
 	return ::glMapBufferOES(target, access);
+#else
+    return ::glMapBuffer(target, access);
+#endif
 }
 
 GLboolean OpenGLES11Context::glUnmapBufferOES (GLenum target)
 {
+#if PLATFORM_IS_GLES    
 	return ::glUnmapBufferOES(target);
+#else
+    return ::glUnmapBuffer(target);
+#endif
 }

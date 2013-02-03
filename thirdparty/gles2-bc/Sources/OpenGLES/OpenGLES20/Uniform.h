@@ -17,7 +17,9 @@
 #ifndef Uniform_H_
 #define Uniform_H_
 
-#include <OpenGLES/ES2/gl.h>
+//#include <OpenGLES/ES2/gl.h>
+#define INCLUDE_ES1_HEADERS 0
+#include "OpenGLESPlatform.h"
 #include <string>
 #include <sstream>
 #include <utility>

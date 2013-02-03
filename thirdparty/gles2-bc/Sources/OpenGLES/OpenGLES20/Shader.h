@@ -17,7 +17,9 @@
 #ifndef Shader_H_
 #define Shader_H_
 
-#include <OpenGLES/ES2/gl.h>
+//#include <OpenGLES/ES2/gl.h>
+#define INCLUDE_ES1_HEADERS 0
+#include "OpenGLESPlatform.h"
 #include <vector>
 
 namespace OpenGLES {

@@ -108,6 +108,7 @@
 		FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDCE13BAB0E30045C681 /* mkImage.h */; };
 		FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDD113BAB2D40045C681 /* glImage.cpp */; };
 		FACFEDD413BAB2D40045C681 /* glImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDD213BAB2D40045C681 /* glImage.h */; };
+		FADCBB9116BEEF1F000F5EA7 /* OpenGLESPlatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FADCBB9016BEEF1F000F5EA7 /* OpenGLESPlatform.h */; };
 		FAE282AB121A08BB00823BCB /* mkBaseObject.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC95121A088200814394 /* mkBaseObject.h */; };
 		FAE282AC121A08BB00823BCB /* mkCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC96121A088200814394 /* mkCommon.h */; };
 		FAE282AD121A08BB00823BCB /* mkContext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACC98121A088200814394 /* mkContext.h */; };
@@ -336,6 +337,7 @@
 		FACFEDCE13BAB0E30045C681 /* mkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkImage.h; path = ../../src/mkImage.h; sourceTree = "<group>"; };
 		FACFEDD113BAB2D40045C681 /* glImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glImage.cpp; sourceTree = "<group>"; };
 		FACFEDD213BAB2D40045C681 /* glImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glImage.h; sourceTree = "<group>"; };
+		FADCBB9016BEEF1F000F5EA7 /* OpenGLESPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLESPlatform.h; sourceTree = "<group>"; };
 		FAE282E9121A08BB00823BCB /* libMonkVG_iOS_OpenGL.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMonkVG_iOS_OpenGL.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -544,6 +546,7 @@
 		FACCFDD616A8D31700A0E7D9 /* OpenGLES */ = {
 			isa = PBXGroup;
 			children = (
+				FADCBB9016BEEF1F000F5EA7 /* OpenGLESPlatform.h */,
 				FACCFDD716A8D31700A0E7D9 /* OpenGLES11 */,
 				FACCFDDC16A8D31700A0E7D9 /* OpenGLES20 */,
 				FACCFE0716A8D31700A0E7D9 /* OpenGLESConfig.cpp */,
@@ -746,6 +749,7 @@
 				FACCFE7B16A8DD4500A0E7D9 /* texture2.frag.h in Headers */,
 				FACCFECF16A8DE0000A0E7D9 /* all_shaders.h in Headers */,
 				FACCFED516A8ECFC00A0E7D9 /* fmemopen.h in Headers */,
+				FADCBB9116BEEF1F000F5EA7 /* OpenGLESPlatform.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,8 +14,10 @@
  limitations under the License.
  */
 
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
+//#include <OpenGLES/ES2/gl.h>
+//#include <OpenGLES/ES2/glext.h>
+#define INCLUDE_ES1_HEADERS 0
+#include "OpenGLESPlatform.h"
 #include "OpenGLES20Context.h"
 #include "ShaderProgram.h"
 #include "OpenGLESUtil.h"
@@ -87,7 +89,11 @@ void OpenGLES20Context::glClearColorx (GLclampx red, GLclampx green, GLclampx bl
 
 void OpenGLES20Context::glClearDepthf (GLclampf depth)
 {
+#if PLATFORM_IS_GLES
 	::glClearDepthf(depth);
+#else
+    ::glClearDepth(depth);
+#endif
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
 }
 
@@ -180,7 +186,11 @@ void OpenGLES20Context::glDepthMask (GLboolean flag)
 
 void OpenGLES20Context::glDepthRangef (GLclampf zNear, GLclampf zFar)
 {
+#if PLATFORM_IS_GLES
 	::glDepthRangef(zNear, zFar);
+#else
+    ::glDepthRange(zNear, zFar);
+#endif
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
 }
 
@@ -1553,8 +1563,10 @@ void OpenGLES20Context::glGetShaderInfoLog (GLuint shader, GLsizei bufsize, GLsi
 
 void OpenGLES20Context::glGetShaderPrecisionFormat (GLenum shadertype, GLenum precisiontype, GLint* range, GLint* precision)
 {
+#if PLATFORM_IS_GLES    
 	::glGetShaderPrecisionFormat(shadertype, precisiontype, range, precision);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES20Context::glGetShaderSource (GLuint shader, GLsizei bufsize, GLsizei* length, GLchar* source)
@@ -1626,8 +1638,10 @@ void OpenGLES20Context::glLinkProgram (GLuint program)
 
 void OpenGLES20Context::glReleaseShaderCompiler (void)
 {
+#if PLATFORM_IS_GLES    
 	::glReleaseShaderCompiler();
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES20Context::glRenderbufferStorage (GLenum target, GLenum internalformat, GLsizei width, GLsizei height)
@@ -1638,8 +1652,10 @@ void OpenGLES20Context::glRenderbufferStorage (GLenum target, GLenum internalfor
 
 void OpenGLES20Context::glShaderBinary (GLsizei n, const GLuint* shaders, GLenum binaryformat, const GLvoid* binary, GLsizei length)
 {
+#if PLATFORM_IS_GLES    
 	::glShaderBinary(n,shaders,binaryformat,binary,length);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
+#endif
 }
 
 void OpenGLES20Context::glShaderSource (GLuint shader, GLsizei count, const GLchar** string, const GLint* length)
