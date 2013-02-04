@@ -8,7 +8,7 @@ libOpenVG_la_SOURCES=src/mkBaseObject.cpp  src/mkContext.cpp  src/mkImage.cpp  s
 libOpenVG_la_SOURCES+=src/opengl/glBatch.cpp  src/opengl/glContext.cpp  src/opengl/glFont.cpp  src/opengl/glImage.cpp  src/opengl/glPaint.cpp  src/opengl/glPath.cpp
 
 
-libOpenVG_la_CPPFLAGS=-I${top_srcdir}/include -I${top_srcdir}/src -I${top_srcdir}/src/opengl
+libOpenVG_la_CPPFLAGS=-I${top_srcdir}/include -I${top_srcdir}/src -I${top_srcdir}/src/opengl -I${top_srcdir}/thirdparty/gles2-bc/Sources/OpenGLES -I${top_srcdir}/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES11 -I${top_srcdir}/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES20
 
 
 libOpenVG_la_LIBADD=-lGL -lGLU -lGLEW
