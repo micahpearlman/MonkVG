@@ -14,11 +14,11 @@
  limitations under the License.
  */
 
+#define INCLUDE_ES1_HEADERS 1
+#include "OpenGLESPlatform.h"
 #include "OpenGLES11Context.h"
 #include "OpenGLESUtil.h"
 #include "OpenGLES11Implementation.h"
-#define INCLUDE_ES1_HEADERS 1
-#include "OpenGLESPlatform.h"
 //#include <OpenGLES/ES1/gl.h>
 //#include <OpenGLES/ES1/glext.h>
 
@@ -1071,7 +1071,7 @@ void OpenGLES11Context::glTexParameteriv (GLenum target, GLenum pname, const GLi
 
 void OpenGLES11Context::glCurrentPaletteMatrixOES (GLuint matrixpaletteindex)
 {
-#if PLATFORM_IS_GLES    
+#if PLATFORM_IS_GLES    && !PLATFORM_IS_MESA
 	::glCurrentPaletteMatrixOES(matrixpaletteindex);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
 #endif
@@ -1079,7 +1079,7 @@ void OpenGLES11Context::glCurrentPaletteMatrixOES (GLuint matrixpaletteindex)
 
 void OpenGLES11Context::glLoadPaletteFromModelViewMatrixOES (void)
 {
-#if PLATFORM_IS_GLES    
+#if PLATFORM_IS_GLES    && !PLATFORM_IS_MESA
 	::glLoadPaletteFromModelViewMatrixOES();
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
 #endif
@@ -1087,7 +1087,7 @@ void OpenGLES11Context::glLoadPaletteFromModelViewMatrixOES (void)
 
 void OpenGLES11Context::glMatrixIndexPointerOES (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-#if PLATFORM_IS_GLES    
+#if PLATFORM_IS_GLES    && !PLATFORM_IS_MESA
 	::glMatrixIndexPointerOES(size, type, stride, pointer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
 #endif
@@ -1095,7 +1095,7 @@ void OpenGLES11Context::glMatrixIndexPointerOES (GLint size, GLenum type, GLsize
 
 void OpenGLES11Context::glWeightPointerOES (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer)
 {
-#if PLATFORM_IS_GLES    
+#if PLATFORM_IS_GLES    && !PLATFORM_IS_MESA
 	::glWeightPointerOES(size, type, stride, pointer);
 	CHECK_GL_ERROR(glGetError(), __FILE__, __LINE__);
 #endif

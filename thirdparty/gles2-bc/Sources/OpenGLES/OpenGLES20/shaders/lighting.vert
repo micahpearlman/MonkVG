@@ -69,14 +69,14 @@ void calcLighting()
 	#if LIGHT_MODEL_TWO_SIDE_ENABLED == -1
 	if (u_lightModelTwoSideEnabled) {
 	#endif
-		#if LIGHTING_HINT == GL_FASTEST
+		#if LIGHTING_HINT == _GL_FASTEST
 		v_frontColor = calcPerVertexLighting();
 		normal = -normal;
 		v_backColor = calcPerVertexLighting();
-		#elif LIGHTING_HINT == GL_NICEST
+		#elif LIGHTING_HINT == _GL_NICEST
 		calcLightingVaryingsForFragmentShader();
 		#elif LIGHTING_HINT == -1
-		if (u_lightingAccuracy == GL_FASTEST) {
+		if (u_lightingAccuracy == _GL_FASTEST) {
 			v_frontColor = calcPerVertexLighting();
 			normal = -normal;
 			v_backColor = calcPerVertexLighting();
@@ -86,12 +86,12 @@ void calcLighting()
 		#endif
 	#if LIGHT_MODEL_TWO_SIDE_ENABLED == -1
 	} else {
-		#if LIGHTING_HINT == GL_FASTEST
+		#if LIGHTING_HINT == _GL_FASTEST
 		v_frontColor = calcPerVertexLighting();
-		#elif LIGHTING_HINT == GL_NICEST
+		#elif LIGHTING_HINT == _GL_NICEST
 		calcLightingVaryingsForFragmentShader();
 		#elif LIGHTING_HINT == -1
-		if (u_lightingAccuracy == GL_FASTEST) {
+		if (u_lightingAccuracy == _GL_FASTEST) {
 			v_frontColor = calcPerVertexLighting();
 		} else {
 			calcLightingVaryingsForFragmentShader();
@@ -100,12 +100,12 @@ void calcLighting()
 	}
 	#endif
 #else 
-	#if LIGHTING_HINT == GL_FASTEST
+	#if LIGHTING_HINT == _GL_FASTEST
 		v_frontColor = calcPerVertexLighting();
-	#elif LIGHTING_HINT == GL_NICEST
+	#elif LIGHTING_HINT == _GL_NICEST
 		calcLightingVaryingsForFragmentShader();
 	#elif LIGHTING_HINT == -1
-		if (u_lightingAccuracy == GL_FASTEST) {
+		if (u_lightingAccuracy == _GL_FASTEST) {
 			v_frontColor = calcPerVertexLighting();
 		} else {
 			calcLightingVaryingsForFragmentShader();

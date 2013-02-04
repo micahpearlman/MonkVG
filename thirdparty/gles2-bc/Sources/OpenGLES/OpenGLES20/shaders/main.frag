@@ -5,8 +5,8 @@
 	precision mediump float;
 #endif
 
-#define GL_FASTEST 0x1101
-#define GL_NICEST 0x1102
+#define _GL_FASTEST 0x1101
+#define _GL_NICEST 0x1102
 
 #if !defined(TEXTURE0_ENABLED)
 	#define TEXTURE0_ENABLED -1
@@ -126,12 +126,12 @@ void main()
 	#endif
 		
 	float fogFactor;
-	#if FOG_HINT == GL_FASTEST
+	#if FOG_HINT == _GL_FASTEST
 		fogFactor = v_fogFactor;
-	#elif FOG_HINT == GL_NICEST
+	#elif FOG_HINT == _GL_NICEST
 		fogFactor = calcFogFactor(v_eyeDistance);
 	#elif FOG_HINT == -1
-		if (u_fogHint == GL_FASTEST) {
+		if (u_fogHint == _GL_FASTEST) {
 			fogFactor = v_fogFactor;
 		} else {
 			fogFactor = calcFogFactor(v_eyeDistance);

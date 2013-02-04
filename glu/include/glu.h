@@ -38,7 +38,10 @@
 
 #ifdef ANDROID
 #include <GLES/gl.h>
+#elif defined(__linux__)
+#include <GLES/gl.h>
 #endif // #ifdef ANDROID 
+
 
 #ifndef GLAPIENTRY
 #define GLAPIENTRY

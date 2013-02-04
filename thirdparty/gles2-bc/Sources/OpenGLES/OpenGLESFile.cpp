@@ -15,12 +15,14 @@
  */
 
 #include "OpenGLESFile.h"
-#include "Util.h"
+//#include "Util.h"
 #include <stdio.h>
 
-#include "all_shaders.h"
+#include "OpenGLES20/shaders/all_shaders.h"
 
-#include "fmemopen.h"   // BUGBUG: you're platform shoud support this somehow
+#if !defined(USE_SYSTEM_FMEMOPEN)
+#include "fmemopen.h"   // BUGBUG: your platform shoud support this somehow
+#endif
 
 using namespace OpenGLES;
 

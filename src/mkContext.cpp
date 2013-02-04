@@ -34,7 +34,7 @@ VG_API_CALL void vgResizeSurfaceMNK(VGint width, VGint height)
 
 }
 
-VG_API_CALL void vgDestroyContext()
+VG_API_CALL void vgDestroyContextMNK()
 {
 }
 

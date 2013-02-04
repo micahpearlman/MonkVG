@@ -1,5 +1,5 @@
-#define GL_FASTEST 0x1101
-#define GL_NICEST 0x1102
+#define _GL_FASTEST 0x1101
+#define _GL_NICEST 0x1102
 
 #if !defined(LIGHTING_ENABLED)
 	#define LIGHTING_ENABLED -1
@@ -236,12 +236,12 @@ void main()
 	if (u_fogEnabled) {
 	#endif
 		
-	#if FOG_HINT == GL_FASTEST
+	#if FOG_HINT == _GL_FASTEST
 		v_fogFactor = calcFogFactor(-vertexPositionInEye.z);
-	#elif FOG_HINT == GL_NICEST
+	#elif FOG_HINT == _GL_NICEST
 		v_eyeDistance = -vertexPositionInEye.z;
 	#elif FOG_HINT == -1
-		if (u_fogHint == GL_FASTEST) {
+		if (u_fogHint == _GL_FASTEST) {
 			v_fogFactor = calcFogFactor(-vertexPositionInEye.z);
 		} else {
 			v_eyeDistance = -vertexPositionInEye.z;

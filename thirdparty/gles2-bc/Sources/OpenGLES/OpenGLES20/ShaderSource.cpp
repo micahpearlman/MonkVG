@@ -14,6 +14,8 @@
  limitations under the License.
  */
 
+#include <cstring>
+#include <cstdlib>
 #include "ShaderSource.h"
 #include "ShaderFile.h"
 #include "OpenGLESUtil.h"
