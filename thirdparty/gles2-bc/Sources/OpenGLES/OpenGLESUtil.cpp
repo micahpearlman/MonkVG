@@ -14,6 +14,9 @@
  limitations under the License.
  */
 
+#if defined(ANDROID)
+#include <android/log.h>
+#endif
 #include "OpenGLESUtil.h"
 
 using namespace OpenGLES;
@@ -56,12 +59,27 @@ void OpenGLESUtil::checkGlError(GLenum errorCode, const char *file, const unsign
 
 void OpenGLESUtil::logMessage(const char *file, int line, OpenGLESString msg)
 {
+#if defined(ANDROID)
+	__android_log_print(ANDROID_LOG_INFO, "gles-bc", "%s:%d %s\n", file, line, msg().c_str());
+#else
 	printf("%s:%d %s\n", file, line, msg().c_str());
+#endif
 }
 
 void OpenGLESUtil::logMessage(OpenGLESString msg)
 {
+#if defined(ANDROID)
+	int last = 0;
+	std::string s = msg();
+	for (int i = 0; i < int(s.size()); ++i)
+		if (i == s.size() - 1 || s[i] == '\n')
+		{
+			__android_log_print(ANDROID_LOG_INFO, "gles-bc", "%s\n", s.substr(last, i - last + (s[i] == '\n' ? 0 : 1)).c_str());
+			last = i + 1;
+		}
+#else
 	printf("%s\n", msg().c_str());
+#endif
 }
 
 void OpenGLESUtil::print( const char* format, ... ) 

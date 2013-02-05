@@ -19,7 +19,8 @@ vec4 calcPerVertexLighting()
 	
 	#if LIGHT0_ENABLED == 1
 	color += calcLight(u_light0);
-	#elif LIGHT0_ENABLED == -1
+	#elif LIGHT0_ENABLED != -1
+	#else
 	if (u_light0Enabled) {
 		color += calcLight(u_light0);
 	}
@@ -27,7 +28,8 @@ vec4 calcPerVertexLighting()
 	
 	#if LIGHT1_ENABLED == 1
 	color += calcLight(u_light1);
-	#elif LIGHT1_ENABLED == -1
+	#elif LIGHT1_ENABLED != -1
+	#else
 	if (u_light1Enabled) {
 		color += calcLight(u_light1);
 	}
@@ -35,7 +37,8 @@ vec4 calcPerVertexLighting()
 	
 	#if LIGHT2_ENABLED == 1
 	color += calcLight(u_light2);
-	#elif LIGHT2_ENABLED == -1
+	#elif LIGHT2_ENABLED != -1
+	#else
 	if (u_light2Enabled) {
 		color += calcLight(u_light2);
 	}

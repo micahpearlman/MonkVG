@@ -1,7 +1,7 @@
 
-#define GL_LINEAR 0x2601
-#define GL_EXP 0x0800
-#define GL_EXP2 0x0801
+#define _GL_LINEAR 0x2601
+#define _GL_EXP 0x0800
+#define _GL_EXP2 0x0801
 
 #if !defined(FOG_MODE)
 	#define FOG_MODE -1
@@ -22,16 +22,16 @@ float calcFogExp2(float distanceToEye);
 float calcFogFactor(float distanceToEye)
 {
 	float fogFactor;
-#if FOG_MODE == GL_LINEAR
+#if FOG_MODE == _GL_LINEAR
 	fogFactor = calcFogLinear(distanceToEye);
-#elif FOG_MODE == GL_EXP
+#elif FOG_MODE == _GL_EXP
 	fogFactor = calcFogExp(distanceToEye);
-#elif FOG_MODE == GL_EXP2
+#elif FOG_MODE == _GL_EXP2
 	fogFactor = calcFogExp2(distanceToEye);
 #elif FOG_MODE == -1
-	if (u_fogMode == GL_LINEAR) {
+	if (u_fogMode == _GL_LINEAR) {
 		fogFactor = calcFogLinear(distanceToEye);
-	} else if (u_fogMode == GL_EXP) {
+	} else if (u_fogMode == _GL_EXP) {
 		fogFactor = calcFogExp(distanceToEye);
 	} else {
 		fogFactor = calcFogExp2(distanceToEye);

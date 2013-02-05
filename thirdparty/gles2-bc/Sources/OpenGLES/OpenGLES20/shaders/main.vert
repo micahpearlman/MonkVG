@@ -1,5 +1,5 @@
-#define GL_FASTEST 0x1101
-#define GL_NICEST 0x1102
+#define _GL_FASTEST 0x1101
+#define _GL_NICEST 0x1102
 
 #if !defined(LIGHTING_ENABLED)
 	#define LIGHTING_ENABLED -1
@@ -138,7 +138,8 @@ void main()
 {
 #if POSITION_ENABLED == 1
 	gl_Position = u_modelViewProjectionMatrix * a_position;
-#elif POSITION_ENABLED == -1
+#elif POSITION_ENABLED != -1
+#else
 	if (u_positionEnabled) {
 		gl_Position = u_modelViewProjectionMatrix * a_position;
 	}
@@ -152,33 +153,38 @@ void main()
 	normal = u_transposeAdjointModelViewMatrix * a_normal;
 	#if RESCALE_NORMAL_ENABLED == 1
 		normal = normal * u_rescaleNormalFactor;
-	#elif RESCALE_NORMAL_ENABLED == -1
+	#elif RESCALE_NORMAL_ENABLED != -1
+	#else
 		if (u_rescaleNormalEnabled) {
 			normal = normal * u_rescaleNormalFactor;
 		}
 	#endif
 	#if NORMALIZE_ENABLED == 1
 		normal = normalize(normal);
-	#elif NORMALIZE_ENABLED == -1
+	#elif NORMALIZE_ENABLED != -1
+	#else
 		if (u_normalizeEnabled) {
 			normal = normalize(normal);
 		}
 	#endif
 #elif NORMAL_ENABLED == 0
 	normal = vec3(c_zerof, c_zerof, c_onef);
-#elif NORMAL_ENABLED == -1
+#elif NORMAL_ENABLED != -1
+#else
 	if (u_normalEnabled) {
 		normal = u_transposeAdjointModelViewMatrix * a_normal;
 		#if RESCALE_NORMAL_ENABLED == 1
 			normal = normal * u_rescaleNormalFactor;
-		#elif RESCALE_NORMAL_ENABLED == -1
+		#elif RESCALE_NORMAL_ENABLED != -1
+		#else
 			if (u_rescaleNormalEnabled) {
 				normal = normal * u_rescaleNormalFactor;
 			}
 		#endif
 		#if NORMALIZE_ENABLED == 1
 			normal = normalize(normal);
-		#elif NORMALIZE_ENABLED == -1
+		#elif NORMALIZE_ENABLED != -1
+		#else
 			if (u_normalizeEnabled) {
 				normal = normalize(normal);
 			}
@@ -193,13 +199,15 @@ void main()
 	color = a_color;
 #elif COLOR_ENABLED == 0
 	color = vec4(c_onef, c_onef, c_onef, c_onef);
-#elif COLOR_ENABLED == -1
+#elif COLOR_ENABLED != -1
+#else
 	color = u_colorEnabled ? a_color : vec4(c_onef, c_onef, c_onef, c_onef);
 #endif
 	
 #if FOG_ENABLED == 1 || (LIGHTING_ENABLED == 1 && (NON_DIRECTIONAL_LIGHT_ENABLED != 0 || LIGHT_MODEL_LOCAL_VIEWER_ENABLED != 0)) || CLIP_PLANE0_ENABLED != 0 || CLIP_PLANE1_ENABLED != 0 || CLIP_PLANE2_ENABLED != 0 || CLIP_PLANE3_ENABLED !=0 || CLIP_PLANE4_ENABLED != 0 || CLIP_PLANE5_ENABLED != 0
 	vertexPositionInEye = u_modelViewMatrix * a_position;
-#elif FOG_ENABLED == -1 && LIGHTING_ENABLED == -1
+#else
+#if FOG_ENABLED == -1 && LIGHTING_ENABLED == -1
 	if (u_fogEnabled) {
 		vertexPositionInEye = u_modelViewMatrix * a_position;
 	} else if (u_lightingEnabled) {
@@ -207,16 +215,21 @@ void main()
 		vertexPositionInEye = u_modelViewMatrix * a_position;
 		#endif
 	}
-#elif FOG_ENABLED == -1
+#else
+#if FOG_ENABLED == -1
 	if (u_fogEnabled) {
 		vertexPositionInEye = u_modelViewMatrix * a_position;
 	}
-#elif LIGHTING_ENABLED == -1
+#else
+#if LIGHTING_ENABLED == -1
 	if (u_lightingEnabled) {
 		#if NON_DIRECTIONAL_LIGHT_ENABLED == 1 || NON_DIRECTIONAL_LIGHT_ENABLED == -1 || LIGHT_MODEL_LOCAL_VIEWER_ENABLED == 1 || LIGHT_MODEL_LOCAL_VIEWER_ENABLED == -1
 		vertexPositionInEye = u_modelViewMatrix * a_position;
 		#endif
 	}
+#endif
+#endif
+#endif
 #endif
 
 #if LIGHTING_ENABLED == 1
@@ -236,12 +249,13 @@ void main()
 	if (u_fogEnabled) {
 	#endif
 		
-	#if FOG_HINT == GL_FASTEST
+	#if FOG_HINT == _GL_FASTEST
 		v_fogFactor = calcFogFactor(-vertexPositionInEye.z);
-	#elif FOG_HINT == GL_NICEST
+	#elif FOG_HINT == _GL_NICEST
 		v_eyeDistance = -vertexPositionInEye.z;
-	#elif FOG_HINT == -1
-		if (u_fogHint == GL_FASTEST) {
+	#elif FOG_HINT != -1
+	#else
+		if (u_fogHint == _GL_FASTEST) {
 			v_fogFactor = calcFogFactor(-vertexPositionInEye.z);
 		} else {
 			v_eyeDistance = -vertexPositionInEye.z;

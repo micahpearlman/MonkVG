@@ -14,7 +14,7 @@
 #include "glPlatform.h"
 #include "OpenGLES11Context.h"
 #include "OpenGLES20Context.h"
-
+#undef CHECK_GL_ERROR	// gles2-bc also leaves this defined.
 
 namespace MonkVG {
     

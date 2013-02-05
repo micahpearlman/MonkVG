@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+#include <cstdlib>
 #include "OpenGLESImplementation.h"
 #include "OpenGLESUtil.h"
 
