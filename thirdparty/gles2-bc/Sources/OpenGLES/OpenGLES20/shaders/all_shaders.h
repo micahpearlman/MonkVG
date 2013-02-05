@@ -3,6 +3,7 @@
 //  MonkVG-iOS
 //
 //  Created by Micah Pearlman on 1/17/13.
+//  Modified by Gav Wood on 4/2/13.
 //
 //
 
@@ -29,6 +30,7 @@
 #include "texture0.vert.h"
 #include "texture1.vert.h"
 #include "texture2.vert.h"
+#include "fog.glsl.h"
 
 #include <string>
 struct shaderMap {
@@ -37,7 +39,7 @@ struct shaderMap {
     unsigned int len;
 };
 
-#define SHADERMAP_CNT 20
+#define SHADERMAP_CNT 21
 shaderMap shaders[SHADERMAP_CNT] = {
     
     // fragment shaders
@@ -62,8 +64,9 @@ shaderMap shaders[SHADERMAP_CNT] = {
     { "texture.vert", texture_vert, texture_vert_len },
     { "texture0.vert", texture0_vert, texture0_vert_len },
     { "texture1.vert", texture1_vert, texture1_vert_len },
-    { "texture2.vert", texture2_vert, texture2_vert_len }
+    { "texture2.vert", texture2_vert, texture2_vert_len },
     
+    { "fog.glsl", fog_glsl, fog_glsl_len }
     
 };
 #endif

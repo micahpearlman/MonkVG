@@ -15,6 +15,8 @@ using namespace MonkVG;
 
 VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height, VGRenderingBackendTypeMNK backend )
 {
+	MK_LOG("Creating context %d, %d, %d", width, height, (int)backend);
+
     IContext::instance().setRenderingBackendType( backend );
     
 	IContext::instance().Initialize();
@@ -34,7 +36,7 @@ VG_API_CALL void vgResizeSurfaceMNK(VGint width, VGint height)
 
 }
 
-VG_API_CALL void vgDestroyContext()
+VG_API_CALL void vgDestroyContextMNK()
 {
 }
 

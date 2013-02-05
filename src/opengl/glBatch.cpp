@@ -6,6 +6,7 @@
 //  Copyright 2011 Zero Vision. All rights reserved.
 //
 
+#include <cstring> // for std::memcpy
 #include "glBatch.h"
 #include "glContext.h"
 

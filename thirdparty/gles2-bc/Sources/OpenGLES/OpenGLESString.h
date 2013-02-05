@@ -30,11 +30,14 @@ namespace OpenGLES {
 		OpenGLESString operator+ (const char *val);
 		OpenGLESString operator+ (std::string val);
 		OpenGLESString operator+ (OpenGLESString val);
+#if !defined(ANDROID)
 		OpenGLESString operator+ (size_t val);
+#endif
 		OpenGLESString operator+ (int val);
 		OpenGLESString operator+ (unsigned int val);
 		OpenGLESString operator+ (float val);
 		OpenGLESString operator+ (double val);
+		size_t size() const { return string.size(); }
 		std::string operator()();
 	private:
 		std::string string;

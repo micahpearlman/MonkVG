@@ -31,7 +31,8 @@ namespace OpenGLES {
 		long int tell();
 		size_t read(void *ptr, size_t size, size_t count);
 		void close();
-		std::string getName();
+		std::string getName() const;
+		std::string getPath() const;	// rootPath + getName()
         
         static void setRootPath( const std::string& rp ) {
             OpenGLESFile::rootPath = rp;

@@ -33,6 +33,8 @@
 
 #ifdef ANDROID
 #include <GLES/gl.h>
+#elif __linux__
+#include <GLES/gl.h>
 #else
 #include <OpenGLES/ES1/gl.h>
 #endif // #ifdef ANDROID

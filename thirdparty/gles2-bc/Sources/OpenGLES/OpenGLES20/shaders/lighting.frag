@@ -26,54 +26,54 @@ void calcLighting(out vec4 color)
 	if (u_lightModelTwoSideEnabled) {
 	#endif
 	if (gl_FrontFacing) {
-		#if LIGHTING_HINT == GL_FASTEST
+		#if LIGHTING_HINT == _GL_FASTEST
 		color = v_frontColor;
-		#elif LIGHTING_HINT == GL_NICEST
+		#elif LIGHTING_HINT == _GL_NICEST
 		color = calcPerFragmentLighting();
 		#elif LIGHTING_HINT == -1
-		if (u_lightingAccuracy == GL_FASTEST) {
+		if (u_lightingAccuracy == _GL_FASTEST) {
 			color = v_frontColor;
-		} else if (u_lightingAccuracy == GL_NICEST) {
+		} else if (u_lightingAccuracy == _GL_NICEST) {
 			color = calcPerFragmentLighting();
 		}
 		#endif
 	} else {
-		#if LIGHTING_HINT == GL_FASTEST
+		#if LIGHTING_HINT == _GL_FASTEST
 		color = v_backColor;
-		#elif LIGHTING_HINT == GL_NICEST
+		#elif LIGHTING_HINT == _GL_NICEST
 		color = calcPerFragmentLighting();
 		#elif LIGHTING_HINT == -1
-		if (u_lightingAccuracy == GL_FASTEST) {
+		if (u_lightingAccuracy == _GL_FASTEST) {
 			color = v_backColor;
-		} else if (u_lightingAccuracy == GL_NICEST) {
+		} else if (u_lightingAccuracy == _GL_NICEST) {
 			color = calcPerFragmentLighting();
 		}
 		#endif
 	}
 	#if LIGHT_MODEL_TWO_SIDE_ENABLED == -1
 	} else {
-		#if LIGHTING_HINT == GL_FASTEST
+		#if LIGHTING_HINT == _GL_FASTEST
 		color = v_frontColor;
-		#elif LIGHTING_HINT == GL_NICEST
+		#elif LIGHTING_HINT == _GL_NICEST
 		color = calcPerFragmentLighting();
 		#elif LIGHTING_HINT == -1
-		if (u_lightingAccuracy == GL_FASTEST) {
+		if (u_lightingAccuracy == _GL_FASTEST) {
 			color = v_frontColor;
-		} else if (u_lightingAccuracy == GL_NICEST) {
+		} else if (u_lightingAccuracy == _GL_NICEST) {
 			color = calcPerFragmentLighting();
 		}
 		#endif
 	}
 	#endif
 #elif LIGHT_MODEL_TWO_SIDE_ENABLED == 0
-	#if LIGHTING_HINT == GL_FASTEST
+	#if LIGHTING_HINT == _GL_FASTEST
 	color = v_frontColor;
-	#elif LIGHTING_HINT == GL_NICEST
+	#elif LIGHTING_HINT == _GL_NICEST
 	color = calcPerFragmentLighting();
 	#elif LIGHTING_HINT == -1
-	if (u_lightingAccuracy == GL_FASTEST) {
+	if (u_lightingAccuracy == _GL_FASTEST) {
 		color = v_frontColor;
-		} else if (u_lightingAccuracy == GL_NICEST) {
+		} else if (u_lightingAccuracy == _GL_NICEST) {
 	color = calcPerFragmentLighting();
 	}
 	#endif

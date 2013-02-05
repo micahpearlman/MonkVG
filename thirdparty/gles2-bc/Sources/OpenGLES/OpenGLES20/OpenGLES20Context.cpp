@@ -28,6 +28,7 @@ using namespace OpenGLES::OpenGLES2;
 
 OpenGLES20Context::OpenGLES20Context() : OpenGLESContext(2, new OpenGLES20Implementation()), matrixStack(&openGLESState, implementation), openGLESState(), shaderProgramId(0)
 {
+	LOG_MESSAGE(__FILE__, __LINE__, "Creating GLES2.0 Context...");
 	implementation->init();
 	matrixStack.init();
 	openGLESState.init(implementation);

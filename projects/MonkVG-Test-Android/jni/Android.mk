@@ -12,54 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-LOCAL_PATH:= $(call my-dir)
+LOCAL_PATH       := $(call my-dir)
+top_srcdir := $(call my-dir)/../../..
+c_includes := \
+		$(top_srcdir)/glu/include $(top_srcdir)/include \
+		$(top_srcdir)/src $(top_srcdir)/src/opengl \
+		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES \
+		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES11 \
+		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES20 \
+		$(top_srcdir)/thirdparty/fmemopen $(LOCAL_PATH)/boost/include
 
 include $(CLEAR_VARS)
+LOCAL_MODULE    := libOpenVG
+LOCAL_SRC_FILES := ../../MonkVG-Android/obj/local/armeabi/libOpenVG.a
+include $(PREBUILT_STATIC_LIBRARY)
 
-LOCAL_MODULE    := libmonkvg
-LOCAL_CFLAGS    := -Werror
-LOCAL_C_INCLUDES := \
-    $(LOCAL_PATH)/../../../glu/include \
-    $(LOCAL_PATH)/../../../include \
-    $(LOCAL_PATH)/../../../src \
-    $(LOCAL_PATH)/../../../src/opengl
-    
-LOCAL_SRC_FILES := \
-    gl_code.cpp \
-    ../../../glu/libtess/dict.c \
-    ../../../glu/libtess/geom.c \
-    ../../../glu/libtess/memalloc.c \
-    ../../../glu/libtess/mesh.c \
-    ../../../glu/libtess/normal.c \
-    ../../../glu/libtess/priorityq.c \
-    ../../../glu/libtess/render.c \
-    ../../../glu/libtess/sweep.c \
-    ../../../glu/libtess/tess.c \
-    ../../../glu/libtess/tessmono.c \
-    ../../../glu/libutil/error.c \
-    ../../../glu/libutil/glue.c \
-    ../../../glu/libutil/project.c \
-    ../../../glu/libutil/registry.c \
-    ../../../src/opengl/glBatch.cpp \
-    ../../../src/opengl/glContext.cpp \
-    ../../../src/opengl/glFont.cpp \
-    ../../../src/opengl/glImage.cpp \
-    ../../../src/opengl/glPaint.cpp \
-    ../../../src/opengl/glPath.cpp \
-    ../../../src/mkBaseObject.cpp \
-    ../../../src/mkBatch.cpp \
-    ../../../src/mkContext.cpp \
-    ../../../src/mkFont.cpp \
-    ../../../src/mkImage.cpp \
-    ../../../src/mkMath.cpp \
-    ../../../src/mkPaint.cpp \
-    ../../../src/mkParameter.cpp \
-    ../../../src/mkPath.cpp \
-    ../../../src/mkVGU.cpp
+include $(CLEAR_VARS)
+LOCAL_MODULE    := libOpenVGU
+LOCAL_SRC_FILES := ../../MonkVG-Android/obj/local/armeabi/libOpenVGU.a
+LOCAL_STATIC_LIBRARIES := libOpenVG
+include $(PREBUILT_STATIC_LIBRARY)
 
-LOCAL_LDLIBS    := -llog -lGLESv1_CM
-
-LOCAL_CFLAGS += -I$(LOCAL_PATH)/boost/include/ 
-LOCAL_LDLIBS += -L$(LOCAL_PATH)/boost/lib/ -lboost_system-gcc-mt
-
+include $(CLEAR_VARS)
+LOCAL_MODULE     := libmonkvg
+LOCAL_CFLAGS     := $(cflags)
+LOCAL_C_INCLUDES := $(c_includes)
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_SRC_FILES  := gl_code.cpp
+LOCAL_STATIC_LIBRARIES := libOpenVGU libOpenVG
 include $(BUILD_SHARED_LIBRARY)
+
+
