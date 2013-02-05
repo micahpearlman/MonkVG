@@ -21,61 +21,17 @@ c_includes := \
 		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES11 \
 		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES20 \
 		$(top_srcdir)/thirdparty/fmemopen $(LOCAL_PATH)/boost/include
-gles2bc_dir := ../../../thirdparty/gles2-bc/Sources/OpenGLES
-glu_files := \
-    ../../../glu/libtess/dict.c \
-    ../../../glu/libtess/geom.c \
-    ../../../glu/libtess/memalloc.c \
-    ../../../glu/libtess/mesh.c \
-    ../../../glu/libtess/normal.c \
-    ../../../glu/libtess/priorityq.c \
-    ../../../glu/libtess/render.c \
-    ../../../glu/libtess/sweep.c \
-    ../../../glu/libtess/tess.c \
-    ../../../glu/libtess/tessmono.c \
-    ../../../glu/libutil/error.c \
-    ../../../glu/libutil/glue.c \
-    ../../../glu/libutil/project.c \
-    ../../../glu/libutil/registry.c
-src_files := \
-    ../../../src/opengl/glBatch.cpp \
-    ../../../src/opengl/glContext.cpp \
-    ../../../src/opengl/glFont.cpp \
-    ../../../src/opengl/glImage.cpp \
-    ../../../src/opengl/glPaint.cpp \
-    ../../../src/opengl/glPath.cpp \
-    ../../../src/mkBaseObject.cpp \
-    ../../../src/mkBatch.cpp \
-    ../../../src/mkContext.cpp \
-    ../../../src/mkFont.cpp \
-    ../../../src/mkImage.cpp \
-    ../../../src/mkMath.cpp \
-    ../../../src/mkPaint.cpp \
-    ../../../src/mkParameter.cpp \
-    ../../../src/mkPath.cpp
-thirdparty_files := ../../../thirdparty/fmemopen/fmemopen.c \
-	$(gles2bc_dir)/OpenGLESConfig.cpp $(gles2bc_dir)/OpenGLESContext.cpp $(gles2bc_dir)/OpenGLESFile.cpp $(gles2bc_dir)/OpenGLESImplementation.cpp \
-    $(gles2bc_dir)/OpenGLESString.cpp $(gles2bc_dir)/OpenGLESUtil.cpp $(gles2bc_dir)/OpenGLES11/OpenGLES11Context.cpp $(gles2bc_dir)/OpenGLES11/OpenGLES11Implementation.cpp \
-    $(gles2bc_dir)/OpenGLES20/Attribute.cpp $(gles2bc_dir)/OpenGLES20/MatrixStack.cpp $(gles2bc_dir)/OpenGLES20/OpenGLES20Context.cpp \
-    $(gles2bc_dir)/OpenGLES20/OpenGLES20Implementation.cpp $(gles2bc_dir)/OpenGLES20/OpenGLESState.cpp $(gles2bc_dir)/OpenGLES20/Shader.cpp $(gles2bc_dir)/OpenGLES20/ShaderFile.cpp \
-    $(gles2bc_dir)/OpenGLES20/ShaderProgram.cpp  $(gles2bc_dir)/OpenGLES20/ShaderSource.cpp $(gles2bc_dir)/OpenGLES20/Uniform.cpp
 
 include $(CLEAR_VARS)
-LOCAL_MODULE     := libOpenVG
-LOCAL_CFLAGS     := $(cflags)
-LOCAL_C_INCLUDES := $(c_includes)
-LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
-LOCAL_SRC_FILES  := $(glu_files) $(src_files) $(thirdparty_files)
-include $(BUILD_STATIC_LIBRARY)
+LOCAL_MODULE    := libOpenVG
+LOCAL_SRC_FILES := ../../MonkVG-Android/obj/local/armeabi/libOpenVG.a
+include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE     := libOpenVGU
-LOCAL_CFLAGS     := $(cflags)
-LOCAL_C_INCLUDES := $(c_includes)
-LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
-LOCAL_SRC_FILES  := ../../../src/mkVGU.cpp
+LOCAL_MODULE    := libOpenVGU
+LOCAL_SRC_FILES := ../../MonkVG-Android/obj/local/armeabi/libOpenVGU.a
 LOCAL_STATIC_LIBRARIES := libOpenVG
-include $(BUILD_STATIC_LIBRARY)
+include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE     := libmonkvg
@@ -83,7 +39,7 @@ LOCAL_CFLAGS     := $(cflags)
 LOCAL_C_INCLUDES := $(c_includes)
 LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
 LOCAL_SRC_FILES  := gl_code.cpp
-LOCAL_STATIC_LIBRARIES := libOpenVGU libOpenVG 
+LOCAL_STATIC_LIBRARIES := libOpenVGU libOpenVG
 include $(BUILD_SHARED_LIBRARY)
 
 
