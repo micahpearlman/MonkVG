@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 LOCAL_PATH := $(call my-dir)
-cflags := -DOPENGLES_DEBUG
+#cflags := -DOPENGLES_DEBUG
 top_srcdir := $(call my-dir)/../../..
 c_includes := \
 		$(top_srcdir)/glu/include $(top_srcdir)/include \
@@ -54,7 +54,7 @@ src_files := \
     ../../../src/mkPaint.cpp \
     ../../../src/mkParameter.cpp \
     ../../../src/mkPath.cpp
-thirdparty_files := ../../../thirdparty/fmemopen/fmemopen.c \
+thirdparty_files := \
 	$(gles2bc_dir)/OpenGLESConfig.cpp \
 	$(gles2bc_dir)/OpenGLESContext.cpp \
 	$(gles2bc_dir)/OpenGLESFile.cpp \

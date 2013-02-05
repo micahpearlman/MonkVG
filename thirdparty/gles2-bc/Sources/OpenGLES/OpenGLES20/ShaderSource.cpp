@@ -20,6 +20,7 @@
 #include "ShaderFile.h"
 #include "OpenGLESUtil.h"
 #include "OpenGLESConfig.h"
+#include "shaders/all_shaders.h"
 
 using namespace OpenGLES::OpenGLES2;
 
@@ -36,19 +37,37 @@ ShaderSource::ShaderSource( ShaderFile *file, std::string additionalSource ) : f
 bool ShaderSource::expandSource()
 {
 	static char tmp[1024*16];
-
-	if (!file->open())
+	int n;
+	// Check if file is already in memory...
+	LOG_DEBUG_MESSAGE("Request for " + file->getName());
+	int i;
+	for (i = 0; i < SHADERMAP_CNT; ++i)
+		if (file->getName() == ::shaders[i].name)
+			break;
+	if (i < SHADERMAP_CNT)
 	{
-		LOG_MESSAGE(OpenGLESString("ERROR: Cannot open file ") + file->getName());
-		return false;
+		// Have in memory - just set length and copy over to tmp...
+		n = ::shaders[i].len;
+		memcpy(tmp, ::shaders[i].shader, n);
+		LOG_DEBUG_MESSAGE(OpenGLESString("File in memory; length ") + n);
 	}
-	file->seek(0, SEEK_END);
-	long pos = file->tell();
-	file->seek(0, SEEK_SET);
+	else
+	{
+		// Not in memory - fall back to file.
+		LOG_DEBUG_MESSAGE("File not in memory?");
+		if (!file->open())
+		{
+			LOG_DEBUG_MESSAGE(OpenGLESString("ERROR: Cannot open file ") + file->getName());
+			return false;
+		}
+		file->seek(0, SEEK_END);
+		long pos = file->tell();
+		file->seek(0, SEEK_SET);
 
-	int n = file->read(tmp, 1, pos);
+		n = file->read(tmp, 1, pos);
+		file->close();
+	}
 	tmp[n] = '\0';
-	file->close();
 
 	int additionalSourceLength = additionalSource.size();
 	char *sourceTmp = (char *)malloc(sizeof(char) * n + additionalSourceLength + 1);
@@ -58,8 +77,11 @@ bool ShaderSource::expandSource()
 		return false;
 	}
 
-	strcpy(sourceTmp, additionalSource.c_str());
-	strncpy(sourceTmp + additionalSourceLength, tmp, n + 1);
+	memcpy(sourceTmp, additionalSource.c_str(), additionalSource.size());
+	memcpy(sourceTmp + additionalSource.size(), tmp, n);
+	sourceTmp[additionalSource.size() + n] = 0;
+	LOG_DEBUG_MESSAGE(OpenGLESString("Final source is:") + strlen(sourceTmp) + " = " + (additionalSource.size() + n) + " bytes");
+//	LOG_MESSAGE(OpenGLESString(additionalSource.c_str()) + "\n+\n" + tmp + "\n=\n" + sourceTmp);
 
 	source = sourceTmp;
 	sourceExpanded = true;

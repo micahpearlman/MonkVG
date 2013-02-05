@@ -130,7 +130,8 @@ void main()
 		fogFactor = v_fogFactor;
 	#elif FOG_HINT == _GL_NICEST
 		fogFactor = calcFogFactor(v_eyeDistance);
-	#elif FOG_HINT == -1
+	#elif FOG_HINT != -1
+	#else
 		if (u_fogHint == _GL_FASTEST) {
 			fogFactor = v_fogFactor;
 		} else {

@@ -1,1 +1,1 @@
-for i in *.frag *.vert *.glsl; do xxd -i fog.glsl > fog.glsl.h; done
+for i in *.frag *.vert *.glsl; do xxd -i $i > $i.h; done

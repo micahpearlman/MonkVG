@@ -15,14 +15,7 @@
  */
 
 #include "OpenGLESFile.h"
-//#include "Util.h"
 #include <stdio.h>
-
-#include "OpenGLES20/shaders/all_shaders.h"
-
-#if !defined(USE_SYSTEM_FMEMOPEN)
-#include "fmemopen.h"   // BUGBUG: your platform shoud support this somehow
-#endif
 
 using namespace OpenGLES;
 
@@ -30,25 +23,13 @@ std::string OpenGLESFile::rootPath( "/" );
 
 OpenGLESFile::OpenGLESFile(std::string n) : name()
 {
-    // see if this is actually compiled into source as a header
-    for ( int i = 0; i < SHADERMAP_CNT; i++) {
-        if ( shaders[i].name == n ) {
-            name = n;
-            inMemoryIdx = i;
-            return;     // found it in memory 
-        }
-    }
-    inMemoryIdx = -1; // not in memory, just a plain old file
-	name = OpenGLESFile::rootPath + n;
+	name = n;
 }
 
 bool OpenGLESFile::open() 
 {
-    if ( inMemoryIdx != -1 ) {  // read from memory
-        fp = fmemopen(shaders[inMemoryIdx].shader, shaders[inMemoryIdx].len, "r");
-    } else {
-        fp = fopen(name.c_str(), "r");
-    }
+	std::string p = getPath();
+        fp = fopen(p.c_str(), "r");
 	
 	return fp;
 }
@@ -78,7 +59,12 @@ void OpenGLESFile::close()
 	fclose(fp);
 }
 
-std::string OpenGLESFile::getName()
+std::string OpenGLESFile::getPath() const
+{
+	return OpenGLESFile::rootPath + name;
+}
+
+std::string OpenGLESFile::getName() const
 {
 	return name;
 }

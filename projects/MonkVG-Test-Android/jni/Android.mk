@@ -12,20 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-LOCAL_PATH:= $(call my-dir)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE    := libmonkvg
-LOCAL_CFLAGS    := -Werror
-LOCAL_C_INCLUDES := \
-    $(LOCAL_PATH)/../../../glu/include \
-    $(LOCAL_PATH)/../../../include \
-    $(LOCAL_PATH)/../../../src \
-    $(LOCAL_PATH)/../../../src/opengl
-    
-LOCAL_SRC_FILES := \
-    gl_code.cpp \
+LOCAL_PATH       := $(call my-dir)
+top_srcdir := $(call my-dir)/../../..
+c_includes := \
+		$(top_srcdir)/glu/include $(top_srcdir)/include \
+		$(top_srcdir)/src $(top_srcdir)/src/opengl \
+		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES \
+		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES11 \
+		$(top_srcdir)/thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES20 \
+		$(top_srcdir)/thirdparty/fmemopen $(LOCAL_PATH)/boost/include
+gles2bc_dir := ../../../thirdparty/gles2-bc/Sources/OpenGLES
+glu_files := \
     ../../../glu/libtess/dict.c \
     ../../../glu/libtess/geom.c \
     ../../../glu/libtess/memalloc.c \
@@ -39,7 +36,8 @@ LOCAL_SRC_FILES := \
     ../../../glu/libutil/error.c \
     ../../../glu/libutil/glue.c \
     ../../../glu/libutil/project.c \
-    ../../../glu/libutil/registry.c \
+    ../../../glu/libutil/registry.c
+src_files := \
     ../../../src/opengl/glBatch.cpp \
     ../../../src/opengl/glContext.cpp \
     ../../../src/opengl/glFont.cpp \
@@ -54,12 +52,38 @@ LOCAL_SRC_FILES := \
     ../../../src/mkMath.cpp \
     ../../../src/mkPaint.cpp \
     ../../../src/mkParameter.cpp \
-    ../../../src/mkPath.cpp \
-    ../../../src/mkVGU.cpp
+    ../../../src/mkPath.cpp
+thirdparty_files := ../../../thirdparty/fmemopen/fmemopen.c \
+	$(gles2bc_dir)/OpenGLESConfig.cpp $(gles2bc_dir)/OpenGLESContext.cpp $(gles2bc_dir)/OpenGLESFile.cpp $(gles2bc_dir)/OpenGLESImplementation.cpp \
+    $(gles2bc_dir)/OpenGLESString.cpp $(gles2bc_dir)/OpenGLESUtil.cpp $(gles2bc_dir)/OpenGLES11/OpenGLES11Context.cpp $(gles2bc_dir)/OpenGLES11/OpenGLES11Implementation.cpp \
+    $(gles2bc_dir)/OpenGLES20/Attribute.cpp $(gles2bc_dir)/OpenGLES20/MatrixStack.cpp $(gles2bc_dir)/OpenGLES20/OpenGLES20Context.cpp \
+    $(gles2bc_dir)/OpenGLES20/OpenGLES20Implementation.cpp $(gles2bc_dir)/OpenGLES20/OpenGLESState.cpp $(gles2bc_dir)/OpenGLES20/Shader.cpp $(gles2bc_dir)/OpenGLES20/ShaderFile.cpp \
+    $(gles2bc_dir)/OpenGLES20/ShaderProgram.cpp  $(gles2bc_dir)/OpenGLES20/ShaderSource.cpp $(gles2bc_dir)/OpenGLES20/Uniform.cpp
 
-LOCAL_LDLIBS    := -llog -lGLESv1_CM
+include $(CLEAR_VARS)
+LOCAL_MODULE     := libOpenVG
+LOCAL_CFLAGS     := $(cflags)
+LOCAL_C_INCLUDES := $(c_includes)
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_SRC_FILES  := $(glu_files) $(src_files) $(thirdparty_files)
+include $(BUILD_STATIC_LIBRARY)
 
-LOCAL_CFLAGS += -I$(LOCAL_PATH)/boost/include/ 
-LOCAL_LDLIBS += -L$(LOCAL_PATH)/boost/lib/ -lboost_system-gcc-mt
+include $(CLEAR_VARS)
+LOCAL_MODULE     := libOpenVGU
+LOCAL_CFLAGS     := $(cflags)
+LOCAL_C_INCLUDES := $(c_includes)
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_SRC_FILES  := ../../../src/mkVGU.cpp
+LOCAL_STATIC_LIBRARIES := libOpenVG
+include $(BUILD_STATIC_LIBRARY)
 
+include $(CLEAR_VARS)
+LOCAL_MODULE     := libmonkvg
+LOCAL_CFLAGS     := $(cflags)
+LOCAL_C_INCLUDES := $(c_includes)
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_SRC_FILES  := gl_code.cpp
+LOCAL_STATIC_LIBRARIES := libOpenVGU libOpenVG 
 include $(BUILD_SHARED_LIBRARY)
+
+

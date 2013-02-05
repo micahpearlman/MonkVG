@@ -1,1 +1,3 @@
-APP_STL := stlport_static
+APP_CPPFLAGS := --rtti
+APP_STL := gnustl_static
+APP_GNUSTL_CPP_FEATURES := rtti exceptions
