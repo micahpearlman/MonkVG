@@ -54,8 +54,9 @@ MonkVG was originally created for games, so speed has usually been prefered over
 
 ## Contributors
 
-Paul Holden (Android Port)  
+Paul Holden (Initial Android Port)  
 Vincent Richomme (Windows Port)  
+Gav Wood (Android and Linux Port) 
 
 Also Luke contributed a great article on how to integrate MonkVG + MonkSWF with Cocos2D: http://blog.zincroe.com/2011/11/displaying-a-swf-on-the-iphone-with-cocos2d-and-monkswf/
 

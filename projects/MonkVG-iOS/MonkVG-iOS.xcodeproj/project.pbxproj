@@ -102,8 +102,6 @@
 		FACCFE7A16A8DD4500A0E7D9 /* texture1.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE7016A8DD4500A0E7D9 /* texture1.frag.h */; };
 		FACCFE7B16A8DD4500A0E7D9 /* texture2.frag.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFE7116A8DD4500A0E7D9 /* texture2.frag.h */; };
 		FACCFECF16A8DE0000A0E7D9 /* all_shaders.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFECE16A8DE0000A0E7D9 /* all_shaders.h */; };
-		FACCFED416A8ECFC00A0E7D9 /* fmemopen.c in Sources */ = {isa = PBXBuildFile; fileRef = FACCFED116A8ECFC00A0E7D9 /* fmemopen.c */; };
-		FACCFED516A8ECFC00A0E7D9 /* fmemopen.h in Headers */ = {isa = PBXBuildFile; fileRef = FACCFED216A8ECFC00A0E7D9 /* fmemopen.h */; };
 		FACFEDCF13BAB0E30045C681 /* mkImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDCD13BAB0E30045C681 /* mkImage.cpp */; };
 		FACFEDD013BAB0E30045C681 /* mkImage.h in Headers */ = {isa = PBXBuildFile; fileRef = FACFEDCE13BAB0E30045C681 /* mkImage.h */; };
 		FACFEDD313BAB2D40045C681 /* glImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FACFEDD113BAB2D40045C681 /* glImage.cpp */; };
@@ -330,9 +328,6 @@
 		FACCFE7016A8DD4500A0E7D9 /* texture1.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture1.frag.h; sourceTree = "<group>"; };
 		FACCFE7116A8DD4500A0E7D9 /* texture2.frag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = texture2.frag.h; sourceTree = "<group>"; };
 		FACCFECE16A8DE0000A0E7D9 /* all_shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = all_shaders.h; sourceTree = "<group>"; };
-		FACCFED116A8ECFC00A0E7D9 /* fmemopen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fmemopen.c; sourceTree = "<group>"; };
-		FACCFED216A8ECFC00A0E7D9 /* fmemopen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmemopen.h; sourceTree = "<group>"; };
-		FACCFED316A8ECFC00A0E7D9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		FACFEDCD13BAB0E30045C681 /* mkImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkImage.cpp; path = ../../src/mkImage.cpp; sourceTree = "<group>"; };
 		FACFEDCE13BAB0E30045C681 /* mkImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkImage.h; path = ../../src/mkImage.h; sourceTree = "<group>"; };
 		FACFEDD113BAB2D40045C681 /* glImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glImage.cpp; sourceTree = "<group>"; };
@@ -520,7 +515,6 @@
 		FACCFDC916A8D2DC00A0E7D9 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				FACCFED016A8ECFB00A0E7D9 /* fmemopen */,
 				FACCFDCA16A8D31700A0E7D9 /* gles2-bc */,
 			);
 			name = ThirdParty;
@@ -654,17 +648,6 @@
 			path = shaders;
 			sourceTree = "<group>";
 		};
-		FACCFED016A8ECFB00A0E7D9 /* fmemopen */ = {
-			isa = PBXGroup;
-			children = (
-				FACCFED116A8ECFC00A0E7D9 /* fmemopen.c */,
-				FACCFED216A8ECFC00A0E7D9 /* fmemopen.h */,
-				FACCFED316A8ECFC00A0E7D9 /* README.md */,
-			);
-			name = fmemopen;
-			path = ../../thirdparty/fmemopen;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -748,7 +731,6 @@
 				FACCFE7A16A8DD4500A0E7D9 /* texture1.frag.h in Headers */,
 				FACCFE7B16A8DD4500A0E7D9 /* texture2.frag.h in Headers */,
 				FACCFECF16A8DE0000A0E7D9 /* all_shaders.h in Headers */,
-				FACCFED516A8ECFC00A0E7D9 /* fmemopen.h in Headers */,
 				FADCBB9116BEEF1F000F5EA7 /* OpenGLESPlatform.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -876,7 +858,6 @@
 				FACCFE4B16A8D31700A0E7D9 /* OpenGLESImplementation.cpp in Sources */,
 				FACCFE4E16A8D31700A0E7D9 /* OpenGLESString.cpp in Sources */,
 				FACCFE5016A8D31700A0E7D9 /* OpenGLESUtil.cpp in Sources */,
-				FACCFED416A8ECFC00A0E7D9 /* fmemopen.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
