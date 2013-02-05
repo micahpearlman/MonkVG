@@ -5,6 +5,7 @@
 
 lib_LTLIBRARIES = libOpenVG.la 
 
+gles2bc_dir=${top_srcdir}/thirdparty/gles2-bc/Sources/OpenGLES
 libOpenVG_la_SOURCES=src/mkBaseObject.cpp  src/mkContext.cpp  src/mkImage.cpp  src/mkPaint.cpp      src/mkPath.cpp \
 					  src/mkBatch.cpp       src/mkFont.cpp     src/mkMath.cpp   src/mkParameter.cpp
 
@@ -14,10 +15,9 @@ libOpenVG_la_SOURCES+=glu/libtess/tess.c glu/libtess/sweep.c glu/libtess/normal.
 			glu/libtess/render.c glu/libtess/priorityq.c glu/libtess/memalloc.c glu/libtess/tessmono.c glu/libutil/project.c glu/libutil/registry.c \
 			glu/libutil/glue.c glu/libutil/error.c
 
-gles2bc_dir=${top_srcdir}/thirdparty/gles2-bc/Sources/OpenGLES
 libOpenVG_la_SOURCES += ${gles2bc_dir}/OpenGLESConfig.cpp ${gles2bc_dir}/OpenGLESContext.cpp ${gles2bc_dir}/OpenGLESFile.cpp ${gles2bc_dir}/OpenGLESImplementation.cpp \
   ${gles2bc_dir}/OpenGLESString.cpp ${gles2bc_dir}/OpenGLESUtil.cpp ${gles2bc_dir}/OpenGLES11/OpenGLES11Context.cpp ${gles2bc_dir}/OpenGLES11/OpenGLES11Implementation.cpp \
-  ${gles2bc_dir}/OpenGLES20/Attribute.cpp ${gles2bc_dir}/OpenGLES20/MatrixStack.cpp ${gles2bc_dir}/OpenGLES20/OpenGLES20Context.cpp 
+  ${gles2bc_dir}/OpenGLES20/Attribute.cpp ${gles2bc_dir}/OpenGLES20/MatrixStack.cpp ${gles2bc_dir}/OpenGLES20/OpenGLES20Context.cpp \
   ${gles2bc_dir}/OpenGLES20/OpenGLES20Implementation.cpp ${gles2bc_dir}/OpenGLES20/OpenGLESState.cpp ${gles2bc_dir}/OpenGLES20/Shader.cpp ${gles2bc_dir}/OpenGLES20/ShaderFile.cpp \
   ${gles2bc_dir}/OpenGLES20/ShaderProgram.cpp  ${gles2bc_dir}/OpenGLES20/ShaderSource.cpp ${gles2bc_dir}/OpenGLES20/Uniform.cpp
 
