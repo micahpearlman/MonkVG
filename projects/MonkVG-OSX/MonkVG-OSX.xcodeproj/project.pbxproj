@@ -44,8 +44,6 @@
 		FA0B1956126F8CE000550DCC /* vgext.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1952126F8CE000550DCC /* vgext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FA0B1957126F8CE000550DCC /* vgplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1953126F8CE000550DCC /* vgplatform.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FA0B1958126F8CE000550DCC /* vgu.h in Headers */ = {isa = PBXBuildFile; fileRef = FA0B1954126F8CE000550DCC /* vgu.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FADCBB3A16BEDFEE000F5EA7 /* fmemopen.c in Sources */ = {isa = PBXBuildFile; fileRef = FADCBAD816BEDFEE000F5EA7 /* fmemopen.c */; };
-		FADCBB3B16BEDFEE000F5EA7 /* fmemopen.h in Headers */ = {isa = PBXBuildFile; fileRef = FADCBAD916BEDFEE000F5EA7 /* fmemopen.h */; };
 		FADCBB4116BEDFEE000F5EA7 /* OpenGLES11Context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FADCBAE916BEDFEE000F5EA7 /* OpenGLES11Context.cpp */; };
 		FADCBB4216BEDFEE000F5EA7 /* OpenGLES11Context.h in Headers */ = {isa = PBXBuildFile; fileRef = FADCBAEA16BEDFEE000F5EA7 /* OpenGLES11Context.h */; };
 		FADCBB4316BEDFEE000F5EA7 /* OpenGLES11Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FADCBAEB16BEDFEE000F5EA7 /* OpenGLES11Implementation.cpp */; };
@@ -165,9 +163,6 @@
 		FA0B1952126F8CE000550DCC /* vgext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgext.h; sourceTree = "<group>"; };
 		FA0B1953126F8CE000550DCC /* vgplatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgplatform.h; sourceTree = "<group>"; };
 		FA0B1954126F8CE000550DCC /* vgu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vgu.h; sourceTree = "<group>"; };
-		FADCBAD816BEDFEE000F5EA7 /* fmemopen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fmemopen.c; sourceTree = "<group>"; };
-		FADCBAD916BEDFEE000F5EA7 /* fmemopen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fmemopen.h; sourceTree = "<group>"; };
-		FADCBADA16BEDFEE000F5EA7 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		FADCBAE916BEDFEE000F5EA7 /* OpenGLES11Context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES11Context.cpp; sourceTree = "<group>"; };
 		FADCBAEA16BEDFEE000F5EA7 /* OpenGLES11Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLES11Context.h; sourceTree = "<group>"; };
 		FADCBAEB16BEDFEE000F5EA7 /* OpenGLES11Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenGLES11Implementation.cpp; sourceTree = "<group>"; };
@@ -370,21 +365,10 @@
 		FADCBAD616BEDFEE000F5EA7 /* thirdparty */ = {
 			isa = PBXGroup;
 			children = (
-				FADCBAD716BEDFEE000F5EA7 /* fmemopen */,
 				FADCBADB16BEDFEE000F5EA7 /* gles2-bc */,
 			);
 			name = thirdparty;
 			path = ../../thirdparty;
-			sourceTree = "<group>";
-		};
-		FADCBAD716BEDFEE000F5EA7 /* fmemopen */ = {
-			isa = PBXGroup;
-			children = (
-				FADCBAD816BEDFEE000F5EA7 /* fmemopen.c */,
-				FADCBAD916BEDFEE000F5EA7 /* fmemopen.h */,
-				FADCBADA16BEDFEE000F5EA7 /* README.md */,
-			);
-			path = fmemopen;
 			sourceTree = "<group>";
 		};
 		FADCBADB16BEDFEE000F5EA7 /* gles2-bc */ = {
@@ -541,7 +525,6 @@
 				3E80D90215FA6C170032D10D /* glFont.h in Headers */,
 				3E80D90415FA6C170032D10D /* glImage.h in Headers */,
 				3E80D90515FA6C170032D10D /* glPlatform.h in Headers */,
-				FADCBB3B16BEDFEE000F5EA7 /* fmemopen.h in Headers */,
 				FADCBB4216BEDFEE000F5EA7 /* OpenGLES11Context.h in Headers */,
 				FADCBB4416BEDFEE000F5EA7 /* OpenGLES11Implementation.h in Headers */,
 				FADCBB4616BEDFEE000F5EA7 /* Attribute.h in Headers */,
@@ -650,7 +633,6 @@
 				3E80D8FF15FA6C170032D10D /* glBatch.cpp in Sources */,
 				3E80D90115FA6C170032D10D /* glFont.cpp in Sources */,
 				3E80D90315FA6C170032D10D /* glImage.cpp in Sources */,
-				FADCBB3A16BEDFEE000F5EA7 /* fmemopen.c in Sources */,
 				FADCBB4116BEDFEE000F5EA7 /* OpenGLES11Context.cpp in Sources */,
 				FADCBB4316BEDFEE000F5EA7 /* OpenGLES11Implementation.cpp in Sources */,
 				FADCBB4516BEDFEE000F5EA7 /* Attribute.cpp in Sources */,
