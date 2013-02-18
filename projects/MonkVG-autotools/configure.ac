@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.69])
+AC_PREREQ([2.68])
 AC_INIT([MonkVG], [1.1],[] )
 AC_CONFIG_SRCDIR([../../glu/libtess/dict.c])
 
