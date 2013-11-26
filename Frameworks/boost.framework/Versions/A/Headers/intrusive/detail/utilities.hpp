@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -28,6 +28,7 @@
 #include <iterator>
 #include <boost/cstdint.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/detail/no_exceptions_support.hpp>
 
 namespace boost {
 namespace intrusive {
@@ -41,64 +42,29 @@ struct internal_member_value_traits
    static const bool value = sizeof(test<T>(0)) == sizeof(detail::two);
 };
 
-template <class T>
-struct internal_base_hook_bool
-{
-   template<bool Add>
-   struct two_or_three {one _[2 + Add];};
-   template <class U> static one test(...);
-   template <class U> static two_or_three<U::boost_intrusive_tags::is_base_hook> test (int);
-   static const std::size_t value = sizeof(test<T>(0));
-};
+#define BOOST_INTRUSIVE_INTERNAL_STATIC_BOOL_IS_TRUE(TRAITS_PREFIX, TYPEDEF_TO_FIND) \
+template <class T>\
+struct TRAITS_PREFIX##_bool\
+{\
+   template<bool Add>\
+   struct two_or_three {one _[2 + Add];};\
+   template <class U> static one test(...);\
+   template <class U> static two_or_three<U::TYPEDEF_TO_FIND> test (int);\
+   static const std::size_t value = sizeof(test<T>(0));\
+};\
+\
+template <class T>\
+struct TRAITS_PREFIX##_bool_is_true\
+{\
+   static const bool value = TRAITS_PREFIX##_bool<T>::value > sizeof(one)*2;\
+};\
+//
 
-template <class T>
-struct internal_base_hook_bool_is_true
-{
-   static const bool value = internal_base_hook_bool<T>::value > sizeof(one)*2;
-};
-
-template <class T>
-struct internal_any_hook_bool
-{
-   template<bool Add>
-   struct two_or_three {one _[2 + Add];};
-   template <class U> static one test(...);
-   template <class U> static two_or_three<U::is_any_hook> test (int);
-   static const std::size_t value = sizeof(test<T>(0));
-};
-
-template <class T>
-struct internal_any_hook_bool_is_true
-{
-   static const bool value = internal_any_hook_bool<T>::value > sizeof(one)*2;
-};
-
-
-template <class T>
-struct external_value_traits_bool
-{
-   template<bool Add>
-   struct two_or_three {one _[2 + Add];};
-   template <class U> static one test(...);
-   template <class U> static two_or_three<U::external_value_traits> test (int);
-   static const std::size_t value = sizeof(test<T>(0));
-};
-
-template <class T>
-struct external_bucket_traits_bool
-{
-   template<bool Add>
-   struct two_or_three {one _[2 + Add];};
-   template <class U> static one test(...);
-   template <class U> static two_or_three<U::external_bucket_traits> test (int);
-   static const std::size_t value = sizeof(test<T>(0));
-};
-
-template <class T>
-struct external_value_traits_is_true
-{
-   static const bool value = external_value_traits_bool<T>::value > sizeof(one)*2;
-};
+BOOST_INTRUSIVE_INTERNAL_STATIC_BOOL_IS_TRUE(internal_base_hook, boost_intrusive_tags::is_base_hook)
+BOOST_INTRUSIVE_INTERNAL_STATIC_BOOL_IS_TRUE(internal_any_hook, is_any_hook)
+BOOST_INTRUSIVE_INTERNAL_STATIC_BOOL_IS_TRUE(external_value_traits, external_value_traits)
+BOOST_INTRUSIVE_INTERNAL_STATIC_BOOL_IS_TRUE(external_bucket_traits, external_bucket_traits)
+BOOST_INTRUSIVE_INTERNAL_STATIC_BOOL_IS_TRUE(resizable, resizable)
 
 template<class Node, class Tag, link_mode_type LinkMode, int>
 struct node_holder
@@ -166,6 +132,12 @@ struct size_holder
    void increment()
    {  ++size_; }
 
+   void increase(SizeType n)
+   {  size_ += n; }
+
+   void decrease(SizeType n)
+   {  size_ -= n; }
+
    SizeType size_;
 };
 
@@ -186,6 +158,12 @@ struct size_holder<false, SizeType>
 
    void increment()
    {}
+
+   void increase(SizeType)
+   {}
+
+   void decrease(SizeType)
+   {}
 };
 
 template<class KeyValueCompare, class Container>
@@ -200,7 +178,7 @@ struct key_nodeptr_comp
    key_nodeptr_comp(KeyValueCompare kcomp, const Container *cont)
       :  base_t(kcomp), cont_(cont)
    {}
-   
+
    template<class T>
    struct is_node_ptr
    {
@@ -236,7 +214,7 @@ struct node_cloner
    typedef typename real_value_traits::node_ptr          node_ptr;
    typedef typename real_value_traits::const_node_ptr    const_node_ptr;
    typedef detail::ebo_functor_holder<F>                 base_t;
-   enum { safemode_or_autounlink  = 
+   enum { safemode_or_autounlink  =
             (int)real_value_traits::link_mode == (int)auto_unlink   ||
             (int)real_value_traits::link_mode == (int)safe_link     };
 
@@ -270,7 +248,7 @@ struct node_disposer
    typedef typename real_value_traits::node_ptr    node_ptr;
    typedef detail::ebo_functor_holder<F>           base_t;
    typedef typename Container::node_algorithms     node_algorithms;
-   enum { safemode_or_autounlink  = 
+   enum { safemode_or_autounlink  =
             (int)real_value_traits::link_mode == (int)auto_unlink   ||
             (int)real_value_traits::link_mode == (int)safe_link     };
 
@@ -378,7 +356,7 @@ struct base_hook_traits
 
    static const link_mode_type link_mode = LinkMode;
 
-   static pointer to_value_ptr(const node_ptr & n) 
+   static pointer to_value_ptr(const node_ptr & n)
    {
       return pointer_traits<pointer>::pointer_to
          (static_cast<reference>(static_cast<node_holder_reference>(*n)));
@@ -504,7 +482,7 @@ inline std::size_t floor_log2 (std::size_t x)
 
    std::size_t n = x;
    std::size_t log2 = 0;
-   
+
    for(std::size_t shift = Bits >> 1; shift; shift >>= 1){
       std::size_t tmp = n >> shift;
       if (tmp)
@@ -529,7 +507,7 @@ inline float fast_log2 (float val)
    x += 127 << 23;
    caster.x = x;
    val = caster.val;
-   val = ((-1.0f/3) * val + 2) * val - 2.0f/3;
+   val = ((-1.0f/3.f) * val + 2.f) * val - (2.0f/3.f);
 
    return (val + log_2);
 }
@@ -644,7 +622,7 @@ struct store_cont_ptr_on_it
 {
    typedef typename Container::value_traits value_traits;
    static const bool value = store_cont_ptr_on_it_impl
-      <value_traits, external_value_traits_is_true<value_traits>::value>::value;
+      <value_traits, external_value_traits_bool_is_true<value_traits>::value>::value;
 };
 
 template<class Container, bool IsConst>
@@ -655,7 +633,7 @@ struct node_to_value
       , detail::store_cont_ptr_on_it<Container>::value
       >::type
 {
-   static const bool store_container_ptr = 
+   static const bool store_container_ptr =
       detail::store_cont_ptr_on_it<Container>::value;
 
    typedef typename Container::real_value_traits         real_value_traits;
@@ -727,19 +705,20 @@ class array_initializer
    {
       char *init_buf = (char*)rawbuf;
       std::size_t i = 0;
-      try{
+      BOOST_TRY{
          for(; i != N; ++i){
             new(init_buf)T(init);
             init_buf += sizeof(T);
          }
       }
-      catch(...){
+      BOOST_CATCH(...){
          while(i--){
             init_buf -= sizeof(T);
             ((T*)init_buf)->~T();
          }
-         throw;
+         BOOST_RETHROW;
       }
+      BOOST_CATCH_END
    }
 
    operator T* ()
@@ -871,8 +850,8 @@ class reverse_iterator
 };
 
 } //namespace detail
-} //namespace intrusive 
-} //namespace boost 
+} //namespace intrusive
+} //namespace boost
 
 #include <boost/intrusive/detail/config_end.hpp>
 

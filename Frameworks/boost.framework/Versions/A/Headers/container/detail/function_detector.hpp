@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga  2009-2011.
+// (C) Copyright Ion Gaztanaga  2009-2012.
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -15,7 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Copyright 2007 Alexandre Courpron
 //
-// Permission to use, copy, modify, redistribute and sell this software, 
+// Permission to use, copy, modify, redistribute and sell this software,
 // provided that this copyright notice appears on all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +74,7 @@ namespace function_detector {
    public : \
       static const int check = NotFound + (sizeof(Test<T>(0, 0)) - sizeof(NotFoundType));\
    };\
-}}} //namespace boost::container::function_detector { 
+}}} //namespace boost::container::function_detector {
 
 #define BOOST_CONTAINER_DETECT_FUNCTION(Class, InstantiationKey, ReturnType, Identifier, Params) \
     ::boost::container::function_detector::DetectMember_##InstantiationKey_##Identifier< Class,\

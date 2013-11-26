@@ -32,9 +32,12 @@
 #include <boost/proto/domain.hpp>
 #include <boost/proto/transform/pass_through.hpp>
 
-#if BOOST_WORKAROUND( BOOST_MSVC, >= 1400 )
-    #pragma warning(push)
-    #pragma warning(disable: 4180) // warning C4180: qualifier applied to function type has no meaning; ignored
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma warning(push)
+# if BOOST_WORKAROUND( BOOST_MSVC, >= 1400 )
+#  pragma warning(disable: 4180) // warning C4180: qualifier applied to function type has no meaning; ignored
+# endif
+# pragma warning(disable : 4714) // function 'xxx' marked as __forceinline not inlined
 #endif
 
 namespace boost { namespace proto
@@ -113,7 +116,7 @@ namespace boost { namespace proto
       : mpl::false_
     {};
 
-    #if BOOST_WORKAROUND(__GNUC__, == 3) || (__GNUC__ == 4 && __GNUC_MINOR__ == 0)
+    #if BOOST_WORKAROUND(__GNUC__, == 3) || (BOOST_WORKAROUND(__GNUC__, == 4) && __GNUC_MINOR__ == 0)
     // work around GCC bug
     template<typename Tag, typename Args, long N>
     struct is_callable<proto::expr<Tag, Args, N> >
@@ -395,11 +398,7 @@ namespace boost { namespace proto
             /// \return \c e
             /// \throw nothrow
             BOOST_FORCEINLINE
-            #ifdef BOOST_PROTO_STRICT_RESULT_OF
-            result_type
-            #else
-            typename impl::expr_param
-            #endif
+            BOOST_PROTO_RETURN_TYPE_STRICT_LOOSE(result_type, typename impl::expr_param)
             operator ()(
                 typename impl::expr_param e
               , typename impl::state_param
@@ -429,7 +428,7 @@ namespace boost { namespace proto
 
         template<typename Expr, typename State, typename Data>
         struct impl
-          : detail::pass_through_impl<if_else_, Expr, State, Data>
+          : detail::pass_through_impl<if_else_, deduce_domain, Expr, State, Data>
         {};
 
         /// INTERNAL ONLY
@@ -466,11 +465,7 @@ namespace boost { namespace proto
             /// \return \c e
             /// \throw nothrow
             BOOST_FORCEINLINE
-            #ifdef BOOST_PROTO_STRICT_RESULT_OF
-            result_type
-            #else
-            typename impl::expr_param
-            #endif
+            BOOST_PROTO_RETURN_TYPE_STRICT_LOOSE(result_type, typename impl::expr_param)
             operator ()(
                 typename impl::expr_param e
               , typename impl::state_param
@@ -504,7 +499,7 @@ namespace boost { namespace proto
 
         template<typename Expr, typename State, typename Data>
         struct impl
-          : detail::pass_through_impl<unary_expr, Expr, State, Data>
+          : detail::pass_through_impl<unary_expr, deduce_domain, Expr, State, Data>
         {};
 
         /// INTERNAL ONLY
@@ -530,7 +525,7 @@ namespace boost { namespace proto
 
         template<typename Expr, typename State, typename Data>
         struct impl
-          : detail::pass_through_impl<binary_expr, Expr, State, Data>
+          : detail::pass_through_impl<binary_expr, deduce_domain, Expr, State, Data>
         {};
 
         /// INTERNAL ONLY
@@ -551,7 +546,7 @@ namespace boost { namespace proto
                                                                                                 \
         template<typename Expr, typename State, typename Data>                                  \
         struct impl                                                                             \
-          : detail::pass_through_impl<Op, Expr, State, Data>                                    \
+          : detail::pass_through_impl<Op, deduce_domain, Expr, State, Data>                     \
         {};                                                                                     \
                                                                                                 \
         typedef proto::tag::Op proto_tag;                                                       \
@@ -569,7 +564,7 @@ namespace boost { namespace proto
                                                                                                 \
         template<typename Expr, typename State, typename Data>                                  \
         struct impl                                                                             \
-          : detail::pass_through_impl<Op, Expr, State, Data>                                    \
+          : detail::pass_through_impl<Op, deduce_domain, Expr, State, Data>                     \
         {};                                                                                     \
                                                                                                 \
         typedef proto::tag::Op proto_tag;                                                       \
@@ -1142,7 +1137,7 @@ namespace boost { namespace proto
     /// \brief Return the value stored within the specified Proto
     /// terminal expression.
     ///
-    /// Return the the value stored within the specified Proto
+    /// Return the value stored within the specified Proto
     /// terminal expression. The value is returned by
     /// reference.
     ///
@@ -1256,8 +1251,8 @@ namespace boost { namespace proto
 
 }}
 
-#if BOOST_WORKAROUND( BOOST_MSVC, >= 1400 )
-    #pragma warning(pop)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma warning(pop)
 #endif
 
 #endif

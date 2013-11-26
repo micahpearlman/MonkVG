@@ -153,12 +153,12 @@ class partition_one_collection
     static inline void next_level(Box const& box,
             InputCollection const& collection,
             index_vector_type const& input,
-            int level, int min_elements,
+            int level, std::size_t min_elements,
             Policy& policy, VisitBoxPolicy& box_policy)
     {
         if (boost::size(input) > 0)
         {
-            if (boost::size(input) > min_elements && level < 100)
+            if (std::size_t(boost::size(input)) > min_elements && level < 100)
             {
                 sub_divide::apply(box, collection, input, level + 1,
                             min_elements, policy, box_policy);
@@ -176,7 +176,7 @@ public :
             InputCollection const& collection,
             index_vector_type const& input,
             int level,
-            int min_elements,
+            std::size_t min_elements,
             Policy& policy, VisitBoxPolicy& box_policy)
     {
         box_policy.apply(box, level);
@@ -230,13 +230,13 @@ class partition_two_collections
             index_vector_type const& input1,
             InputCollection const& collection2,
             index_vector_type const& input2,
-            int level, int min_elements,
+            int level, std::size_t min_elements,
             Policy& policy, VisitBoxPolicy& box_policy)
     {
         if (boost::size(input1) > 0 && boost::size(input2) > 0)
         {
-            if (boost::size(input1) > min_elements
-                && boost::size(input2) > min_elements
+            if (std::size_t(boost::size(input1)) > min_elements
+                && std::size_t(boost::size(input2)) > min_elements
                 && level < 100)
             {
                 sub_divide::apply(box, collection1, input1, collection2,
@@ -257,7 +257,7 @@ public :
             InputCollection const& collection1, index_vector_type const& input1,
             InputCollection const& collection2, index_vector_type const& input2,
             int level,
-            int min_elements,
+            std::size_t min_elements,
             Policy& policy, VisitBoxPolicy& box_policy)
     {
         box_policy.apply(box, level);
@@ -335,11 +335,11 @@ public :
     template <typename InputCollection, typename VisitPolicy>
     static inline void apply(InputCollection const& collection,
             VisitPolicy& visitor,
-            int min_elements = 16,
+            std::size_t min_elements = 16,
             VisitBoxPolicy box_visitor = visit_no_policy()
             )
     {
-        if (boost::size(collection) > min_elements)
+        if (std::size_t(boost::size(collection)) > min_elements)
         {
             index_vector_type index_vector;
             Box total;
@@ -377,12 +377,12 @@ public :
     static inline void apply(InputCollection const& collection1,
                 InputCollection const& collection2,
                 VisitPolicy& visitor,
-                int min_elements = 16,
+                std::size_t min_elements = 16,
                 VisitBoxPolicy box_visitor = visit_no_policy()
                 )
     {
-        if (boost::size(collection1) > min_elements
-            && boost::size(collection2) > min_elements)
+        if (std::size_t(boost::size(collection1)) > min_elements
+            && std::size_t(boost::size(collection2)) > min_elements)
         {
             index_vector_type index_vector1, index_vector2;
             Box total;

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -24,32 +24,32 @@
 #include <boost/detail/no_exceptions_support.hpp>
 //These includes needed to fulfill default template parameters of
 //predeclarations in interprocess_fwd.hpp
-#include <boost/interprocess/mem_algo/rbtree_best_fit.hpp>  
+#include <boost/interprocess/mem_algo/rbtree_best_fit.hpp>
 #include <boost/interprocess/sync/mutex_family.hpp>
 #include <boost/interprocess/indexes/iset_index.hpp>
 
 //!\file
-//!Describes a named heap memory allocation user class. 
+//!Describes a named heap memory allocation user class.
 
 namespace boost {
 namespace interprocess {
 
-//!A basic heap memory named object creation class. Initializes the 
-//!heap memory segment. Inherits all basic functionality from 
+//!A basic heap memory named object creation class. Initializes the
+//!heap memory segment. Inherits all basic functionality from
 //!basic_managed_memory_impl<CharType, AllocationAlgorithm, IndexType>*/
 template
       <
-         class CharType, 
-         class AllocationAlgorithm, 
+         class CharType,
+         class AllocationAlgorithm,
          template<class IndexConfig> class IndexType
       >
-class basic_managed_heap_memory 
+class basic_managed_heap_memory
    : public ipcdetail::basic_managed_memory_impl <CharType, AllocationAlgorithm, IndexType>
 {
    /// @cond
    private:
 
-   typedef ipcdetail::basic_managed_memory_impl 
+   typedef ipcdetail::basic_managed_memory_impl
       <CharType, AllocationAlgorithm, IndexType>             base_t;
    BOOST_MOVABLE_BUT_NOT_COPYABLE(basic_managed_heap_memory)
    /// @endcond
@@ -90,16 +90,16 @@ class basic_managed_heap_memory
    }
 
    //!Tries to resize internal heap memory so that
-   //!we have room for more objects. 
-   //!WARNING: If memory is reallocated, all the objects will 
+   //!we have room for more objects.
+   //!WARNING: If memory is reallocated, all the objects will
    //!be binary-copied to the new buffer. To be able to use
    //!this function, all pointers constructed in this buffer
    //!must be offset pointers. Otherwise, the result is undefined.
    //!Returns true if the growth has been successful, so you will
-   //!have some extra bytes to allocate new objects. If returns 
+   //!have some extra bytes to allocate new objects. If returns
    //!false, the heap allocation has failed.
    bool grow(size_type extra_bytes)
-   {  
+   {
       //If memory is reallocated, data will
       //be automatically copied
       BOOST_TRY{
@@ -129,7 +129,7 @@ class basic_managed_heap_memory
    private:
    //!Frees resources. Never throws.
    void priv_close()
-   {  
+   {
       base_t::destroy_impl();
       std::vector<char>().swap(m_heapmem);
    }

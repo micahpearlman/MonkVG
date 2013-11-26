@@ -50,7 +50,7 @@ T erf_inv_imp(const T& p, const T& q, const Policy&, const boost::mpl::int_<64>*
          BOOST_MATH_BIG_CONSTANT(T, 64, -0.00538772965071242932965)
       };
       static const T Q[] = {    
-         1,
+         BOOST_MATH_BIG_CONSTANT(T, 64, 1.0),
          BOOST_MATH_BIG_CONSTANT(T, 64, -0.970005043303290640362),
          BOOST_MATH_BIG_CONSTANT(T, 64, -1.56574558234175846809),
          BOOST_MATH_BIG_CONSTANT(T, 64, 1.56221558398423026363),
@@ -147,7 +147,7 @@ T erf_inv_imp(const T& p, const T& q, const Policy&, const boost::mpl::int_<64>*
             BOOST_MATH_BIG_CONSTANT(T, 64, -0.681149956853776992068e-9)
          };
          static const T Q[] = {    
-            1,
+            BOOST_MATH_BIG_CONSTANT(T, 64, 1.0),
             BOOST_MATH_BIG_CONSTANT(T, 64, 3.46625407242567245975),
             BOOST_MATH_BIG_CONSTANT(T, 64, 5.38168345707006855425),
             BOOST_MATH_BIG_CONSTANT(T, 64, 4.77846592945843778382),
@@ -282,7 +282,7 @@ struct erf_roots
       BOOST_MATH_STD_USING
       T derivative = sign * (2 / sqrt(constants::pi<T>())) * exp(-(guess * guess));
       T derivative2 = -2 * guess * derivative;
-      return boost::math::make_tuple(((sign > 0) ? boost::math::erf(guess, Policy()) : boost::math::erfc(guess, Policy())) - target, derivative, derivative2);
+      return boost::math::make_tuple(((sign > 0) ? static_cast<T>(boost::math::erf(guess, Policy()) - target) : static_cast<T>(boost::math::erfc(guess, Policy())) - target), derivative, derivative2);
    }
    erf_roots(T z, int s) : target(z), sign(s) {}
 private:
@@ -322,12 +322,57 @@ T erf_inv_imp(const T& p, const T& q, const Policy& pol, const boost::mpl::int_<
    return result;
 }
 
+template <class T, class Policy>
+struct erf_inv_initializer
+{
+   struct init
+   {
+      init()
+      {
+         do_init();
+      }
+      static void do_init()
+      {
+         boost::math::erf_inv(static_cast<T>(0.25), Policy());
+         boost::math::erf_inv(static_cast<T>(0.55), Policy());
+         boost::math::erf_inv(static_cast<T>(0.95), Policy());
+         boost::math::erfc_inv(static_cast<T>(1e-15), Policy());
+         if(static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 1e-130)) != 0)
+            boost::math::erfc_inv(static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 1e-130)), Policy());
+
+         // Some compilers choke on constants that would underflow, even in code that isn't instantiated
+         // so try and filter these cases out in the preprocessor:
+#if LDBL_MAX_10_EXP >= 800
+         if(static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 1e-800)) != 0)
+            boost::math::erfc_inv(static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 1e-800)), Policy());
+         if(static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 1e-900)) != 0)
+            boost::math::erfc_inv(static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 1e-900)), Policy());
+#else
+         if(static_cast<T>(BOOST_MATH_HUGE_CONSTANT(T, 64, 1e-800)) != 0)
+            boost::math::erfc_inv(static_cast<T>(BOOST_MATH_HUGE_CONSTANT(T, 64, 1e-800)), Policy());
+         if(static_cast<T>(BOOST_MATH_HUGE_CONSTANT(T, 64, 1e-900)) != 0)
+            boost::math::erfc_inv(static_cast<T>(BOOST_MATH_HUGE_CONSTANT(T, 64, 1e-900)), Policy());
+#endif
+      }
+      void force_instantiate()const{}
+   };
+   static const init initializer;
+   static void force_instantiate()
+   {
+      initializer.force_instantiate();
+   }
+};
+
+template <class T, class Policy>
+const typename erf_inv_initializer<T, Policy>::init erf_inv_initializer<T, Policy>::initializer;
+
 } // namespace detail
 
 template <class T, class Policy>
 typename tools::promote_args<T>::type erfc_inv(T z, const Policy& pol)
 {
    typedef typename tools::promote_args<T>::type result_type;
+
    //
    // Begin by testing for domain errors, and other special cases:
    //
@@ -378,6 +423,8 @@ typename tools::promote_args<T>::type erfc_inv(T z, const Policy& pol)
       policies::discrete_quantile<>,
       policies::assert_undefined<> >::type forwarding_policy;
 
+   detail::erf_inv_initializer<eval_type, forwarding_policy>::force_instantiate();
+
    //
    // And get the result, negating where required:
    //
@@ -389,6 +436,7 @@ template <class T, class Policy>
 typename tools::promote_args<T>::type erf_inv(T z, const Policy& pol)
 {
    typedef typename tools::promote_args<T>::type result_type;
+
    //
    // Begin by testing for domain errors, and other special cases:
    //
@@ -445,6 +493,8 @@ typename tools::promote_args<T>::type erf_inv(T z, const Policy& pol)
    // precision internally if it's appropriate:
    //
    typedef typename policies::evaluation<result_type, Policy>::type eval_type;
+
+   detail::erf_inv_initializer<eval_type, forwarding_policy>::force_instantiate();
    //
    // And get the result, negating where required:
    //

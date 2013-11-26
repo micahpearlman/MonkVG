@@ -632,11 +632,22 @@ struct has_exit_pseudo_states
         ::boost::mpl::bool_<false> >::type type;
 };
 
+// builds flags (add internal_flag_list and flag_list). internal_flag_list is used for terminate/interrupt states
+template <class StateType>
+struct get_flag_list 
+{
+    typedef typename ::boost::mpl::insert_range< 
+        typename StateType::flag_list, 
+        typename ::boost::mpl::end< typename StateType::flag_list >::type,
+        typename StateType::internal_flag_list
+    >::type type;
+};
+
 template <class StateType>
 struct is_state_blocking 
 {
     typedef typename ::boost::mpl::fold<
-        typename StateType::flag_list, ::boost::mpl::set<>,
+        typename get_flag_list<StateType>::type, ::boost::mpl::set<>,
         ::boost::mpl::if_<
                  has_event_blocking_flag< ::boost::mpl::placeholders::_2>,
                  ::boost::mpl::insert< ::boost::mpl::placeholders::_1, ::boost::mpl::placeholders::_2 >, 

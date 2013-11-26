@@ -19,6 +19,7 @@
 #include <boost/range.hpp>
 
 #include <boost/geometry/multi/core/tags.hpp>
+#include <boost/geometry/multi/geometries/concepts/check.hpp>
 #include <boost/geometry/multi/core/ring_type.hpp>
 #include <boost/geometry/algorithms/detail/sections/range_by_section.hpp>
 
@@ -46,7 +47,7 @@ struct full_section_multi
         BOOST_ASSERT
             (
                 section.ring_id.multi_index >= 0
-                && section.ring_id.multi_index < boost::size(multi)
+                && section.ring_id.multi_index < int(boost::size(multi))
             );
 
         return Policy::apply(multi[section.ring_id.multi_index], section);

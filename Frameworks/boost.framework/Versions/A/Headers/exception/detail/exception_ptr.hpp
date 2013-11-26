@@ -5,7 +5,7 @@
 
 #ifndef UUID_618474C2DE1511DEB74A388C56D89593
 #define UUID_618474C2DE1511DEB74A388C56D89593
-#if defined(__GNUC__) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
+#if (__GNUC__*100+__GNUC_MINOR__>301) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
 #pragma GCC system_header
 #endif
 #if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
@@ -25,7 +25,7 @@
 #include <stdexcept>
 #include <new>
 #include <ios>
-#include <cstdlib>
+#include <stdlib.h>
 
 namespace
 boost
@@ -457,12 +457,17 @@ boost
         BOOST_ASSERT(p);
         p.ptr_->rethrow();
         BOOST_ASSERT(0);
-        std::abort();
+        #if defined(UNDER_CE)
+            // some CE platforms don't define ::abort()
+            exit(-1);
+        #else
+            abort();
+        #endif
         }
 
     inline
     std::string
-    diagnostic_information( exception_ptr const & p )
+    diagnostic_information( exception_ptr const & p, bool verbose=true )
         {
         if( p )
             try
@@ -472,7 +477,7 @@ boost
             catch(
             ... )
                 {
-                return current_exception_diagnostic_information();
+                return current_exception_diagnostic_information(verbose);
                 }
         return "<empty>";
         }

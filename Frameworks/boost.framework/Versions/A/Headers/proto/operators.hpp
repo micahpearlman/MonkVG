@@ -21,6 +21,11 @@
 #include <boost/proto/generate.hpp>
 #include <boost/proto/make_expr.hpp>
 
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma warning(push)
+# pragma warning(disable : 4714) // function 'xxx' marked as __forceinline not inlined
+#endif
+
 namespace boost { namespace proto
 {
     namespace detail
@@ -96,11 +101,11 @@ namespace boost { namespace proto
 #define BOOST_PROTO_UNARY_OP_IS_POSTFIX_0
 #define BOOST_PROTO_UNARY_OP_IS_POSTFIX_1 , int
 
-#ifdef BOOST_NO_RVALUE_REFERENCES
+#ifdef BOOST_NO_CXX11_RVALUE_REFERENCES
 
 #define BOOST_PROTO_DEFINE_UNARY_OPERATOR(OP, TAG, TRAIT, DOMAIN, POST)                             \
     template<typename Arg>                                                                          \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_unary<                                                    \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -114,7 +119,7 @@ namespace boost { namespace proto
     }                                                                                               \
                                                                                                     \
     template<typename Arg>                                                                          \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_unary<                                                    \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -130,7 +135,7 @@ namespace boost { namespace proto
 
 #define BOOST_PROTO_DEFINE_BINARY_OPERATOR(OP, TAG, TRAIT, DOMAIN)                                  \
     template<typename Left, typename Right>                                                         \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_binary<                                                   \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -145,7 +150,7 @@ namespace boost { namespace proto
     }                                                                                               \
                                                                                                     \
     template<typename Left, typename Right>                                                         \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_binary<                                                   \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -160,7 +165,7 @@ namespace boost { namespace proto
     }                                                                                               \
                                                                                                     \
     template<typename Left, typename Right>                                                         \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_binary<                                                   \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -175,7 +180,7 @@ namespace boost { namespace proto
     }                                                                                               \
                                                                                                     \
     template<typename Left, typename Right>                                                         \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_binary<                                                   \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -194,7 +199,7 @@ namespace boost { namespace proto
 
 #define BOOST_PROTO_DEFINE_UNARY_OPERATOR(OP, TAG, TRAIT, DOMAIN, POST)                             \
     template<typename Arg>                                                                          \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_unary<                                                    \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -210,7 +215,7 @@ namespace boost { namespace proto
 
 #define BOOST_PROTO_DEFINE_BINARY_OPERATOR(OP, TAG, TRAIT, DOMAIN)                                  \
     template<typename Left, typename Right>                                                         \
-    BOOST_FORCEINLINE                                                                               \
+    BOOST_PROTO_DISABLE_MSVC_C4714 BOOST_FORCEINLINE                                                \
     typename boost::proto::detail::enable_binary<                                                   \
         DOMAIN                                                                                      \
       , DOMAIN::proto_grammar                                                                       \
@@ -320,7 +325,7 @@ namespace boost { namespace proto
     // can use BOOST_PROTO_DEFINE_OPERATORS to define Proto operator overloads that work
     // with their own terminal types.
 
-#ifdef BOOST_NO_RVALUE_REFERENCES
+#ifdef BOOST_NO_CXX11_RVALUE_REFERENCES
 
     #define BOOST_PROTO_APPLY_UNARY_(TRAIT, ARG)                                                    \
         boost::mpl::and_<                                                                           \
@@ -365,5 +370,9 @@ namespace boost { namespace proto
 #endif
 
 }}
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+# pragma warning(pop)
+#endif
 
 #endif

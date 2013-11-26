@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //
 // (C) Copyright Olaf Krzikalla 2004-2006.
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -44,20 +44,26 @@ struct list_node_traits
    typedef typename pointer_traits
       <VoidPointer>:: template rebind_pointer<const node>::type   const_node_ptr;
 
-   static const node_ptr &get_previous(const const_node_ptr & n)
+   static node_ptr get_previous(const const_node_ptr & n)
+   {  return n->prev_;  }
+
+   static node_ptr get_previous(const node_ptr & n)
    {  return n->prev_;  }
 
    static void set_previous(const node_ptr & n, const node_ptr & prev)
    {  n->prev_ = prev;  }
 
-   static const node_ptr &get_next(const const_node_ptr & n)
+   static node_ptr get_next(const const_node_ptr & n)
+   {  return n->next_;  }
+
+   static node_ptr get_next(const node_ptr & n)
    {  return n->next_;  }
 
    static void set_next(const node_ptr & n, const node_ptr & next)
    {  n->next_ = next;  }
 };
 
-// list_iterator provides some basic functions for a 
+// list_iterator provides some basic functions for a
 // node oriented bidirectional iterator:
 template<class Container, bool IsConst>
 class list_iterator
@@ -76,7 +82,7 @@ class list_iterator
    typedef typename node_traits::node_ptr          node_ptr;
    typedef typename pointer_traits<node_ptr>::
       template rebind_pointer<void>::type          void_pointer;
-   static const bool store_container_ptr = 
+   static const bool store_container_ptr =
       detail::store_cont_ptr_on_it<Container>::value;
 
    public:
@@ -103,14 +109,14 @@ class list_iterator
    {  members_.nodeptr_ = node;  return static_cast<list_iterator&>(*this);  }
 
    public:
-   list_iterator& operator++() 
+   list_iterator& operator++()
    {
       node_ptr p = node_traits::get_next(members_.nodeptr_);
       members_.nodeptr_ = p;
-      //members_.nodeptr_ = node_traits::get_next(members_.nodeptr_); 
-      return static_cast<list_iterator&> (*this); 
+      //members_.nodeptr_ = node_traits::get_next(members_.nodeptr_);
+      return static_cast<list_iterator&> (*this);
    }
-   
+
    list_iterator operator++(int)
    {
       list_iterator result (*this);
@@ -118,12 +124,12 @@ class list_iterator
       return result;
    }
 
-   list_iterator& operator--() 
-   { 
-      members_.nodeptr_ = node_traits::get_previous(members_.nodeptr_); 
-      return static_cast<list_iterator&> (*this); 
+   list_iterator& operator--()
+   {
+      members_.nodeptr_ = node_traits::get_previous(members_.nodeptr_);
+      return static_cast<list_iterator&> (*this);
    }
-   
+
    list_iterator operator--(int)
    {
       list_iterator result (*this);
@@ -182,8 +188,8 @@ class list_iterator
    } members_;
 };
 
-} //namespace intrusive 
-} //namespace boost 
+} //namespace intrusive
+} //namespace boost
 
 #include <boost/intrusive/detail/config_end.hpp>
 

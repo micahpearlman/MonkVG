@@ -7,7 +7,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2009-06-04 04:24:49 -0400 (Thu, 04 Jun 2009) $
+ * $Date: 2013-06-21 08:04:12 -0700 (Fri, 21 Jun 2013) $
  */
 
 
@@ -256,7 +256,6 @@ class format_date_parser
     
     // skip leading whitespace
     while(std::isspace(*sitr) && sitr != stream_end) { ++sitr; } 
-    charT current_char = *sitr;
 
     short year(0), month(0), day(0), day_of_year(0);// wkday(0); 
     /* Initialized the following to their minimum values. These intermediate 
@@ -290,7 +289,6 @@ class format_date_parser
               }
               wkday = mr.current_match;
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -310,7 +308,6 @@ class format_date_parser
               }
               wkday = mr.current_match;
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -326,7 +323,6 @@ class format_date_parser
               }
               t_month = month_type(mr.current_match);
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -342,7 +338,6 @@ class format_date_parser
               }
               t_month = month_type(mr.current_match);
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -438,7 +433,6 @@ class format_date_parser
         itr++;
         if (use_current_char) {
           use_current_char = false;
-          current_char = *sitr;
         }
         else {
           sitr++;
@@ -476,7 +470,6 @@ class format_date_parser
     
     // skip leading whitespace
     while(std::isspace(*sitr) && sitr != stream_end) { ++sitr; } 
-    charT current_char = *sitr;
 
     short month(0);
     
@@ -491,7 +484,6 @@ class format_date_parser
               mr = m_month_short_names.match(sitr, stream_end);
               month = mr.current_match;
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -501,7 +493,6 @@ class format_date_parser
               mr = m_month_long_names.match(sitr, stream_end);
               month = mr.current_match;
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -529,7 +520,6 @@ class format_date_parser
         itr++;
         if (use_current_char) {
           use_current_char = false;
-          current_char = *sitr;
         }
         else {
           sitr++;
@@ -581,7 +571,6 @@ class format_date_parser
     
     // skip leading whitespace
     while(std::isspace(*sitr) && sitr != stream_end) { ++sitr; } 
-    charT current_char = *sitr;
 
     short wkday(0);
     
@@ -600,7 +589,6 @@ class format_date_parser
               mr = m_weekday_short_names.match(sitr, stream_end);
               wkday = mr.current_match;
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -614,7 +602,6 @@ class format_date_parser
               mr = m_weekday_long_names.match(sitr, stream_end);
               wkday = mr.current_match;
               if (mr.has_remaining()) {
-                current_char = mr.last_char();
                 use_current_char = true;
               }
               break;
@@ -641,7 +628,6 @@ class format_date_parser
         itr++;
         if (use_current_char) {
           use_current_char = false;
-          current_char = *sitr;
         }
         else {
           sitr++;
@@ -674,7 +660,6 @@ class format_date_parser
     
     // skip leading whitespace
     while(std::isspace(*sitr) && sitr != stream_end) { ++sitr; } 
-    charT current_char = *sitr;
 
     unsigned short year(0);
     
@@ -714,7 +699,6 @@ class format_date_parser
         itr++;
         if (use_current_char) {
           use_current_char = false;
-          current_char = *sitr;
         }
         else {
           sitr++;

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2009. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2009-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -78,21 +78,21 @@ class xsi_shared_memory
    xsi_shared_memory(open_only_t, const xsi_key &key)
    {  this->priv_open_or_create(ipcdetail::DoOpen, key, permissions(), 0);  }
 
-   //!Moves the ownership of "moved"'s shared memory object to *this. 
-   //!After the call, "moved" does not represent any shared memory object. 
+   //!Moves the ownership of "moved"'s shared memory object to *this.
+   //!After the call, "moved" does not represent any shared memory object.
    //!Does not throw
    xsi_shared_memory(BOOST_RV_REF(xsi_shared_memory) moved)
       : m_shmid(-1)
    {  this->swap(moved);   }
 
    //!Moves the ownership of "moved"'s shared memory to *this.
-   //!After the call, "moved" does not represent any shared memory. 
+   //!After the call, "moved" does not represent any shared memory.
    //!Does not throw
    xsi_shared_memory &operator=(BOOST_RV_REF(xsi_shared_memory) moved)
-   {  
+   {
       xsi_shared_memory tmp(boost::move(moved));
       this->swap(tmp);
-      return *this;  
+      return *this;
    }
 
    //!Swaps two xsi_shared_memorys. Does not throw
@@ -129,11 +129,11 @@ class xsi_shared_memory
 
 /// @cond
 
-inline xsi_shared_memory::xsi_shared_memory() 
+inline xsi_shared_memory::xsi_shared_memory()
    :  m_shmid(-1)
 {}
 
-inline xsi_shared_memory::~xsi_shared_memory() 
+inline xsi_shared_memory::~xsi_shared_memory()
 {}
 
 inline int xsi_shared_memory::get_shmid() const

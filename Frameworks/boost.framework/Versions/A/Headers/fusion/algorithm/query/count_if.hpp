@@ -10,6 +10,8 @@
 
 #include <boost/fusion/algorithm/query/detail/count_if.hpp>
 #include <boost/fusion/support/category_of.hpp>
+#include <boost/fusion/support/is_sequence.hpp>
+#include <boost/utility/enable_if.hpp>
 
 namespace boost { namespace fusion
 {
@@ -23,7 +25,12 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence, typename F>
-    inline int
+    inline 
+    typename
+        enable_if<
+            traits::is_sequence<Sequence>
+          , int
+        >::type
     count_if(Sequence const& seq, F f)
     {
         return detail::count_if(

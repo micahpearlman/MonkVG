@@ -110,6 +110,12 @@ inline OutputIterator return_if_one_input_is_empty(Geometry1 const& geometry1,
 
     typedef ring_properties<typename geometry::point_type<Geometry1>::type> properties;
 
+// Silence warning C4127: conditional expression is constant
+#if defined(_MSC_VER)
+#pragma warning(push)  
+#pragma warning(disable : 4127)  
+#endif
+
     // Union: return either of them
     // Intersection: return nothing
     // Difference: return first of them
@@ -119,6 +125,11 @@ inline OutputIterator return_if_one_input_is_empty(Geometry1 const& geometry1,
     {
         return out;
     }
+
+#if defined(_MSC_VER)
+#pragma warning(pop)  
+#endif
+
 
     std::map<ring_identifier, int> empty;
     std::map<ring_identifier, properties> all_of_one_of_them;
@@ -134,12 +145,12 @@ template
 <
     typename Geometry1, typename Geometry2,
     bool Reverse1, bool Reverse2, bool ReverseOut,
-    typename OutputIterator, typename GeometryOut,
-    overlay_type Direction,
-    typename Strategy
+    typename GeometryOut,
+    overlay_type Direction
 >
 struct overlay
 {
+    template <typename OutputIterator, typename Strategy>
     static inline OutputIterator apply(
                 Geometry1 const& geometry1, Geometry2 const& geometry2,
                 OutputIterator out,
@@ -233,7 +244,7 @@ std::cout << "traverse" << std::endl;
         std::cout << "map_turns: " << timer.elapsed() << std::endl;
 #endif
 
-        typedef ring_properties<typename geometry::point_type<Geometry1>::type> properties;
+        typedef ring_properties<typename geometry::point_type<GeometryOut>::type> properties;
 
         std::map<ring_identifier, properties> selected;
         select_rings<Direction>(geometry1, geometry2, map, selected, ! turn_points.empty());

@@ -16,15 +16,16 @@
 #include <algorithm>  // for min and max
 #include <boost/config/no_tr1/cmath.hpp>
 #include <climits>
+#include <cfloat>
 #if (defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__))
 #  include <math.h>
 #endif
 
 #include <boost/math/tools/user.hpp>
-#include <boost/math/special_functions/detail/round_fwd.hpp>
 
 #if (defined(__CYGWIN__) || defined(__FreeBSD__) || defined(__NetBSD__) \
-   || (defined(__hppa) && !defined(__OpenBSD__)) || defined(__NO_LONG_DOUBLE_MATH)) && !defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS)
+   || (defined(__hppa) && !defined(__OpenBSD__)) || (defined(__NO_LONG_DOUBLE_MATH) && (DBL_MANT_DIG != LDBL_MANT_DIG))) \
+   && !defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS)
 #  define BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
 #endif
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
@@ -37,6 +38,13 @@
 #  define BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS
 #  define BOOST_MATH_CONTROL_FP _control87(MCW_EM,MCW_EM)
 #  include <float.h>
+#endif
+#ifdef __IBMCPP__
+//
+// For reasons I don't unserstand, the tests with IMB's compiler all
+// pass at long double precision, but fail with real_concept, those tests
+// are disabled for now.  (JM 2012).
+#  define BOOST_MATH_NO_REAL_CONCEPT_TESTS
 #endif
 #if (defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__)) && ((LDBL_MANT_DIG == 106) || (__LDBL_MANT_DIG__ == 106)) && !defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS)
 //
@@ -90,9 +98,14 @@
 #  define BOOST_MATH_USE_C99
 #endif
 
+#if defined(_LIBCPP_VERSION) && !defined(_MSC_VER)
+#  define BOOST_MATH_USE_C99
+#endif
+
 #if defined(__CYGWIN__) || defined(__HP_aCC) || defined(BOOST_INTEL) \
   || defined(BOOST_NO_NATIVE_LONG_DOUBLE_FP_CLASSIFY) \
-  || (defined(__GNUC__) && !defined(BOOST_MATH_USE_C99))
+  || (defined(__GNUC__) && !defined(BOOST_MATH_USE_C99))\
+  || defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS)
 #  define BOOST_MATH_NO_NATIVE_LONG_DOUBLE_FP_CLASSIFY
 #endif
 
@@ -194,6 +207,22 @@
 #ifndef BOOST_MATH_INT_VALUE_SUFFIX
 #  define BOOST_MATH_INT_VALUE_SUFFIX(RV, SUF) RV##SUF
 #endif
+//
+// Test whether to support __float128:
+//
+#if defined(_GLIBCXX_USE_FLOAT128) && defined(BOOST_GCC) && !defined(__STRICT_ANSI__)
+//
+// Only enable this when the compiler really is GCC as clang and probably 
+// intel too don't support __float128 yet :-(
+//
+#  define BOOST_MATH_USE_FLOAT128
+#endif
+//
+// Check for WinCE with no iostream support:
+//
+#if defined(_WIN32_WCE) && !defined(__SGI_STL_PORT)
+#  define BOOST_MATH_NO_LEXICAL_CAST
+#endif
 
 //
 // Helper macro for controlling the FP behaviour:
@@ -204,7 +233,7 @@
 //
 // Helper macro for using statements:
 //
-#define BOOST_MATH_STD_USING \
+#define BOOST_MATH_STD_USING_CORE \
    using std::abs;\
    using std::acos;\
    using std::cos;\
@@ -227,15 +256,9 @@
    using std::ceil;\
    using std::floor;\
    using std::log10;\
-   using std::sqrt;\
-   using boost::math::round;\
-   using boost::math::iround;\
-   using boost::math::lround;\
-   using boost::math::trunc;\
-   using boost::math::itrunc;\
-   using boost::math::ltrunc;\
-   using boost::math::modf;
+   using std::sqrt;
 
+#define BOOST_MATH_STD_USING BOOST_MATH_STD_USING_CORE
 
 namespace boost{ namespace math{
 namespace tools
@@ -305,12 +328,20 @@ namespace boost{ namespace math{
 #endif
 
 #ifdef BOOST_MATH_INSTRUMENT
-#define BOOST_MATH_INSTRUMENT_CODE(x) \
-   std::cout << std::setprecision(35) << __FILE__ << ":" << __LINE__ << " " << x << std::endl;
-#define BOOST_MATH_INSTRUMENT_VARIABLE(name) BOOST_MATH_INSTRUMENT_CODE(BOOST_STRINGIZE(name) << " = " << name)
+
+#  include <iostream>
+#  include <iomanip>
+#  include <typeinfo>
+
+#  define BOOST_MATH_INSTRUMENT_CODE(x) \
+      std::cout << std::setprecision(35) << __FILE__ << ":" << __LINE__ << " " << x << std::endl;
+#  define BOOST_MATH_INSTRUMENT_VARIABLE(name) BOOST_MATH_INSTRUMENT_CODE(BOOST_STRINGIZE(name) << " = " << name)
+
 #else
-#define BOOST_MATH_INSTRUMENT_CODE(x)
-#define BOOST_MATH_INSTRUMENT_VARIABLE(name)
+
+#  define BOOST_MATH_INSTRUMENT_CODE(x)
+#  define BOOST_MATH_INSTRUMENT_VARIABLE(name)
+
 #endif
 
 #endif // BOOST_MATH_TOOLS_CONFIG_HPP

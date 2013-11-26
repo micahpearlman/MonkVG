@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -35,17 +35,17 @@ namespace boost { namespace interprocess {
 template <class MapConfig>
 struct iunordered_set_index_aux
 {
-   typedef typename 
+   typedef typename
       MapConfig::segment_manager_base                 segment_manager_base;
 
-   typedef typename 
+   typedef typename
       segment_manager_base::void_pointer              void_pointer;
 
    typedef typename bi::make_unordered_set_base_hook
       < bi::void_pointer<void_pointer>
       >::type        derivation_hook;
 
-   typedef typename MapConfig::template 
+   typedef typename MapConfig::template
       intrusive_value_type<derivation_hook>::type     value_type;
 
    typedef typename MapConfig::
@@ -58,23 +58,23 @@ struct iunordered_set_index_aux
    struct equal_function
    {
       bool operator()(const intrusive_compare_key_type &i, const value_type &b) const
-      {  
+      {
          return (i.m_len == b.name_length()) &&
-                  (std::char_traits<char_type>::compare 
+                  (std::char_traits<char_type>::compare
                      (i.mp_str, b.name(), i.m_len) == 0);
       }
 
       bool operator()(const value_type &b, const intrusive_compare_key_type &i) const
-      {  
+      {
          return (i.m_len == b.name_length()) &&
-                  (std::char_traits<char_type>::compare 
+                  (std::char_traits<char_type>::compare
                      (i.mp_str, b.name(), i.m_len) == 0);
       }
 
       bool operator()(const value_type &b1, const value_type &b2) const
-      {  
+      {
          return (b1.name_length() == b2.name_length()) &&
-                  (std::char_traits<char_type>::compare 
+                  (std::char_traits<char_type>::compare
                      (b1.name(), b2.name(), b1.name_length()) == 0);
       }
    };
@@ -119,7 +119,7 @@ struct iunordered_set_index_aux
 /// @endcond
 
 //!Index type based in boost::intrusive::set.
-//!Just derives from boost::intrusive::set 
+//!Just derives from boost::intrusive::set
 //!and defines the interface needed by managed memory segments
 template <class MapConfig>
 class iunordered_set_index
@@ -135,9 +135,9 @@ class iunordered_set_index
    typedef typename index_aux::equal_function            equal_function;
    typedef typename index_aux::hash_function             hash_function;
    typedef typename MapConfig::char_type                 char_type;
-   typedef typename 
+   typedef typename
       iunordered_set_index_aux<MapConfig>::allocator_type      allocator_type;
-   typedef typename 
+   typedef typename
       iunordered_set_index_aux<MapConfig>::allocator_holder    allocator_holder;
    /// @endcond
 
@@ -190,7 +190,7 @@ class iunordered_set_index
 
       bucket_ptr shunk_p = alloc.allocation_command
          (boost::interprocess::shrink_in_place | boost::interprocess::nothrow_allocation, received_size, received_size, received_size, buckets).first;
-      BOOST_ASSERT(buckets == shunk_p);
+      BOOST_ASSERT(buckets == shunk_p); (void)shunk_p;
 
       bucket_ptr buckets_init = buckets + received_size;
       for(size_type i = 0; i < (old_size - received_size); ++i){
@@ -290,7 +290,7 @@ class iunordered_set_index
       size_type cur_size   = this->size();
       size_type cur_count  = this->bucket_count();
       bucket_ptr old_p = this->bucket_pointer();
-      
+
       if(!this->size() && old_p != bucket_ptr(&this->init_bucket)){
          this->rehash(bucket_traits(bucket_ptr(&this->init_bucket), 1));
          destroy_buckets(this->alloc, old_p, cur_count);
@@ -337,7 +337,7 @@ class iunordered_set_index
             //Strong guarantee: if something goes wrong
             //we should remove the insertion.
             //
-            //We can use the iterator because the hash function   
+            //We can use the iterator because the hash function
             //can't throw and this means that "reserve" will
             //throw only because of the memory allocation:
             //the iterator has not been invalidated.

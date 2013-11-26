@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga  2007.
+// (C) Copyright Ion Gaztanaga  2007-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -15,8 +15,8 @@
 // The code has been modified and (supposely) improved by Ion Gaztanaga.
 // Here is the header of the file used as base code:
 //
-//  splay_tree.h -- implementation of a STL complatible splay tree.
-//  
+//  splay_tree.h -- implementation of a STL compatible splay tree.
+//
 //  Copyright (c) 2004 Ralf Mattethat
 //
 //  Permission to copy, use, modify, sell and distribute this software
@@ -24,22 +24,22 @@
 //  This software is provided "as is" without express or implied
 //  warranty, and with no claim as to its suitability for any purpose.
 //
-//  Please send questions, comments, complaints, performance data, etc to  
+//  Please send questions, comments, complaints, performance data, etc to
 //  ralf.mattethat@teknologisk.dk
 //
 //  Requirements for element type
 //  * must be copy-constructible
 //  * destructor must not throw exception
 //
-//    Methods marked with note A only throws an exception if the evaluation of the 
-//    predicate throws an exception. If an exception is thrown the call has no 
+//    Methods marked with note A only throws an exception if the evaluation of the
+//    predicate throws an exception. If an exception is thrown the call has no
 //    effect on the containers state
 //
 //    Methods marked with note B only throws an exception if the coppy constructor
-//    or assignment operator of the predicate throws an exception. If an exception 
+//    or assignment operator of the predicate throws an exception. If an exception
 //    is thrown the call has no effect on the containers state
 //
-//    iterators are only invalidated, if the element pointed to by the iterator 
+//    iterators are only invalidated, if the element pointed to by the iterator
 //    is deleted. The same goes for element references
 //
 
@@ -95,8 +95,8 @@ struct splaydown_rollback
 
 //!   A splay tree is an implementation of a binary search tree. The tree is
 //!   self balancing using the splay algorithm as described in
-//!    
-//!      "Self-Adjusting Binary Search Trees 
+//!
+//!      "Self-Adjusting Binary Search Trees
 //!      by Daniel Dominic Sleator and Robert Endre Tarjan
 //!      AT&T Bell Laboratories, Murray Hill, NJ
 //!      Journal of the ACM, Vol 32, no 3, July 1985, pp 652-686
@@ -116,15 +116,15 @@ struct splaydown_rollback
 //! <b>Static functions</b>:
 //!
 //! <tt>static node_ptr get_parent(const_node_ptr n);</tt>
-//! 
+//!
 //! <tt>static void set_parent(node_ptr n, node_ptr parent);</tt>
 //!
 //! <tt>static node_ptr get_left(const_node_ptr n);</tt>
-//! 
+//!
 //! <tt>static void set_left(node_ptr n, node_ptr left);</tt>
 //!
 //! <tt>static node_ptr get_right(const_node_ptr n);</tt>
-//! 
+//!
 //! <tt>static void set_right(node_ptr n, node_ptr right);</tt>
 template<class NodeTraits>
 class splaytree_algorithms
@@ -159,11 +159,11 @@ class splaytree_algorithms
 
    //! <b>Requires</b>: node is a node of the tree or an node initialized
    //!   by init(...).
-   //! 
+   //!
    //! <b>Effects</b>: Returns true if the node is initialized by init().
-   //! 
+   //!
    //! <b>Complexity</b>: Constant time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    static bool unique(const const_node_ptr & node)
    {  return tree_algorithms::unique(node);  }
@@ -173,15 +173,15 @@ class splaytree_algorithms
 
    //! <b>Requires</b>: node1 and node2 can't be header nodes
    //!  of two trees.
-   //! 
+   //!
    //! <b>Effects</b>: Swaps two nodes. After the function node1 will be inserted
    //!   in the position node2 before the function. node2 will be inserted in the
    //!   position node1 had before the function.
-   //! 
-   //! <b>Complexity</b>: Logarithmic. 
-   //! 
+   //!
+   //! <b>Complexity</b>: Logarithmic.
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Note</b>: This function will break container ordering invariants if
    //!   node1 and node2 are not equivalent according to the ordering rules.
    //!
@@ -190,22 +190,22 @@ class splaytree_algorithms
    {
       if(node1 == node2)
          return;
-   
+
       node_ptr header1(tree_algorithms::get_header(node1)), header2(tree_algorithms::get_header(node2));
       swap_nodes(node1, header1, node2, header2);
    }
 
    //! <b>Requires</b>: node1 and node2 can't be header nodes
    //!  of two trees with header header1 and header2.
-   //! 
+   //!
    //! <b>Effects</b>: Swaps two nodes. After the function node1 will be inserted
    //!   in the position node2 before the function. node2 will be inserted in the
    //!   position node1 had before the function.
-   //! 
-   //! <b>Complexity</b>: Constant. 
-   //! 
+   //!
+   //! <b>Complexity</b>: Constant.
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Note</b>: This function will break container ordering invariants if
    //!   node1 and node2 are not equivalent according to the ordering rules.
    //!
@@ -215,14 +215,14 @@ class splaytree_algorithms
 
    //! <b>Requires</b>: node_to_be_replaced must be inserted in a tree
    //!   and new_node must not be inserted in a tree.
-   //! 
+   //!
    //! <b>Effects</b>: Replaces node_to_be_replaced in its position in the
    //!   tree with new_node. The tree does not need to be rebalanced
-   //! 
-   //! <b>Complexity</b>: Logarithmic. 
-   //! 
+   //!
+   //! <b>Complexity</b>: Logarithmic.
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Note</b>: This function will break container ordering invariants if
    //!   new_node is not equivalent to node_to_be_replaced according to the
    //!   ordering rules. This function is faster than erasing and inserting
@@ -238,14 +238,14 @@ class splaytree_algorithms
 
    //! <b>Requires</b>: node_to_be_replaced must be inserted in a tree
    //!   with header "header" and new_node must not be inserted in a tree.
-   //! 
+   //!
    //! <b>Effects</b>: Replaces node_to_be_replaced in its position in the
    //!   tree with new_node. The tree does not need to be rebalanced
-   //! 
-   //! <b>Complexity</b>: Constant. 
-   //! 
+   //!
+   //! <b>Complexity</b>: Constant.
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Note</b>: This function will break container ordering invariants if
    //!   new_node is not equivalent to node_to_be_replaced according to the
    //!   ordering rules. This function is faster than erasing and inserting
@@ -256,21 +256,21 @@ class splaytree_algorithms
    {  tree_algorithms::replace_node(node_to_be_replaced, header, new_node);   }
 
    //! <b>Requires</b>: p is a node from the tree except the header.
-   //! 
+   //!
    //! <b>Effects</b>: Returns the next node of the tree.
-   //! 
+   //!
    //! <b>Complexity</b>: Average constant time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    static node_ptr next_node(const node_ptr & p)
    {  return tree_algorithms::next_node(p); }
 
    //! <b>Requires</b>: p is a node from the tree except the leftmost node.
-   //! 
+   //!
    //! <b>Effects</b>: Returns the previous node of the tree.
-   //! 
+   //!
    //! <b>Complexity</b>: Average constant time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    static node_ptr prev_node(const node_ptr & p)
    {  return tree_algorithms::prev_node(p); }
@@ -278,9 +278,9 @@ class splaytree_algorithms
    //! <b>Requires</b>: node must not be part of any tree.
    //!
    //! <b>Effects</b>: After the function unique(node) == true.
-   //! 
+   //!
    //! <b>Complexity</b>: Constant.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Nodes</b>: If node is inserted in a tree, this function corrupts the tree.
@@ -291,9 +291,9 @@ class splaytree_algorithms
    //!
    //! <b>Effects</b>: Initializes the header to represent an empty tree.
    //!   unique(header) == true.
-   //! 
+   //!
    //! <b>Complexity</b>: Constant.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Nodes</b>: If node is inserted in a tree, this function corrupts the tree.
@@ -303,46 +303,46 @@ class splaytree_algorithms
    //! <b>Requires</b>: "disposer" must be an object function
    //!   taking a node_ptr parameter and shouldn't throw.
    //!
-   //! <b>Effects</b>: Empties the target tree calling 
+   //! <b>Effects</b>: Empties the target tree calling
    //!   <tt>void disposer::operator()(const node_ptr &)</tt> for every node of the tree
    //!    except the header.
-   //! 
+   //!
    //! <b>Complexity</b>: Linear to the number of element of the source tree plus the.
    //!   number of elements of tree target tree when calling this function.
-   //! 
+   //!
    //! <b>Throws</b>: If cloner functor throws. If this happens target nodes are disposed.
    template<class Disposer>
    static void clear_and_dispose(const node_ptr & header, Disposer disposer)
    {  tree_algorithms::clear_and_dispose(header, disposer); }
 
    //! <b>Requires</b>: node is a node of the tree but it's not the header.
-   //! 
+   //!
    //! <b>Effects</b>: Returns the number of nodes of the subtree.
-   //! 
+   //!
    //! <b>Complexity</b>: Linear time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    static std::size_t count(const const_node_ptr & node)
    {  return tree_algorithms::count(node);   }
 
    //! <b>Requires</b>: header is the header node of the tree.
-   //! 
+   //!
    //! <b>Effects</b>: Returns the number of nodes above the header.
-   //! 
+   //!
    //! <b>Complexity</b>: Linear time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    static std::size_t size(const const_node_ptr & header)
    {  return tree_algorithms::size(header);   }
 
    //! <b>Requires</b>: header1 and header2 must be the header nodes
    //!  of two trees.
-   //! 
-   //! <b>Effects</b>: Swaps two trees. After the function header1 will contain 
+   //!
+   //! <b>Effects</b>: Swaps two trees. After the function header1 will contain
    //!   links to the second tree and header2 will have links to the first tree.
-   //! 
-   //! <b>Complexity</b>: Constant. 
-   //! 
+   //!
+   //! <b>Complexity</b>: Constant.
+   //!
    //! <b>Throws</b>: Nothing.
    static void swap_tree(const node_ptr & header1, const node_ptr & header2)
    {  return tree_algorithms::swap_tree(header1, header2);  }
@@ -351,16 +351,16 @@ class splaytree_algorithms
    //!   "commit_data" must have been obtained from a previous call to
    //!   "insert_unique_check". No objects should have been inserted or erased
    //!   from the set between the "insert_unique_check" that filled "commit_data"
-   //!   and the call to "insert_commit". 
-   //! 
-   //! 
+   //!   and the call to "insert_commit".
+   //!
+   //!
    //! <b>Effects</b>: Inserts new_node in the set using the information obtained
    //!   from the "commit_data" that a previous "insert_check" filled.
    //!
    //! <b>Complexity</b>: Constant time.
    //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Notes</b>: This function has only sense if a "insert_unique_check" has been
    //!   previously executed to fill "commit_data". No value should be inserted or
    //!   erased between the "insert_check" and "insert_commit" calls.
@@ -372,7 +372,7 @@ class splaytree_algorithms
    //!   KeyNodePtrCompare is a function object that induces a strict weak
    //!   ordering compatible with the strict weak ordering used to create the
    //!   the tree. NodePtrCompare compares KeyType with a node_ptr.
-   //! 
+   //!
    //! <b>Effects</b>: Checks if there is an equivalent node to "key" in the
    //!   tree according to "comp" and obtains the needed information to realize
    //!   a constant-time node insertion if there is no equivalent node.
@@ -383,11 +383,11 @@ class splaytree_algorithms
    //!   in the returned pair's boolean and fills "commit_data" that is meant to
    //!   be used with the "insert_commit" function to achieve a constant-time
    //!   insertion function.
-   //! 
+   //!
    //! <b>Complexity</b>: Average complexity is at most logarithmic.
    //!
    //! <b>Throws</b>: If "comp" throws.
-   //! 
+   //!
    //! <b>Notes</b>: This function is used to improve performance when constructing
    //!   a node is expensive and the user does not want to have two equivalent nodes
    //!   in the tree: if there is an equivalent value
@@ -432,7 +432,7 @@ class splaytree_algorithms
    //!   "key" according to "comp" or "header" if that element does not exist.
    //!
    //! <b>Complexity</b>: Logarithmic.
-   //! 
+   //!
    //! <b>Throws</b>: If "comp" throws.
    template<class KeyType, class KeyNodePtrCompare>
    static node_ptr find
@@ -457,7 +457,7 @@ class splaytree_algorithms
    //!   if they there are no equivalent elements.
    //!
    //! <b>Complexity</b>: Logarithmic.
-   //! 
+   //!
    //! <b>Throws</b>: If "comp" throws.
    template<class KeyType, class KeyNodePtrCompare>
    static std::pair<node_ptr, node_ptr> equal_range
@@ -477,13 +477,45 @@ class splaytree_algorithms
    //!   KeyNodePtrCompare is a function object that induces a strict weak
    //!   ordering compatible with the strict weak ordering used to create the
    //!   the tree. KeyNodePtrCompare can compare KeyType with tree's node_ptrs.
+   //!   'lower_key' must not be greater than 'upper_key' according to 'comp'. If
+   //!   'lower_key' == 'upper_key', ('left_closed' || 'right_closed') must be false.
+   //!
+   //! <b>Effects</b>: Returns an a pair with the following criteria:
+   //!
+   //!   first = lower_bound(lower_key) if left_closed, upper_bound(lower_key) otherwise
+   //!
+   //!   second = upper_bound(upper_key) if right_closed, lower_bound(upper_key) otherwise
+   //!
+   //! <b>Complexity</b>: Logarithmic.
+   //!
+   //! <b>Throws</b>: If "comp" throws.
+   //!
+   //! <b>Note</b>: This function can be more efficient than calling upper_bound
+   //!   and lower_bound for lower_key and upper_key.
+   template<class KeyType, class KeyNodePtrCompare>
+   static std::pair<node_ptr, node_ptr> bounded_range
+      (const const_node_ptr & header, const KeyType &lower_key, const KeyType &upper_key, KeyNodePtrCompare comp
+      , bool left_closed, bool right_closed, bool splay = true)
+   {
+      std::pair<node_ptr, node_ptr> ret =
+         tree_algorithms::bounded_range(header, lower_key, upper_key, comp, left_closed, right_closed);
+
+      if(splay)
+         splay_up(ret.first, uncast(header));
+      return ret;
+   }
+
+   //! <b>Requires</b>: "header" must be the header node of a tree.
+   //!   KeyNodePtrCompare is a function object that induces a strict weak
+   //!   ordering compatible with the strict weak ordering used to create the
+   //!   the tree. KeyNodePtrCompare can compare KeyType with tree's node_ptrs.
    //!
    //! <b>Effects</b>: Returns an node_ptr to the first element that is
    //!   not less than "key" according to "comp" or "header" if that element does
    //!   not exist.
    //!
    //! <b>Complexity</b>: Logarithmic.
-   //! 
+   //!
    //! <b>Throws</b>: If "comp" throws.
    template<class KeyType, class KeyNodePtrCompare>
    static node_ptr lower_bound
@@ -506,7 +538,7 @@ class splaytree_algorithms
    //!   than "key" according to "comp" or "header" if that element does not exist.
    //!
    //! <b>Complexity</b>: Logarithmic.
-   //! 
+   //!
    //! <b>Throws</b>: If "comp" throws.
    template<class KeyType, class KeyNodePtrCompare>
    static node_ptr upper_bound
@@ -525,14 +557,14 @@ class splaytree_algorithms
    //!   ordering compatible with the strict weak ordering used to create the
    //!   the tree. NodePtrCompare compares two node_ptrs. "hint" is node from
    //!   the "header"'s tree.
-   //!   
+   //!
    //! <b>Effects</b>: Inserts new_node into the tree, using "hint" as a hint to
    //!   where it will be inserted. If "hint" is the upper_bound
    //!   the insertion takes constant time (two comparisons in the worst case).
    //!
    //! <b>Complexity</b>: Logarithmic in general, but it is amortized
    //!   constant time if new_node is inserted immediately before "hint".
-   //! 
+   //!
    //! <b>Throws</b>: If "comp" throws.
    template<class NodePtrCompare>
    static node_ptr insert_equal
@@ -548,13 +580,13 @@ class splaytree_algorithms
    //!   "pos" must be an iterator pointing to the successor to "new_node"
    //!   once inserted according to the order of already inserted nodes. This function does not
    //!   check "pos" and this precondition must be guaranteed by the caller.
-   //!   
+   //!
    //! <b>Effects</b>: Inserts new_node into the tree before "pos".
    //!
    //! <b>Complexity</b>: Constant-time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Note</b>: If "pos" is not the successor of the newly inserted "new_node"
    //! tree invariants might be broken.
    static node_ptr insert_before
@@ -568,13 +600,13 @@ class splaytree_algorithms
    //! <b>Requires</b>: "header" must be the header node of a tree.
    //!   "new_node" must be, according to the used ordering no less than the
    //!   greatest inserted key.
-   //!   
+   //!
    //! <b>Effects</b>: Inserts new_node into the tree before "pos".
    //!
    //! <b>Complexity</b>: Constant-time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Note</b>: If "new_node" is less than the greatest inserted key
    //! tree invariants are broken. This function is slightly faster than
    //! using "insert_before".
@@ -587,13 +619,13 @@ class splaytree_algorithms
    //! <b>Requires</b>: "header" must be the header node of a tree.
    //!   "new_node" must be, according to the used ordering, no greater than the
    //!   lowest inserted key.
-   //!   
+   //!
    //! <b>Effects</b>: Inserts new_node into the tree before "pos".
    //!
    //! <b>Complexity</b>: Constant-time.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Note</b>: If "new_node" is greater than the lowest inserted key
    //! tree invariants are broken. This function is slightly faster than
    //! using "insert_before".
@@ -610,10 +642,10 @@ class splaytree_algorithms
    //!
    //! <b>Effects</b>: Inserts new_node into the tree before the upper bound
    //!   according to "comp".
-   //! 
+   //!
    //! <b>Complexity</b>: Average complexity for insert element is at
    //!   most logarithmic.
-   //! 
+   //!
    //! <b>Throws</b>: If "comp" throws.
    template<class NodePtrCompare>
    static node_ptr insert_equal_upper_bound
@@ -630,10 +662,10 @@ class splaytree_algorithms
    //!
    //! <b>Effects</b>: Inserts new_node into the tree before the lower bound
    //!   according to "comp".
-   //! 
+   //!
    //! <b>Complexity</b>: Average complexity for insert element is at
    //!   most logarithmic.
-   //! 
+   //!
    //! <b>Throws</b>: If "comp" throws.
    template<class NodePtrCompare>
    static node_ptr insert_equal_lower_bound
@@ -647,18 +679,18 @@ class splaytree_algorithms
    //!   object taking a node_ptr and returning a new cloned node of it. "disposer" must
    //!   take a node_ptr and shouldn't throw.
    //!
-   //! <b>Effects</b>: First empties target tree calling 
+   //! <b>Effects</b>: First empties target tree calling
    //!   <tt>void disposer::operator()(const node_ptr &)</tt> for every node of the tree
    //!    except the header.
-   //!    
+   //!
    //!   Then, duplicates the entire tree pointed by "source_header" cloning each
-   //!   source node with <tt>node_ptr Cloner::operator()(const node_ptr &)</tt> to obtain 
+   //!   source node with <tt>node_ptr Cloner::operator()(const node_ptr &)</tt> to obtain
    //!   the nodes of the target tree. If "cloner" throws, the cloned target nodes
    //!   are disposed using <tt>void disposer(const node_ptr &)</tt>.
-   //! 
+   //!
    //! <b>Complexity</b>: Linear to the number of element of the source tree plus the.
    //!   number of elements of tree target tree when calling this function.
-   //! 
+   //!
    //! <b>Throws</b>: If cloner functor throws. If this happens target nodes are disposed.
    template <class Cloner, class Disposer>
    static void clone
@@ -723,13 +755,13 @@ class splaytree_algorithms
       node_ptr t(header);
 
       if( n == t ) return;
-      
+
       for( ;; ){
          node_ptr p(NodeTraits::get_parent(n));
          node_ptr g(NodeTraits::get_parent(p));
 
          if( p == t )   break;
-         
+
          if( g == t ){
             // zig
             rotate(n);
@@ -772,10 +804,11 @@ class splaytree_algorithms
       node_ptr leftmost (NodeTraits::get_left(header));
       node_ptr rightmost(NodeTraits::get_right(header));
       {
+         //Anti-exception rollback, recovers the original header node if an exception is thrown.
          detail::splaydown_rollback<NodeTraits> rollback(&t, header, leftmost, rightmost);
-         node_ptr null = header;
-         node_ptr l = null;
-         node_ptr r = null;
+         node_ptr null_node = header;
+         node_ptr l = null_node;
+         node_ptr r = null_node;
 
          for( ;; ){
             if(comp(key, t)){
@@ -827,10 +860,12 @@ class splaytree_algorithms
             }
          }
 
-         assemble(t, l, r, null);
+         assemble(t, l, r, null_node);
          rollback.release();
       }
 
+      //Now recover the original header except for the
+      //splayed root node.
       //t is the current root
       NodeTraits::set_parent(header, t);
       NodeTraits::set_parent(t, header);
@@ -841,23 +876,23 @@ class splaytree_algorithms
    }
 
    //! <b>Requires</b>: header must be the header of a tree.
-   //! 
+   //!
    //! <b>Effects</b>: Rebalances the tree.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Complexity</b>: Linear.
    static void rebalance(const node_ptr & header)
    {  tree_algorithms::rebalance(header); }
 
    //! <b>Requires</b>: old_root is a node of a tree.
-   //! 
+   //!
    //! <b>Effects</b>: Rebalances the subtree rooted at old_root.
    //!
    //! <b>Returns</b>: The new root of the subtree.
    //!
    //! <b>Throws</b>: Nothing.
-   //! 
+   //!
    //! <b>Complexity</b>: Linear.
    static node_ptr rebalance_subtree(const node_ptr & old_root)
    {  return tree_algorithms::rebalance_subtree(old_root); }
@@ -868,7 +903,7 @@ class splaytree_algorithms
    //! <b>Effects</b>: Returns a pointer to the header node of the tree.
    //!
    //! <b>Complexity</b>: Logarithmic.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    static node_ptr get_header(const node_ptr & n)
    {  return tree_algorithms::get_header(n);   }
@@ -926,10 +961,10 @@ class splaytree_algorithms
    {
       node_ptr p = NodeTraits::get_parent(n);
       node_ptr g = NodeTraits::get_parent(p);
-      //Test if g is header before breaking tree 
+      //Test if g is header before breaking tree
       //invariants that would make is_header invalid
       bool g_is_header = is_header(g);
-      
+
       if(NodeTraits::get_left(p) == n){
          NodeTraits::set_left(p, NodeTraits::get_right(n));
          if(NodeTraits::get_left(p) != node_ptr())
@@ -965,8 +1000,8 @@ class splaytree_algorithms
    /// @endcond
 };
 
-} //namespace intrusive 
-} //namespace boost 
+} //namespace intrusive
+} //namespace boost
 
 #include <boost/intrusive/detail/config_end.hpp>
 

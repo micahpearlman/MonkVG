@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -45,12 +45,12 @@ namespace boost {
 namespace interprocess {
 
 
-//!An STL compatible allocator that uses a segment manager as 
+//!An STL compatible allocator that uses a segment manager as
 //!memory source. The internal pointer type will of the same type (raw, smart) as
 //!"typename SegmentManager::void_pointer" type. This allows
 //!placing the allocator in shared memory, memory mapped-files, etc...
 template<class T, class SegmentManager>
-class allocator 
+class allocator
 {
    public:
    //Segment manager
@@ -115,7 +115,7 @@ class allocator
    //!objects of type T2
    template<class T2>
    struct rebind
-   {   
+   {
       typedef allocator<T2, SegmentManager>     other;
    };
 
@@ -126,27 +126,28 @@ class allocator
 
    //!Constructor from the segment manager.
    //!Never throws
-   allocator(segment_manager *segment_mngr) 
+   allocator(segment_manager *segment_mngr)
       : mp_mngr(segment_mngr) { }
 
    //!Constructor from other allocator.
    //!Never throws
-   allocator(const allocator &other) 
+   allocator(const allocator &other)
       : mp_mngr(other.get_segment_manager()){ }
 
    //!Constructor from related allocator.
    //!Never throws
    template<class T2>
-   allocator(const allocator<T2, SegmentManager> &other) 
+   allocator(const allocator<T2, SegmentManager> &other)
       : mp_mngr(other.get_segment_manager()){}
 
-   //!Allocates memory for an array of count elements. 
+   //!Allocates memory for an array of count elements.
    //!Throws boost::interprocess::bad_alloc if there is no enough memory
    pointer allocate(size_type count, cvoid_ptr hint = 0)
    {
       (void)hint;
-      if(count > this->max_size())
+      if(size_overflows<sizeof(T)>(count)){
          throw bad_alloc();
+      }
       return pointer(static_cast<value_type*>(mp_mngr->allocate(count*sizeof(T))));
    }
 
@@ -169,13 +170,13 @@ class allocator
    //!pointed by p can hold. This size only works for memory allocated with
    //!allocate, allocation_command and allocate_many.
    size_type size(const pointer &p) const
-   {  
+   {
       return (size_type)mp_mngr->size(ipcdetail::to_raw_pointer(p))/sizeof(T);
    }
 
    std::pair<pointer, bool>
       allocation_command(boost::interprocess::allocation_type command,
-                         size_type limit_size, 
+                         size_type limit_size,
                          size_type preferred_size,
                          size_type &received_size, const pointer &reuse = 0)
    {
@@ -189,19 +190,20 @@ class allocator
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. The elements must be deallocated
    //!with deallocate(...)
-   multiallocation_chain allocate_many
-      (size_type elem_size, size_type num_elements)
+   void allocate_many(size_type elem_size, size_type num_elements, multiallocation_chain &chain)
    {
-      return multiallocation_chain(mp_mngr->allocate_many(sizeof(T)*elem_size, num_elements));
+      if(size_overflows<sizeof(T)>(elem_size)){
+         throw bad_alloc();
+      }
+      mp_mngr->allocate_many(elem_size*sizeof(T), num_elements, chain);
    }
 
    //!Allocates n_elements elements, each one of size elem_sizes[i]in a
    //!contiguous block
    //!of memory. The elements must be deallocated
-   multiallocation_chain allocate_many
-      (const size_type *elem_sizes, size_type n_elements)
+   void allocate_many(const size_type *elem_sizes, size_type n_elements, multiallocation_chain &chain)
    {
-      multiallocation_chain(mp_mngr->allocate_many(elem_sizes, n_elements, sizeof(T)));
+      mp_mngr->allocate_many(elem_sizes, n_elements, sizeof(T), chain);
    }
 
    //!Allocates many elements of size elem_size in a contiguous block
@@ -210,10 +212,8 @@ class allocator
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. The elements must be deallocated
    //!with deallocate(...)
-   void deallocate_many(multiallocation_chain chain)
-   {
-      return mp_mngr->deallocate_many(chain.extract_multiallocation_chain());
-   }
+   void deallocate_many(multiallocation_chain &chain)
+   {  mp_mngr->deallocate_many(chain); }
 
    //!Allocates just one object. Memory allocated with this function
    //!must be deallocated only with deallocate_one().
@@ -227,9 +227,8 @@ class allocator
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. Memory allocated with this function
    //!must be deallocated only with deallocate_one().
-   multiallocation_chain allocate_individual
-      (size_type num_elements)
-   {  return this->allocate_many(1, num_elements); }
+   void allocate_individual(size_type num_elements, multiallocation_chain &chain)
+   {  this->allocate_many(1, num_elements, chain); }
 
    //!Deallocates memory previously allocated with allocate_one().
    //!You should never use deallocate_one to deallocate memory allocated
@@ -243,8 +242,8 @@ class allocator
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. Memory allocated with this function
    //!must be deallocated only with deallocate_one().
-   void deallocate_individual(multiallocation_chain chain)
-   {  return this->deallocate_many(boost::move(chain)); }
+   void deallocate_individual(multiallocation_chain &chain)
+   {  this->deallocate_many(chain); }
 
    //!Returns address of mutable object.
    //!Never throws
@@ -273,14 +272,14 @@ class allocator
 //!Equality test for same type
 //!of allocator
 template<class T, class SegmentManager> inline
-bool operator==(const allocator<T , SegmentManager>  &alloc1, 
+bool operator==(const allocator<T , SegmentManager>  &alloc1,
                 const allocator<T, SegmentManager>  &alloc2)
    {  return alloc1.get_segment_manager() == alloc2.get_segment_manager(); }
 
 //!Inequality test for same type
 //!of allocator
 template<class T, class SegmentManager> inline
-bool operator!=(const allocator<T, SegmentManager>  &alloc1, 
+bool operator!=(const allocator<T, SegmentManager>  &alloc1,
                 const allocator<T, SegmentManager>  &alloc2)
    {  return alloc1.get_segment_manager() != alloc2.get_segment_manager(); }
 

@@ -24,8 +24,38 @@
 namespace boost { namespace math { namespace detail{
 
 template <typename T, typename Policy>
+T bessel_y1(T x, const Policy&);
+
+template <class T, class Policy>
+struct bessel_y1_initializer
+{
+   struct init
+   {
+      init()
+      {
+         do_init();
+      }
+      static void do_init()
+      {
+         bessel_y1(T(1), Policy());
+      }
+      void force_instantiate()const{}
+   };
+   static const init initializer;
+   static void force_instantiate()
+   {
+      initializer.force_instantiate();
+   }
+};
+
+template <class T, class Policy>
+const typename bessel_y1_initializer<T, Policy>::init bessel_y1_initializer<T, Policy>::initializer;
+
+template <typename T, typename Policy>
 T bessel_y1(T x, const Policy& pol)
 {
+    bessel_y1_initializer<T, Policy>::force_instantiate();
+
     static const T P1[] = {
          static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 4.0535726612579544093e+13)),
          static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 5.4708611716525426053e+12)),
@@ -140,11 +170,21 @@ T bessel_y1(T x, const Policy& pol)
     {
         T y = 8 / x;
         T y2 = y * y;
-        T z = x - 0.75f * pi<T>();
         rc = evaluate_rational(PC, QC, y2);
         rs = evaluate_rational(PS, QS, y2);
-        factor = sqrt(2 / (x * pi<T>()));
-        value = factor * (rc * sin(z) + y * rs * cos(z));
+        factor = 1 / (sqrt(x) * root_pi<T>());
+        //
+        // This code is really just:
+        //
+        // T z = x - 0.75f * pi<T>();
+        // value = factor * (rc * sin(z) + y * rs * cos(z));
+        //
+        // But using the sin/cos addition rules, plus constants for sin/cos of 3PI/4
+        // which then cancel out with corresponding terms in "factor".
+        //
+        T sx = sin(x);
+        T cx = cos(x);
+        value = factor * (y * rs * (sx - cx) - rc * (sx + cx));
     }
 
     return value;

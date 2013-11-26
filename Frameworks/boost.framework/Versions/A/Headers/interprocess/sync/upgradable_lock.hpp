@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -85,7 +85,7 @@ class upgradable_lock
       : mp_mutex(&m), m_locked(true)
    {}
 
-   //!Effects: m.try_lock_upgradable(). 
+   //!Effects: m.try_lock_upgradable().
    //!Postconditions: mutex() == &m. owns() == the return value of the
    //!   m.try_lock_upgradable() executed within the constructor.
    //!Notes: The constructor will take upgradable-ownership of the mutex
@@ -97,7 +97,7 @@ class upgradable_lock
       : mp_mutex(&m), m_locked(false)
    {  m_locked = mp_mutex->try_lock_upgradable();   }
 
-   //!Effects: m.timed_lock_upgradable(abs_time) 
+   //!Effects: m.timed_lock_upgradable(abs_time)
    //!Postconditions: mutex() == &m. owns() == the return value of the
    //!   m.timed_lock_upgradable() executed within the constructor.
    //!Notes: The constructor will take upgradable-ownership of the mutex if it
@@ -123,7 +123,7 @@ class upgradable_lock
       : mp_mutex(0), m_locked(upgr.owns())
    {  mp_mutex = upgr.release(); }
 
-   //!Effects: If scop.owns(), m_.unlock_and_lock_upgradable(). 
+   //!Effects: If scop.owns(), m_.unlock_and_lock_upgradable().
    //!Postconditions: mutex() == the value scop.mutex() had before the construction.
    //!   scop.mutex() == 0. owns() == scop.owns() before the constructor. After the
    //!   construction, scop.owns() == false.
@@ -146,12 +146,12 @@ class upgradable_lock
    }
 
    //!Effects: If shar.owns() then calls try_unlock_sharable_and_lock_upgradable()
-   //!   on the referenced mutex. 
+   //!   on the referenced mutex.
    //!   a)if try_unlock_sharable_and_lock_upgradable() returns true then mutex()
-   //!      obtains the value from shar.release() and owns() is set to true. 
+   //!      obtains the value from shar.release() and owns() is set to true.
    //!   b)if try_unlock_sharable_and_lock_upgradable() returns false then shar is
    //!      unaffected and this upgradable_lock construction has the same
-   //!      effects as a default construction. 
+   //!      effects as a default construction.
    //!   c)Else shar.owns() is false. mutex() obtains the value from shar.release()
    //!      and owns() is set to false.
    //!Notes: This construction will not block. It will try to obtain mutex
@@ -207,7 +207,7 @@ class upgradable_lock
    //!Notes: The sharable_lock changes from a state of not owning the mutex,
    //!   to owning the mutex, blocking if necessary.
    void lock()
-   {  
+   {
       if(!mp_mutex || m_locked)
          throw lock_exception();
       mp_mutex->lock_upgradable();
@@ -223,7 +223,7 @@ class upgradable_lock
    //!   mutex_type does not support try_lock_upgradable(), this function will
    //!   fail at compile time if instantiated, but otherwise have no effect.
    bool try_lock()
-   {  
+   {
       if(!mp_mutex || m_locked)
          throw lock_exception();
       m_locked = mp_mutex->try_lock_upgradable();
@@ -240,7 +240,7 @@ class upgradable_lock
    //!   timed_lock_upgradable(abs_time), this function will fail at compile
    //!   time if instantiated, but otherwise have no effect.
    bool timed_lock(const boost::posix_time::ptime& abs_time)
-   {  
+   {
       if(!mp_mutex || m_locked)
          throw lock_exception();
       m_locked = mp_mutex->timed_lock_upgradable(abs_time);
@@ -286,7 +286,7 @@ class upgradable_lock
       return mut;
    }
 
-   //!Effects: Swaps state with moved lock. 
+   //!Effects: Swaps state with moved lock.
    //!Throws: Nothing.
    void swap(upgradable_lock<mutex_type> &other)
    {

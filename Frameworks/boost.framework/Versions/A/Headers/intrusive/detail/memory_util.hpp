@@ -6,7 +6,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2011-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2011-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -149,7 +149,7 @@ BOOST_INTRUSIVE_INSTANTIATE_DEFAULT_TYPE_TMPLT(difference_type)
 template <typename T> struct first_param
 {  typedef void type;   };
 
-#if !defined(BOOST_NO_VARIADIC_TEMPLATES)
+#if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
 
    template <template <typename, typename...> class TemplateClass, typename T, typename... Args>
    struct first_param< TemplateClass<T, Args...> >
@@ -173,7 +173,7 @@ template <typename T> struct first_param
    #define BOOST_PP_LOCAL_LIMITS (0, BOOST_INTRUSIVE_MAX_CONSTRUCTOR_PARAMETERS)
    #include BOOST_PP_LOCAL_ITERATE()
 
-#endif   //!defined(BOOST_NO_VARIADIC_TEMPLATES)
+#endif   //!defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
 
 ///////////////////////////
 //struct type_rebind_mode
@@ -182,7 +182,11 @@ template <typename Ptr, typename T>
 struct type_has_rebind
 {
    template <typename X>
+   #if !defined (__SUNPRO_CC)
    static char test(int, typename X::template rebind<T>*);
+   #else
+   static char test(int, typename X::rebind<T>*);
+   #endif
 
    template <typename X>
    static int test(boost::intrusive::detail::LowPriorityConversion<int>, void*);
@@ -194,7 +198,11 @@ template <typename Ptr, typename T>
 struct type_has_rebind_other
 {
    template <typename X>
+   #if !defined (__SUNPRO_CC)
    static char test(int, typename X::template rebind<T>::other*);
+   #else
+   static char test(int, typename X::rebind<T>::other*);
+   #endif
 
    template <typename X>
    static int test(boost::intrusive::detail::LowPriorityConversion<int>, void*);
@@ -205,12 +213,6 @@ struct type_has_rebind_other
 template <typename Ptr, typename T>
 struct type_rebind_mode
 {
-   template <typename X>
-   static char test(int, typename X::template rebind<T>::other*);
-
-   template <typename X>
-   static int test(boost::intrusive::detail::LowPriorityConversion<int>, void*);
-
    static const unsigned int rebind =       (unsigned int)type_has_rebind<Ptr, T>::value;
    static const unsigned int rebind_other = (unsigned int)type_has_rebind_other<Ptr, T>::value;
    static const unsigned int mode =         rebind + rebind*rebind_other;
@@ -243,12 +245,19 @@ struct type_rebinder< Ptr, U, 1u >
 // OtherArgs>, where OtherArgs comprises zero or more type parameters.
 // Many pointers fit this form, hence many pointers will get a
 // reasonable default for rebind.
-#if !defined(BOOST_NO_VARIADIC_TEMPLATES)
+#if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
 
 template <template <class, class...> class Ptr, typename T, class... Tn, class U>
 struct type_rebinder<Ptr<T, Tn...>, U, 0u >
 {
    typedef Ptr<U, Tn...> type;
+};
+
+//Needed for non-conforming compilers like GCC 4.3
+template <template <class> class Ptr, typename T, class U>
+struct type_rebinder<Ptr<T>, U, 0u >
+{
+   typedef Ptr<U> type;
 };
 
 #else //C++03 compilers
@@ -268,7 +277,7 @@ struct type_rebinder                                                            
 #define BOOST_PP_LOCAL_LIMITS (0, BOOST_INTRUSIVE_MAX_CONSTRUCTOR_PARAMETERS)
 #include BOOST_PP_LOCAL_ITERATE()
 
-#endif   //!defined(BOOST_NO_VARIADIC_TEMPLATES)
+#endif   //!defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
 
 }  //namespace detail {
 }  //namespace intrusive {

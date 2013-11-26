@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 // (C) Copyright John Maddock 2000.
-// (C) Copyright Ion Gaztanaga 2005-2011.
+// (C) Copyright Ion Gaztanaga 2005-2012.
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -21,13 +21,20 @@
 
 #include "config_begin.hpp"
 
-#include <boost/move/move.hpp>
+#include <boost/move/utility.hpp>
 
 namespace boost {
-namespace container { 
+namespace container {
 namespace container_detail {
 
 struct nat{};
+
+template <typename U>
+struct LowPriorityConversion
+{
+   // Convertible from T with user-defined-conversion rank.
+   LowPriorityConversion(const U&) { }
+};
 
 //boost::alignment_of yields to 10K lines of preprocessed code, so we
 //need an alternative
@@ -83,7 +90,7 @@ struct remove_reference<T&>
    typedef T type;
 };
 
-#ifndef BOOST_NO_RVALUE_REFERENCES
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
 
 template<class T>
 struct remove_reference<T&&>
@@ -195,7 +202,7 @@ struct remove_ref_const
 };
 
 } // namespace container_detail
-}  //namespace container { 
+}  //namespace container {
 }  //namespace boost {
 
 #include <boost/container/detail/config_end.hpp>

@@ -180,7 +180,7 @@ T digamma_imp_1_2(T x, const mpl::int_<0>*)
       BOOST_MATH_BIG_CONSTANT(T, 113, -0.20327832297631728077731148515093164955e-6)
    };
    static const T Q[] = {    
-      1,
+      BOOST_MATH_BIG_CONSTANT(T, 113, 1.0),
       BOOST_MATH_BIG_CONSTANT(T, 113, 2.6210924610812025425088411043163287646),
       BOOST_MATH_BIG_CONSTANT(T, 113, 2.6850757078559596612621337395886392594),
       BOOST_MATH_BIG_CONSTANT(T, 113, 1.4320913706209965531250495490639289418),
@@ -236,7 +236,7 @@ T digamma_imp_1_2(T x, const mpl::int_<64>*)
       BOOST_MATH_BIG_CONSTANT(T, 64, -0.00289268368333918761452)
    };
    static const T Q[] = {    
-      1,
+      BOOST_MATH_BIG_CONSTANT(T, 64, 1.0),
       BOOST_MATH_BIG_CONSTANT(T, 64, 2.1195759927055347547),
       BOOST_MATH_BIG_CONSTANT(T, 64, 1.54350554664961128724),
       BOOST_MATH_BIG_CONSTANT(T, 64, 0.486986018231042975162),
@@ -407,6 +407,31 @@ T digamma_imp(T x, const Tag* t, const Policy& pol)
    return result;
 }
 
+//
+// Initializer: ensure all our constants are initialized prior to the first call of main:
+//
+template <class T, class Policy>
+struct digamma_initializer
+{
+   struct init
+   {
+      init()
+      {
+         boost::math::digamma(T(1.5), Policy());
+         boost::math::digamma(T(500), Policy());
+      }
+      void force_instantiate()const{}
+   };
+   static const init initializer;
+   static void force_instantiate()
+   {
+      initializer.force_instantiate();
+   }
+};
+
+template <class T, class Policy>
+const typename digamma_initializer<T, Policy>::init digamma_initializer<T, Policy>::initializer;
+
 } // namespace detail
 
 template <class T, class Policy>
@@ -432,6 +457,9 @@ inline typename tools::promote_args<T>::type
          >::type
       >::type
    >::type tag_type;
+
+   // Force initialization of constants:
+   detail::digamma_initializer<result_type, Policy>::force_instantiate();
 
    return policies::checked_narrowing_cast<result_type, Policy>(detail::digamma_imp(
       static_cast<value_type>(x),

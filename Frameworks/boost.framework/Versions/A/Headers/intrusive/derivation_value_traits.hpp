@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -47,7 +47,7 @@ struct derivation_value_traits
    static const_node_ptr to_node_ptr(const_reference value)
    { return node_ptr(&value); }
 
-   static pointer to_value_ptr(const node_ptr &n) 
+   static pointer to_value_ptr(const node_ptr &n)
    {
 //      This still fails in gcc < 4.4 so forget about it
 //      using ::boost::static_pointer_cast;
@@ -64,7 +64,7 @@ struct derivation_value_traits
    }
 };
 
-} //namespace intrusive 
-} //namespace boost 
+} //namespace intrusive
+} //namespace boost
 
 #endif //BOOST_INTRUSIVE_DERIVATION_VALUE_TRAITS_HPP

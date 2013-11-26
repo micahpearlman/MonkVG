@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -48,7 +48,7 @@ struct map_index_aux
 
 }  //namespace ipcdetail {
 
-//!Index type based in boost::interprocess::map. Just derives from boost::interprocess::map 
+//!Index type based in boost::interprocess::map. Just derives from boost::interprocess::map
 //!and defines the interface needed by managed memory segments
 template <class MapConfig>
 class map_index

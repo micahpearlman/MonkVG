@@ -4,7 +4,7 @@
 //
 // (C) Copyright Peter Dimov and Multi Media Ltd. 2001, 2002, 2003
 // (C) Copyright Peter Dimov 2004-2005
-// (C) Copyright Ion Gaztanaga 2006-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2006-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -28,7 +28,7 @@
 #include <boost/interprocess/smart_ptr/detail/bad_weak_ptr.hpp>
 #include <boost/interprocess/smart_ptr/detail/sp_counted_impl.hpp>
 #include <boost/interprocess/detail/utilities.hpp>
-#include <boost/container/allocator/allocator_traits.hpp>
+#include <boost/container/allocator_traits.hpp>
 #include <boost/detail/no_exceptions_support.hpp>
 #include <functional>       // std::less
 
@@ -99,7 +99,7 @@ class shared_count
             counted_impl_allocator alloc(a);
             m_pi = alloc.allocate(1);
             //Anti-exception deallocator
-            scoped_ptr<counted_impl, 
+            scoped_ptr<counted_impl,
                      scoped_ptr_dealloc_functor<counted_impl_allocator> >
                         deallocator(m_pi, alloc);
             //It's more correct to use VoidAllocator::construct but
@@ -116,7 +116,7 @@ class shared_count
    }
 
    ~shared_count() // nothrow
-   {  
+   {
       if(m_pi)
          m_pi->release();
    }
@@ -284,6 +284,7 @@ class weak_count
 
    weak_count & operator= (weak_count const & r) // nothrow
    {
+      m_px = r.m_px;
       counted_impl_ptr tmp = r.m_pi;
       if(tmp != 0) tmp->weak_add_ref();
       if(m_pi != 0) m_pi->weak_release();

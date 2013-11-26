@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2011-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2011-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -10,7 +10,7 @@
 
 // sample.h
 
-#if !BOOST_PP_IS_ITERATING
+#if !defined(BOOST_PP_IS_ITERATING)
 
    #ifndef BOOST_INTRUSIVE_DETAIL_HAS_MEMBER_FUNCTION_CALLABLE_WITH_DETAILS_INCLUDED
    #define BOOST_INTRUSIVE_DETAIL_HAS_MEMBER_FUNCTION_CALLABLE_WITH_DETAILS_INCLUDED
@@ -18,10 +18,11 @@
       #include <boost/intrusive/detail/config_begin.hpp>
       #include <boost/intrusive/detail/workaround.hpp>
       #include <boost/intrusive/detail/preprocessor.hpp>
+      #include <boost/intrusive/detail/mpl.hpp>
       #include <boost/static_assert.hpp>
       #include <boost/move/move.hpp>
 
-      //Mark that we don't support 0 arg calls due to compiler ICE in GCC 3.4/4.0/4.1 and 
+      //Mark that we don't support 0 arg calls due to compiler ICE in GCC 3.4/4.0/4.1 and
       //wrong SFINAE for GCC 4.2/4.3
       #if defined(__GNUC__) && !defined(__clang__) && ((__GNUC__*100 + __GNUC_MINOR__*10) >= 340) && ((__GNUC__*100 + __GNUC_MINOR__*10) <= 430)
       #define BOOST_INTRUSIVE_DETAIL_HAS_MEMBER_FUNCTION_CALLABLE_WITH_0_ARGS_UNSUPPORTED
@@ -85,7 +86,7 @@
             void BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME();
          };
 
-         struct Base : public Type, public BaseMixin { Base(); };
+         struct Base : public ::boost::intrusive::detail::remove_cv<Type>::type, public BaseMixin { Base(); };
          template <typename T, T t> class Helper{};
 
          template <typename U>
@@ -113,7 +114,7 @@
          };
          //!
 
-         #if !defined(_MSC_VER) || (_MSC_VER != 1600)
+         #if !defined(_MSC_VER) || (_MSC_VER < 1600)
 
             #if defined(BOOST_INTRUSIVE_DETAIL_HAS_MEMBER_FUNCTION_CALLABLE_WITH_0_ARGS_UNSUPPORTED)
 
@@ -121,16 +122,16 @@
             struct BOOST_PP_CAT(BOOST_PP_CAT(has_member_function_callable_with_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME),_impl)
                <Fun, true BOOST_PP_ENUM_TRAILING(BOOST_PP_SUB(BOOST_PP_ITERATION_FINISH(), BOOST_PP_ITERATION()), BOOST_INTRUSIVE_PP_IDENTITY, void)>
             {
-               //Mark that we don't support 0 arg calls due to compiler ICE in GCC 3.4/4.0/4.1 and 
+               //Mark that we don't support 0 arg calls due to compiler ICE in GCC 3.4/4.0/4.1 and
                //wrong SFINAE for GCC 4.2/4.3
                static const bool value = true;
             };
 
-            #else
+            #else //defined(BOOST_INTRUSIVE_DETAIL_HAS_MEMBER_FUNCTION_CALLABLE_WITH_0_ARGS_UNSUPPORTED)
 
             //Special case for 0 args
             template< class F
-                  , std::size_t N = 
+                  , std::size_t N =
                         sizeof((boost::move_detail::declval<F>().
                            BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME (), 0))>
             struct BOOST_PP_CAT(zeroarg_checker_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME)
@@ -156,15 +157,15 @@
                static BOOST_PP_CAT(zeroarg_checker_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME)<U>
                   Test(BOOST_PP_CAT(zeroarg_checker_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME)<U>*);
 
-               template <class U> 
+               template <class U>
                static boost_intrusive_has_member_function_callable_with::no_type Test(...);
-               
+
                static const bool value = sizeof(Test< Fun >(0))
                                     == sizeof(boost_intrusive_has_member_function_callable_with::yes_type);
             };
-            #endif
+            #endif   //defined(BOOST_INTRUSIVE_DETAIL_HAS_MEMBER_FUNCTION_CALLABLE_WITH_0_ARGS_UNSUPPORTED)
 
-         #else //#if !defined(_MSC_VER) || (_MSC_VER != 1600)
+         #else //#if !defined(_MSC_VER) || (_MSC_VER < 1600)
             template<typename Fun>
             struct BOOST_PP_CAT(BOOST_PP_CAT(has_member_function_callable_with_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME),_impl)
                <Fun, true BOOST_PP_ENUM_TRAILING(BOOST_PP_SUB(BOOST_PP_ITERATION_FINISH(), BOOST_PP_ITERATION()), BOOST_INTRUSIVE_PP_IDENTITY, void)>
@@ -180,7 +181,7 @@
                static const bool value = sizeof(Test<Fun>(0))
                                     == sizeof(boost_intrusive_has_member_function_callable_with::yes_type);
             };
-         #endif   //#if !defined(_MSC_VER) || (_MSC_VER != 1600)
+         #endif   //#if !defined(_MSC_VER) || (_MSC_VER < 1600)
 
       #else   //#if !defined(BOOST_INTRUSIVE_PERFECT_FORWARDING)
 
@@ -196,7 +197,7 @@
 
          //Special case for 0 args
          template< class F
-               , std::size_t N = 
+               , std::size_t N =
                      sizeof((boost::move_detail::declval<F>().
                         BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME (), 0))>
          struct BOOST_PP_CAT(zeroarg_checker_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME)
@@ -222,9 +223,9 @@
             static BOOST_PP_CAT(zeroarg_checker_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME)
                <U> Test(BOOST_PP_CAT(zeroarg_checker_, BOOST_INTRUSIVE_HAS_MEMBER_FUNCTION_CALLABLE_WITH_FUNCNAME)<U>*);
 
-            template <class U> 
+            template <class U>
             static boost_intrusive_has_member_function_callable_with::no_type Test(...);
-            
+
             static const bool value = sizeof(Test< Fun >(0))
                                  == sizeof(boost_intrusive_has_member_function_callable_with::yes_type);
          };

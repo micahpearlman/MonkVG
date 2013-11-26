@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -18,7 +18,7 @@
 #include <boost/intrusive/detail/assert.hpp>
 #include <boost/intrusive/pointer_traits.hpp>
 #include <cstddef>
-#include <boost/intrusive/detail/mpl.hpp> 
+#include <boost/intrusive/detail/mpl.hpp>
 #include <boost/pointer_cast.hpp>
 
 namespace boost {
@@ -100,10 +100,10 @@ struct any_unordered_node_traits
    {  n->node_ptr_2 = prev;  }
 
    static std::size_t get_hash(const const_node_ptr & n)
-   {  return n->size_t_1;  }  
+   {  return n->size_t_1;  }
 
    static void set_hash(const node_ptr & n, std::size_t h)
-   {  n->size_t_1 = h;  }  
+   {  n->size_t_1 = h;  }
 };
 
 
@@ -255,9 +255,9 @@ class any_algorithms
    //! <b>Requires</b>: node must not be part of any tree.
    //!
    //! <b>Effects</b>: After the function unique(node) == true.
-   //! 
+   //!
    //! <b>Complexity</b>: Constant.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Nodes</b>: If node is inserted in a tree, this function corrupts the tree.
@@ -265,9 +265,9 @@ class any_algorithms
    {  node->node_ptr_1 = 0;   };
 
    //! <b>Effects</b>: Returns true if node is in the same state as if called init(node)
-   //! 
+   //!
    //! <b>Complexity</b>: Constant.
-   //! 
+   //!
    //! <b>Throws</b>: Nothing.
    static bool inited(const const_node_ptr & node)
    {  return !node->node_ptr_1;  };
@@ -289,8 +289,8 @@ class any_algorithms
    }
 };
 
-} //namespace intrusive 
-} //namespace boost 
+} //namespace intrusive
+} //namespace boost
 
 #include <boost/intrusive/detail/config_end.hpp>
 

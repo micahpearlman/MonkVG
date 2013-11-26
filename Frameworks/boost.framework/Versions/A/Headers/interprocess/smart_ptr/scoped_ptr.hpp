@@ -4,7 +4,7 @@
 //
 // (C) Copyright Greg Colvin and Beman Dawes 1998, 1999.
 // (C) Copyright Peter Dimov 2001, 2002
-// (C) Copyright Ion Gaztanaga 2006. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2006-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -27,14 +27,14 @@
 namespace boost {
 namespace interprocess {
 
-//!scoped_ptr stores a pointer to a dynamically allocated object. 
+//!scoped_ptr stores a pointer to a dynamically allocated object.
 //!The object pointed to is guaranteed to be deleted, either on destruction
 //!of the scoped_ptr, or via an explicit reset. The user can avoid this
 //!deletion using release().
-//!scoped_ptr is parameterized on T (the type of the object pointed to) and 
+//!scoped_ptr is parameterized on T (the type of the object pointed to) and
 //!Deleter (the functor to be executed to delete the internal pointer).
-//!The internal pointer will be of the same pointer type as typename 
-//!Deleter::pointer type (that is, if typename Deleter::pointer is 
+//!The internal pointer will be of the same pointer type as typename
+//!Deleter::pointer type (that is, if typename Deleter::pointer is
 //!offset_ptr<void>, the internal pointer will be offset_ptr<T>).
 template<class T, class Deleter>
 class scoped_ptr
@@ -60,10 +60,10 @@ class scoped_ptr
       : Deleter(d), m_ptr(p) // throws if pointer/Deleter copy ctor throws
    {}
 
-   //!If the stored pointer is not 0, destroys the object pointed to by the stored pointer. 
+   //!If the stored pointer is not 0, destroys the object pointed to by the stored pointer.
    //!calling the operator() of the stored deleter. Never throws
    ~scoped_ptr()
-   { 
+   {
       if(m_ptr){
          Deleter &del = static_cast<Deleter&>(*this);
          del(m_ptr);

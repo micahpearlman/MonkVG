@@ -1,6 +1,6 @@
  //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -25,6 +25,10 @@
 
 #if defined(BOOST_INTERPROCESS_NAMED_SEMAPHORE_USES_POSIX_SEMAPHORES)
 #include <boost/interprocess/sync/posix/named_semaphore.hpp>
+//Experimental...
+#elif !defined(BOOST_INTERPROCESS_FORCE_GENERIC_EMULATION) && defined (BOOST_INTERPROCESS_WINDOWS)
+   #include <boost/interprocess/sync/windows/named_semaphore.hpp>
+   #define BOOST_INTERPROCESS_USE_WINDOWS
 #else
 #include <boost/interprocess/sync/shm/named_semaphore.hpp>
 #endif
@@ -35,8 +39,8 @@
 namespace boost {
 namespace interprocess {
 
-//!A semaphore with a global name, so it can be found from different 
-//!processes. Allows several resource sharing patterns and efficient 
+//!A semaphore with a global name, so it can be found from different
+//!processes. Allows several resource sharing patterns and efficient
 //!acknowledgment mechanisms.
 class named_semaphore
 {
@@ -49,11 +53,11 @@ class named_semaphore
    /// @endcond
 
    public:
-   //!Creates a global semaphore with a name, and an initial count. 
+   //!Creates a global semaphore with a name, and an initial count.
    //!If the semaphore can't be created throws interprocess_exception
    named_semaphore(create_only_t, const char *name, unsigned int initialCount, const permissions &perm = permissions());
 
-   //!Opens or creates a global semaphore with a name, and an initial count. 
+   //!Opens or creates a global semaphore with a name, and an initial count.
    //!If the semaphore is created, this call is equivalent to
    //!named_semaphore(create_only_t, ...)
    //!If the semaphore is already created, this call is equivalent to
@@ -80,7 +84,7 @@ class named_semaphore
    void post();
 
    //!Decrements the semaphore. If the semaphore value is not greater than zero,
-   //!then the calling process/thread blocks until it can decrement the counter. 
+   //!then the calling process/thread blocks until it can decrement the counter.
    //!If there is an error an interprocess_exception exception is thrown.
    void wait();
 
@@ -106,9 +110,12 @@ class named_semaphore
    void dont_close_on_destruction();
 
    #if defined(BOOST_INTERPROCESS_NAMED_SEMAPHORE_USES_POSIX_SEMAPHORES)
-      typedef ipcdetail::posix_named_semaphore  impl_t;
+      typedef ipcdetail::posix_named_semaphore   impl_t;
+   #elif defined(BOOST_INTERPROCESS_USE_WINDOWS)
+      #undef BOOST_INTERPROCESS_USE_WINDOWS
+      typedef ipcdetail::windows_named_semaphore impl_t;
    #else
-      typedef ipcdetail::shm_named_semaphore    impl_t;
+      typedef ipcdetail::shm_named_semaphore     impl_t;
    #endif
    impl_t m_sem;
    /// @endcond

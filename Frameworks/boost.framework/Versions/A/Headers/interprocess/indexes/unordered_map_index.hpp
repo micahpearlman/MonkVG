@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -69,7 +69,7 @@ class unordered_map_index
    /// @cond
    typedef unordered_map_index_aux<MapConfig>   index_aux;
    typedef typename index_aux::index_t          base_type;
-   typedef typename 
+   typedef typename
       MapConfig::segment_manager_base     segment_manager_base;
    /// @endcond
 

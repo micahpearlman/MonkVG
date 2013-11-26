@@ -34,8 +34,9 @@ process_real_cpu_clock::time_point process_real_cpu_clock::now() BOOST_NOEXCEPT
     {
       BOOST_ASSERT(0 && "Boost::Chrono - Internal Error");
     }
+    typedef ratio_divide<giga, ratio<CLOCKS_PER_SEC> >::type R;
     return time_point(
-      duration(c*(1000000000l/CLOCKS_PER_SEC))
+      duration(static_cast<rep>(c)*R::num/R::den)
     );
 }
 
@@ -56,8 +57,9 @@ process_real_cpu_clock::time_point process_real_cpu_clock::now(
     {
       ec.clear();
     }
+    typedef ratio_divide<giga, ratio<CLOCKS_PER_SEC> >::type R;
     return time_point(
-      duration(c*(1000000000l/CLOCKS_PER_SEC))
+      duration(static_cast<rep>(c)*R::num/R::den)
     );
 }
 #endif

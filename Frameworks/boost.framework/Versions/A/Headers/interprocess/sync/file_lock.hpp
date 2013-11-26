@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -53,21 +53,21 @@ class file_lock
    //!exist or there are no operating system resources.
    file_lock(const char *name);
 
-   //!Moves the ownership of "moved"'s file mapping object to *this. 
-   //!After the call, "moved" does not represent any file mapping object. 
+   //!Moves the ownership of "moved"'s file mapping object to *this.
+   //!After the call, "moved" does not represent any file mapping object.
    //!Does not throw
    file_lock(BOOST_RV_REF(file_lock) moved)
       :  m_file_hnd(file_handle_t(ipcdetail::invalid_file()))
    {  this->swap(moved);   }
 
    //!Moves the ownership of "moved"'s file mapping to *this.
-   //!After the call, "moved" does not represent any file mapping. 
+   //!After the call, "moved" does not represent any file mapping.
    //!Does not throw
    file_lock &operator=(BOOST_RV_REF(file_lock) moved)
-   {  
+   {
       file_lock tmp(boost::move(moved));
       this->swap(tmp);
-      return *this;  
+      return *this;
    }
 
    //!Closes a file lock. Does not throw.
@@ -81,7 +81,7 @@ class file_lock
       m_file_hnd = other.m_file_hnd;
       other.m_file_hnd = tmp;
    }
-   
+
    //Exclusive locking
 
    //!Effects: The calling thread tries to obtain exclusive ownership of the mutex,
@@ -101,12 +101,12 @@ class file_lock
    //!Effects: The calling thread tries to acquire exclusive ownership of the mutex
    //!   waiting if necessary until no other thread has exclusive, or sharable
    //!   ownership of the mutex or abs_time is reached.
-   //!Returns: If acquires exclusive ownership, returns true. Otherwise returns false. 
+   //!Returns: If acquires exclusive ownership, returns true. Otherwise returns false.
    //!Throws: interprocess_exception on error.
    bool timed_lock(const boost::posix_time::ptime &abs_time);
 
-   //!Precondition: The thread must have exclusive ownership of the mutex. 
-   //!Effects: The calling thread releases the exclusive ownership of the mutex. 
+   //!Precondition: The thread must have exclusive ownership of the mutex.
+   //!Effects: The calling thread releases the exclusive ownership of the mutex.
    //!Throws: An exception derived from interprocess_exception on error.
    void unlock();
 
@@ -120,21 +120,21 @@ class file_lock
 
    //!Effects: The calling thread tries to acquire sharable ownership of the mutex
    //!   without waiting. If no other thread has exclusive ownership of the
-   //!   mutex this succeeds. 
+   //!   mutex this succeeds.
    //!Returns: If it can acquire sharable ownership immediately returns true. If it
-   //!   has to wait, returns false. 
+   //!   has to wait, returns false.
    //!Throws: interprocess_exception on error.
    bool try_lock_sharable();
 
    //!Effects: The calling thread tries to acquire sharable ownership of the mutex
    //!   waiting if necessary until no other thread has exclusive ownership of
-   //!   the mutex or abs_time is reached. 
-   //!Returns: If acquires sharable ownership, returns true. Otherwise returns false. 
+   //!   the mutex or abs_time is reached.
+   //!Returns: If acquires sharable ownership, returns true. Otherwise returns false.
    //!Throws: interprocess_exception on error.
    bool timed_lock_sharable(const boost::posix_time::ptime &abs_time);
 
-   //!Precondition: The thread must have sharable ownership of the mutex. 
-   //!Effects: The calling thread releases the sharable ownership of the mutex. 
+   //!Precondition: The thread must have sharable ownership of the mutex.
+   //!Effects: The calling thread releases the sharable ownership of the mutex.
    //!Throws: An exception derived from interprocess_exception on error.
    void unlock_sharable();
    /// @cond
@@ -171,7 +171,7 @@ class file_lock
 
    bool timed_acquire_file_lock_sharable
       (file_handle_t hnd, bool &acquired, const boost::posix_time::ptime &abs_time)
-   {  
+   {
       //Obtain current count and target time
       boost::posix_time::ptime now = microsec_clock::universal_time();
       using namespace boost::detail;

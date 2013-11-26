@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -54,17 +54,17 @@ struct member_value_traits
    static pointer to_value_ptr(const node_ptr &n)
    {
       return pointer(detail::parent_from_member<value_type, node>
-         (boost::intrusive::detail::to_raw_pointer(n), PtrToMember)); 
+         (boost::intrusive::detail::to_raw_pointer(n), PtrToMember));
    }
 
    static const_pointer to_value_ptr(const const_node_ptr &n)
    {
       return pointer(detail::parent_from_member<value_type, node>
-         (boost::intrusive::detail::to_raw_pointer(n), PtrToMember)); 
+         (boost::intrusive::detail::to_raw_pointer(n), PtrToMember));
    }
 };
 
-} //namespace intrusive 
-} //namespace boost 
+} //namespace intrusive
+} //namespace boost
 
 #endif //BOOST_INTRUSIVE_MEMBER_VALUE_TRAITS_HPP

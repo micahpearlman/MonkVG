@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2006. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2006-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -48,12 +48,12 @@ class xsi_key;
 
 template<>
 struct managed_open_or_create_impl_device_id_t<xsi_shared_memory_file_wrapper>
-{  
+{
    typedef xsi_key type;
 };
 
 #endif   //BOOST_INTERPROCESS_XSI_SHARED_MEMORY_OBJECTS
-   
+
 /// @endcond
 
 namespace ipcdetail {
@@ -79,12 +79,12 @@ class managed_open_or_create_impl_device_holder<true, DeviceAbstraction>
 
    const DeviceAbstraction &get_device() const
    {  return dev; }
-   
+
    private:
    DeviceAbstraction dev;
 };
 
-template<class DeviceAbstraction, std::size_t MemAlignment = 0, bool FileBased = true, bool StoreDevice = true>
+template<class DeviceAbstraction, std::size_t MemAlignment, bool FileBased, bool StoreDevice>
 class managed_open_or_create_impl
    : public managed_open_or_create_impl_device_holder<StoreDevice, DeviceAbstraction>
 {
@@ -94,16 +94,16 @@ class managed_open_or_create_impl
    typedef typename managed_open_or_create_impl_device_id_t<DeviceAbstraction>::type device_id_t;
    typedef managed_open_or_create_impl_device_holder<StoreDevice, DeviceAbstraction> DevHolder;
    enum
-   {  
-      UninitializedSegment,  
-      InitializingSegment,  
+   {
+      UninitializedSegment,
+      InitializingSegment,
       InitializedSegment,
       CorruptedSegment
    };
 
    public:
    static const std::size_t
-      ManagedOpenOrCreateUserOffset = 
+      ManagedOpenOrCreateUserOffset =
          ct_rounded_size
             < sizeof(boost::uint32_t)
             , MemAlignment ? (MemAlignment) :
@@ -113,7 +113,7 @@ class managed_open_or_create_impl
    managed_open_or_create_impl()
    {}
 
-   managed_open_or_create_impl(create_only_t, 
+   managed_open_or_create_impl(create_only_t,
                  const device_id_t & id,
                  std::size_t size,
                  mode_t mode,
@@ -130,7 +130,7 @@ class managed_open_or_create_impl
          , null_mapped_region_function());
    }
 
-   managed_open_or_create_impl(open_only_t, 
+   managed_open_or_create_impl(open_only_t,
                  const device_id_t & id,
                  mode_t mode,
                  const void *addr)
@@ -146,7 +146,7 @@ class managed_open_or_create_impl
    }
 
 
-   managed_open_or_create_impl(open_or_create_t, 
+   managed_open_or_create_impl(open_or_create_t,
                  const device_id_t & id,
                  std::size_t size,
                  mode_t mode,
@@ -164,7 +164,7 @@ class managed_open_or_create_impl
    }
 
    template <class ConstructFunc>
-   managed_open_or_create_impl(create_only_t, 
+   managed_open_or_create_impl(create_only_t,
                  const device_id_t & id,
                  std::size_t size,
                  mode_t mode,
@@ -183,7 +183,7 @@ class managed_open_or_create_impl
    }
 
    template <class ConstructFunc>
-   managed_open_or_create_impl(open_only_t, 
+   managed_open_or_create_impl(open_only_t,
                  const device_id_t & id,
                  mode_t mode,
                  const void *addr,
@@ -200,7 +200,7 @@ class managed_open_or_create_impl
    }
 
    template <class ConstructFunc>
-   managed_open_or_create_impl(open_or_create_t, 
+   managed_open_or_create_impl(open_or_create_t,
                  const device_id_t & id,
                  std::size_t size,
                  mode_t mode,
@@ -222,10 +222,10 @@ class managed_open_or_create_impl
    {  this->swap(moved);   }
 
    managed_open_or_create_impl &operator=(BOOST_RV_REF(managed_open_or_create_impl) moved)
-   {  
+   {
       managed_open_or_create_impl tmp(boost::move(moved));
       this->swap(tmp);
-      return *this;  
+      return *this;
    }
 
    ~managed_open_or_create_impl()
@@ -298,10 +298,10 @@ class managed_open_or_create_impl
       tmp.swap(dev);
    }
 
-   template <class ConstructFunc> inline 
+   template <class ConstructFunc> inline
    void priv_open_or_create
-      (create_enum_t type, 
-       const device_id_t & id, 
+      (create_enum_t type,
+       const device_id_t & id,
        std::size_t size,
        mode_t mode, const void *addr,
        const permissions &perm,
@@ -315,8 +315,13 @@ class managed_open_or_create_impl
       bool cow     = false;
       DeviceAbstraction dev;
 
-      if(type != DoOpen && size < ManagedOpenOrCreateUserOffset){
-         throw interprocess_exception(error_info(size_error));
+      if(type != DoOpen){
+         //Check if the requested size is enough to build the managed metadata
+         const std::size_t func_min_size = construct_func.get_min_size();
+         if( (std::size_t(-1) - ManagedOpenOrCreateUserOffset) < func_min_size ||
+             size < (func_min_size + ManagedOpenOrCreateUserOffset) ){
+            throw interprocess_exception(error_info(size_error));
+         }
       }
       //Check size can be represented by offset_t (used by truncate)
       if(type != DoOpen && !check_offset_t_size<FileBased>(size, file_like_t())){
@@ -366,8 +371,8 @@ class managed_open_or_create_impl
                      created     = false;
                      completed   = true;
                   }
-                  catch(interprocess_exception &ex){
-                     if(ex.get_error_code() != not_found_error){
+                  catch(interprocess_exception &e){
+                     if(e.get_error_code() != not_found_error){
                         throw;
                      }
                   }
@@ -396,7 +401,8 @@ class managed_open_or_create_impl
 
             if(previous == UninitializedSegment){
                try{
-                  construct_func(static_cast<char*>(region.get_address()) + ManagedOpenOrCreateUserOffset, size - ManagedOpenOrCreateUserOffset, true);
+                  construct_func( static_cast<char*>(region.get_address()) + ManagedOpenOrCreateUserOffset
+                                , size - ManagedOpenOrCreateUserOffset, true);
                   //All ok, just move resources to the external mapped region
                   m_mapped_region.swap(region);
                }
@@ -460,6 +466,11 @@ class managed_open_or_create_impl
       }
    }
 
+   friend void swap(managed_open_or_create_impl &left, managed_open_or_create_impl &right)
+   {
+      left.swap(right);
+   }
+
    private:
    friend class interprocess_tester;
    void dont_close_on_destruction()
@@ -467,11 +478,6 @@ class managed_open_or_create_impl
 
    mapped_region     m_mapped_region;
 };
-
-template<class DeviceAbstraction>
-inline void swap(managed_open_or_create_impl<DeviceAbstraction> &x
-                ,managed_open_or_create_impl<DeviceAbstraction> &y)
-{  x.swap(y);  }
 
 }  //namespace ipcdetail {
 

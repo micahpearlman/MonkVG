@@ -12,7 +12,7 @@
 #include <boost/type_traits/remove_const.hpp>
 #include <boost/fusion/support/detail/access.hpp>
 #include <boost/mpl/int.hpp>
-#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/if.hpp>
 #include <tuple>
 #include <utility>
 
@@ -48,12 +48,12 @@ namespace boost { namespace fusion
         template <typename Iterator>
         struct deref
         {
-            typedef value_of<Iterator> element;
+            typedef typename value_of<Iterator>::type element;
             typedef typename
-                mpl::eval_if<
+                mpl::if_<
                     is_const<typename Iterator::tuple_type>
-                  , fusion::detail::cref_result<element>
-                  , fusion::detail::ref_result<element>
+                  , typename fusion::detail::cref_result<element>::type
+                  , typename fusion::detail::ref_result<element>::type
                 >::type
             type;
 

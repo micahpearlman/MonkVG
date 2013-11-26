@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //
 // (C) Copyright Olaf Krzikalla 2004-2006.
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -42,14 +42,17 @@ struct slist_node_traits
    typedef typename pointer_traits
       <VoidPointer>::template rebind_pointer<const node>::type    const_node_ptr;
 
-   static const node_ptr &get_next(const const_node_ptr & n)
-   {  return n->next_;  }  
+   static node_ptr get_next(const const_node_ptr & n)
+   {  return n->next_;  }
+
+   static node_ptr get_next(const node_ptr & n)
+   {  return n->next_;  }
 
    static void set_next(const node_ptr & n, const node_ptr & next)
-   {  n->next_ = next;  }  
+   {  n->next_ = next;  }
 };
 
-// slist_iterator provides some basic functions for a 
+// slist_iterator provides some basic functions for a
 // node oriented bidirectional iterator:
 template<class Container, bool IsConst>
 class slist_iterator
@@ -68,7 +71,7 @@ class slist_iterator
    typedef typename node_traits::node_ptr          node_ptr;
    typedef typename pointer_traits
       <node_ptr>::template rebind_pointer <void>::type                       void_pointer;
-   static const bool store_container_ptr = 
+   static const bool store_container_ptr =
       detail::store_cont_ptr_on_it<Container>::value;
 
    public:
@@ -95,12 +98,12 @@ class slist_iterator
    {  members_.nodeptr_ = node;  return static_cast<slist_iterator&>(*this);  }
 
    public:
-   slist_iterator& operator++() 
-   { 
-      members_.nodeptr_ = node_traits::get_next(members_.nodeptr_); 
-      return static_cast<slist_iterator&> (*this); 
+   slist_iterator& operator++()
+   {
+      members_.nodeptr_ = node_traits::get_next(members_.nodeptr_);
+      return static_cast<slist_iterator&> (*this);
    }
-   
+
    slist_iterator operator++(int)
    {
       slist_iterator result (*this);
@@ -155,8 +158,8 @@ class slist_iterator
    } members_;
 };
 
-} //namespace intrusive 
-} //namespace boost 
+} //namespace intrusive
+} //namespace boost
 
 #include <boost/intrusive/detail/config_end.hpp>
 

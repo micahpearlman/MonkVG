@@ -64,6 +64,7 @@
 #include <boost/geometry/algorithms/reverse.hpp>
 #include <boost/geometry/algorithms/simplify.hpp>
 #include <boost/geometry/algorithms/sym_difference.hpp>
+#include <boost/geometry/algorithms/touches.hpp>
 #include <boost/geometry/algorithms/transform.hpp>
 #include <boost/geometry/algorithms/union.hpp>
 #include <boost/geometry/algorithms/unique.hpp>
@@ -86,5 +87,6 @@
 #include <boost/geometry/views/segment_view.hpp>
 
 #include <boost/geometry/io/io.hpp>
+#include <boost/geometry/io/svg/svg_mapper.hpp>
 
 #endif // BOOST_GEOMETRY_GEOMETRY_HPP

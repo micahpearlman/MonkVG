@@ -38,7 +38,8 @@ struct process_any_event_helper
         if ( ! finished && ::boost::any_cast<Event>(&any_event)!=0)
         {
             finished = true;
-            res = self->process_event(::boost::any_cast<Event>(any_event));
+            res = self->process_event_internal(::boost::any_cast<Event>(any_event),false);
+ 
         }
     }
 private:
@@ -108,7 +109,7 @@ struct dispatch_table < Fsm, Stt, Event, ::boost::msm::back::favor_compile_time>
         std::deque<cell> one_state;
     };
     template <class TransitionState>
-    static HandledEnum call_submachine(Fsm& fsm, int region, int state, Event const& evt)
+    static HandledEnum call_submachine(Fsm& fsm, int , int , Event const& evt)
     {
         return (fsm.template get_state<TransitionState&>()).process_any_event( ::boost::any(evt));
     }

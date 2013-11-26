@@ -19,5 +19,6 @@
 #include <boost/fusion/support/deduce.hpp>
 #include <boost/fusion/support/deduce_sequence.hpp>
 #include <boost/fusion/support/unused.hpp>
+#include <boost/fusion/support/as_const.hpp>
 
 #endif

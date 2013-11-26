@@ -17,6 +17,7 @@
 
 #include <boost/geometry/multi/core/ring_type.hpp>
 #include <boost/geometry/multi/core/tags.hpp>
+#include <boost/geometry/multi/geometries/concepts/check.hpp>
 
 
 namespace boost { namespace geometry
@@ -44,7 +45,7 @@ struct copy_segments_multi
         BOOST_ASSERT
             (
                 seg_id.multi_index >= 0
-                && seg_id.multi_index < boost::size(multi_geometry)
+                && seg_id.multi_index < int(boost::size(multi_geometry))
             );
 
         // Call the single-version

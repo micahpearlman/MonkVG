@@ -9,7 +9,7 @@
 
 #include <tuple>
 #include <utility>
-#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/fusion/support/detail/access.hpp>
 #include <boost/type_traits/remove_const.hpp>
 
@@ -29,13 +29,13 @@ namespace boost { namespace fusion
             struct apply
             {
                 typedef typename remove_const<Sequence>::type seq_type;
-                typedef std::tuple_element<N::value, seq_type> element;
+                typedef typename std::tuple_element<N::value, seq_type>::type element;
 
                 typedef typename
-                    mpl::eval_if<
+                    mpl::if_<
                         is_const<Sequence>
-                      , fusion::detail::cref_result<element>
-                      , fusion::detail::ref_result<element>
+                      , typename fusion::detail::cref_result<element>::type
+                      , typename fusion::detail::ref_result<element>::type
                     >::type
                 type;
 

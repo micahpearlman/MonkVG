@@ -1,5 +1,5 @@
 /*=============================================================================
-    Copyright (c) 2005-2011 Joel de Guzman
+    Copyright (c) 2005-2012 Joel de Guzman
     Copyright (c) 2006 Dan Marsden
 
     Distributed under the Boost Software License, Version 1.0. (See accompanying

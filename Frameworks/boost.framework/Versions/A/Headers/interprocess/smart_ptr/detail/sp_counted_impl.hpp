@@ -26,7 +26,7 @@
 #include <boost/interprocess/smart_ptr/detail/sp_counted_base.hpp>
 #include <boost/interprocess/smart_ptr/scoped_ptr.hpp>
 #include <boost/interprocess/detail/utilities.hpp>
-#include <boost/container/allocator/allocator_traits.hpp>
+#include <boost/container/allocator_traits.hpp>
 #include <boost/intrusive/pointer_traits.hpp>
 
 namespace boost {
@@ -63,10 +63,10 @@ struct scoped_ptr_dealloc_functor
    {  if (ptr) priv_deallocate(ptr, alloc_version());  }
 };
 
-   
+
 
 template<class A, class D>
-class sp_counted_impl_pd 
+class sp_counted_impl_pd
    :  public sp_counted_base
    ,  boost::container::allocator_traits<A>::template
          portable_rebind_alloc< sp_counted_impl_pd<A, D> >::type
@@ -122,7 +122,7 @@ class sp_counted_impl_pd
       this_pointer this_ptr (this);
       //Do it now!
       scoped_ptr< this_type, scoped_ptr_dealloc_functor<this_allocator> >
-         deleter(this_ptr, a_copy);
+         deleter_ptr(this_ptr, a_copy);
       typedef typename this_allocator::value_type value_type;
       ipcdetail::to_raw_pointer(this_ptr)->~value_type();
    }

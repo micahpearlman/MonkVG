@@ -14,11 +14,10 @@
 #include <map>
 
 #include <boost/array.hpp>
+#include <boost/concept_check.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/range.hpp>
 #include <boost/typeof/typeof.hpp>
-
-#include <boost/tuple/tuple.hpp>
 
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
@@ -65,6 +64,12 @@
 namespace boost { namespace geometry
 {
 
+// Silence warning C4127: conditional expression is constant
+#if defined(_MSC_VER)
+#pragma warning(push)  
+#pragma warning(disable : 4127)  
+#endif
+    
 
 #ifndef DOXYGEN_NO_DETAIL
 namespace detail { namespace get_turns
@@ -138,6 +143,11 @@ class get_turns_in_sections
         // About first condition: will be optimized by compiler (static)
         // It checks if it is areal (box,ring,(multi)polygon
         int const n = int(section.range_count);
+
+        boost::ignore_unused_variable_warning(n);
+        boost::ignore_unused_variable_warning(index1);
+        boost::ignore_unused_variable_warning(index2);
+
         return boost::is_same
                     <
                         typename tag_cast
@@ -162,6 +172,8 @@ public :
             Turns& turns,
             InterruptPolicy& interrupt_policy)
     {
+        boost::ignore_unused_variable_warning(interrupt_policy);
+
         cview_type1 cview1(range_by_section(geometry1, sec1));
         cview_type2 cview2(range_by_section(geometry2, sec2));
         view_type1 view1(cview1);
@@ -495,7 +507,7 @@ struct get_turns_cs
                 int source_id1, Range const& range,
                 int source_id2, Box const& box,
                 Turns& turns,
-                InterruptPolicy& ,
+                InterruptPolicy& interrupt_policy,
                 int multi_index = -1, int ring_index = -1)
     {
         if (boost::size(range) <= 1)
@@ -557,7 +569,7 @@ struct get_turns_cs
                 get_turns_with_box(seg_id, source_id2,
                         *prev, *it, *next,
                         bp[0], bp[1], bp[2], bp[3],
-                        turns);
+                        turns, interrupt_policy);
                 // Future performance enhancement: 
                 // return if told by the interrupt policy 
             }
@@ -596,8 +608,11 @@ private:
             box_point_type const& bp2,
             box_point_type const& bp3,
             // Output
-            Turns& turns)
+            Turns& turns,
+            InterruptPolicy& interrupt_policy)
     {
+        boost::ignore_unused_variable_warning(interrupt_policy);
+
         // Depending on code some relations can be left out
 
         typedef typename boost::range_value<Turns>::type turn_info;
@@ -622,6 +637,12 @@ private:
         ti.operations[1].seg_id = segment_identifier(source_id2, -1, -1, 3);
         TurnPolicy::apply(rp0, rp1, rp2, bp3, bp0, bp1,
                 ti, std::back_inserter(turns));
+
+        if (InterruptPolicy::enabled)
+        {
+            interrupt_policy.apply(turns);
+        }
+
     }
 
 };
@@ -860,6 +881,9 @@ inline void get_turns(Geometry1 const& geometry1,
             turns, interrupt_policy);
 }
 
+#if defined(_MSC_VER)
+#pragma warning(pop)  
+#endif
 
 }} // namespace boost::geometry
 

@@ -27,6 +27,7 @@
 #include <boost/geometry/core/reverse_dispatch.hpp>
 
 #include <boost/geometry/algorithms/detail/disjoint.hpp>
+#include <boost/geometry/algorithms/detail/for_each_range.hpp>
 #include <boost/geometry/algorithms/detail/point_on_border.hpp>
 #include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
 #include <boost/geometry/algorithms/within.hpp>
@@ -44,15 +45,57 @@ namespace boost { namespace geometry
 namespace detail { namespace disjoint
 {
 
+template<typename Geometry>
+struct check_each_ring_for_within
+{
+    bool has_within;
+    Geometry const& m_geometry;
+
+    inline check_each_ring_for_within(Geometry const& g)
+        : has_within(false)
+        , m_geometry(g)
+    {}
+
+    template <typename Range>
+    inline void apply(Range const& range)
+    {
+        typename geometry::point_type<Range>::type p;
+        geometry::point_on_border(p, range);
+        if (geometry::within(p, m_geometry))
+        {
+            has_within = true;
+        }
+    }
+};
+
+template <typename FirstGeometry, typename SecondGeometry>
+inline bool rings_containing(FirstGeometry const& geometry1,
+                SecondGeometry const& geometry2)
+{
+    check_each_ring_for_within<FirstGeometry> checker(geometry1);
+    geometry::detail::for_each_range(geometry2, checker);
+    return checker.has_within;
+}
+
+
 struct assign_disjoint_policy
 {
     // We want to include all points:
     static bool const include_no_turn = true;
     static bool const include_degenerate = true;
+    static bool const include_opposite = true;
 
     // We don't assign extra info:
-    template <typename Point1, typename Point2, typename Info>
-    static inline void apply(Info& , Point1 const& , Point2 const& )
+    template 
+    <
+        typename Info,
+        typename Point1,
+        typename Point2,
+        typename IntersectionInfo,
+        typename DirInfo
+    >
+    static inline void apply(Info& , Point1 const& , Point2 const&,
+                IntersectionInfo const&, DirInfo const&)
     {}
 };
    
@@ -107,8 +150,6 @@ struct disjoint_segment
     }
 };
 
-
-
 template <typename Geometry1, typename Geometry2>
 struct general_areal
 {
@@ -119,20 +160,10 @@ struct general_areal
             return false;
         }
 
-        typedef typename geometry::point_type<Geometry1>::type point_type;
-
         // If there is no intersection of segments, they might located
         // inside each other
-        point_type p1;
-        geometry::point_on_border(p1, geometry1);
-        if (geometry::within(p1, geometry2))
-        {
-            return false;
-        }
-
-        typename geometry::point_type<Geometry1>::type p2;
-        geometry::point_on_border(p2, geometry2);
-        if (geometry::within(p2, geometry1))
+        if (rings_containing(geometry1, geometry2)
+            || rings_containing(geometry2, geometry1))
         {
             return false;
         }
@@ -153,66 +184,80 @@ namespace dispatch
 
 template
 <
-    typename GeometryTag1, typename GeometryTag2,
     typename Geometry1, typename Geometry2,
-    std::size_t DimensionCount
+    std::size_t DimensionCount = dimension<Geometry1>::type::value,
+    typename Tag1 = typename tag<Geometry1>::type,
+    typename Tag2 = typename tag<Geometry2>::type,
+    bool Reverse = reverse_dispatch<Geometry1, Geometry2>::type::value
 >
 struct disjoint
     : detail::disjoint::general_areal<Geometry1, Geometry2>
 {};
 
 
-template <typename Point1, typename Point2, std::size_t DimensionCount>
-struct disjoint<point_tag, point_tag, Point1, Point2, DimensionCount>
-    : detail::disjoint::point_point<Point1, Point2, 0, DimensionCount>
-{};
-
-
-template <typename Box1, typename Box2, std::size_t DimensionCount>
-struct disjoint<box_tag, box_tag, Box1, Box2, DimensionCount>
-    : detail::disjoint::box_box<Box1, Box2, 0, DimensionCount>
-{};
-
-
-template <typename Point, typename Box, std::size_t DimensionCount>
-struct disjoint<point_tag, box_tag, Point, Box, DimensionCount>
-    : detail::disjoint::point_box<Point, Box, 0, DimensionCount>
-{};
-
-template <typename Linestring1, typename Linestring2>
-struct disjoint<linestring_tag, linestring_tag, Linestring1, Linestring2, 2>
-    : detail::disjoint::disjoint_linear<Linestring1, Linestring2>
-{};
-
-template <typename Linestring1, typename Linestring2>
-struct disjoint<segment_tag, segment_tag, Linestring1, Linestring2, 2>
-    : detail::disjoint::disjoint_segment<Linestring1, Linestring2>
-{};
-
-template <typename Linestring, typename Segment>
-struct disjoint<linestring_tag, segment_tag, Linestring, Segment, 2>
-    : detail::disjoint::disjoint_linear<Linestring, Segment>
-{};
-
-
+// If reversal is needed, perform it
 template
 <
-    typename GeometryTag1, typename GeometryTag2,
     typename Geometry1, typename Geometry2,
-    std::size_t DimensionCount
+    std::size_t DimensionCount,
+    typename Tag1, typename Tag2
 >
-struct disjoint_reversed
+struct disjoint<Geometry1, Geometry2, DimensionCount, Tag1, Tag2, true>
+    : disjoint<Geometry2, Geometry1, DimensionCount, Tag2, Tag1, false>
 {
     static inline bool apply(Geometry1 const& g1, Geometry2 const& g2)
     {
         return disjoint
             <
-                GeometryTag2, GeometryTag1,
                 Geometry2, Geometry1,
-                DimensionCount
+                DimensionCount,
+                Tag2, Tag1
             >::apply(g2, g1);
     }
 };
+
+
+template <typename Point1, typename Point2, std::size_t DimensionCount, bool Reverse>
+struct disjoint<Point1, Point2, DimensionCount, point_tag, point_tag, Reverse>
+    : detail::disjoint::point_point<Point1, Point2, 0, DimensionCount>
+{};
+
+
+template <typename Box1, typename Box2, std::size_t DimensionCount, bool Reverse>
+struct disjoint<Box1, Box2, DimensionCount, box_tag, box_tag, Reverse>
+    : detail::disjoint::box_box<Box1, Box2, 0, DimensionCount>
+{};
+
+
+template <typename Point, typename Box, std::size_t DimensionCount, bool Reverse>
+struct disjoint<Point, Box, DimensionCount, point_tag, box_tag, Reverse>
+    : detail::disjoint::point_box<Point, Box, 0, DimensionCount>
+{};
+
+template <typename Point, typename Ring, std::size_t DimensionCount, bool Reverse>
+struct disjoint<Point, Ring, DimensionCount, point_tag, ring_tag, Reverse>
+    : detail::disjoint::reverse_covered_by<Point, Ring>
+{};
+
+template <typename Point, typename Polygon, std::size_t DimensionCount, bool Reverse>
+struct disjoint<Point, Polygon, DimensionCount, point_tag, polygon_tag, Reverse>
+    : detail::disjoint::reverse_covered_by<Point, Polygon>
+{};
+
+template <typename Linestring1, typename Linestring2, bool Reverse>
+struct disjoint<Linestring1, Linestring2, 2, linestring_tag, linestring_tag, Reverse>
+    : detail::disjoint::disjoint_linear<Linestring1, Linestring2>
+{};
+
+template <typename Linestring1, typename Linestring2, bool Reverse>
+struct disjoint<Linestring1, Linestring2, 2, segment_tag, segment_tag, Reverse>
+    : detail::disjoint::disjoint_segment<Linestring1, Linestring2>
+{};
+
+template <typename Linestring, typename Segment, bool Reverse>
+struct disjoint<Linestring, Segment, 2, linestring_tag, segment_tag, Reverse>
+    : detail::disjoint::disjoint_linear<Linestring, Segment>
+{};
 
 
 } // namespace dispatch
@@ -241,26 +286,7 @@ inline bool disjoint(Geometry1 const& geometry1,
             Geometry2 const
         >();
 
-    return boost::mpl::if_c
-        <
-            reverse_dispatch<Geometry1, Geometry2>::type::value,
-            dispatch::disjoint_reversed
-            <
-                typename tag<Geometry1>::type,
-                typename tag<Geometry2>::type,
-                Geometry1,
-                Geometry2,
-                dimension<Geometry1>::type::value
-            >,
-            dispatch::disjoint
-            <
-                typename tag<Geometry1>::type,
-                typename tag<Geometry2>::type,
-                Geometry1,
-                Geometry2,
-                dimension<Geometry1>::type::value
-            >
-        >::type::apply(geometry1, geometry2);
+    return dispatch::disjoint<Geometry1, Geometry2>::apply(geometry1, geometry2);
 }
 
 

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2007-2011.
+// (C) Copyright Ion Gaztanaga 2007-2012.
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -26,9 +26,9 @@
 //!Describes the functor to delete objects from the segment.
 
 namespace boost {
-namespace interprocess { 
+namespace interprocess {
 
-//!A deleter that uses the segment manager's destroy_ptr 
+//!A deleter that uses the segment manager's destroy_ptr
 //!function to destroy the passed pointer resource.
 //!
 //!This deleter is used
@@ -56,7 +56,7 @@ class deleter
    {  mp_mngr->destroy_ptr(ipcdetail::to_raw_pointer(p));   }
 };
 
-}  //namespace interprocess { 
+}  //namespace interprocess {
 }  //namespace boost {
 
 #include <boost/interprocess/detail/config_end.hpp>

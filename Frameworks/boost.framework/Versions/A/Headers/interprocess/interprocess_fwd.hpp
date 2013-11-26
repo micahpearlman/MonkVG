@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -214,7 +214,7 @@ template <class CharType
          ,template<class IndexConfig> class IndexType>
 class basic_managed_shared_memory;
 
-typedef basic_managed_shared_memory 
+typedef basic_managed_shared_memory
    <char
    ,rbtree_best_fit<mutex_family>
    ,iset_index>
@@ -238,7 +238,7 @@ template <class CharType
          ,template<class IndexConfig> class IndexType>
 class basic_managed_windows_shared_memory;
 
-typedef basic_managed_windows_shared_memory 
+typedef basic_managed_windows_shared_memory
    <char
    ,rbtree_best_fit<mutex_family>
    ,iset_index>
@@ -259,7 +259,7 @@ template <class CharType
          ,template<class IndexConfig> class IndexType>
 class basic_managed_xsi_shared_memory;
 
-typedef basic_managed_xsi_shared_memory 
+typedef basic_managed_xsi_shared_memory
    <char
    ,rbtree_best_fit<mutex_family>
    ,iset_index>

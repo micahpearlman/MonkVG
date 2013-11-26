@@ -67,6 +67,9 @@ public:
    std_real_concept(float c) : m_value(c){}
    std_real_concept(double c) : m_value(c){}
    std_real_concept(long double c) : m_value(c){}
+#ifdef BOOST_MATH_USE_FLOAT128
+   std_real_concept(__float128 c) : m_value(c){}
+#endif
 
    // Assignment:
    std_real_concept& operator=(char c) { m_value = c; return *this; }
@@ -323,10 +326,17 @@ inline std::basic_istream<charT, traits>& operator>>(std::basic_istream<charT, t
 }}
 
 #include <boost/math/tools/precision.hpp>
+#include <boost/math/tools/big_constant.hpp>
 
 namespace boost{ namespace math{
 namespace tools
 {
+
+template <>
+inline concepts::std_real_concept make_big_value<concepts::std_real_concept>(long double val, const char* , mpl::false_ const&, mpl::false_ const&)
+{
+   return val;  // Can't use lexical_cast here, sometimes it fails....
+}
 
 template <>
 inline concepts::std_real_concept max_value<concepts::std_real_concept>(BOOST_MATH_EXPLICIT_TEMPLATE_TYPE_SPEC(concepts::std_real_concept))

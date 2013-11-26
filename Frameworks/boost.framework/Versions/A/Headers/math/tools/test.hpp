@@ -15,6 +15,8 @@
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/test/test_tools.hpp>
 #include <stdexcept>
+#include <iostream>
+#include <iomanip>
 
 namespace boost{ namespace math{ namespace tools{
 
@@ -192,6 +194,74 @@ test_result<typename calculate_result_type<A>::value_type> test(const A& a, F1 t
 {
    typedef typename A::value_type         row_type;
    typedef typename row_type::value_type  value_type;
+
+   test_result<value_type> result;
+
+   for(unsigned i = 0; i < a.size(); ++i)
+   {
+      const row_type& row = a[i];
+      value_type point;
+      try
+      {
+         point = test_func(row);
+      }
+      catch(const std::underflow_error&)
+      {
+         point = 0;
+      }
+      catch(const std::overflow_error&)
+      {
+         point = std::numeric_limits<value_type>::has_infinity ? 
+            std::numeric_limits<value_type>::infinity()
+            : tools::max_value<value_type>();
+      }
+      catch(const std::exception& e)
+      {
+         std::cerr << e.what() << std::endl;
+         print_row(row);
+         BOOST_ERROR("Unexpected exception.");
+         // so we don't get further errors:
+         point = expect_func(row);
+      }
+      value_type expected = expect_func(row);
+      value_type err = relative_error(point, expected);
+#ifdef BOOST_INSTRUMENT
+      if(err != 0)
+      {
+         std::cout << row[0] << " " << err;
+         if(std::numeric_limits<value_type>::is_specialized)
+         {
+            std::cout << " (" << err / std::numeric_limits<value_type>::epsilon() << "eps)";
+         }
+         std::cout << std::endl;
+      }
+#endif
+      if(!(boost::math::isfinite)(point) && (boost::math::isfinite)(expected))
+      {
+         std::cout << "CAUTION: Found non-finite result, when a finite value was expected at entry " << i << "\n";
+         std::cout << "Found: " << point << " Expected " << expected << " Error: " << err << std::endl;
+         print_row(row);
+         BOOST_ERROR("Unexpected non-finite result");
+      }
+      if(err > 0.5)
+      {
+         std::cout << "CAUTION: Gross error found at entry " << i << ".\n";
+         std::cout << "Found: " << point << " Expected " << expected << " Error: " << err << std::endl;
+         print_row(row);
+         BOOST_ERROR("Gross error");
+      }
+      result.add(err);
+      if((result.max)() == err)
+         result.set_worst(i);
+   }
+   return result;
+}
+
+template <class Real, class A, class F1, class F2>
+test_result<Real> test_hetero(const A& a, F1 test_func, F2 expect_func)
+{
+   typedef typename A::value_type         row_type;
+   typedef Real                          value_type;
 
    test_result<value_type> result;
 

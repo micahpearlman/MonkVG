@@ -22,8 +22,38 @@
 namespace boost { namespace math{  namespace detail{
 
 template <typename T>
+T bessel_j1(T x);
+
+template <class T>
+struct bessel_j1_initializer
+{
+   struct init
+   {
+      init()
+      {
+         do_init();
+      }
+      static void do_init()
+      {
+         bessel_j1(T(1));
+      }
+      void force_instantiate()const{}
+   };
+   static const init initializer;
+   static void force_instantiate()
+   {
+      initializer.force_instantiate();
+   }
+};
+
+template <class T>
+const typename bessel_j1_initializer<T>::init bessel_j1_initializer<T>::initializer;
+
+template <typename T>
 T bessel_j1(T x)
 {
+    bessel_j1_initializer<T>::force_instantiate();
+
     static const T P1[] = {
          static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, -1.4258509801366645672e+11)),
          static_cast<T>(BOOST_MATH_BIG_CONSTANT(T, 64, 6.6781041261492395835e+09)),
@@ -136,13 +166,24 @@ T bessel_j1(T x)
     {
         T y = 8 / w;
         T y2 = y * y;
-        T z = w - 0.75f * pi<T>();
         BOOST_ASSERT(sizeof(PC) == sizeof(QC));
         BOOST_ASSERT(sizeof(PS) == sizeof(QS));
         rc = evaluate_rational(PC, QC, y2);
         rs = evaluate_rational(PS, QS, y2);
-        factor = sqrt(2 / (w * pi<T>()));
-        value = factor * (rc * cos(z) - y * rs * sin(z));
+        factor = 1 / (sqrt(w) * constants::root_pi<T>());
+        //
+        // What follows is really just:
+        //
+        // T z = w - 0.75f * pi<T>();
+        // value = factor * (rc * cos(z) - y * rs * sin(z));
+        //
+        // but using the sin/cos addition rules plus constants
+        // for the values of sin/cos of 3PI/4 which then cancel
+        // out with corresponding terms in "factor".
+        //
+        T sx = sin(x);
+        T cx = cos(x);
+        value = factor * (rc * (sx - cx) + y * rs * (sx + cx));
     }
 
     if (x < 0)

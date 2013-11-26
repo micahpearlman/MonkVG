@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2009-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2009-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -62,20 +62,20 @@ class xsi_named_mutex
    xsi_named_mutex(open_or_create_t, const char *path, boost::uint8_t id, int perm = 0666)
    {  this->priv_open_or_create(ipcdetail::DoOpenOrCreate, path, id, perm);  }
 
-   //!Moves the ownership of "moved"'s named mutex to *this. 
-   //!After the call, "moved" does not represent any named mutex 
+   //!Moves the ownership of "moved"'s named mutex to *this.
+   //!After the call, "moved" does not represent any named mutex
    //!Does not throw
    xsi_named_mutex(BOOST_RV_REF(xsi_named_mutex) moved)
    {  this->swap(moved);   }
 
    //!Moves the ownership of "moved"'s named mutex to *this.
-   //!After the call, "moved" does not represent any named mutex. 
+   //!After the call, "moved" does not represent any named mutex.
    //!Does not throw
    xsi_named_mutex &operator=(BOOST_RV_REF(xsi_named_mutex) moved)
-   {  
+   {
       xsi_named_mutex tmp(boost::move(moved));
       this->swap(tmp);
-      return *this;  
+      return *this;
    }
 
    //!Swaps two xsi_named_mutex. Does not throw
@@ -126,11 +126,11 @@ class xsi_named_mutex
 
 /// @cond
 
-inline xsi_named_mutex::xsi_named_mutex() 
+inline xsi_named_mutex::xsi_named_mutex()
    :  m_semid(-1), m_key(-1), m_id(0), m_perm(0), m_path()
 {}
 
-inline xsi_named_mutex::~xsi_named_mutex() 
+inline xsi_named_mutex::~xsi_named_mutex()
 {  this->priv_close(); }
 
 inline const char *xsi_named_mutex::get_path() const
@@ -142,7 +142,7 @@ inline void xsi_named_mutex::swap(xsi_named_mutex &other)
    std::swap(m_id,    other.m_id);
    std::swap(m_semid, other.m_semid);
    std::swap(m_perm,  other.m_perm);
-   m_path.swap(other.m_path);   
+   m_path.swap(other.m_path);
 }
 
 inline mapping_handle_t xsi_named_mutex::get_mapping_handle() const

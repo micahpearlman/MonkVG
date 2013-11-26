@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2008. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2008-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -73,7 +73,7 @@ namespace ipcdetail {
 template<class NodePool>
 struct get_or_create_node_pool_func
 {
-   
+
    //!This connects or constructs the unique instance of node_pool_t
    //!Can throw boost::interprocess::bad_alloc
    void operator()()
@@ -90,7 +90,7 @@ struct get_or_create_node_pool_func
    //!object parameters
    get_or_create_node_pool_func(typename NodePool::segment_manager *mngr)
       : mp_segment_manager(mngr){}
-   
+
    NodePool                            *mp_node_pool;
    typename NodePool::segment_manager  *mp_segment_manager;
 };
@@ -103,13 +103,13 @@ inline NodePool *get_or_create_node_pool(typename NodePool::segment_manager *mgn
    return func.mp_node_pool;
 }
 
-//!Object function that decrements the reference count. If the count 
-//!reaches to zero destroys the node allocator from memory. 
+//!Object function that decrements the reference count. If the count
+//!reaches to zero destroys the node allocator from memory.
 //!Never throws
 template<class NodePool>
 struct destroy_if_last_link_func
 {
-   //!Decrements reference count and destroys the object if there is no 
+   //!Decrements reference count and destroys the object if there is no
    //!more attached allocators. Never throws
    void operator()()
    {
@@ -117,19 +117,19 @@ struct destroy_if_last_link_func
       if(mp_node_pool->dec_ref_count() != 0) return;
 
       //Last link, let's destroy the segment_manager
-      mp_node_pool->get_segment_manager()->template destroy<NodePool>(boost::interprocess::unique_instance); 
-   }  
+      mp_node_pool->get_segment_manager()->template destroy<NodePool>(boost::interprocess::unique_instance);
+   }
 
    //!Constructor. Initializes function
    //!object parameters
-   destroy_if_last_link_func(NodePool *pool) 
+   destroy_if_last_link_func(NodePool *pool)
       : mp_node_pool(pool)
    {}
 
    NodePool                           *mp_node_pool;
 };
 
-//!Destruction function, initializes and executes destruction function 
+//!Destruction function, initializes and executes destruction function
 //!object. Never throws
 template<class NodePool>
 inline void destroy_node_pool_if_last_link(NodePool *pool)
@@ -173,7 +173,7 @@ class cache_impl
    ~cache_impl()
    {
       this->deallocate_all_cached_nodes();
-      ipcdetail::destroy_node_pool_if_last_link(ipcdetail::to_raw_pointer(mp_node_pool));   
+      ipcdetail::destroy_node_pool_if_last_link(ipcdetail::to_raw_pointer(mp_node_pool));
    }
 
    NodePool *get_node_pool() const
@@ -189,34 +189,29 @@ class cache_impl
    {
       //If don't have any cached node, we have to get a new list of free nodes from the pool
       if(m_cached_nodes.empty()){
-         m_cached_nodes = mp_node_pool->allocate_nodes(m_max_cached_nodes/2);
+         mp_node_pool->allocate_nodes(m_max_cached_nodes/2, m_cached_nodes);
       }
-      void *ret = ipcdetail::to_raw_pointer(m_cached_nodes.front());
-      m_cached_nodes.pop_front();
+      void *ret = ipcdetail::to_raw_pointer(m_cached_nodes.pop_front());
       return ret;
    }
 
-   multiallocation_chain cached_allocation(size_type n)
+   void cached_allocation(size_type n, multiallocation_chain &chain)
    {
-      multiallocation_chain chain;
       size_type count = n, allocated(0);
       BOOST_TRY{
          //If don't have any cached node, we have to get a new list of free nodes from the pool
          while(!m_cached_nodes.empty() && count--){
-            void *ret = ipcdetail::to_raw_pointer(m_cached_nodes.front());
-            m_cached_nodes.pop_front();
+            void *ret = ipcdetail::to_raw_pointer(m_cached_nodes.pop_front());
             chain.push_back(ret);
             ++allocated;
          }
 
          if(allocated != n){
-            multiallocation_chain chain2(mp_node_pool->allocate_nodes(n - allocated));
-            chain.splice_after(chain.last(), chain2, chain2.before_begin(), chain2.last(), n - allocated);
+            mp_node_pool->allocate_nodes(n - allocated, chain);
          }
-         return boost::move(chain);
       }
       BOOST_CATCH(...){
-         this->cached_deallocation(boost::move(chain));
+         this->cached_deallocation(chain);
          BOOST_RETHROW
       }
       BOOST_CATCH_END
@@ -227,7 +222,7 @@ class cache_impl
       //Check if cache is full
       if(m_cached_nodes.size() >= m_max_cached_nodes){
          //This only occurs if this allocator deallocate memory allocated
-         //with other equal allocator. Since the cache is full, and more 
+         //with other equal allocator. Since the cache is full, and more
          //deallocations are probably coming, we'll make some room in cache
          //in a single, efficient multi node deallocation.
          this->priv_deallocate_n_nodes(m_cached_nodes.size() - m_max_cached_nodes/2);
@@ -235,14 +230,14 @@ class cache_impl
       m_cached_nodes.push_front(ptr);
    }
 
-   void cached_deallocation(multiallocation_chain chain)
+   void cached_deallocation(multiallocation_chain &chain)
    {
       m_cached_nodes.splice_after(m_cached_nodes.before_begin(), chain);
 
       //Check if cache is full
       if(m_cached_nodes.size() >= m_max_cached_nodes){
          //This only occurs if this allocator deallocate memory allocated
-         //with other equal allocator. Since the cache is full, and more 
+         //with other equal allocator. Since the cache is full, and more
          //deallocations are probably coming, we'll make some room in cache
          //in a single, efficient multi node deallocation.
          this->priv_deallocate_n_nodes(m_cached_nodes.size() - m_max_cached_nodes/2);
@@ -262,7 +257,7 @@ class cache_impl
    void deallocate_all_cached_nodes()
    {
       if(m_cached_nodes.empty()) return;
-      mp_node_pool->deallocate_nodes(boost::move(m_cached_nodes));
+      mp_node_pool->deallocate_nodes(m_cached_nodes);
    }
 
    private:
@@ -279,7 +274,7 @@ class cache_impl
    void priv_deallocate_n_nodes(size_type n)
    {
       //This only occurs if this allocator deallocate memory allocated
-      //with other equal allocator. Since the cache is full, and more 
+      //with other equal allocator. Since the cache is full, and more
       //deallocations are probably coming, we'll make some room in cache
       //in a single, efficient multi node deallocation.
       size_type count(n);
@@ -290,16 +285,16 @@ class cache_impl
       multiallocation_chain chain;
       chain.splice_after(chain.before_begin(), m_cached_nodes, m_cached_nodes.before_begin(), it, n);
       //Deallocate all new linked list at once
-      mp_node_pool->deallocate_nodes(boost::move(chain));
+      mp_node_pool->deallocate_nodes(chain);
    }
 
    public:
    void swap(cache_impl &other)
    {
-      ipcdetail::do_swap(mp_node_pool, other.mp_node_pool); 
-      m_cached_nodes.swap(other.m_cached_nodes); 
-      ipcdetail::do_swap(m_max_cached_nodes, other.m_max_cached_nodes); 
-   } 
+      ipcdetail::do_swap(mp_node_pool, other.mp_node_pool);
+      m_cached_nodes.swap(other.m_cached_nodes);
+      ipcdetail::do_swap(m_max_cached_nodes, other.m_max_cached_nodes);
+   }
 };
 
 template<class Derived, class T, class SegmentManager>
@@ -335,13 +330,13 @@ class array_allocation_impl
    //!pointed by p can hold. This size only works for memory allocated with
    //!allocate, allocation_command and allocate_many.
    size_type size(const pointer &p) const
-   {  
+   {
       return (size_type)this->derived()->get_segment_manager()->size(ipcdetail::to_raw_pointer(p))/sizeof(T);
    }
 
    std::pair<pointer, bool>
       allocation_command(boost::interprocess::allocation_type command,
-                         size_type limit_size, 
+                         size_type limit_size,
                          size_type preferred_size,
                          size_type &received_size, const pointer &reuse = 0)
    {
@@ -355,17 +350,20 @@ class array_allocation_impl
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. The elements must be deallocated
    //!with deallocate(...)
-   multiallocation_chain allocate_many(size_type elem_size, size_type num_elements)
+   void allocate_many(size_type elem_size, size_type num_elements, multiallocation_chain &chain)
    {
-      return this->derived()->get_segment_manager()->allocate_many(sizeof(T)*elem_size, num_elements);
+      if(size_overflows<sizeof(T)>(elem_size)){
+         throw bad_alloc();
+      }
+      this->derived()->get_segment_manager()->allocate_many(elem_size*sizeof(T), num_elements, chain);
    }
 
    //!Allocates n_elements elements, each one of size elem_sizes[i]in a
    //!contiguous block
    //!of memory. The elements must be deallocated
-   multiallocation_chain allocate_many(const size_type *elem_sizes, size_type n_elements)
+   void allocate_many(const size_type *elem_sizes, size_type n_elements, multiallocation_chain &chain)
    {
-      return this->derived()->get_segment_manager()->allocate_many(elem_sizes, n_elements, sizeof(T));
+      this->derived()->get_segment_manager()->allocate_many(elem_sizes, n_elements, sizeof(T), chain);
    }
 
    //!Allocates many elements of size elem_size in a contiguous block
@@ -374,8 +372,8 @@ class array_allocation_impl
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. The elements must be deallocated
    //!with deallocate(...)
-   void deallocate_many(multiallocation_chain chain)
-   {  return this->derived()->get_segment_manager()->deallocate_many(boost::move(chain)); }
+   void deallocate_many(multiallocation_chain &chain)
+   {  this->derived()->get_segment_manager()->deallocate_many(chain); }
 
    //!Returns the number of elements that could be
    //!allocated. Never throws
@@ -450,21 +448,24 @@ class node_pool_allocation_impl
    };
 
    public:
-   //!Allocate memory for an array of count elements. 
+   //!Allocate memory for an array of count elements.
    //!Throws boost::interprocess::bad_alloc if there is no enough memory
    pointer allocate(size_type count, cvoid_pointer hint = 0)
    {
       (void)hint;
       typedef typename node_pool<0>::type node_pool_t;
       node_pool_t *pool = node_pool<0>::get(this->derived()->get_node_pool());
-      if(count > this->max_size())
+      if(size_overflows<sizeof(T)>(count)){
          throw bad_alloc();
-      else if(Version == 1 && count == 1)
+      }
+      else if(Version == 1 && count == 1){
          return pointer(static_cast<value_type*>
          (pool->allocate_node()));
-      else
+      }
+      else{
          return pointer(static_cast<value_type*>
-            (pool->get_segment_manager()->allocate(sizeof(T)*count)));
+            (pool->get_segment_manager()->allocate(count*sizeof(T))));
+      }
    }
 
    //!Deallocate allocated memory. Never throws
@@ -495,11 +496,11 @@ class node_pool_allocation_impl
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. Memory allocated with this function
    //!must be deallocated only with deallocate_one().
-   multiallocation_chain allocate_individual(size_type num_elements)
+   void allocate_individual(size_type num_elements, multiallocation_chain &chain)
    {
       typedef typename node_pool<0>::type node_pool_t;
       node_pool_t *pool = node_pool<0>::get(this->derived()->get_node_pool());
-      return multiallocation_chain(pool->allocate_nodes(num_elements));
+      pool->allocate_nodes(num_elements, chain);
    }
 
    //!Deallocates memory previously allocated with allocate_one().
@@ -518,10 +519,10 @@ class node_pool_allocation_impl
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. Memory allocated with this function
    //!must be deallocated only with deallocate_one().
-   void deallocate_individual(multiallocation_chain chain)
+   void deallocate_individual(multiallocation_chain &chain)
    {
       node_pool<0>::get(this->derived()->get_node_pool())->deallocate_nodes
-         (chain.extract_multiallocation_chain());
+         (chain);
    }
 
    //!Deallocates all free blocks of the pool
@@ -599,20 +600,21 @@ class cached_allocator_impl
    size_type get_max_cached_nodes() const
    {  return m_cache.get_max_cached_nodes();   }
 
-   //!Allocate memory for an array of count elements. 
+   //!Allocate memory for an array of count elements.
    //!Throws boost::interprocess::bad_alloc if there is no enough memory
    pointer allocate(size_type count, cvoid_pointer hint = 0)
    {
       (void)hint;
       void * ret;
-      if(count > this->max_size())
+      if(size_overflows<sizeof(T)>(count)){
          throw bad_alloc();
+      }
       else if(Version == 1 && count == 1){
          ret = m_cache.cached_allocation();
       }
       else{
-         ret = this->get_segment_manager()->allocate(sizeof(T)*count);
-      }   
+         ret = this->get_segment_manager()->allocate(count*sizeof(T));
+      }
       return pointer(static_cast<T*>(ret));
    }
 
@@ -640,8 +642,8 @@ class cached_allocator_impl
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. Memory allocated with this function
    //!must be deallocated only with deallocate_one().
-   multiallocation_chain allocate_individual(size_type num_elements)
-   {  return multiallocation_chain(this->m_cache.cached_allocation(num_elements));   }
+   void allocate_individual(size_type num_elements, multiallocation_chain &chain)
+   {  this->m_cache.cached_allocation(num_elements, chain);   }
 
    //!Deallocates memory previously allocated with allocate_one().
    //!You should never use deallocate_one to deallocate memory allocated
@@ -655,12 +657,8 @@ class cached_allocator_impl
    //!preferred_elements. The number of actually allocated elements is
    //!will be assigned to received_size. Memory allocated with this function
    //!must be deallocated only with deallocate_one().
-   void deallocate_individual(multiallocation_chain chain)
-   {
-      typename node_pool_t::multiallocation_chain mem
-         (chain.extract_multiallocation_chain());
-      m_cache.cached_deallocation(boost::move(mem));
-   }
+   void deallocate_individual(multiallocation_chain &chain)
+   {  m_cache.cached_deallocation(chain);  }
 
    //!Deallocates all free blocks of the pool
    void deallocate_free_blocks()
@@ -686,20 +684,20 @@ class cached_allocator_impl
 //!Equality test for same type of
 //!cached_allocator_impl
 template<class T, class N, unsigned int V> inline
-bool operator==(const cached_allocator_impl<T, N, V> &alloc1, 
+bool operator==(const cached_allocator_impl<T, N, V> &alloc1,
                 const cached_allocator_impl<T, N, V> &alloc2)
    {  return alloc1.get_node_pool() == alloc2.get_node_pool(); }
 
 //!Inequality test for same type of
 //!cached_allocator_impl
 template<class T, class N, unsigned int V> inline
-bool operator!=(const cached_allocator_impl<T, N, V> &alloc1, 
+bool operator!=(const cached_allocator_impl<T, N, V> &alloc1,
                 const cached_allocator_impl<T, N, V> &alloc2)
    {  return alloc1.get_node_pool() != alloc2.get_node_pool(); }
 
 
 //!Pooled shared memory allocator using adaptive pool. Includes
-//!a reference count but the class does not delete itself, this is  
+//!a reference count but the class does not delete itself, this is
 //!responsibility of user classes. Node size (NodeSize) and the number of
 //!nodes allocated per block (NodesPerBlock) are known at compile time
 template<class private_node_allocator_t>
@@ -736,7 +734,7 @@ class shared_pool_impl
       //-----------------------
       return private_node_allocator_t::allocate_node();
    }
-   
+
    //!Deallocates an array pointed by ptr. Never throws
    void deallocate_node(void *ptr)
    {
@@ -745,25 +743,15 @@ class shared_pool_impl
       //-----------------------
       private_node_allocator_t::deallocate_node(ptr);
    }
-/*
-   //!Allocates a singly linked list of n nodes ending in null pointer.
-   //!can throw boost::interprocess::bad_alloc
-   void allocate_nodes(multiallocation_chain &nodes, size_type n)
-   {
-      //-----------------------
-      boost::interprocess::scoped_lock<mutex_type> guard(m_header);
-      //-----------------------
-      return private_node_allocator_t::allocate_nodes(nodes, n);
-   }
-*/
-   //!Allocates n nodes. 
+
+   //!Allocates n nodes.
    //!Can throw boost::interprocess::bad_alloc
-   multiallocation_chain allocate_nodes(const size_type n)
+   void allocate_nodes(const size_type n, multiallocation_chain &chain)
    {
       //-----------------------
       boost::interprocess::scoped_lock<mutex_type> guard(m_header);
       //-----------------------
-      return private_node_allocator_t::allocate_nodes(n);
+      private_node_allocator_t::allocate_nodes(n, chain);
    }
 
    //!Deallocates a linked list of nodes ending in null pointer. Never throws
@@ -776,12 +764,12 @@ class shared_pool_impl
    }
 
    //!Deallocates the nodes pointed by the multiallocation iterator. Never throws
-   void deallocate_nodes(multiallocation_chain chain)
+   void deallocate_nodes(multiallocation_chain &chain)
    {
       //-----------------------
       boost::interprocess::scoped_lock<mutex_type> guard(m_header);
       //-----------------------
-      private_node_allocator_t::deallocate_nodes(boost::move(chain));
+      private_node_allocator_t::deallocate_nodes(chain);
    }
 
    //!Deallocates all the free blocks of memory. Never throws

@@ -224,7 +224,7 @@ namespace detail
 
         // otherwise, iterate over candidates and and test
         // for maxmimal cliquiness.
-        typename Container::iterator i, j, end = cands.end();
+        typename Container::iterator i, j;
         for(i = cands.begin(); i != cands.end(); ) {
             Vertex candidate = *i;
 
@@ -270,7 +270,6 @@ bron_kerbosch_all_cliques(const Graph& g, Visitor vis, std::size_t min)
 {
     BOOST_CONCEPT_ASSERT(( IncidenceGraphConcept<Graph> ));
     BOOST_CONCEPT_ASSERT(( VertexListGraphConcept<Graph> ));
-    BOOST_CONCEPT_ASSERT(( VertexIndexGraphConcept<Graph> ));
     BOOST_CONCEPT_ASSERT(( AdjacencyMatrixConcept<Graph> )); // Structural requirement only
     typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
     typedef typename graph_traits<Graph>::vertex_iterator VertexIterator;

@@ -464,7 +464,12 @@ namespace boost { namespace numeric { namespace ublas {
 
     private:
         size_type size_;
+// MSVC does not like arrays of size 0 in base classes.  Hence, this conditionally changes the size to 1
+#ifdef _MSC_VER
+        BOOST_UBLAS_BOUNDED_ARRAY_ALIGN value_type data_ [(N>0)?N:1];
+#else
         BOOST_UBLAS_BOUNDED_ARRAY_ALIGN value_type data_ [N];
+#endif
     };
 
 
@@ -1564,7 +1569,6 @@ namespace boost { namespace numeric { namespace ublas {
 
     template <class V>
     class index_pair :
-        private boost::noncopyable,
         public container_reference<V> {
 
         typedef index_pair<V> self_type;
@@ -1734,7 +1738,6 @@ namespace boost { namespace numeric { namespace ublas {
 
     template <class M>
     class index_triple :
-        private boost::noncopyable,
         public container_reference<M> {
 
         typedef index_triple<M> self_type;

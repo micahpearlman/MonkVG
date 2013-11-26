@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga  2006-2009
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -127,10 +127,10 @@ struct identity
 #if defined(BOOST_MSVC) || defined(__BORLANDC_)
 #define BOOST_INTRUSIVE_TT_DECL __cdecl
 #else
-#define BOOST_INTRUSIVE_TT_DECL 
+#define BOOST_INTRUSIVE_TT_DECL
 #endif
 
-#if defined(_MSC_EXTENSIONS) && !defined(__BORLAND__) && !defined(_WIN64)
+#if defined(_MSC_EXTENSIONS) && !defined(__BORLAND__) && !defined(_WIN64) && !defined(UNDER_CE)
 #define BOOST_INTRUSIVE_TT_TEST_MSC_FUNC_SIGS
 #endif
 
@@ -156,9 +156,13 @@ template <typename R>
 struct is_unary_or_binary_function_impl<R (__stdcall*)()>
 {  static const bool value = true;  };
 
+#ifndef _MANAGED
+
 template <typename R>
 struct is_unary_or_binary_function_impl<R (__fastcall*)()>
 {  static const bool value = true;  };
+
+#endif
 
 template <typename R>
 struct is_unary_or_binary_function_impl<R (__cdecl*)()>
@@ -188,9 +192,13 @@ template <typename R, class T0>
 struct is_unary_or_binary_function_impl<R (__stdcall*)(T0)>
 {  static const bool value = true;  };
 
+#ifndef _MANAGED
+
 template <typename R, class T0>
 struct is_unary_or_binary_function_impl<R (__fastcall*)(T0)>
 {  static const bool value = true;  };
+
+#endif
 
 template <typename R, class T0>
 struct is_unary_or_binary_function_impl<R (__cdecl*)(T0)>
@@ -220,9 +228,13 @@ template <typename R, class T0, class T1>
 struct is_unary_or_binary_function_impl<R (__stdcall*)(T0, T1)>
 {  static const bool value = true;  };
 
+#ifndef _MANAGED
+
 template <typename R, class T0, class T1>
 struct is_unary_or_binary_function_impl<R (__fastcall*)(T0, T1)>
 {  static const bool value = true;  };
+
+#endif
 
 template <typename R, class T0, class T1>
 struct is_unary_or_binary_function_impl<R (__cdecl*)(T0, T1)>
@@ -299,6 +311,22 @@ template<typename T>
 struct remove_const<const T>
 {  typedef T type;   };
 
+template<typename T>
+struct remove_cv
+{  typedef  T type;   };
+
+template<typename T>
+struct remove_cv<const T>
+{  typedef T type;   };
+
+template<typename T>
+struct remove_cv<const volatile T>
+{  typedef T type;   };
+
+template<typename T>
+struct remove_cv<volatile T>
+{  typedef T type;   };
+
 template<class T>
 struct remove_reference
 {
@@ -346,9 +374,9 @@ struct ls_zeros<1>
    static const std::size_t value = 0;
 };
 
-} //namespace detail 
-} //namespace intrusive 
-} //namespace boost 
+} //namespace detail
+} //namespace intrusive
+} //namespace boost
 
 #include <boost/intrusive/detail/config_end.hpp>
 

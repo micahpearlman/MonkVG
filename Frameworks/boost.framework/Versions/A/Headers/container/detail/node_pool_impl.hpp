@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -26,9 +26,11 @@
 #include <boost/container/detail/math_functions.hpp>
 #include <boost/container/detail/mpl.hpp>
 #include <boost/container/detail/pool_common.hpp>
+#include <boost/detail/no_exceptions_support.hpp>
 #include <boost/assert.hpp>
 #include <cstddef>
 #include <functional>   //std::unary_function
+
 
 namespace boost {
 namespace container {
@@ -85,19 +87,19 @@ class private_node_pool_impl
    {  return container_detail::to_raw_pointer(mp_segment_mngr_base);  }
 
    void *allocate_node()
-   {  return priv_alloc_node();  }
-   
+   {  return this->priv_alloc_node();  }
+  
    //!Deallocates an array pointed by ptr. Never throws
    void deallocate_node(void *ptr)
-   {  priv_dealloc_node(ptr); }
+   {  this->priv_dealloc_node(ptr); }
 
-   //!Allocates a singly linked list of n nodes ending in null pointer. 
-   multiallocation_chain allocate_nodes(const size_type n)
+   //!Allocates a singly linked list of n nodes ending in null pointer.
+   void allocate_nodes(const size_type n, multiallocation_chain &chain)
    {
       //Preallocate all needed blocks to fulfill the request
       size_type cur_nodes = m_freelist.size();
       if(cur_nodes < n){
-         priv_alloc_block(((n - cur_nodes) - 1)/m_nodes_per_block + 1);
+         this->priv_alloc_block(((n - cur_nodes) - 1)/m_nodes_per_block + 1);
       }
 
       //We just iterate the needed nodes to get the last we'll erase
@@ -118,20 +120,18 @@ class private_node_pool_impl
 
       //Now take the last erased node and just splice it in the end
       //of the intrusive list that will be traversed by the multialloc iterator.
-      multiallocation_chain chain;
       chain.incorporate_after(chain.before_begin(), &*first_node, &*last_node, n);
       m_allocated += n;
-      return boost::move(chain);
    }
 
-   void deallocate_nodes(multiallocation_chain chain)
+   void deallocate_nodes(multiallocation_chain &chain)
    {
       typedef typename multiallocation_chain::iterator iterator;
       iterator it(chain.begin()), itend(chain.end());
       while(it != itend){
          void *pElem = &*it;
          ++it;
-         priv_dealloc_node(pElem);
+         this->priv_dealloc_node(pElem);
       }
    }
 
@@ -208,8 +208,6 @@ class private_node_pool_impl
       BOOST_ASSERT(m_allocated==0);
       size_type blocksize = get_rounded_size
          (m_real_node_size*m_nodes_per_block, (size_type)alignment_of<node_t>::value);
-      typename blockslist_t::iterator
-         it(m_blocklist.begin()), itend(m_blocklist.end()), aux;
 
       //We iterate though the NodeBlock list to free the memory
       while(!m_blocklist.empty()){
@@ -238,7 +236,7 @@ class private_node_pool_impl
       push_in_list(free_nodes_t &l, typename free_nodes_t::iterator &it)
          :  slist_(l), last_it_(it)
       {}
-      
+     
       void operator()(typename free_nodes_t::pointer p) const
       {
          slist_.push_front(*p);
@@ -258,10 +256,10 @@ class private_node_pool_impl
       is_between(const void *addr, std::size_t size)
          :  beg_(static_cast<const char *>(addr)), end_(beg_+size)
       {}
-      
+     
       bool operator()(typename free_nodes_t::const_reference v) const
       {
-         return (beg_ <= reinterpret_cast<const char *>(&v) && 
+         return (beg_ <= reinterpret_cast<const char *>(&v) &&
                  end_ >  reinterpret_cast<const char *>(&v));
       }
       private:
@@ -275,7 +273,7 @@ class private_node_pool_impl
    {
       //If there are no free nodes we allocate a new block
       if (m_freelist.empty())
-         priv_alloc_block();
+         this->priv_alloc_block(1);
       //We take the first free node
       node_t *n = (node_t*)&m_freelist.front();
       m_freelist.pop_front();
@@ -295,14 +293,13 @@ class private_node_pool_impl
    }
 
    //!Allocates several blocks of nodes. Can throw
-   void priv_alloc_block(size_type num_blocks = 1)
+   void priv_alloc_block(size_type num_blocks)
    {
-      if(!num_blocks)
-         return;
-      size_type blocksize = 
+      BOOST_ASSERT(num_blocks > 0);
+      size_type blocksize =
          get_rounded_size(m_real_node_size*m_nodes_per_block, (size_type)alignment_of<node_t>::value);
 
-      try{
+      BOOST_TRY{
          for(size_type i = 0; i != num_blocks; ++i){
             //We allocate a new NodeBlock and put it as first
             //element in the free Node list
@@ -311,17 +308,18 @@ class private_node_pool_impl
             char *pBlock = pNode;
             m_blocklist.push_front(get_block_hook(pBlock, blocksize));
 
-            //We initialize all Nodes in Node Block to insert 
+            //We initialize all Nodes in Node Block to insert
             //them in the free Node list
-            for(size_type i = 0; i < m_nodes_per_block; ++i, pNode += m_real_node_size){
+            for(size_type j = 0; j < m_nodes_per_block; ++j, pNode += m_real_node_size){
                m_freelist.push_front(*new (pNode) node_t);
             }
          }
       }
-      catch(...){
+      BOOST_CATCH(...){
          //to-do: if possible, an efficient way to deallocate allocated blocks
-         throw;
+         BOOST_RETHROW
       }
+      BOOST_CATCH_END
    }
 
    //!Deprecated, use deallocate_free_blocks
@@ -335,13 +333,13 @@ class private_node_pool_impl
    private:
    //!Returns a reference to the block hook placed in the end of the block
    static node_t & get_block_hook (void *block, size_type blocksize)
-   {  
-      return *reinterpret_cast<node_t*>(reinterpret_cast<char*>(block) + blocksize);  
+   { 
+      return *reinterpret_cast<node_t*>(reinterpret_cast<char*>(block) + blocksize); 
    }
 
    //!Returns the starting address of the block reference to the block hook placed in the end of the block
    void *get_block_from_hook (node_t *hook, size_type blocksize)
-   {  
+   { 
       return (reinterpret_cast<char*>(hook) - blocksize);
    }
 

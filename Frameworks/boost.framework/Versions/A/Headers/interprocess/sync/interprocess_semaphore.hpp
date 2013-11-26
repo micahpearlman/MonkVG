@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2005-2011. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2005-2012. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -29,9 +29,9 @@
    #include <boost/interprocess/sync/posix/semaphore.hpp>
    #define BOOST_INTERPROCESS_USE_POSIX
 //Experimental...
-//#elif !defined(BOOST_INTERPROCESS_FORCE_GENERIC_EMULATION) && defined (BOOST_INTERPROCESS_WINDOWS)
-//   #include <boost/interprocess/sync/windows/semaphore.hpp>
-//   #define BOOST_INTERPROCESS_USE_WINDOWS
+#elif !defined(BOOST_INTERPROCESS_FORCE_GENERIC_EMULATION) && defined (BOOST_INTERPROCESS_WINDOWS)
+   #include <boost/interprocess/sync/windows/semaphore.hpp>
+   #define BOOST_INTERPROCESS_USE_WINDOWS
 #elif !defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
    #include <boost/interprocess/sync/spin/semaphore.hpp>
    #define BOOST_INTERPROCESS_USE_GENERIC_EMULATION
@@ -45,7 +45,7 @@
 namespace boost {
 namespace interprocess {
 
-//!Wraps a interprocess_semaphore that can be placed in shared memory and can be 
+//!Wraps a interprocess_semaphore that can be placed in shared memory and can be
 //!shared between processes. Allows timed lock tries
 class interprocess_semaphore
 {
@@ -55,7 +55,7 @@ class interprocess_semaphore
    interprocess_semaphore &operator=(const interprocess_semaphore &);
    /// @endcond
    public:
-   //!Creates a interprocess_semaphore with the given initial count. 
+   //!Creates a interprocess_semaphore with the given initial count.
    //!interprocess_exception if there is an error.*/
    interprocess_semaphore(unsigned int initialCount);
 
@@ -69,7 +69,7 @@ class interprocess_semaphore
    void post();
 
    //!Decrements the interprocess_semaphore. If the interprocess_semaphore value is not greater than zero,
-   //!then the calling process/thread blocks until it can decrement the counter. 
+   //!then the calling process/thread blocks until it can decrement the counter.
    //!If there is an error an interprocess_exception exception is thrown.
    void wait();
 
@@ -95,7 +95,7 @@ class interprocess_semaphore
    #elif defined(BOOST_INTERPROCESS_USE_WINDOWS)
       #undef BOOST_INTERPROCESS_USE_WINDOWS
       ipcdetail::windows_semaphore m_sem;
-   #else 
+   #else
       #undef BOOST_INTERPROCESS_USE_POSIX
       ipcdetail::posix_semaphore m_sem;
    #endif   //#if defined(BOOST_INTERPROCESS_USE_GENERIC_EMULATION)
