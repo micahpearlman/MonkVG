@@ -763,7 +763,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = 1DEB922208733DC00010E9CD /* Build configuration list for PBXProject "MonkVG-iOS" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -867,12 +867,12 @@
 		1DEB922308733DC00010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 			};
@@ -881,7 +881,6 @@
 		1DEB922408733DC00010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -895,7 +894,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LIBRARY = "libc++";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/MonkVG_iOS.dst;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -914,6 +914,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkVG;
 				SDKROOT = iphoneos;
@@ -925,7 +926,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/MonkVG_iOS.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -942,6 +944,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 				);
 				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = MonkVG_iOS_OpenGL;
 				PUBLIC_HEADERS_FOLDER_PATH = include/MonkVG;
 				SDKROOT = iphoneos;
