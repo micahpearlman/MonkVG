@@ -39,7 +39,7 @@ GLuint Shader::compile()
 
 	const char* typeString = type == GL_FRAGMENT_SHADER ? "Fragment shader" : "Vertex shader";
 
-	if (id == 0) 
+	if (id == 0 && typeString)
 	{
 		LOG_MESSAGE(__FILE__, __LINE__, OpenGLESString("ERROR: Could not create ") + typeString);
 		return 0;
@@ -116,7 +116,7 @@ bool Shader::readShaderSource()
 		shaderSources[i] = convertStringToChar(sources[i]->getSource());
 	}
 
-	glShaderSource(id, sources.size(), (const char **)shaderSources, NULL);
+	glShaderSource(id, (GLsizei)sources.size(), (const char **)shaderSources, NULL);
 
 	for (size_t i = 0; i < sources.size(); i++)
 	{

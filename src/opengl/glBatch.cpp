@@ -138,7 +138,7 @@ namespace MonkVG {
 		GL->glBindBuffer( GL_ARRAY_BUFFER, _vbo );
 		GL->glVertexPointer( 2, GL_FLOAT, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, v) );
 		GL->glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex_t), (GLvoid*)offsetof(vertex_t, color) );
-		GL->glDrawArrays( GL_TRIANGLES, 0, _vertexCount );
+		GL->glDrawArrays( GL_TRIANGLES, 0, (GLsizei)_vertexCount );
 		GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		
 		glContext.endRender();
