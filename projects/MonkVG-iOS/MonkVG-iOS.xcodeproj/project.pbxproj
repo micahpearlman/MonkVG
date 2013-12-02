@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		29FCF5A113CE62EB0031232E /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29FCF5A013CE62EB0031232E /* boost.framework */; };
 		FA0F6A14125ECDC600FE3D55 /* priorityq-heap.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB4121A088200814394 /* priorityq-heap.h */; };
 		FA0F6A1E125ECE1300FE3D55 /* priorityq.c in Sources */ = {isa = PBXBuildFile; fileRef = FA9ACCB6121A088200814394 /* priorityq.c */; };
 		FA0F6A1F125ECE1400FE3D55 /* priorityq.h in Headers */ = {isa = PBXBuildFile; fileRef = FA9ACCB7121A088200814394 /* priorityq.h */; };
@@ -182,7 +181,6 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
-		29FCF5A013CE62EB0031232E /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../Frameworks/boost.framework; sourceTree = "<group>"; };
 		AACBBE490F95108600F1A2B1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA34EB4A13EDC98B006F9CA4 /* glPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glPlatform.h; sourceTree = "<group>"; };
 		FA6AEFA4127679FD004079EE /* openvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openvg.h; sourceTree = "<group>"; };
@@ -342,7 +340,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAE282E5121A08BB00823BCB /* Foundation.framework in Frameworks */,
-				29FCF5A113CE62EB0031232E /* boost.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,7 +369,6 @@
 			isa = PBXGroup;
 			children = (
 				AACBBE490F95108600F1A2B1 /* Foundation.framework */,
-				29FCF5A013CE62EB0031232E /* boost.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

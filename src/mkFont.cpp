@@ -71,9 +71,9 @@ namespace MonkVG {	// Internal Implementation
 	}
 	
 	void IFont::drawGlyph( VGuint index, VGfloat adj_x, VGfloat adj_y, VGbitfield paintModes ) {
-		boost::ptr_map<VGuint, Glyph*>::iterator it =  _glyphs.find( index );
+		hash_map<VGuint, Glyph*>::iterator it =  _glyphs.find( index );
 		if ( it != _glyphs.end() ) {
-			Glyph* glyph = *it->second;
+			Glyph* glyph = it->second;
 			VGfloat origin[2];
 			IContext::instance().getGlyphOrigin( origin );
 //			vgTranslate( origin[0], origin[1] );
