@@ -927,7 +927,7 @@ void OpenGLESState::setCurrentProgram()
 			}
 		}
 		if (stateFound) {
-			stateIndex = i;
+			stateIndex = (int)i;
 			break;
 		}
 	}
@@ -1459,7 +1459,7 @@ void OpenGLESState::setTextureMatrix(int index, bool enabled)
 
 int OpenGLESState::getCachedShaderAmount()
 {
-	return stateShaderPrograms.size();
+	return (int)stateShaderPrograms.size();
 }
 
 void OpenGLESState::setUniformColor(Vector4<GLfloat> vec )

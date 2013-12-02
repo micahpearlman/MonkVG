@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3E80D8EB15FA6BBA0032D10D /* boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E80D8EA15FA6BBA0032D10D /* boost.framework */; };
 		3E80D8F215FA6C0C0032D10D /* mkBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E80D8EC15FA6C0C0032D10D /* mkBatch.cpp */; };
 		3E80D8F315FA6C0C0032D10D /* mkBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E80D8ED15FA6C0C0032D10D /* mkBatch.h */; };
 		3E80D8F415FA6C0C0032D10D /* mkFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3E80D8EE15FA6C0C0032D10D /* mkFont.cpp */; };
@@ -125,7 +124,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3E80D8EA15FA6BBA0032D10D /* boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = boost.framework; path = ../../Frameworks/boost.framework; sourceTree = "<group>"; };
 		3E80D8EC15FA6C0C0032D10D /* mkBatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkBatch.cpp; path = ../../src/mkBatch.cpp; sourceTree = "<group>"; };
 		3E80D8ED15FA6C0C0032D10D /* mkBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mkBatch.h; path = ../../src/mkBatch.h; sourceTree = "<group>"; };
 		3E80D8EE15FA6C0C0032D10D /* mkFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mkFont.cpp; path = ../../src/mkFont.cpp; sourceTree = "<group>"; };
@@ -250,7 +248,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3E80D8EB15FA6BBA0032D10D /* boost.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,7 +278,6 @@
 		3E80D90615FA6C320032D10D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3E80D8EA15FA6BBA0032D10D /* boost.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -593,6 +589,8 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = 1DEB91EF08733DB70010E9CD /* Build configuration list for PBXProject "MonkVG-OSX" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;

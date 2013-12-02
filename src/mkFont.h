@@ -11,7 +11,14 @@
 #include "mkBaseObject.h"
 #include "mkImage.h"
 #include "mkPath.h"
-#include <boost/ptr_container/ptr_map.hpp>
+
+#if defined __GNUC__ || defined __APPLE__
+#include <ext/hash_map>
+using __gnu_cxx::hash_map;
+#else
+#include <hash_map>
+using std::hash_map;
+#endif
 
 namespace MonkVG {
 	
@@ -95,7 +102,7 @@ namespace MonkVG {
 
 		};
 		
-		boost::ptr_map<VGuint, Glyph*>	_glyphs;
+		hash_map<VGuint, Glyph*>	_glyphs;
 	};
 	
 }

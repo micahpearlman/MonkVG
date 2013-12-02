@@ -893,7 +893,7 @@ namespace MonkVG {
 
 			}
 
-			_numberFillVertices = _vertices.size()/2;
+			_numberFillVertices = (int)_vertices.size()/2;
 			_tessVertices.clear();
 		} 
 		
@@ -908,7 +908,7 @@ namespace MonkVG {
 			GL->glGenBuffers( 1, &_strokeVBO );
 			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
 			GL->glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
-			_numberStrokeVertices = _strokeVertices.size();
+			_numberStrokeVertices = (int)_strokeVertices.size();
 
 		}
 		

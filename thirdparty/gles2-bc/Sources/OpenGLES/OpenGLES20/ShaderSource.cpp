@@ -37,7 +37,7 @@ ShaderSource::ShaderSource( ShaderFile *file, std::string additionalSource ) : f
 bool ShaderSource::expandSource()
 {
 	static char tmp[1024*16];
-	int n;
+	size_t n;
 	// Check if file is already in memory...
 	LOG_DEBUG_MESSAGE("Request for " + file->getName());
 	int i;
@@ -69,7 +69,7 @@ bool ShaderSource::expandSource()
 	}
 	tmp[n] = '\0';
 
-	int additionalSourceLength = additionalSource.size();
+	int additionalSourceLength = (int)additionalSource.size();
 	char *sourceTmp = (char *)malloc(sizeof(char) * n + additionalSourceLength + 1);
 	if (sourceTmp == NULL)
 	{

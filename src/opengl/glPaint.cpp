@@ -46,7 +46,7 @@ namespace MonkVG {
 		
 		VGColorRampSpreadMode spreadMode = _colorRampSpreadMode;
 		
-		const int stopCnt = _colorRampStops.size();
+		const int stopCnt = (int)_colorRampStops.size();
 		
 		//	from OpenVG specification PDF
 		//
@@ -188,7 +188,7 @@ namespace MonkVG {
 		
 		VGColorRampSpreadMode spreadMode = _colorRampSpreadMode;
 		
-		const int stopCnt = _colorRampStops.size();
+		const int stopCnt = (int)_colorRampStops.size();
 		
 		//	from OpenVG specification PDF
 		//
@@ -344,7 +344,7 @@ namespace MonkVG {
 		
 		VGColorRampSpreadMode spreadMode = _colorRampSpreadMode;
 		
-		const int stopCnt = _colorRampStops.size();
+		const int stopCnt = (int)_colorRampStops.size();
 		
 		//	from OpenVG specification PDF
 		//
@@ -530,7 +530,7 @@ namespace MonkVG {
 		
 		VGColorRampSpreadMode spreadMode = _colorRampSpreadMode;
 		
-		const int stopCnt = _colorRampStops.size();
+		const int stopCnt = (int)_colorRampStops.size();
 		
 		//	from OpenVG specification PDF
 		//
