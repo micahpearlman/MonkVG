@@ -275,7 +275,11 @@ GLUhalfEdge *__gl_meshMakeEdge( GLUmesh *mesh )
   GLUvertex *newVertex1= allocVertex();
   GLUvertex *newVertex2= allocVertex();
   GLUface *newFace= allocFace();
-  GLUhalfEdge *e;
+  GLUhalfEdge *e = NULL;
+    
+  if (newVertex1 && newVertex2 && newFace) {
+     e = MakeEdge( &mesh->eHead );
+  }
 
   /* if any one is null then all get freed */
   if (newVertex1 == NULL || newVertex2 == NULL || newFace == NULL) {
@@ -283,10 +287,7 @@ GLUhalfEdge *__gl_meshMakeEdge( GLUmesh *mesh )
      if (newVertex2 != NULL) memFree(newVertex2);
      if (newFace != NULL) memFree(newFace);     
      return NULL;
-  } 
-
-  e = MakeEdge( &mesh->eHead );
-  if (e == NULL) return NULL;
+  }
 
   MakeVertex( newVertex1, e, &mesh->vHead );
   MakeVertex( newVertex2, e->Sym, &mesh->vHead );

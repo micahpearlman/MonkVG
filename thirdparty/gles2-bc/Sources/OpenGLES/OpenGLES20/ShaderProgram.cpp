@@ -145,6 +145,7 @@ GLuint ShaderProgram::createProgram(Shader *vertexShader, Shader *fragmentShader
 			id = AttributeId::TEXCOORD2;
 		} else {
 			LOG_MESSAGE(__FILE__, __LINE__, OpenGLESString("ERROR: Missing ") + attributeName);
+			free(attributeName);
 			return 0;
 		}
 		
@@ -183,6 +184,7 @@ GLuint ShaderProgram::createProgram(Shader *vertexShader, Shader *fragmentShader
 		
 		LOG_DEBUG_MESSAGE(OpenGLESString(attributeName) + ": type " + typeString + " location: " + attributeLocation);
 #endif
+		free(attributeName);
 	}
 	
 	LOG_DEBUG_MESSAGE("Uniforms");
@@ -425,6 +427,7 @@ GLuint ShaderProgram::createProgram(Shader *vertexShader, Shader *fragmentShader
             id = UniformId::COLOR;
 		} else {
 			LOG_MESSAGE(__FILE__, __LINE__, OpenGLESString("ERROR: Missing ") + uniformName);
+			free(uniformName);
 			return 0;
 		}
 		
@@ -493,6 +496,7 @@ GLuint ShaderProgram::createProgram(Shader *vertexShader, Shader *fragmentShader
 		
 		LOG_DEBUG_MESSAGE(OpenGLESString(uniformName) + ": type " + typeString + " location: " + uniformLocation);
 #endif
+		free(uniformName);
 	}
 	
 	LOG_DEBUG_MESSAGE("\n");
