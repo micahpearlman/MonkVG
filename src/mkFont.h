@@ -12,13 +12,8 @@
 #include "mkImage.h"
 #include "mkPath.h"
 
-#if defined __GNUC__ || defined __APPLE__
-#include <ext/hash_map>
-using __gnu_cxx::hash_map;
-#else
-#include <hash_map>
-using std::hash_map;
-#endif
+#include <unordered_map>
+#include <memory>
 
 namespace MonkVG {
 	
@@ -76,14 +71,6 @@ namespace MonkVG {
 			}
 			
 			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ); 
-//			{
-//				//image->drawSubRect( glyphOrigin[0], glyphOrigin[1], escapement[0], escapement[1], paintModes );
-//				//image->draw( );
-//				VGfloat origin[2];
-//				IContext::instance().getGlyphOrigin( origin );
-//
-//				image->drawAtPoint( origin[0], origin[1], paintModes );
-//			}
 		};
 		
 		struct GlyphPath : public Glyph {
@@ -97,12 +84,12 @@ namespace MonkVG {
 			}
 			
 			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ) {
-				path->draw( paintModes);
+				path->draw( paintModes );
 			}
 
 		};
 		
-		hash_map<VGuint, Glyph*>	_glyphs;
+		std::unordered_map<VGuint, std::shared_ptr<Glyph> >	_glyphs;
 	};
 	
 }
