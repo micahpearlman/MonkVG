@@ -45,8 +45,7 @@ namespace MonkVG {	// Internal Implementation
 		}
 	}
 	
-	void IFont::setParameter( const VGint p, const VGfloat v ) 
-	{
+	void IFont::setParameter( const VGint p, const VGfloat v ) {
 		switch (p) {
 			default:
 				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
@@ -64,16 +63,16 @@ namespace MonkVG {	// Internal Implementation
 	
 	
 	void IFont::addGlyphImage( VGuint index_, IImage* image_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] ) {
-		_glyphs[index_] = new IFont::GlyphImage( index_, image_, glyphOrigin_, escapement_ );
+		_glyphs[index_] = std::shared_ptr<IFont::GlyphImage>( new IFont::GlyphImage( index_, image_, glyphOrigin_, escapement_ ) );
 	}
 	void IFont::addGlyphPath( VGuint index_, IPath* path_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] ) {
-		_glyphs[index_] = new IFont::GlyphPath( index_, path_, glyphOrigin_, escapement_ );
+		_glyphs[index_] = std::shared_ptr<IFont::GlyphPath>( new IFont::GlyphPath( index_, path_, glyphOrigin_, escapement_ ));
 	}
 	
 	void IFont::drawGlyph( VGuint index, VGfloat adj_x, VGfloat adj_y, VGbitfield paintModes ) {
-		hash_map<VGuint, Glyph*>::iterator it =  _glyphs.find( index );
+		std::unordered_map<VGuint, std::shared_ptr<Glyph> >::iterator it =  _glyphs.find( index );
 		if ( it != _glyphs.end() ) {
-			Glyph* glyph = it->second;
+			std::shared_ptr<Glyph> glyph = it->second;
 			VGfloat origin[2];
 			IContext::instance().getGlyphOrigin( origin );
 //			vgTranslate( origin[0], origin[1] );
