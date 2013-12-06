@@ -726,6 +726,35 @@ namespace MonkVG {
 					
 				}
 				break;
+                    
+                case (VG_QUAD_TO >> 1):     // added by rhcad
+                {
+                    prev = coords;
+					VGfloat cpx = *coordsIter; coordsIter++;
+					VGfloat cpy = *coordsIter; coordsIter++;
+					VGfloat px = *coordsIter; coordsIter++;
+					VGfloat py = *coordsIter; coordsIter++;
+					
+					if ( isRelative ) {
+						cpx += prev.x;
+						cpy += prev.y;
+						px += prev.x;
+						py += prev.y;
+					}
+					
+					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
+					
+					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+						v2_t c;
+						c.x = calcQuadBezier1d( coords.x, cpx, px, t );
+						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
+						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
+						prev = c;
+					}
+					coords.x = px;
+					coords.y = py;
+                    
+                } break;
 	
 				case (VG_CUBIC_TO >> 1):	// todo
 				{
@@ -844,7 +873,7 @@ namespace MonkVG {
 				} break;
 					
 				default:
-					printf("unkwown command\n");
+					printf("unkwown command: %d\n", segment >> 1);
 					break;
 			}
 		}	// foreach segment
