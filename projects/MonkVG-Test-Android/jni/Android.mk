@@ -30,7 +30,6 @@ include $(PREBUILT_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := libOpenVGU
 LOCAL_SRC_FILES := ../../MonkVG-Android/obj/local/armeabi/libOpenVGU.a
-LOCAL_STATIC_LIBRARIES := libOpenVG
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)

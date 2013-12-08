@@ -24,6 +24,7 @@
 
 #include <MonkVG/openvg.h>
 #include <MonkVG/vgu.h>
+#include <MonkVG/vgext.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,6 +61,7 @@ JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_created(JNIEnv * env
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
+    vgCreateContextMNK(1, 1, VG_RENDERING_BACKEND_TYPE_OPENGLES20);
 
     glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     glClearDepthf(1.0f);
@@ -78,6 +80,7 @@ JNIEXPORT void JNICALL Java_com_android_monkvg_MonkVGJNILib_changed(JNIEnv * env
     LOGI("w:%d h:%d", width, height);
     _width = width;
     _height = height;
+    vgResizeSurfaceMNK(width, height);
     glViewport(0, 0, width, height);
 
     glMatrixMode(GL_PROJECTION);

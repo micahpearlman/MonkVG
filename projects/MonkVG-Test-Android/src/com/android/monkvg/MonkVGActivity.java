@@ -27,6 +27,7 @@ public class MonkVGActivity extends Activity {
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         glView = new GLSurfaceView(this);
+        glView.setEGLContextClientVersion(2);
         glView.setRenderer(new MonkVGRenderer(this));
         setContentView(glView);
     }
