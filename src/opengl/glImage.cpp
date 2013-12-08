@@ -127,10 +127,10 @@ namespace MonkVG {
 		GLfloat x = 0, y = 0;
 		// note openvg coordinate system is bottom, left is 0,0
 		GLfloat		vertices[] = 
-		{	x,		y,		0.0,	// left, bottom
-			x+w,	y,		0.0,	// right, bottom
-			x,		y+h,	0.0,	// left, top
-			x+w,	y+h,	0.0 };	// right, top
+		{	x,		y,		0.0f,	// left, bottom
+			x+w,	y,		0.0f,	// right, bottom
+			x,		y+h,	0.0f,	// left, top
+			x+w,	y+h,	0.0f };	// right, top
 		
 		
 		if ( IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY ) {
@@ -179,10 +179,10 @@ namespace MonkVG {
 		GLfloat x = 0, y = 0;
 		// note openvg coordinate system is bottom, left is 0,0
 		GLfloat		vertices[] = 
-		{	x,		y,		0.0,	// left, bottom
-			x+w,	y,		0.0,	// right, bottom
-			x,		y+h,	0.0,	// left, top
-			x+w,	y+h,	0.0 };	// right, top
+		{	x,		y,		0.0f,	// left, bottom
+			x+w,	y,		0.0f,	// right, bottom
+			x,		y+h,	0.0f,	// left, top
+			x+w,	y+h,	0.0f };	// right, top
 		
 		if ( IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY ) {
 			// set the color to the current fill paint color
@@ -222,10 +222,10 @@ namespace MonkVG {
 			_s[1],	_t[0] };
 		// note openvg coordinate system is bottom, left is 0,0
 		GLfloat		vertices[] = 
-		{	x,		y,		0.0,	// left, bottom
-			x+w,	y,		0.0,	// right, bottom
-			x,		y+h,	0.0,	// left, top
-			x+w,	y+h,	0.0 };	// right, top
+		{	(GLfloat)x,		(GLfloat)y,		0.0f,	// left, bottom
+			(GLfloat)(x+w),	(GLfloat)y,		0.0f,	// right, bottom
+			(GLfloat)x,		(GLfloat)(y+h),	0.0f,	// left, top
+			(GLfloat)(x+w),	(GLfloat)(y+h),	0.0f };	// right, top
 		
 		if ( IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY ) {
 			// set the color to the current fill paint color

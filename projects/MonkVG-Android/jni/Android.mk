@@ -14,6 +14,7 @@
 #
 LOCAL_PATH := $(call my-dir)
 #cflags := -DOPENGLES_DEBUG
+cflags  := -std=c++11
 top_srcdir := $(call my-dir)/../../..
 c_includes := \
 		$(top_srcdir)/glu/include $(top_srcdir)/include \
