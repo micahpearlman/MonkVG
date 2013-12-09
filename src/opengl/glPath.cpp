@@ -567,7 +567,7 @@ namespace MonkVG {
 		
 	}
 	
-	void OpenGLPath::buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
+	void OpenGLPath::buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width ) {
 		
 		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
 			return;
@@ -580,6 +580,7 @@ namespace MonkVG {
 		dy = dy * inv_mag;
 		
 		v2_t v0, v1, v2, v3;
+        const float radius = stroke_width * 0.5f;
 		
 		v0.x = p0.x + radius * dx;
 		v0.y = p0.y + radius * dy;
@@ -592,20 +593,11 @@ namespace MonkVG {
 		
 		v2.x = p1.x + radius * dx;
 		v2.y = p1.y + radius * dy;
-		vertices.push_back( v2 );			
+		vertices.push_back( v2 );
 		
 		v3.x = p1.x - radius * dx;
 		v3.y = p1.y - radius * dy;
 		vertices.push_back( v3 );
-		
-		//		printf("start stroke\n");
-		//		printf("p0: ");p0.print();
-		//		printf("p1: ");p1.print();
-		//		printf("\t"); v0.print();
-		//		printf("\t"); v1.print();
-		//		printf("\t"); v2.print();
-		//		printf("\t"); v3.print();
-		//		printf("end stroke\n");
 		
 	}
 	
