@@ -1,1 +1,2 @@
+#!/bin/sh
 for i in *.frag *.vert *.glsl; do xxd -i $i > $i.h; done

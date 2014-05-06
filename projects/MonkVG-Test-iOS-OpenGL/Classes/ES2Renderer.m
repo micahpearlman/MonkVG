@@ -71,23 +71,6 @@ enum {
 
 - (void)render
 {
-    // Replace the implementation of this method to do your own custom drawing
-
-    static const GLfloat squareVertices[] = {
-        -0.5f, -0.33f,
-         0.5f, -0.33f,
-        -0.5f,  0.33f,
-         0.5f,  0.33f,
-    };
-
-    static const GLubyte squareColors[] = {
-        255, 255,   0, 255,
-        0,   255, 255, 255,
-        0,     0,   0,   0,
-        255,   0, 255, 255,
-    };
-
-    static float transY = 0.0f;
 
     // This application only creates a single context which is already set current at this point.
     // This call is redundant, but needed if dealing with multiple contexts.
@@ -101,34 +84,6 @@ enum {
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    /*
-    // Use shader program
-    glUseProgram(program);
-
-    // Update uniform value
-    glUniform1f(uniforms[UNIFORM_TRANSLATE], (GLfloat)transY);
-    transY += 0.075f;	
-
-    // Update attribute values
-    glVertexAttribPointer(ATTRIB_VERTEX, 2, GL_FLOAT, 0, 0, squareVertices);
-    glEnableVertexAttribArray(ATTRIB_VERTEX);
-    glVertexAttribPointer(ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, 1, 0, squareColors);
-    glEnableVertexAttribArray(ATTRIB_COLOR);
-
-    // Validate program before drawing. This is a good check, but only really necessary in a debug build.
-    // DEBUG macro must be defined in your debug configurations if that's not already the case.
-#if defined(DEBUG)
-    if (![self validateProgram:program])
-    {
-        NSLog(@"Failed to validate program: %d", program);
-        return;
-    }
-#endif
-     
-    
-    // Draw
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-     */
     
     [monkVGExample render];
 

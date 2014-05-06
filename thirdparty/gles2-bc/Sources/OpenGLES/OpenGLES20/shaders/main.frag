@@ -150,7 +150,11 @@ void main()
 #if TEXTURE0_ENABLED != 0 || TEXTURE1_ENABLED != 0 || TEXTURE2_ENABLED != 0
 	gl_FragColor = color;
 #else
+#if LIGHTING_ENABLED == 1
     gl_FragColor = color * u_color;
+#elif LIGHTING_ENABLED == 0
+	gl_FragColor = color;
+#endif
 #endif
 
 }
