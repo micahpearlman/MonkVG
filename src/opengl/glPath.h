@@ -131,7 +131,7 @@ namespace MonkVG {
 
 		void buildFill();
 		void buildStroke();
-		void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius );
+		void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
 		
 		
 	};

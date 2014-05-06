@@ -8,6 +8,7 @@
  */
 #include "mkContext.h"
 #include "glPath.h"
+#include "glContext.h"
 
 using namespace MonkVG;
 
@@ -18,12 +19,10 @@ VG_API_CALL VGboolean vgCreateContextMNK( VGint width, VGint height, VGRendering
 	MK_LOG("Creating context %d, %d, %d", width, height, (int)backend);
 
     IContext::instance().setRenderingBackendType( backend );
-    
-	IContext::instance().Initialize();
 
 	IContext::instance().setWidth( width );
 	IContext::instance().setHeight( height );
-	IContext::instance().resize();
+	IContext::instance().Initialize();
 	
 	return VG_TRUE;
 }
@@ -38,6 +37,7 @@ VG_API_CALL void vgResizeSurfaceMNK(VGint width, VGint height)
 
 VG_API_CALL void vgDestroyContextMNK()
 {
+    IContext::instance().Terminate();
 }
 
 VG_API_CALL void VG_API_ENTRY vgSetf (VGuint type, VGfloat value) VG_API_EXIT {

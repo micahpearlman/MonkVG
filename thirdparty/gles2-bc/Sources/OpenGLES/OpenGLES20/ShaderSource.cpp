@@ -85,6 +85,7 @@ bool ShaderSource::expandSource()
 
 	source = sourceTmp;
 	sourceExpanded = true;
+	free(sourceTmp);
 
 	return true;
 }

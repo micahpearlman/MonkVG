@@ -567,7 +567,7 @@ namespace MonkVG {
 		
 	}
 	
-	void OpenGLPath::buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float radius ) {
+	void OpenGLPath::buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width ) {
 		
 		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
 			return;
@@ -580,6 +580,7 @@ namespace MonkVG {
 		dy = dy * inv_mag;
 		
 		v2_t v0, v1, v2, v3;
+        const float radius = stroke_width * 0.5f;
 		
 		v0.x = p0.x + radius * dx;
 		v0.y = p0.y + radius * dy;
@@ -592,20 +593,11 @@ namespace MonkVG {
 		
 		v2.x = p1.x + radius * dx;
 		v2.y = p1.y + radius * dy;
-		vertices.push_back( v2 );			
+		vertices.push_back( v2 );
 		
 		v3.x = p1.x - radius * dx;
 		v3.y = p1.y - radius * dy;
 		vertices.push_back( v3 );
-		
-		//		printf("start stroke\n");
-		//		printf("p0: ");p0.print();
-		//		printf("p1: ");p1.print();
-		//		printf("\t"); v0.print();
-		//		printf("\t"); v1.print();
-		//		printf("\t"); v2.print();
-		//		printf("\t"); v3.print();
-		//		printf("end stroke\n");
 		
 	}
 	
@@ -726,6 +718,35 @@ namespace MonkVG {
 					
 				}
 				break;
+                    
+                case (VG_QUAD_TO >> 1):     // added by rhcad
+                {
+                    prev = coords;
+					VGfloat cpx = *coordsIter; coordsIter++;
+					VGfloat cpy = *coordsIter; coordsIter++;
+					VGfloat px = *coordsIter; coordsIter++;
+					VGfloat py = *coordsIter; coordsIter++;
+					
+					if ( isRelative ) {
+						cpx += prev.x;
+						cpy += prev.y;
+						px += prev.x;
+						py += prev.y;
+					}
+					
+					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
+					
+					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+						v2_t c;
+						c.x = calcQuadBezier1d( coords.x, cpx, px, t );
+						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
+						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
+						prev = c;
+					}
+					coords.x = px;
+					coords.y = py;
+                    
+                } break;
 	
 				case (VG_CUBIC_TO >> 1):	// todo
 				{
@@ -844,7 +865,7 @@ namespace MonkVG {
 				} break;
 					
 				default:
-					printf("unkwown command\n");
+					printf("unkwown command: %d\n", segment >> 1);
 					break;
 			}
 		}	// foreach segment

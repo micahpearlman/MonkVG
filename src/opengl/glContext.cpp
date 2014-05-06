@@ -19,9 +19,9 @@
 namespace MonkVG {
 	
 	//// singleton implementation ////
-	static OpenGLContext g_context;
 	IContext& IContext::instance()
 	{
+        static OpenGLContext g_context;
 		return g_context;
 	}
 
@@ -128,6 +128,12 @@ namespace MonkVG {
 	
 	
 	bool OpenGLContext::Terminate() {
+        if (_gl) {
+            delete _gl;
+            _gl = NULL;
+        }
+        _stroke_paint = NULL;
+        _fill_paint = NULL;
 		return true;
 	}
 	
