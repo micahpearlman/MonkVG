@@ -107,3 +107,35 @@ Also, if your application does any other OpenGL rendering it should save off the
 	}
 </tt>
 
+
+##Android Build instructions
+
+###Overview
+
+Tested with ndk r9d on ubuntu.
+
+There are 2 projects needed to build the example app: 
+
+1. MonkVG-Android builds the needed MonkVG libraries
+
+2. MonkVG-Test-Android wraps them and makes them accessible from an activity.
+
+###Build steps
+
+```bash
+ndk-build V=1
+```
+The `V=1` makes the output verbose.
+I used android-17 but any of the available targets should do.
+If ndk-build fails it may be helpful to import the projects in Eclipse and add the Native Tools (Right click on project name->**Android Tools-> Add Native Support**)
+make sure to `rm -rf obj/local/armeabi` on both projects for rebuilding, in order not to use old builds of the static libraries.
+
+###Deploy on device
+```bash
+android list targets
+android update project -p . --target android-17
+ant debug 
+ant debug install
+ant release install
+```
+If you imported the projects in Eclipse right click->Run As-> Android App will do.

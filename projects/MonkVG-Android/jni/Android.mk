@@ -14,7 +14,6 @@
 #
 LOCAL_PATH := $(call my-dir)
 #cflags := -DOPENGLES_DEBUG
-cflags  := -std=c++11
 top_srcdir := $(call my-dir)/../../..
 c_includes := \
 		$(top_srcdir)/glu/include $(top_srcdir)/include \
@@ -79,7 +78,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE     := libOpenVG
 LOCAL_CFLAGS     := $(cflags)
 LOCAL_C_INCLUDES := $(c_includes)
-#LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2 -lstdc++ -latomic
 LOCAL_SRC_FILES  := $(glu_files) $(src_files) $(thirdparty_files)
 include $(BUILD_STATIC_LIBRARY)
 
@@ -87,7 +86,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE     := libOpenVGU
 LOCAL_CFLAGS     := $(cflags)
 LOCAL_C_INCLUDES := $(c_includes)
-#LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2 -lstdc++ -latomic
 LOCAL_SRC_FILES  := ../../../src/mkVGU.cpp
 LOCAL_STATIC_LIBRARIES := libOpenVG
 include $(BUILD_STATIC_LIBRARY)
@@ -96,9 +95,8 @@ include $(CLEAR_VARS)
 LOCAL_MODULE     := libOpenVGU-shared
 LOCAL_CFLAGS     := $(cflags)
 LOCAL_C_INCLUDES := $(c_includes)
-LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2 -lstdc++ -latomic
 LOCAL_SRC_FILES  := 
 LOCAL_STATIC_LIBRARIES := libOpenVGU libOpenVG 
 include $(BUILD_SHARED_LIBRARY)
-
 

@@ -30,15 +30,15 @@ include $(PREBUILT_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := libOpenVGU
 LOCAL_SRC_FILES := ../../MonkVG-Android/obj/local/armeabi/libOpenVGU.a
+LOCAL_STATIC_LIBRARIES := libOpenVG
 include $(PREBUILT_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE     := libmonkvg
 LOCAL_CFLAGS     := $(cflags)
 LOCAL_C_INCLUDES := $(c_includes)
-LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2
+LOCAL_LDLIBS     := -llog -lGLESv1_CM -lGLESv2 -lstdc++ -latomic
 LOCAL_SRC_FILES  := gl_code.cpp
-LOCAL_STATIC_LIBRARIES := libOpenVGU libOpenVG
+LOCAL_WHOLE_STATIC_LIBRARIES := libOpenVGU libOpenVG
 include $(BUILD_SHARED_LIBRARY)
-
 
