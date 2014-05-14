@@ -122,7 +122,11 @@ VG_API_CALL void vgDestroyPaint(VGPaint paint) {
 }
 
 VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
-	if ( paint == VG_INVALID_HANDLE ) {
+	if ( paint != VG_INVALID_HANDLE && ((IPaint*)paint)->getType() != BaseObject::kPaintType ) {
+		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		return;
+	}
+	if ( !paintModes || paintModes & ~(VG_FILL_PATH | VG_STROKE_PATH) ) {
 		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
