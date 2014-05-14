@@ -264,7 +264,8 @@ namespace MonkVG {
 			IContext::setStrokePaint( paint );
 			OpenGLPaint* glPaint = (OpenGLPaint*)_stroke_paint;
 			//glPaint->setGLState();
-			glPaint->setIsDirty( true );
+                        if (glPaint)
+                            glPaint->setIsDirty( true );
 		}
 	}
 	
@@ -273,7 +274,8 @@ namespace MonkVG {
 			IContext::setFillPaint( paint );
 			OpenGLPaint* glPaint = (OpenGLPaint*)_fill_paint;
 			//glPaint->setGLState();
-			glPaint->setIsDirty( true );
+                        if (glPaint)
+                            glPaint->setIsDirty( true );
 		}
 		
 	}
