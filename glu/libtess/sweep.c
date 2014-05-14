@@ -540,13 +540,10 @@ static int CheckForRightSplice( GLUtesselator *tess, ActiveRegion *regUp )
     }
   } else {
     if( EdgeSign( eUp->Dst, eLo->Org, eUp->Org ) < 0 ) return FALSE;
-
+    ActiveRegion * ra = RegionAbove(regUp);
+    if (!ra) return FALSE;
     /* eLo->Org appears to be above eUp, so splice eLo->Org into eUp */
-	regUp->dirty = TRUE;
-	void* valid_ptr_check = RegionAbove(regUp);//->dirty  
-	if ( valid_ptr_check ) {
-		RegionAbove(regUp)->dirty = TRUE;  
-	}  
+    ra->dirty = regUp->dirty = TRUE;
     if (__gl_meshSplitEdge( eUp->Sym ) == NULL) longjmp(tess->env,1);
     if ( !__gl_meshSplice( eLo->Oprev, eUp ) ) longjmp(tess->env,1);
   }
