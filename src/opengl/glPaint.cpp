@@ -15,6 +15,7 @@
 using namespace std;
 
 namespace MonkVG {
+
 	OpenGLPaint::OpenGLPaint()
 	:	IPaint()
 	,	_isDirty( true )
@@ -34,6 +35,39 @@ namespace MonkVG {
 			const VGfloat* c = getPaintColor();
             GL->glColor4f( c[0], c[1], c[2], c[3] );
 		}
+	}
+
+	void OpenGLPaint::lerpColor(float * dst, float * stop0, float * stop1, float g) {
+		float den = std::max(0.00001, stop1 != stop0? stop1[0] - stop0[0] : 1 - stop0[0]);
+		for ( int i = 0; i < 4; i++ )
+			dst[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/den;
+	}
+
+	void OpenGLPaint::calcStops(float ** stop0, float ** stop1, float g) {
+		size_t stopCnt = _colorRampStops.size();
+		float * s0 = 0;
+		float * s1 = 0;
+		for ( size_t i = 0; i < stopCnt; i++ ) {
+			if ( g >= _colorRampStops[i].a[0] ) {
+				s0 = _colorRampStops[i].a;
+				continue;
+			}
+			if ( s0 && g <= _colorRampStops[i].a[0] ) {
+				s1 = _colorRampStops[i].a;
+				break;
+			}
+		}
+		if (!stopCnt) {
+			static float implicit0[] = {0,0,0,1};
+			static float implicit1[] = {1,1,1,1};
+			s0 = implicit0;
+			s1 = implicit1;
+		}
+		if (!s1)
+			s1 = s0;
+		assert(s0[0] <= g && (g <= s1[0] || s1 == _colorRampStops[stopCnt-1].a));
+		*stop0 = s0;
+		*stop1 = s1;
 	}
 	
 	void OpenGLPaint::buildLinearGradientImage( VGfloat pathWidth, VGfloat pathHeight ) {
@@ -75,8 +109,8 @@ namespace MonkVG {
 				// where c0 = stop color 0, c1 = stop color 1
 				// where x0 = stop offset 0, x1 = stop offset 1
 				float finalcolor[4];
-				float* stop0 = 0;
-				float* stop1 = 0;
+				float* stop0;
+				float* stop1;
 				
 				
 				if ( spreadMode == VG_COLOR_RAMP_SPREAD_PAD ) {
@@ -93,20 +127,8 @@ namespace MonkVG {
 						}
 						
 					} else {
-						// determine which stops
-						for ( int i = 0; i < stopCnt; i++ ) {
-							if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-								stop0 = _colorRampStops[i].a;
-								stop1 = _colorRampStops[i+1].a;
-								//printf( "stopds: %d --> %d\n", i, i+1);
-								break;
-							}
-						}
-						
-						for ( int i = 0; i < 4; i++ ) {
-							finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-						}
-						
+						calcStops(&stop0, &stop1, g);
+						lerpColor(finalcolor, stop0, stop1, g);
 					}
 				} else {
 					int w = int(fabsf(g));
@@ -142,21 +164,8 @@ namespace MonkVG {
 					if ( g < 0 ) {
 						g = 0;
 					}
-					
-					// determine which stops
-					for ( int i = 0; i < stopCnt; i++ ) {
-						if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-							stop0 = _colorRampStops[i].a;
-							stop1 = _colorRampStops[i+1].a;
-							//printf( "stopds: %d --> %d\n", i, i+1);
-							break;
-						}
-					}
-					
-					assert( stop0 && stop1 );
-					for ( int i = 0; i < 4; i++ ) {
-						finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-					}
+					calcStops(&stop0, &stop1, g);
+					lerpColor(finalcolor, stop0, stop1, g);
 				}
 				
 				unsigned int color 
@@ -231,8 +240,8 @@ namespace MonkVG {
 				// where c0 = stop color 0, c1 = stop color 1
 				// where x0 = stop offset 0, x1 = stop offset 1
 				float finalcolor[4];
-				float* stop0 = 0;
-				float* stop1 = 0;
+				float* stop0;
+				float* stop1;
 				
 				
 				if ( spreadMode == VG_COLOR_RAMP_SPREAD_PAD ) {
@@ -249,20 +258,8 @@ namespace MonkVG {
 						}
 						
 					} else {
-						// determine which stops
-						for ( int i = 0; i < stopCnt; i++ ) {
-							if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-								stop0 = _colorRampStops[i].a;
-								stop1 = _colorRampStops[i+1].a;
-								//printf( "stopds: %d --> %d\n", i, i+1);
-								break;
-							}
-						}
-						
-						for ( int i = 0; i < 4; i++ ) {
-							finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-						}
-						
+						calcStops(&stop0, &stop1, g);
+						lerpColor(finalcolor, stop0, stop1, g);
 					}
 				} else {
 					int w = int(fabsf(g));
@@ -299,20 +296,8 @@ namespace MonkVG {
 						g = 0;
 					}
 					
-					// determine which stops
-					for ( int i = 0; i < stopCnt; i++ ) {
-						if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-							stop0 = _colorRampStops[i].a;
-							stop1 = _colorRampStops[i+1].a;
-							//printf( "stopds: %d --> %d\n", i, i+1);
-							break;
-						}
-					}
-					
-					assert( stop0 && stop1 );
-					for ( int i = 0; i < 4; i++ ) {
-						finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-					}
+					calcStops(&stop0, &stop1, g);
+					lerpColor(finalcolor, stop0, stop1, g);
 				}
 				
 				unsigned int color 
@@ -407,8 +392,8 @@ namespace MonkVG {
 				// where c0 = stop color 0, c1 = stop color 1
 				// where x0 = stop offset 0, x1 = stop offset 1
 				float finalcolor[4];
-				float* stop0 = 0;
-				float* stop1 = 0;
+				float* stop0;
+				float* stop1;
 				
 				
 				if ( spreadMode == VG_COLOR_RAMP_SPREAD_PAD ) {
@@ -435,20 +420,8 @@ namespace MonkVG {
 							finalcolor[i] = stop0[i+1];
 						}
                     } else {
-						// determine which stops
-						for ( int i = 0; i < stopCnt; i++ ) {
-							if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-								stop0 = _colorRampStops[i].a;
-								stop1 = _colorRampStops[i+1].a;
-								//printf( "stopds: %d --> %d\n", i, i+1);
-								break;
-							}
-						}
-						
-						for ( int i = 0; i < 4; i++ ) {
-							finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-						}
-						
+						calcStops(&stop0, &stop1, g);
+						lerpColor(finalcolor, stop0, stop1, g);
 					}
 				} else {
 					int w = int(fabsf(g));
@@ -484,21 +457,8 @@ namespace MonkVG {
 					if ( g < 0 ) {
 						g = 0;
 					}
-					
-					// determine which stops
-					for ( int i = 0; i < stopCnt; i++ ) {
-						if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-							stop0 = _colorRampStops[i].a;
-							stop1 = _colorRampStops[i+1].a;
-							//printf( "stopds: %d --> %d\n", i, i+1);
-							break;
-						}
-					}
-					
-					assert( stop0 && stop1 );
-					for ( int i = 0; i < 4; i++ ) {
-						finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-					}
+					calcStops(&stop0, &stop1, g);
+					lerpColor(finalcolor, stop0, stop1, g);
 				}
 				
 				unsigned int color 
@@ -583,8 +543,8 @@ namespace MonkVG {
 				// where c0 = stop color 0, c1 = stop color 1
 				// where x0 = stop offset 0, x1 = stop offset 1
 				float finalcolor[4];
-				float* stop0 = 0;
-				float* stop1 = 0;
+				float* stop0;
+				float* stop1;
 				
 				
 				if ( spreadMode == VG_COLOR_RAMP_SPREAD_PAD ) {
@@ -610,19 +570,8 @@ namespace MonkVG {
 							finalcolor[i] = stop0[i+1];
 						}
                     } else {
-						// determine which stops
-						for ( int i = 0; i < stopCnt; i++ ) {
-							if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-								stop0 = _colorRampStops[i].a;
-								stop1 = _colorRampStops[i+1].a;
-								//printf( "stopds: %d --> %d\n", i, i+1);
-								break;
-							}
-						}
-						
-						for ( int i = 0; i < 4; i++ ) {
-							finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-						}
+						calcStops(&stop0, &stop1, g);
+						lerpColor(finalcolor, stop0, stop1, g);
 						
 					}
 				} else {
@@ -659,21 +608,8 @@ namespace MonkVG {
 					if ( g < 0 ) {
 						g = 0;
 					}
-					
-					// determine which stops
-					for ( int i = 0; i < stopCnt; i++ ) {
-						if ( g >= _colorRampStops[i].a[0] && g <= _colorRampStops[i+1].a[0] ) {
-							stop0 = _colorRampStops[i].a;
-							stop1 = _colorRampStops[i+1].a;
-							//printf( "stopds: %d --> %d\n", i, i+1);
-							break;
-						}
-					}
-					
-					assert( stop0 && stop1 );
-					for ( int i = 0; i < 4; i++ ) {
-						finalcolor[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/(stop1[0] - stop0[0]);
-					}
+					calcStops(&stop0, &stop1, g);
+					lerpColor(finalcolor, stop0, stop1, g);
 				}
 				
 				unsigned int color 

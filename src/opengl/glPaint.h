@@ -36,6 +36,8 @@ namespace MonkVG {
 		bool		_isDirty;
 		VGImage		_gradientImage;
 		
+		void calcStops(float ** stop0, float ** stop1, float g);
+		void lerpColor(float * dst, float * stop0, float * stop1, float g);
 		
 	};
 }
