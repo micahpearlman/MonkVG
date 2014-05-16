@@ -38,7 +38,7 @@ namespace MonkVG {
 	}
 
 	void OpenGLPaint::lerpColor(float * dst, float * stop0, float * stop1, float g) {
-		float den = std::max(0.00001, stop1 != stop0? stop1[0] - stop0[0] : 1 - stop0[0]);
+		float den = std::max(0.00001f, stop1 != stop0? stop1[0] - stop0[0] : 1 - stop0[0]);
 		for ( int i = 0; i < 4; i++ )
 			dst[i] = stop0[i+1] + (stop1[i+1] - stop0[i+1])*(g - stop0[0])/den;
 	}
