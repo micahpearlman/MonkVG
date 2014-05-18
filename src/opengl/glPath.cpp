@@ -261,16 +261,14 @@ namespace MonkVG {
 		
 		
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-		int numCoords = 0;
 		VGbyte segment = VG_CLOSE_PATH;
-		v2_t coords = {0,0};
-		v2_t prev = {0,0};
-		v2_t closeTo = {0,0}; 
+		v3_t coords(0,0,0);
+		v3_t prev(0,0,0);
 		int num_contours = 0;
 		
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
-			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
+			//int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
 			//segment = segment >> 1;
 			
 			
@@ -293,15 +291,6 @@ namespace MonkVG {
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
-					//GLdouble* c = new GLdouble[3];
-					v3_t c(closeTo);
-					_tessVertices.push_back( c );
-//					c[0] = closeTo.x;
-//					c[1] = closeTo.y;
-//					c[2] = 0;
-					// do not think this is necessary for the tesselator						
-					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
-					
 					if ( num_contours ) {
 						gluTessEndContour( _fillTesseleator );
 						num_contours--;
@@ -317,12 +306,11 @@ namespace MonkVG {
 					
 					gluTessBeginContour( _fillTesseleator );
 					num_contours++;
-					closeTo.x = coords.x = *coordsIter; coordsIter++;
-					closeTo.y = coords.y = *coordsIter; coordsIter++;
+					coords.x = *coordsIter; coordsIter++;
+					coords.y = *coordsIter; coordsIter++;
 					
-					v3_t c( coords );
-					_tessVertices.push_back( c );
-					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+					GLdouble * l = addTessVertex( coords );
+					gluTessVertex( _fillTesseleator, l, l );
 					
 				} break;
 				case (VG_LINE_TO >> 1):
@@ -335,9 +323,8 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					v3_t c( coords );
-					_tessVertices.push_back( c );
-					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+					GLdouble * l = addTessVertex( coords );
+					gluTessVertex( _fillTesseleator, l, l );
 				} break;
 				case (VG_HLINE_TO >> 1):
 				{
@@ -347,9 +334,8 @@ namespace MonkVG {
 						coords.x += prev.x;
 					}
 					
-					v3_t c( coords );
-					_tessVertices.push_back( c );
-					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+					GLdouble * l = addTessVertex( coords );
+					gluTessVertex( _fillTesseleator, l, l );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
@@ -359,9 +345,8 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					v3_t c( coords );
-					_tessVertices.push_back( c );
-					gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+					GLdouble * l = addTessVertex( coords );
+					gluTessVertex( _fillTesseleator, l, l );
 				} break;
 				case (VG_SCUBIC_TO >> 1): 
 				{
@@ -389,8 +374,9 @@ namespace MonkVG {
 						v3_t c;
 						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						_tessVertices.push_back( c );
-						gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+						c.z = 0;
+						GLdouble * l = addTessVertex( c );
+						gluTessVertex( _fillTesseleator, l, l );
 						//	c.print();
 					}
 					//printf("\n");
@@ -424,8 +410,9 @@ namespace MonkVG {
 						v3_t c;
 						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						_tessVertices.push_back( c );
-						gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+						c.z = 0;
+						GLdouble * l = addTessVertex( c );
+						gluTessVertex( _fillTesseleator, l, l );
 					//	c.print();
 					}
 					//printf("\n");
@@ -454,8 +441,9 @@ namespace MonkVG {
 						v3_t c;
 						c.x = calcQuadBezier1d( coords.x, cpx, px, t );
 						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
-						_tessVertices.push_back( c );
-						gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+						c.z = 0;
+						GLdouble * l = addTessVertex( c );
+						gluTessVertex( _fillTesseleator, l, l );
 					}
                     
 					coords.x = px;
@@ -533,8 +521,9 @@ namespace MonkVG {
 							VGfloat cosalpha = cosf( alpha );
 							c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
 							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-							_tessVertices.push_back( c );
-							gluTessVertex( _fillTesseleator, tessVerticesBackPtr(), tessVerticesBackPtr() );
+							c.z = 0;
+							GLdouble * l = addTessVertex( c );
+							gluTessVertex( _fillTesseleator, l, l );
 						}
 					}
 					
@@ -558,10 +547,12 @@ namespace MonkVG {
 		
 		gluTessEndPolygon( _fillTesseleator );
 		
-		gluDeleteTess( _fillTesseleator );
-		
-		
+		gluDeleteTess( _fillTesseleator );		
 		_fillTesseleator = 0;
+
+		// final calculation of the width and height
+		_width = fabsf(_width - _minX);
+		_height = fabsf(_height - _minY);
 		
 		CHECK_GL_ERROR;
 		
@@ -610,15 +601,13 @@ namespace MonkVG {
 		const VGfloat stroke_width = glContext.getStrokeLineWidth();
 		
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-		int numCoords = 0;
 		VGbyte segment = VG_CLOSE_PATH;
 		v2_t coords = {0,0};
 		v2_t prev = {0,0};
 		v2_t closeTo = {0,0}; 
-		//vector<v2_t> vertices;
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
-			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
+			//int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
 			//segment = segment >> 1;
 			
 			
@@ -876,10 +865,6 @@ namespace MonkVG {
 	
 	void OpenGLPath::endOfTesselation( VGbitfield paintModes ) {
 		
-		// final calculation of the width and height
-		_width = fabsf(_width - _minX);
-		_height = fabsf(_height - _minY);
-
 		/// build fill vbo
 		// TODO: BUGBUG: if in batch mode don't build the VBO!
 		if ( _vertices.size() > 0 ) {
@@ -1046,12 +1031,7 @@ namespace MonkVG {
 								 void *polygonData ) {
 
 		OpenGLPath* me = (OpenGLPath*)polygonData;
-		v3_t v;
-		v.x = coords[0];
-		v.y = coords[1];
-		v.z = coords[2];
-		me->addTessVertex( v );
-		*outData = me->tessVerticesBackPtr();
+		*outData = me->addTessVertex( coords );
 		
 	}
 	
