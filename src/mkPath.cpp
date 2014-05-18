@@ -219,5 +219,45 @@ VG_API_CALL void VG_API_ENTRY vgPathBounds(VGPath path,
 	
 }
 
+VG_API_CALL void VG_API_ENTRY vgPathTransformedBounds(VGPath path,
+						      VGfloat * minX, VGfloat * minY,
+						      VGfloat * width, VGfloat * height) VG_API_EXIT {
+	IPath* p = (IPath*)path;
+	p->buildFillIfDirty();	// NOTE: according to the OpenVG specs we only care about the fill bounds, NOT the fill + stroke
+	float x = p->getMinX();
+	float y = p->getMinX();
+	float w = p->getWidth();
+	float h = p->getHeight();
+
+	float p0[2];
+	p0[0] = x;
+	p0[1] = y;
+	float p1[2];
+	p1[0] = x + w;
+	p1[1] = y;
+	float p2[2];
+	p2[0] = x + w;
+	p2[1] = y + h;
+	float p3[2];
+	p3[0] = x;
+	p3[1] = y + h;
+
+	const Matrix33 & m = IContext::instance().getPathUserToSurface();
+
+	float t0[2];
+	affineTransform(t0, m, p0);
+	float t1[2];
+	affineTransform(t1, m, p1);
+	float t2[2];
+	affineTransform(t2, m, p2);
+	float t3[2];
+	affineTransform(t3, m, p3);
+
+	*minX = std::min(std::min(std::min(t0[0], t1[0]), t2[0]), t3[0]);
+	*width = std::max(std::max(std::max(t0[0], t1[0]), t2[0]), t3[0]) - *minX;
+	*minY = std::min(std::min(std::min(t0[1], t1[1]), t2[1]), t3[1]);
+	*height = std::max(std::max(std::max(t0[1], t1[1]), t2[1]), t3[1]) - *minY;
+}
+
 
 
