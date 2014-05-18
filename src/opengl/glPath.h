@@ -37,69 +37,27 @@ namespace MonkVG {
 		virtual bool draw( VGbitfield paintModes );
 		virtual void clear( VGbitfield caps );
 		virtual void buildFillIfDirty();
-		
-		
-	public:		// really private but accessors for tesselator
-		GLenum primType() {
-			return _primType;
-		}
-		void setPrimType( GLenum t ) {
-			_primType = t;
-		}
-		void addVertex( GLdouble* v ) {
-			
-			// calculate the bounds
-			if ( v[0] < _minX ) {
-				_minX = (VGfloat)v[0];
-			}
-			if ( v[0] > _width ) {
-				_width = (VGfloat)v[0];
-			}
-			if ( v[1] < _minY ) {
-				_minY = (VGfloat)v[1];
-			}
-			if ( v[1] > _height ) {
-				_height = (VGfloat)v[1];
-			}
-			
-			_vertices.push_back( (VGfloat)v[0] );
-			_vertices.push_back( (VGfloat)v[1] );
-		}
-		
-		GLdouble* tessVerticesBackPtr() {
-			return &(_tessVertices.back().x);
-		} 
-		
+
+	private:
 		struct v2_t {
 			GLfloat x, y;
-			
-//			void print() const {
-//				printf("(%f, %f)\n", x, y);
-//			}
 		};
-		
 		
 		struct v3_t {
 			GLdouble x,y,z;
-			v3_t( const v2_t& v ) : x(v.x), y(v.y), z(0) {}
-			v3_t() : x(0), y(0), z(0) {}
+			v3_t() {}
+	       		v3_t( GLdouble * v) : x(v[0]), y(v[1]), z(v[2]) {}
+			v3_t(GLdouble ix, GLdouble iy, GLdouble iz) : x(ix), y(iy), z(iz) {}
 			void print() const {
 				printf("(%f, %f)\n", x, y);
 			}
 			
 		};
 		
-		
-		void addTessVertex( const v3_t& v ) {
-			_tessVertices.push_back( v );
-		}
-		
-		
 		struct textured_vertex_t {
 			GLfloat		v[2];
 			GLfloat		uv[2];
 		};
-
 		
 	private:
 		
@@ -128,12 +86,42 @@ namespace MonkVG {
 		
 	private:	// utility methods
 		
+		GLenum primType() {
+			return _primType;
+		}
+		void setPrimType( GLenum t ) {
+			_primType = t;
+		}
+		
+		GLdouble* tessVerticesBackPtr() {
+			return &(_tessVertices.back().x);
+		} 
+		
+		void updateBounds(float x, float y) {
+			_minX = std::min(_minX, x);
+			_width = std::max(_width, x);
+			_minY = std::min(_minY, y);
+			_height = std::max(_height, y);
+		}
 
+		void addVertex( GLdouble* v ) {
+			VGfloat x = (VGfloat)v[0];
+			VGfloat y = (VGfloat)v[1];
+			updateBounds(x, y);
+			_vertices.push_back(x);
+			_vertices.push_back(y);
+		}
+
+		GLdouble * addTessVertex( const v3_t & v ) {
+			//updateBounds(v.x, v.y);
+			_tessVertices.push_back( v );
+			return tessVerticesBackPtr();
+		}
+		
 		void buildFill();
 		void buildStroke();
 		void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
-		
-		
+
 	};
 }
 
