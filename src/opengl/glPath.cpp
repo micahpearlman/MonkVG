@@ -261,16 +261,14 @@ namespace MonkVG {
 		
 		
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-		int numCoords = 0;
 		VGbyte segment = VG_CLOSE_PATH;
 		v3_t coords(0,0,0);
 		v3_t prev(0,0,0);
-		v3_t closeTo(0,0,0);
 		int num_contours = 0;
 		
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
-			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
+			//int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
 			//segment = segment >> 1;
 			
 			
@@ -293,8 +291,6 @@ namespace MonkVG {
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
-					GLdouble * l = addTessVertex( closeTo );
-					gluTessVertex( _fillTesseleator, l, l );
 					if ( num_contours ) {
 						gluTessEndContour( _fillTesseleator );
 						num_contours--;
@@ -310,8 +306,8 @@ namespace MonkVG {
 					
 					gluTessBeginContour( _fillTesseleator );
 					num_contours++;
-					closeTo.x = coords.x = *coordsIter; coordsIter++;
-					closeTo.y = coords.y = *coordsIter; coordsIter++;
+					coords.x = *coordsIter; coordsIter++;
+					coords.y = *coordsIter; coordsIter++;
 					
 					GLdouble * l = addTessVertex( coords );
 					gluTessVertex( _fillTesseleator, l, l );
@@ -605,15 +601,13 @@ namespace MonkVG {
 		const VGfloat stroke_width = glContext.getStrokeLineWidth();
 		
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-		int numCoords = 0;
 		VGbyte segment = VG_CLOSE_PATH;
 		v2_t coords = {0,0};
 		v2_t prev = {0,0};
 		v2_t closeTo = {0,0}; 
-		//vector<v2_t> vertices;
 		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
-			numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
+			//int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
 			//segment = segment >> 1;
 			
 			
