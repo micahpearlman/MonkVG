@@ -138,6 +138,16 @@ VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
 		IContext::instance().setFillPaint( (IPaint*)paint );
 }
 
+VG_API_CALL VGPaint vgGetPaint(VGPaintMode paintModes) {
+	if (paintModes & VG_STROKE_PATH)
+		return (VGPaint)IContext::instance().getStrokePaint();
+	if (paintModes & VG_FILL_PATH)
+		return (VGPaint)IContext::instance().getFillPaint();
+	IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+	return VG_INVALID_HANDLE;
+}
+
+
 VG_API_CALL void vgPaintPattern(VGPaint paint, VGImage pattern)
 {
 // todo	((SHPaint*)paint)->pattern = pattern;
