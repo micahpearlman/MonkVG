@@ -104,6 +104,18 @@ namespace MonkVG {
 		inline VGfloat getStrokeLineWidth() const {
 			return _stroke_line_width;
 		}
+		inline void setStrokeCapStyle( VGCapStyle s ) {
+			_stroke_cap_style = s;
+		}
+		inline VGCapStyle getStrokeCapStyle() const {
+			return _stroke_cap_style;
+		}
+		inline void setStrokeJoinStyle( VGJoinStyle s ) {
+			_stroke_join_style = s;
+		}
+		inline VGJoinStyle getStrokeJoinStyle() const {
+			return _stroke_join_style;
+		}
 		
 		//// surface properties ////
 		inline void setClearColor( const VGfloat *c ) {
@@ -205,6 +217,8 @@ namespace MonkVG {
 		
 		// stroke properties
 		VGfloat				_stroke_line_width;			// VG_STROKE_LINE_WIDTH
+		VGCapStyle			_stroke_cap_style;
+		VGJoinStyle			_stroke_join_style;
 		
 		// rendering quality
 		VGRenderingQuality	_renderingQuality;

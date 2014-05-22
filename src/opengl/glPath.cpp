@@ -601,8 +601,8 @@ namespace MonkVG {
 		struct vg_state state;
             
 		state.stroke.line_width.f = glContext.getStrokeLineWidth();
-		state.stroke.cap_style = VG_CAP_BUTT;
-		state.stroke.join_style = VG_JOIN_MITER;
+		state.stroke.cap_style = glContext.getStrokeCapStyle();
+		state.stroke.join_style = glContext.getStrokeJoinStyle();
 		state.stroke.miter_limit.f = 4;
 		state.stroke.dash_pattern_num = 0;
 
@@ -662,7 +662,11 @@ namespace MonkVG {
 		float h = _height;
 		_tessVertices = &_strokeTessVertices;
 		_vertices = &_strokeVertices;
+
+		VGFillRule fr = glContext.getFillRule();
+		glContext.setFillRule(VG_NON_ZERO);
 		buildGen(_strokeSegments, _strokeData);
+		glContext.setFillRule(fr);
 		_minX = mx;
 		_minY = my;
 		_width = w;

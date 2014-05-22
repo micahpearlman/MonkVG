@@ -132,30 +132,9 @@ namespace MonkVG {
 		,	_minY( VG_MAX_FLOAT )
 		,	_width( -VG_MAX_FLOAT )
 		,	_height( -VG_MAX_FLOAT )
-		{
-			switch (_datatype) {
-				case VG_PATH_DATATYPE_F:
-					_fcoords = new vector<float>( _numCoords );
-					break;
-				default:
-					// error 
-					break;
-			}
-			
-		}
+		{}
 		
-		virtual ~IPath() {
-			switch (_datatype) {
-				case VG_PATH_DATATYPE_F:
-					_fcoords->clear();
-					delete _fcoords;
-					_fcoords = 0;
-					break;
-				default:
-					// error 
-					break;
-			}
-		}
+		virtual ~IPath() {}
 		
 	protected:
 
@@ -169,7 +148,7 @@ namespace MonkVG {
 		
 		// data
 		vector< VGubyte >	_segments;
-		vector< VGfloat >	*_fcoords;
+		vector< VGfloat >	_fcoords;
 		bool				_isFillDirty;
 		bool				_isStrokeDirty;
 		
