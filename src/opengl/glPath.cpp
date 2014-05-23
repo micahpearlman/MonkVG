@@ -29,6 +29,8 @@ namespace MonkVG {
 		
 		_fillVertices.clear();
 		_fillTessVertices.clear();
+		_strokeSegments.clear();
+		_strokeData.clear();
 		_strokeVertices.clear();
 		_strokeTessVertices.clear();
 
@@ -589,7 +591,6 @@ namespace MonkVG {
 	
 	
 	void OpenGLPath::buildStroke() {
-
 		_strokeSegments.clear();
 		_strokeData.clear();
 		_strokeTessVertices.clear();
@@ -847,7 +848,7 @@ namespace MonkVG {
 	}
 	
 	OpenGLPath::~OpenGLPath() {
-		GL->glDeleteBuffers( 1, &_fillVBO );
+		clear(0);
 	}
 
 	void OpenGLPath::appendStrokeData(VGint nseg, const VGubyte * segments, const void * data) {
