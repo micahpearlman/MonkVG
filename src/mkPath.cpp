@@ -83,7 +83,7 @@ namespace MonkVG {	// Internal Implementation
 			case VG_PATH_NUM_COORDS:
 				return getNumCoords();
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	
 				break;
 		}
@@ -98,14 +98,14 @@ namespace MonkVG {	// Internal Implementation
 				return getBias();
 				break;
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	
 				break;
 		}
 	}
 	
 	void IPath::getParameterfv( const VGint p, VGfloat *fv ) const {
-		IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+		SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 	}
 
 	
@@ -143,7 +143,7 @@ namespace MonkVG {	// Internal Implementation
 	}
 	
 	void IPath::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
-		IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+		SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 	}
 	
 	
@@ -175,7 +175,7 @@ VG_API_CALL void vgAppendPathData( VGPath dstPath, VGint numSegments, const VGub
 
 VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
 	if ( path == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	
@@ -192,7 +192,7 @@ VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
 
 VG_API_CALL void VG_API_ENTRY vgClearPath(VGPath path, VGbitfield capabilities) VG_API_EXIT {
 	if ( path == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	

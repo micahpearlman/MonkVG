@@ -48,7 +48,7 @@ namespace MonkVG {
 	
 		QuartzPath *path = new QuartzPath(pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL);
 		if( path == 0 )
-			setError( VG_OUT_OF_MEMORY_ERROR );
+			SetError( VG_OUT_OF_MEMORY_ERROR );
 	
 		return (IPath*)path;
 	}
@@ -60,7 +60,7 @@ namespace MonkVG {
 	IPaint* QuartzContext::createPaint() {
 		QuartzPaint *paint = new QuartzPaint();
 		if( paint == 0 )
-			setError( VG_OUT_OF_MEMORY_ERROR );
+			SetError( VG_OUT_OF_MEMORY_ERROR );
 		return (IPaint*)paint;
 	}
 	

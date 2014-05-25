@@ -14,7 +14,7 @@ namespace MonkVG {	// Internal Implementation
 	VGint IPaint::getParameteri( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -23,7 +23,7 @@ namespace MonkVG {	// Internal Implementation
 	VGfloat IPaint::getParameterf( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -37,7 +37,7 @@ namespace MonkVG {	// Internal Implementation
 				break;
 	
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 		
@@ -52,7 +52,7 @@ namespace MonkVG {	// Internal Implementation
 				_colorRampSpreadMode = (VGColorRampSpreadMode)v;
 				break;
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -61,7 +61,7 @@ namespace MonkVG {	// Internal Implementation
 	{
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -99,7 +99,7 @@ namespace MonkVG {	// Internal Implementation
 				break;
 			
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -123,11 +123,11 @@ VG_API_CALL void vgDestroyPaint(VGPaint paint) {
 
 VG_API_CALL void vgSetPaint(VGPaint paint, VGbitfield paintModes) {
 	if ( paint != VG_INVALID_HANDLE && ((IPaint*)paint)->getType() != BaseObject::kPaintType ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	if ( !paintModes || paintModes & ~(VG_FILL_PATH | VG_STROKE_PATH) ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	
@@ -143,7 +143,7 @@ VG_API_CALL VGPaint vgGetPaint(VGPaintMode paintModes) {
 		return (VGPaint)IContext::instance().getStrokePaint();
 	if (paintModes & VG_FILL_PATH)
 		return (VGPaint)IContext::instance().getFillPaint();
-	IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+	SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 	return VG_INVALID_HANDLE;
 }
 

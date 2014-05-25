@@ -13,7 +13,7 @@ namespace MonkVG {	// Internal Implementation
 	VGint IFont::getParameteri( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -22,7 +22,7 @@ namespace MonkVG {	// Internal Implementation
 	VGfloat IFont::getParameterf( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -31,7 +31,7 @@ namespace MonkVG {	// Internal Implementation
 	void IFont::getParameterfv( const VGint p, VGfloat *fv ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 		
@@ -40,7 +40,7 @@ namespace MonkVG {	// Internal Implementation
 	void IFont::setParameter( const VGint p, const VGint v ) {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -48,7 +48,7 @@ namespace MonkVG {	// Internal Implementation
 	void IFont::setParameter( const VGint p, const VGfloat v ) {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -56,7 +56,7 @@ namespace MonkVG {	// Internal Implementation
 	void IFont::setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -115,7 +115,7 @@ VG_API_CALL void VG_API_ENTRY vgSetGlyphToPath(VGFont font,
 											   VGfloat glyphOrigin [2],
 											   VGfloat escapement[2]) VG_API_EXIT {
 	if ( font == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	
@@ -129,7 +129,7 @@ VG_API_CALL void VG_API_ENTRY vgSetGlyphToImage(VGFont font,
 												VGfloat glyphOrigin [2],
 												VGfloat escapement[2]) VG_API_EXIT {
 	if ( font == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	
@@ -145,7 +145,7 @@ VG_API_CALL void VG_API_ENTRY vgDrawGlyph(VGFont font,
 										  VGbitfield paintModes,
 										  VGboolean allowAutoHinting) VG_API_EXIT {
 	if ( font == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	
@@ -167,7 +167,7 @@ VG_API_CALL void VG_API_ENTRY vgDrawGlyphs(VGFont font,
 										   VGboolean allowAutoHinting) VG_API_EXIT {
 	
 	if ( font == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	

@@ -143,7 +143,7 @@ namespace MonkVG {
 				setStrokeLineWidth( f );
 				break;
 			default:
-				setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -158,7 +158,7 @@ namespace MonkVG {
 				break;
 	
 			default:
-				setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -189,7 +189,7 @@ namespace MonkVG {
 				f = getStrokeLineWidth();
 				break;
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 		
@@ -205,7 +205,7 @@ namespace MonkVG {
 				break;
 				
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 		
@@ -239,5 +239,9 @@ namespace MonkVG {
 		
 
 	}
-	
+
+	void SetError( const VGErrorCode e ) {
+		IContext::instance().setError( e );
+	}
 }
+

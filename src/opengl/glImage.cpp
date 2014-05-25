@@ -52,7 +52,7 @@ namespace MonkVG {
 				GL->glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, 0);
 				break;
 			default:
-				IContext::instance().setError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
+				SetError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
 				assert(0);
 				break;
 				
@@ -105,7 +105,7 @@ namespace MonkVG {
 				GL->glTexSubImage2D( GL_TEXTURE_2D, 0, x, y, width, height, GL_ALPHA, GL_UNSIGNED_BYTE, data );
 				break;
 			default:
-				IContext::instance().setError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
+				SetError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
 				assert(0);
 				break;
 				

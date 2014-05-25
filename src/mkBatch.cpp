@@ -13,7 +13,7 @@ namespace MonkVG {	// Internal Implementation
 	VGint IBatch::getParameteri( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -22,7 +22,7 @@ namespace MonkVG {	// Internal Implementation
 	VGfloat IBatch::getParameterf( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -32,7 +32,7 @@ namespace MonkVG {	// Internal Implementation
 		switch (p) {
 				
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 		
@@ -41,7 +41,7 @@ namespace MonkVG {	// Internal Implementation
 	void IBatch::setParameter( const VGint p, const VGint v ) {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -50,7 +50,7 @@ namespace MonkVG {	// Internal Implementation
 	{
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -59,7 +59,7 @@ namespace MonkVG {	// Internal Implementation
 		switch (p) {
 				
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}

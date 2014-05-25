@@ -203,7 +203,7 @@ namespace MonkVG {
 	
 		OpenGLPath *path = new OpenGLPath(pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities  &= VG_PATH_CAPABILITY_ALL);
 		if( path == 0 )
-			setError( VG_OUT_OF_MEMORY_ERROR );
+			SetError( VG_OUT_OF_MEMORY_ERROR );
 	
 		return (IPath*)path;
 	}
@@ -219,14 +219,14 @@ namespace MonkVG {
 	IPaint* OpenGLContext::createPaint() {
 		OpenGLPaint *paint = new OpenGLPaint();
 		if( paint == 0 )
-			setError( VG_OUT_OF_MEMORY_ERROR );
+			SetError( VG_OUT_OF_MEMORY_ERROR );
 		return (IPaint*)paint;
 	}
 	
 	IBatch* OpenGLContext::createBatch() {
 		OpenGLBatch *batch = new OpenGLBatch();
 		if( batch == 0 )
-			setError( VG_OUT_OF_MEMORY_ERROR );
+			SetError( VG_OUT_OF_MEMORY_ERROR );
 		return (IBatch*)batch;
 	}
 	
