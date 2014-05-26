@@ -43,7 +43,7 @@ namespace MonkVG {	// Internal Implementation
 	VGint IImage::getParameteri( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -52,7 +52,7 @@ namespace MonkVG {	// Internal Implementation
 	VGfloat IImage::getParameterf( const VGint p ) const {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				return -1;	//todo: set error
 				break;
 		}
@@ -62,7 +62,7 @@ namespace MonkVG {	// Internal Implementation
 		switch (p) {
 				
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 		
@@ -71,7 +71,7 @@ namespace MonkVG {	// Internal Implementation
 	void IImage::setParameter( const VGint p, const VGint v ) {
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -80,7 +80,7 @@ namespace MonkVG {	// Internal Implementation
 	{
 		switch (p) {
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -89,7 +89,7 @@ namespace MonkVG {	// Internal Implementation
 		switch (p) {
 				
 			default:
-				IContext::instance().setError( VG_ILLEGAL_ARGUMENT_ERROR );
+				SetError( VG_ILLEGAL_ARGUMENT_ERROR );
 				break;
 		}
 	}
@@ -120,7 +120,7 @@ VG_API_CALL void VG_API_ENTRY vgImageSubData(VGImage image,
 											 VGImageFormat dataFormat,
 											 VGint x, VGint y, VGint width, VGint height) VG_API_EXIT {
 	if ( image == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 	
@@ -139,7 +139,7 @@ VG_API_CALL VGImage VG_API_ENTRY vgChildImage(VGImage parent,
 											  VGint x, VGint y, VGint width, VGint height) VG_API_EXIT {
 	
 	if ( parent == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return VG_INVALID_HANDLE;
 	}
 	
@@ -158,7 +158,7 @@ VG_API_CALL void VG_API_ENTRY vgCopyImage(VGImage dst, VGint dx, VGint dy,
 }
 VG_API_CALL void VG_API_ENTRY vgDrawImage(VGImage image) VG_API_EXIT {
 	if ( image == VG_INVALID_HANDLE ) {
-		IContext::instance().setError( VG_BAD_HANDLE_ERROR );
+		SetError( VG_BAD_HANDLE_ERROR );
 		return;
 	}
 

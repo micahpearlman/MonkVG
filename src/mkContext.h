@@ -140,7 +140,7 @@ namespace MonkVG {
 					_active_matrix = &_glyph_user_to_surface;
 					break;
 				default:
-					setError(VG_ILLEGAL_ARGUMENT_ERROR);
+					SetError(VG_ILLEGAL_ARGUMENT_ERROR);
 					break;
 			}
 		}

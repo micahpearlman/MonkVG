@@ -39,5 +39,9 @@ namespace MonkVG {
 		virtual void setParameter( const VGint p, const VGint i ) = 0;
 		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) = 0;
 	};
+
+	void SetError( const VGErrorCode e );
 }
+
+
 #endif
