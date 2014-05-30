@@ -22,12 +22,12 @@ using namespace OpenGLES;
 
 OpenGLESImplementation::OpenGLESImplementation() 
 {
-	
+	shaderBinaryFormats = 0;
 }
 
 OpenGLESImplementation::~OpenGLESImplementation() 
 {
-	free(shaderBinaryFormats);
+	if (shaderBinaryFormats) free(shaderBinaryFormats);
 }
 
 void OpenGLESImplementation::print()
