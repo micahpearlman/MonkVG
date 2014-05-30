@@ -1,4 +1,4 @@
-/*
+	/*
  *  glContext.cpp
  *  MonkVG-OpenGL
  *
@@ -90,7 +90,7 @@ namespace MonkVG {
 //fixme?		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
 		
 		// get the color to back up when we are done
-		gl()->glGetFloatv( GL_CURRENT_COLOR, _color );
+//		gl()->glGetFloatv( GL_CURRENT_COLOR, _color );
 		
 		resize();
 		

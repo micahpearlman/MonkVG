@@ -20,9 +20,11 @@ namespace MonkVG {
     
 #define GL (((OpenGLContext*)&IContext::instance())->gl())
 	
-	// todo: setup debug and release versions
-	//#define CHECK_GL_ERROR OpenGLContext::checkGLError()
+#ifndef NDEBUG
+	#define CHECK_GL_ERROR OpenGLContext::checkGLError()
+#else
 	#define CHECK_GL_ERROR
+#endif
 	class OpenGLContext : public IContext {
 	public:
 	
@@ -101,7 +103,7 @@ namespace MonkVG {
 		int		_viewport[4];
 		float	_projection[16];
 		float	_modelview[16];
-		float	_color[4];
+//		float	_color[4];
         
         // the gl context
         OpenGLES::OpenGLESContext*  _gl;
