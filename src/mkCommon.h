@@ -10,6 +10,7 @@
 #ifndef __mkCommon_h__
 #define __mkCommon_h__
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <stdint.h>
