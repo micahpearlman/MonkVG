@@ -30,7 +30,7 @@ namespace OpenGLES {
 		OpenGLESString operator+ (const char *val);
 		OpenGLESString operator+ (std::string val);
 		OpenGLESString operator+ (OpenGLESString val);
-#if !defined(ANDROID)
+#if !defined(ANDROID) && !defined(_WIN32)
 		OpenGLESString operator+ (size_t val);
 #endif
 		OpenGLESString operator+ (int val);
