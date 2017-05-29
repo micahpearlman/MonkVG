@@ -110,8 +110,13 @@ void fetchTexture0Color()
 }
 
 void calcTexture0Environment(inout vec4 color)
-{	
+{
+//#if TEXTURE0_ENV_MODE == GL_MODULATE
+//	
+//#endif
+	/*
 #if TEXTURE0_ENV_MODE == GL_MODULATE
+	
 	#if TEXTURE0_FORMAT == GL_ALPHA
 		color.a = color.a * texture0Color.a;
 	#elif TEXTURE0_FORMAT == GL_LUMINANCE
@@ -123,7 +128,9 @@ void calcTexture0Environment(inout vec4 color)
 	#elif TEXTURE0_FORMAT == GL_RGBA
 		color = color * texture0Color;
 	#endif
+
 #elif TEXTURE0_ENV_MODE == GL_ADD
+	
 	#if TEXTURE0_FORMAT == GL_ALPHA
 		color.a = color.a * texture0Color.a;
 	#elif TEXTURE0_FORMAT == GL_LUMINANCE
@@ -137,7 +144,9 @@ void calcTexture0Environment(inout vec4 color)
 		color.rgb = color.rgb + texture0Color.rgb;
 		color.a = color.a * texture0Color.a;
 	#endif
+	 
 #elif TEXTURE0_ENV_MODE == GL_DECAL
+	
 	#if TEXTURE0_FORMAT == GL_ALPHA
 		// undefined
 	#elif TEXTURE0_FORMAT == GL_LUMINANCE
@@ -149,7 +158,9 @@ void calcTexture0Environment(inout vec4 color)
 	#elif TEXTURE0_FORMAT == GL_RGBA
 		color.rgb = mix(color.rgb, texture0Color.rgb, texture0Color.a);
 	#endif
+	 
 #elif TEXTURE0_ENV_MODE == GL_BLEND
+	
 	#if TEXTURE0_FORMAT == GL_ALPHA
 		color.a = color.a * texture0Color.a;
 	#elif TEXTURE0_FORMAT == GL_LUMINANCE
@@ -163,7 +174,9 @@ void calcTexture0Environment(inout vec4 color)
 		color.rgb = mix(color.rgb, u_texture0EnvColor.rgb, texture0Color.rgb);
 		color.a = color.a * texture0Color.a;
 	#endif
+	
 #elif TEXTURE0_ENV_MODE == GL_REPLACE
+	
 	#if TEXTURE0_FORMAT == GL_ALPHA
 		color.a = texture0Color.a;
 	#elif TEXTURE0_FORMAT == GL_LUMINANCE
@@ -175,6 +188,7 @@ void calcTexture0Environment(inout vec4 color)
 	#elif TEXTURE0_FORMAT == GL_RGBA
 		color = texture0Color;
 	#endif
+	 
 #elif TEXTURE0_ENV_MODE == GL_BLUR
 	vec4 sample0 = texture0Color;
 	vec4 sample1 = texture2D(u_texture0Sampler, vec2(v_texCoord0.s - u_texture0EnvBlurAmount, v_texCoord0.t - u_texture0EnvBlurAmount));
@@ -183,6 +197,7 @@ void calcTexture0Environment(inout vec4 color)
 	vec4 sample4 = texture2D(u_texture0Sampler, vec2(v_texCoord0.s + u_texture0EnvBlurAmount, v_texCoord0.t - u_texture0EnvBlurAmount));
 	color = (sample0 + sample1 + sample2 + sample3 + sample4) / 5.0;
 #elif TEXTURE0_ENV_MODE == GL_COMBINE
+	
 	vec4 arg0;
 	vec4 arg1;
 	vec4 arg2;
@@ -336,9 +351,11 @@ void calcTexture0Environment(inout vec4 color)
 	#elif TEXTURE0_ENV_COMBINE_ALPHA == GL_SUBTRACT
 		color.a = arg0.a - arg1.a;
 	#endif
+
 #endif
-		
+*/
 	color.rgb = color.rgb * u_texture0EnvRGBScale;
 	color.a = color.a * u_texture0EnvAlphaScale;
 	color = clamp(color, c_zerof, c_onef);
+	 
 }

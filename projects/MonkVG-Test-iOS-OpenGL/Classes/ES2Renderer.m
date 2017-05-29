@@ -109,7 +109,7 @@ enum {
     glShaderSource(*shader, 1, &source, NULL);
     glCompileShader(*shader);
 
-#if defined(DEBUG)
+//#if defined(DEBUG)
     GLint logLength;
     glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0)
@@ -119,7 +119,7 @@ enum {
         NSLog(@"Shader compile log:\n%s", log);
         free(log);
     }
-#endif
+//#endif
 
     glGetShaderiv(*shader, GL_COMPILE_STATUS, &status);
     if (status == 0)
@@ -137,7 +137,7 @@ enum {
 
     glLinkProgram(prog);
 
-#if defined(DEBUG)
+//#if defined(DEBUG)
     GLint logLength;
     glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &logLength);
     if (logLength > 0)
@@ -147,7 +147,7 @@ enum {
         NSLog(@"Program link log:\n%s", log);
         free(log);
     }
-#endif
+//#endif
 
     glGetProgramiv(prog, GL_LINK_STATUS, &status);
     if (status == 0)

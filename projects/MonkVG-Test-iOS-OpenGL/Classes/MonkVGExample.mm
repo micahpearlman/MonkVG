@@ -188,7 +188,7 @@ map<VGuint, GlyphDescription>	_glyphs;
 	vgDrawPath( _radialGradientPath, VG_FILL_PATH );
     
     // draw tiger
-    //display( 1.0f/20.0f );
+    display( 1.0f/20.0f );
 
 }
 

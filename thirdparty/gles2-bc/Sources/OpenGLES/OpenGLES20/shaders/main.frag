@@ -89,6 +89,7 @@ void calcTextureColorContribution(inout vec4 color);
 
 void main() 
 {
+	
 #if CLIP_PLANE0_ENABLED != 0 || CLIP_PLANE1_ENABLED != 0 || CLIP_PLANE2_ENABLED != 0 || CLIP_PLANE3_ENABLED != 0 || CLIP_PLANE4_ENABLED != 0 || CLIP_PLANE5_ENABLED != 0
 	clipPlanesTest();
 #endif
@@ -151,7 +152,7 @@ void main()
 	gl_FragColor = color;
 #else
 #if LIGHTING_ENABLED == 1
-    gl_FragColor = color * u_color;
+	gl_FragColor = color * u_color;
 #elif LIGHTING_ENABLED == 0
 	gl_FragColor = color;
 #endif
