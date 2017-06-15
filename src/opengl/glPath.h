@@ -65,7 +65,6 @@ namespace MonkVG {
 		vector<GLfloat>		_vertices;
 		vector<v2_t>		_strokeVertices;
 		list<v3_t>			_tessVertices;
-		GLenum				_primType;
 		GLuint				_fillVBO;
 		GLuint				_strokeVBO;
 		int					_numberFillVertices;
@@ -81,17 +80,11 @@ namespace MonkVG {
 		static void tessCombine( GLdouble coords[3], void *data[4],
 								GLfloat weight[4], void **outData,
 								void *polygonData );
+		static void tessEdgeFlag( GLboolean f, void * data );
 		static void tessError( GLenum errorCode );
 		void endOfTesselation( VGbitfield paintModes );
 		
 	private:	// utility methods
-		
-		GLenum primType() {
-			return _primType;
-		}
-		void setPrimType( GLenum t ) {
-			_primType = t;
-		}
 		
 		GLdouble* tessVerticesBackPtr() {
 			return &(_tessVertices.back().x);
