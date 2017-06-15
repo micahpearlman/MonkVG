@@ -17,6 +17,8 @@
 #ifndef OpenGLESImplementation_H_
 #define OpenGLESImplementation_H_
 
+#include "OpenGLESPlatform.h"
+
 namespace OpenGLES {
 	class OpenGLESImplementation {
 	public:

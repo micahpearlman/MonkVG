@@ -24,6 +24,7 @@
 #include <string>
 
 using namespace OpenGLES::OpenGLES2;
+using namespace OpenGLES;
 
 ShaderProgram::ShaderProgram(OpenGLESString name, Shader *vertexShader, Shader *fragmentShader) : name(name)
 {
