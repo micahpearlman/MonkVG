@@ -261,7 +261,7 @@ namespace MonkVG {
 		drawToRect( x, y, _width, _height, paintModes );
 	}
 	
-	void OpenGLImage::bind() {
+	void OpenGLImage::bind() const {
 		GL->glEnable(GL_TEXTURE_2D);
 		// turn on blending
 		GL->glEnable(GL_BLEND);
@@ -272,6 +272,7 @@ namespace MonkVG {
 	}
 	void OpenGLImage::unbind() {
 		GL->glBindTexture(GL_TEXTURE_2D, 0);
+		GL->glDisable(GL_TEXTURE_2D);
 	}
 
 }

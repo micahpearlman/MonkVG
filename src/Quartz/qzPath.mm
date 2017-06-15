@@ -22,7 +22,7 @@ namespace MonkVG {
 		if ( _uibezeirpath == nil ) {
 			_uibezeirpath = [UIBezierPath bezierPath];
 
-			vector< VGfloat >::iterator coordsIter = _fcoords->begin();
+			vector< VGfloat >::iterator coordsIter = _fcoords.begin();
 			int numCoords = 0;
 			VGbyte segment = VG_CLOSE_PATH;
 			VGfloat x = 0.0f, y = 0.0f;
