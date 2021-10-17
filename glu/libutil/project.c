@@ -246,8 +246,8 @@ gluProject(GLdouble objx, GLdouble objy, GLdouble objz,
               const GLint viewport[4],
 	      GLdouble *winx, GLdouble *winy, GLdouble *winz)
 {
-    float in[4];
-    float out[4];
+    GLdouble in[4];
+    GLdouble out[4];
 
     in[0]=objx;
     in[1]=objy;
@@ -281,9 +281,9 @@ gluUnProject(GLdouble winx, GLdouble winy, GLdouble winz,
                 const GLint viewport[4],
 	        GLdouble *objx, GLdouble *objy, GLdouble *objz)
 {
-    float finalMatrix[16];
-    float in[4];
-    float out[4];
+    GLdouble finalMatrix[16];
+    GLdouble in[4];
+    GLdouble out[4];
 
     __gluMultMatricesd(modelMatrix, projMatrix, finalMatrix);
     if (!__gluInvertMatrixd(finalMatrix, finalMatrix)) return(GL_FALSE);
@@ -322,9 +322,9 @@ gluUnProject4(GLdouble winx, GLdouble winy, GLdouble winz, GLdouble clipw,
 	      GLdouble *objx, GLdouble *objy, GLdouble *objz,
 	      GLdouble *objw)
 {
-    float finalMatrix[16];
-    float in[4];
-    float out[4];
+    GLdouble finalMatrix[16];
+    GLdouble in[4];
+    GLdouble out[4];
 
     __gluMultMatricesd(modelMatrix, projMatrix, finalMatrix);
     if (!__gluInvertMatrixd(finalMatrix, finalMatrix)) return(GL_FALSE);
