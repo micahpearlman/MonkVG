@@ -13,25 +13,25 @@
 #include "glBatch.h"
 #include <cassert>
 
+extern "C" {
+#include "vega/path_utils.h"
+#include "vega/vg_state.h"
+
+#include "vega/stroker.h"
+};
+
 namespace MonkVG {
 	
 	
 	
 	void OpenGLPath::clear( VGbitfield caps ) {
 		IPath::clear( caps );
-		
-		_vertices.clear();
-		
-		// delete vbo buffers
-		if ( _strokeVBO != -1 ) {
-			GL->glDeleteBuffers( 1, &_strokeVBO );
-			_strokeVBO = -1;
-		}
-		
-		if ( _fillVBO != -1 ) {
-			GL->glDeleteBuffers( 1, &_fillVBO );
-			_fillVBO = -1;
-		}
+		_fillVertices.clear();
+		_fillTessVertices.clear();
+		_strokeSegments.clear();
+		_strokeData.clear();
+		_strokeVertices.clear();
+		_strokeTessVertices.clear();
 	}
 	
 	void OpenGLPath::buildFillIfDirty() {
@@ -46,6 +46,20 @@ namespace MonkVG {
 		}
 		_isFillDirty = false;
 	}
+
+	void OpenGLPath::buildStrokeIfDirty() {
+		IPaint* currentStrokePaint = IContext::instance().getStrokePaint();
+		if ( currentStrokePaint != _strokePaintForPath ) {
+			_strokePaintForPath = (OpenGLPaint*)currentStrokePaint;
+			_isStrokeDirty = true;
+		}
+		// only build the stroke if dirty or we are in batch build mode
+		if ( _isStrokeDirty || IContext::instance().currentBatch() ) {
+			buildStroke();
+		}
+		_isStrokeDirty = false;
+	}
+
 	
 	void printMat44( float m[4][4] ) {
 		printf("--\n");
@@ -55,24 +69,50 @@ namespace MonkVG {
 	}
 	
 	bool OpenGLPath::draw( VGbitfield paintModes ) {
-		
 		if ( paintModes == 0 ) 
 			return false;
 		
 		CHECK_GL_ERROR;
-		
+
 		// get the native OpenGL context
 		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
-		
+
+		OpenGLBatch * b = (OpenGLBatch*)glContext.currentBatch();
+		OpenGLBatch * ownbatch = 0;
+		if ( !b ) {
+			ownbatch = new OpenGLBatch();
+			b = ownbatch;
+		}
 		if( paintModes & VG_FILL_PATH ) {	// build the fill polygons
 			buildFillIfDirty();
+			const GLfloat * verts = _fillVertices.data();
+			size_t nverts = _fillVertices.size();
+			if (usesTexture()) {
+				_fillPaintForPath->buildGradientImage( _width, _height );
+				b->tadd(verts, nverts, _fillPaintForPath->getGradientImage(),
+					_minX, _minY, _width, _height);
+			} else {
+				b->add(verts, nverts, glContext.getFillPaint()->getPaintColor());
+			}
 		}
 
-		if( paintModes & VG_STROKE_PATH && (_isStrokeDirty == true || IContext::instance().currentBatch())  ) {
-			buildStroke();
-			_isStrokeDirty = false;
+		if( paintModes & VG_STROKE_PATH ) {
+			buildStrokeIfDirty();
+			b->add(_strokeVertices.data(), _strokeVertices.size(),
+			       glContext.getStrokePaint()->getPaintColor());
 		}
-		
+
+		clear( 0 );
+
+		if ( ownbatch ) {
+			ownbatch->finalize();
+			ownbatch->draw();
+			delete ownbatch;
+		}
+
+
+		return true;
+/*
 		endOfTesselation( paintModes );
 
 
@@ -80,42 +120,40 @@ namespace MonkVG {
 			return true;		// creating a batch so bail from here
 		}
 
-		
-		glContext.beginRender();
-		
-		GL->glEnableClientState( GL_VERTEX_ARRAY );
-		GL->glDisableClientState( GL_COLOR_ARRAY );
-		VGImageMode oldImageMode = glContext.getImageMode();
-
 		// configure based on paint type
-		if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-			GL->glDisable(GL_TEXTURE_2D);
-			GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-		} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
+		if ( usesTexture( ) ) {
 			GL->glEnable( GL_TEXTURE_2D );
 			GL->glEnableClientState( GL_TEXTURE_COORD_ARRAY );
             //GL->glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture with GL_REPLACE we don't use the current glColor
 			
 			glContext.setImageMode( VG_DRAW_IMAGE_NORMAL );
 			
+		} else {
+			GL->glDisable(GL_TEXTURE_2D);
+			GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		}
 		
+		GLsizei fillSize = 0;
+		GLint fillFirst = 0;
+		GLsizei fillCount = 0;
 
-		if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 && _fillPaintForPath) {
+		if( paintModes & VG_FILL_PATH) {
 			// draw
 			IContext::instance().fill();
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-			if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-				GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-			} else if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
+			if ( usesTexture( ) ) {
 				_fillPaintForPath->getGradientImage()->bind();
 				GL->glVertexPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, v) );
 				GL->glTexCoordPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, uv) );
+				fillSize = sizeof(textured_vertex_t) * _fillVertices.size() / 2;
+				fillCount = _fillVertices.size() / 2;
+			} else {
+				GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0);
+				fillSize = fillVertices.size();
+				fillCount = _fillVertices.size() / 2;
 			}
-			GL->glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
 			
 			// unbind any textures being used
-			if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
+			if ( usesTexture( ) ) {
 				_fillPaintForPath->getGradientImage()->unbind();
 				glContext.setImageMode( oldImageMode );
 				
@@ -123,27 +161,98 @@ namespace MonkVG {
 				GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 			}
-			
-			// this is important to unbind the vbo when done
-			GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		}
 		
-		if ( (paintModes & VG_STROKE_PATH) && _strokeVBO != -1 ) {
-			// draw
+		GLsizei strokeSize = 0;
+		GLint strokeFirst = 0;
+		GLsizei strokeCount = 0;
+
+		if ( paintModes & VG_STROKE_PATH ) {
 			IContext::instance().stroke();
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-			GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-			GL->glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
-			GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );			
+			GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), (GLvoid*)fillSize);
 		}
+
+
+
+
+		if ( _VBO != -1 )
+			GL->glDeleteBuffers( 1, &_VBO );
+		GL->glGenBuffers( 1, &_VBO );
+		GL->glBindBuffer( GL_ARRAY_BUFFER, _VBO );
+		GL->glBufferData( GL_ARRAY_BUFFER, fillSize + strokeSize, 0, GL_STATIC_DRAW );
+		char * buf = (char*)GL->glMapBufferOES( GL_ARRAY_BUFFER, GL_WRITE_ONLY_OES );
+		memcpy(buf, p0, s0);
+		memcpy(buf+s0, p1, s1);
+		GL->glUnmapBufferOES( GL_ARRAY_BUFFER );
+
+
+
+		GL->glDrawArrays( GL_TRIANGLES, 0, fillCount );
+		GL->glDrawArrays( GL_TRIANGLES, fillCount, strokeCount );
+
+		// this is important to unbind the vbo when done
+		GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
+
 		
 		glContext.endRender();
 		
 		CHECK_GL_ERROR;
 		
-		return true;
+		return true;*/
 	}
-	
+
+	bool OpenGLPath::usesTexture() const {
+		bool ret;
+		VGPaintType pt = _fillPaintForPath? _fillPaintForPath->getPaintType() : VG_PAINT_TYPE_COLOR;
+		switch (pt) {
+		case VG_PAINT_TYPE_LINEAR_GRADIENT: 
+		case VG_PAINT_TYPE_RADIAL_GRADIENT:
+		case VG_PAINT_TYPE_RADIAL_2x3_GRADIENT:
+		case VG_PAINT_TYPE_LINEAR_2x3_GRADIENT:
+			ret = true;
+			break;
+		default:
+			ret = false;
+		}
+		return ret;
+	}
+/*
+	void drawVBO( VGbitfield paintModes ) {
+		glContext.beginRender();
+		GL->glEnableClientState( GL_VERTEX_ARRAY );
+		GL->glDisableClientState( GL_COLOR_ARRAY );
+		VGImageMode oldImageMode = glContext.getImageMode();
+		if ( usesTexture() ) {
+			GL->glEnable( GL_TEXTURE_2D );
+			GL->glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+			//GL->glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture with GL_REPLACE we don't use the current glColor
+			
+			glContext.setImageMode( VG_DRAW_IMAGE_NORMAL );
+		} else {
+			GL->glDisable(GL_TEXTURE_2D);
+			GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		}
+
+
+
+		if( (paintModes & VG_FILL_PATH) && _fillPaintForPath) {
+			IContext::instance().fill();
+			if ( usesTexture( ) ) {
+				_fillPaintForPath->getGradientImage()->bind();
+				GL->glVertexPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, v) );
+				GL->glTexCoordPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, uv) );
+			} else {
+				GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0);
+			}
+			
+			// unbind any textures being used
+			glImage::unbind();
+			glContext.setImageMode( oldImageMode );
+			GL->glDisable(GL_TEXTURE_2D);
+			GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		}
+	}
+*/
 	static inline VGfloat calcCubicBezier1d( VGfloat x0, VGfloat x1, VGfloat x2, VGfloat x3, VGfloat t ) {
 		// see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
 		VGfloat oneT = 1.0f - t;
@@ -230,10 +339,10 @@ namespace MonkVG {
 	}
 	
 	
-	void OpenGLPath::buildFill() {
-		
-		_vertices.clear();
-		
+	void OpenGLPath::buildGen(vector<VGubyte> &segments, vector<VGfloat> &fcoords) {
+		_tessVertices->clear();
+		_vertices->clear();
+
 		// reset the bounds
 		_minX = VG_MAX_FLOAT;
 		_minY = VG_MAX_FLOAT;
@@ -243,30 +352,34 @@ namespace MonkVG {
 		
 		CHECK_GL_ERROR;
 		
+		GLUtesselator * tess = gluNewTess();
+#if 1
+		gluTessCallback( tess, GLU_TESS_EDGE_FLAG_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessEdgeFlag );
+#endif
 
-		_fillTesseleator = gluNewTess();
-		gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessBegin );
-		gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessEnd );
-		gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessVertex );
-		gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessCombine );
-		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (APIENTRY *)())&OpenGLPath::tessError );
+		gluTessCallback( tess, GLU_TESS_BEGIN_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessBegin );
+		gluTessCallback( tess, GLU_TESS_END_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessEnd );
+		gluTessCallback( tess, GLU_TESS_VERTEX_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessVertex );
+		gluTessCallback( tess, GLU_TESS_COMBINE_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessCombine );
+		gluTessCallback( tess, GLU_TESS_ERROR, (GLvoid (APIENTRY *)())&OpenGLPath::tessError );
 		if( IContext::instance().getFillRule() == VG_EVEN_ODD ) {
-			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
+			gluTessProperty( tess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
 		} else if( IContext::instance().getFillRule() == VG_NON_ZERO ) {
-			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
+			gluTessProperty( tess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
 		}
-		gluTessProperty( _fillTesseleator, GLU_TESS_TOLERANCE, 0.5f );
+		gluTessProperty( tess, GLU_TESS_TOLERANCE, 0.5f );
 		
-		gluTessBeginPolygon( _fillTesseleator, this );
+		gluTessBeginPolygon( tess, this );
 		
 		
-		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
+		vector< VGfloat >::iterator coordsIter = fcoords.begin();
 		VGbyte segment = VG_CLOSE_PATH;
 		v3_t coords(0,0,0);
 		v3_t prev(0,0,0);
+		v3_t closeTo(0,0,0);
 		int num_contours = 0;
 		
-		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
+		for ( vector< VGubyte >::iterator segmentIter = segments.begin(); segmentIter != segments.end(); segmentIter++ ) {
 			segment = (*segmentIter);
 			//int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
 			//segment = segment >> 1;
@@ -289,648 +402,427 @@ namespace MonkVG {
 			// todo: deal with relative move
 			bool isRelative = segment & VG_RELATIVE;
 			switch (segment >> 1) {
-				case (VG_CLOSE_PATH >> 1):
-				{
-					if ( num_contours ) {
-						gluTessEndContour( _fillTesseleator );
-						num_contours--;
-					}
-
-				} break;
-				case (VG_MOVE_TO >> 1):
-				{	
-					if ( num_contours ) {
-						gluTessEndContour( _fillTesseleator );
-						num_contours--;
-					}
-					
-					gluTessBeginContour( _fillTesseleator );
-					num_contours++;
-					coords.x = *coordsIter; coordsIter++;
-					coords.y = *coordsIter; coordsIter++;
-					
-					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
-					
-				} break;
-				case (VG_LINE_TO >> 1):
-				{
-					prev = coords;
-					coords.x = *coordsIter; coordsIter++;
-					coords.y = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						coords.x += prev.x;
-						coords.y += prev.y;
-					}
-					
-					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
-				} break;
-				case (VG_HLINE_TO >> 1):
-				{
-					prev = coords;
-					coords.x = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						coords.x += prev.x;
-					}
-					
-					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
-				} break;
-				case (VG_VLINE_TO >> 1):
-				{
-					prev = coords;
-					coords.y = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						coords.y += prev.y;
-					}
-					
-					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
-				} break;
-				case (VG_SCUBIC_TO >> 1): 
-				{
-					prev = coords;
-					VGfloat cp2x = *coordsIter; coordsIter++;
-					VGfloat cp2y = *coordsIter; coordsIter++;
-					VGfloat p3x = *coordsIter; coordsIter++;
-					VGfloat p3y = *coordsIter; coordsIter++;
-
-					
-					if ( isRelative ) {
-						cp2x += prev.x;
-						cp2y += prev.y;
-						p3x += prev.x;
-						p3y += prev.y;
-					}
-					
-					VGfloat cp1x = 2.0f * cp2x - p3x;
-					VGfloat cp1y = 2.0f * cp2y - p3y;
-
-					
-					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
-					//printf("\tcubic: ");
-					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-						v3_t c;
-						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
-						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						c.z = 0;
-						GLdouble * l = addTessVertex( c );
-						gluTessVertex( _fillTesseleator, l, l );
-						//	c.print();
-					}
-					//printf("\n");
-					coords.x = p3x;
-					coords.y = p3y;
-
+			case (VG_CLOSE_PATH >> 1):
+			{
+				GLdouble * l = addTessVertex( closeTo );
+				gluTessVertex( tess, l, l );
+				if ( num_contours ) {
+					gluTessEndContour( tess );
+					num_contours--;
 				}
-				break;
-				case (VG_CUBIC_TO >> 1):
-				{
-					prev = coords;
-					VGfloat cp1x = *coordsIter; coordsIter++;
-					VGfloat cp1y = *coordsIter; coordsIter++;
-					VGfloat cp2x = *coordsIter; coordsIter++;
-					VGfloat cp2y = *coordsIter; coordsIter++;
-					VGfloat p3x = *coordsIter; coordsIter++;
-					VGfloat p3y = *coordsIter; coordsIter++;
+
+			} break;
+			case (VG_MOVE_TO >> 1):
+			{	
+				if ( num_contours ) {
+					gluTessEndContour( tess );
+					num_contours--;
+				}
 					
-					if ( isRelative ) {
-						cp1x += prev.x;
-						cp1y += prev.y;
-						cp2x += prev.x;
-						cp2y += prev.y;
-						p3x += prev.x;
-						p3y += prev.y;
-					}
+				gluTessBeginContour( tess );
+				num_contours++;
+				closeTo.x = coords.x = *coordsIter; coordsIter++;
+				closeTo.y = coords.y = *coordsIter; coordsIter++;
 					
-					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
-					//printf("\tcubic: ");
-					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-						v3_t c;
-						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
-						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						c.z = 0;
-						GLdouble * l = addTessVertex( c );
-						gluTessVertex( _fillTesseleator, l, l );
+				GLdouble * l = addTessVertex( coords );
+				gluTessVertex( tess, l, l );
+					
+			} break;
+			case (VG_LINE_TO >> 1):
+			{
+				prev = coords;
+				coords.x = *coordsIter; coordsIter++;
+				coords.y = *coordsIter; coordsIter++;
+				if ( isRelative ) {
+					coords.x += prev.x;
+					coords.y += prev.y;
+				}
+					
+				GLdouble * l = addTessVertex( coords );
+				gluTessVertex( tess, l, l );
+			} break;
+			case (VG_HLINE_TO >> 1):
+			{
+				prev = coords;
+				coords.x = *coordsIter; coordsIter++;
+				if ( isRelative ) {
+					coords.x += prev.x;
+				}
+					
+				GLdouble * l = addTessVertex( coords );
+				gluTessVertex( tess, l, l );
+			} break;
+			case (VG_VLINE_TO >> 1):
+			{
+				prev = coords;
+				coords.y = *coordsIter; coordsIter++;
+				if ( isRelative ) {
+					coords.y += prev.y;
+				}
+					
+				GLdouble * l = addTessVertex( coords );
+				gluTessVertex( tess, l, l );
+			} break;
+			case (VG_SCUBIC_TO >> 1): 
+			{
+				prev = coords;
+				VGfloat cp2x = *coordsIter; coordsIter++;
+				VGfloat cp2y = *coordsIter; coordsIter++;
+				VGfloat p3x = *coordsIter; coordsIter++;
+				VGfloat p3y = *coordsIter; coordsIter++;
+
+					
+				if ( isRelative ) {
+					cp2x += prev.x;
+					cp2y += prev.y;
+					p3x += prev.x;
+					p3y += prev.y;
+				}
+					
+				VGfloat cp1x = 2.0f * cp2x - p3x;
+				VGfloat cp1y = 2.0f * cp2y - p3y;
+
+					
+				VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
+				//printf("\tcubic: ");
+				for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+					v3_t c;
+					c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+					c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+					c.z = 0;
+					GLdouble * l = addTessVertex( c );
+					gluTessVertex( tess, l, l );
 					//	c.print();
-					}
-					//printf("\n");
-					coords.x = p3x;
-					coords.y = p3y;
+				}
+				//printf("\n");
+				coords.x = p3x;
+				coords.y = p3y;
+
+			}
+			break;
+			case (VG_CUBIC_TO >> 1):
+			{
+				prev = coords;
+				VGfloat cp1x = *coordsIter; coordsIter++;
+				VGfloat cp1y = *coordsIter; coordsIter++;
+				VGfloat cp2x = *coordsIter; coordsIter++;
+				VGfloat cp2y = *coordsIter; coordsIter++;
+				VGfloat p3x = *coordsIter; coordsIter++;
+				VGfloat p3y = *coordsIter; coordsIter++;
 					
-				} break;
+				if ( isRelative ) {
+					cp1x += prev.x;
+					cp1y += prev.y;
+					cp2x += prev.x;
+					cp2y += prev.y;
+					p3x += prev.x;
+					p3y += prev.y;
+				}
+					
+				VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
+				//printf("\tcubic: ");
+				for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+					v3_t c;
+					c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
+					c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
+					c.z = 0;
+					GLdouble * l = addTessVertex( c );
+					gluTessVertex( tess, l, l );
+					//	c.print();
+				}
+				//printf("\n");
+				coords.x = p3x;
+				coords.y = p3y;
+					
+			} break;
                     
-                case (VG_QUAD_TO >> 1):
-                {
-					prev = coords;
-					VGfloat cpx = *coordsIter; coordsIter++;
-					VGfloat cpy = *coordsIter; coordsIter++;
-					VGfloat px = *coordsIter; coordsIter++;
-					VGfloat py = *coordsIter; coordsIter++;
+			case (VG_QUAD_TO >> 1):
+			{
+				prev = coords;
+				VGfloat cpx = *coordsIter; coordsIter++;
+				VGfloat cpy = *coordsIter; coordsIter++;
+				VGfloat px = *coordsIter; coordsIter++;
+				VGfloat py = *coordsIter; coordsIter++;
 					
-					if ( isRelative ) {
-						cpx += prev.x;
-						cpy += prev.y;
-						px += prev.x;
-						py += prev.y;
+				if ( isRelative ) {
+					cpx += prev.x;
+					cpy += prev.y;
+					px += prev.x;
+					py += prev.y;
+				}
+					
+				VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
+				for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+					v3_t c;
+					c.x = calcQuadBezier1d( coords.x, cpx, px, t );
+					c.y = calcQuadBezier1d( coords.y, cpy, py, t );
+					c.z = 0;
+					GLdouble * l = addTessVertex( c );
+					gluTessVertex( tess, l, l );
+				}
+				coords.x = px;
+				coords.y = py;
+   
+			} break;
+				
+			case (VG_SCCWARC_TO >> 1):
+			case (VG_SCWARC_TO >> 1):
+			case (VG_LCCWARC_TO >> 1):
+			case (VG_LCWARC_TO >> 1):	
+					
+			{
+				VGfloat rh = *coordsIter; coordsIter++;
+				VGfloat rv = *coordsIter; coordsIter++;
+				VGfloat rot = *coordsIter; coordsIter++;
+				VGfloat cp1x = *coordsIter; coordsIter++;
+				VGfloat cp1y = *coordsIter; coordsIter++;
+				if ( isRelative ) {
+					cp1x += prev.x;
+					cp1y += prev.y;
+				}
+					
+				// convert to Center Parameterization (see OpenVG Spec Apendix A)
+				VGfloat cx0[2];
+				VGfloat cx1[2];
+				VGboolean success = findEllipses( rh, rv, rot,
+								  coords.x, coords.y, cp1x, cp1y,
+								  &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
+					
+				if ( success ) {
+					// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
+					const int steps = IContext::instance().getTessellationIterations();
+					VGfloat beta = 0;	// angle. todo
+					VGfloat sinbeta = sinf( beta );
+					VGfloat cosbeta = cosf( beta );
+						
+					// calculate the start and end angles
+					v2_t center;
+					center.x = cx0[0];
+					center.y = cx0[1];
+					v2_t norm[2];
+					norm[0].x = center.x - coords.x;
+					norm[0].y = center.y - coords.y;
+					VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
+					norm[0].x *= inverse_len;
+					norm[0].y *= inverse_len;
+						
+					norm[1].x = center.x - cp1x;
+					norm[1].y = center.y - cp1y;
+					inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
+					norm[1].x *= inverse_len;
+					norm[1].y *= inverse_len;
+					VGfloat startAngle = degrees( acosf( -norm[0].x ) );
+					VGfloat endAngle = degrees( acosf( -norm[1].x ) );
+						
+					VGfloat cross = norm[0].x;
+						
+					if ( cross >= 0  ) {
+						startAngle = 360 - startAngle;
+						endAngle = 360 - endAngle;
 					}
-					
-					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
-					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
+					if ( startAngle > endAngle ) {
+						VGfloat tmp = startAngle;
+						startAngle = endAngle;
+						endAngle = tmp;
+						startAngle = startAngle - 90;
+						endAngle = endAngle - 90;
+					}
+					for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
 						v3_t c;
-						c.x = calcQuadBezier1d( coords.x, cpx, px, t );
-						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
+							
+						VGfloat alpha = g * (M_PI / 180.0f);
+						VGfloat sinalpha = sinf( alpha );
+						VGfloat cosalpha = cosf( alpha );
+						c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
+						c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
 						c.z = 0;
 						GLdouble * l = addTessVertex( c );
-						gluTessVertex( _fillTesseleator, l, l );
+						gluTessVertex( tess, l, l );
 					}
-                    
-					coords.x = px;
-					coords.y = py;
-   
-                } break;
-				
-				case (VG_SCCWARC_TO >> 1):
-				case (VG_SCWARC_TO >> 1):
-				case (VG_LCCWARC_TO >> 1):
-				case (VG_LCWARC_TO >> 1):	
+				}
 					
-				{
-					VGfloat rh = *coordsIter; coordsIter++;
-					VGfloat rv = *coordsIter; coordsIter++;
-					VGfloat rot = *coordsIter; coordsIter++;
-					VGfloat cp1x = *coordsIter; coordsIter++;
-					VGfloat cp1y = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						cp1x += prev.x;
-						cp1y += prev.y;
-					}
+				coords.x = cp1x;
+				coords.y = cp1y;
 					
-					// convert to Center Parameterization (see OpenVG Spec Apendix A)
-					VGfloat cx0[2];
-					VGfloat cx1[2];
-					VGboolean success = findEllipses( rh, rv, rot,
-													 coords.x, coords.y, cp1x, cp1y,
-													 &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
+			} break;
 					
-					if ( success ) {
-						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
-						const int steps = IContext::instance().getTessellationIterations();
-						VGfloat beta = 0;	// angle. todo
-						VGfloat sinbeta = sinf( beta );
-						VGfloat cosbeta = cosf( beta );
-						
-						// calculate the start and end angles
-						v2_t center;
-						center.x = cx0[0];
-						center.y = cx0[1];
-						v2_t norm[2];
-						norm[0].x = center.x - coords.x;
-						norm[0].y = center.y - coords.y;
-						VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
-						norm[0].x *= inverse_len;
-						norm[0].y *= inverse_len;
-						
-						norm[1].x = center.x - cp1x;
-						norm[1].y = center.y - cp1y;
-						inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
-						norm[1].x *= inverse_len;
-						norm[1].y *= inverse_len;
-						VGfloat startAngle = degrees( acosf( -norm[0].x ) );
-						VGfloat endAngle = degrees( acosf( -norm[1].x ) );
-						
-						VGfloat cross = norm[0].x;
-						
-						if ( cross >= 0  ) {
-							startAngle = 360 - startAngle;
-							endAngle = 360 - endAngle;
-						}
-						if ( startAngle > endAngle ) {
-							VGfloat tmp = startAngle;
-							startAngle = endAngle;
-							endAngle = tmp;
-							startAngle = startAngle - 90;
-							endAngle = endAngle - 90;
-						}
-						for ( VGfloat g = startAngle; g < endAngle; g+=360/steps ) {
-							v3_t c;
-							
-							VGfloat alpha = g * (M_PI / 180.0f);
-							VGfloat sinalpha = sinf( alpha );
-							VGfloat cosalpha = cosf( alpha );
-							c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
-							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-							c.z = 0;
-							GLdouble * l = addTessVertex( c );
-							gluTessVertex( _fillTesseleator, l, l );
-						}
-					}
-					
-					coords.x = cp1x;
-					coords.y = cp1y;
-					
-				} break;
-					
-				default:
-					printf("unkwown command\n");
-					break;
+			default:
+				printf("unkwown command\n");
+				break;
 			}
 		}	// foreach segment
 		
 		if ( num_contours ) {
-			gluTessEndContour( _fillTesseleator );
+			gluTessEndContour( tess );
 			num_contours--;
 		}
 		
 		assert(num_contours == 0);
 		
-		gluTessEndPolygon( _fillTesseleator );
+		gluTessEndPolygon( tess );
 		
-		gluDeleteTess( _fillTesseleator );		
-		_fillTesseleator = 0;
+		gluDeleteTess( tess );		
 
 		// final calculation of the width and height
 		_width = fabsf(_width - _minX);
 		_height = fabsf(_height - _minY);
 		
 		CHECK_GL_ERROR;
-		
+	}
+
+	void OpenGLPath::buildFill() {
+		_tessVertices = &_fillTessVertices;
+		_vertices = &_fillVertices;
+		buildGen(_segments, _fcoords);
+	}
+
+	static void transform(vector<GLfloat> *dst, vector<GLfloat> &src, const Matrix33 &m) {
+		for (vector<VGfloat>::iterator i = src.begin(); i != src.end();) {
+			float v[2];
+			v[0] = *i;
+			i++;
+			v[1] = *i;
+			i++;
+			float tv[2];
+			affineTransform(tv, m, v);
+			dst->push_back(tv[0]);
+			dst->push_back(tv[1]);
+		}
 	}
 	
-	void OpenGLPath::buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width ) {
-		
-		if ( (p0.x == p1.x) && (p0.y == p1.y ) ) {
-			return;
-		}
-		
-		float dx = p1.y - p0.y;
-		float dy = p0.x - p1.x;
-		const float inv_mag = 1.0f / sqrtf(dx*dx + dy*dy);
-		dx = dx * inv_mag;
-		dy = dy * inv_mag;
-		
-		v2_t v0, v1, v2, v3;
-        const float radius = stroke_width * 0.5f;
-		
-		v0.x = p0.x + radius * dx;
-		v0.y = p0.y + radius * dy;
-		vertices.push_back( v0 );
-		
-		v1.x = p0.x - radius * dx;
-		v1.y = p0.y - radius * dy;
-		vertices.push_back( v1 );			
-		
-		
-		v2.x = p1.x + radius * dx;
-		v2.y = p1.y + radius * dy;
-		vertices.push_back( v2 );
-		
-		v3.x = p1.x - radius * dx;
-		v3.y = p1.y - radius * dy;
-		vertices.push_back( v3 );
-		
-	}
 	
 	void OpenGLPath::buildStroke() {
+		_strokeSegments.clear();
+		_strokeData.clear();
+		_strokeTessVertices.clear();
 		_strokeVertices.clear();
-		
-		// get the native OpenGL context
-		OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
-		
-		const VGfloat stroke_width = glContext.getStrokeLineWidth();
-		
-		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
-		VGbyte segment = VG_CLOSE_PATH;
-		v2_t coords = {0,0};
-		v2_t prev = {0,0};
-		v2_t closeTo = {0,0}; 
-		for ( vector< VGubyte >::iterator segmentIter = _segments.begin(); segmentIter != _segments.end(); segmentIter++ ) {
-			segment = (*segmentIter);
-			//int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>( segment ) );
-			//segment = segment >> 1;
-			
-			
-			//			VG_CLOSE_PATH                               = ( 0 << 1),
-			//			VG_MOVE_TO                                  = ( 1 << 1),
-			//			VG_LINE_TO                                  = ( 2 << 1),
-			//			VG_HLINE_TO                                 = ( 3 << 1),
-			//			VG_VLINE_TO                                 = ( 4 << 1),
-			//			VG_QUAD_TO                                  = ( 5 << 1),
-			//			VG_CUBIC_TO                                 = ( 6 << 1),
-			//			VG_SQUAD_TO                                 = ( 7 << 1),
-			//			VG_SCUBIC_TO                                = ( 8 << 1),
-			//			VG_SCCWARC_TO                               = ( 9 << 1),
-			//			VG_SCWARC_TO                                = (10 << 1),
-			//			VG_LCCWARC_TO                               = (11 << 1),
-			//			VG_LCWARC_TO                                = (12 << 1),
-			
-			// todo: deal with relative move
+
+                OpenGLContext& glContext = (MonkVG::OpenGLContext&)IContext::instance();
+
+            
+		struct vg_state state;
+            
+		state.stroke.line_width.f = glContext.getStrokeLineWidth();
+		state.stroke.cap_style = glContext.getStrokeCapStyle();
+		state.stroke.join_style = glContext.getStrokeJoinStyle();
+		state.stroke.miter_limit.f = 4;
+		state.stroke.dash_pattern_num = 0;
+
+		struct stroker stroker;
+		stroker.path = (struct path*)this;
+		stroker_init(&stroker, &state);
+
+		stroker_begin(&stroker);
+
+		vector< VGfloat >::iterator c = _fcoords.begin();
+		VGfloat x0 = 0;
+		VGfloat y0 = 0;
+		VGfloat x = 0;
+		VGfloat y = 0;
+		VGfloat px1, py1, px2, py2;
+
+		for ( vector< VGubyte >::iterator s = _segments.begin(); s != _segments.end(); s++ ) {
+			VGbyte segment = (*s);
 			bool isRelative = segment & VG_RELATIVE;
 			switch (segment >> 1) {
-				case (VG_CLOSE_PATH >> 1):
-				{
-					buildFatLineSegment( _strokeVertices, coords, closeTo, stroke_width );
-				} break;
-				case (VG_MOVE_TO >> 1):
-				{	
-					prev.x = closeTo.x = coords.x = *coordsIter; coordsIter++;
-					prev.y = closeTo.y = coords.y = *coordsIter; coordsIter++;
-					
-				} break;
-				case (VG_LINE_TO >> 1):
-				{
-					prev = coords;
-					coords.x = *coordsIter; coordsIter++;
-					coords.y = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						coords.x += prev.x;
-						coords.y += prev.y;
-					}
-					
-					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
-					
-					
-				} break;
-				case (VG_HLINE_TO >> 1):
-				{
-					prev = coords;
-					coords.x = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						coords.x += prev.x;
-					}
-					
-					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
-				} break;
-				case (VG_VLINE_TO >> 1):
-				{
-					prev = coords;
-					coords.y = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						coords.y += prev.y;
-					}
-					
-					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
-					
-				} break;
-				case (VG_SCUBIC_TO >> 1): 
-				{
-					prev = coords;
-					VGfloat cp2x = *coordsIter; coordsIter++;
-					VGfloat cp2y = *coordsIter; coordsIter++;
-					VGfloat p3x = *coordsIter; coordsIter++;
-					VGfloat p3y = *coordsIter; coordsIter++;
-					
-					
-					if ( isRelative ) {
-						cp2x += prev.x;
-						cp2y += prev.y;
-						p3x += prev.x;
-						p3y += prev.y;
-					}
-					
-					VGfloat cp1x = 2.0f * cp2x - p3x;
-					VGfloat cp1y = 2.0f * cp2y - p3y;
-					
-					
-					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
-					//printf("\tcubic: ");
-					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-						v2_t c;
-						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
-						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
-						prev = c;
-					}
-					coords.x = p3x;
-					coords.y = p3y;
-					
-				}
+			case (VG_CLOSE_PATH >> 1):
+				stroker_line_to(&stroker, x0, y0);
 				break;
-                    
-                case (VG_QUAD_TO >> 1):     // added by rhcad
-                {
-                    prev = coords;
-					VGfloat cpx = *coordsIter; coordsIter++;
-					VGfloat cpy = *coordsIter; coordsIter++;
-					VGfloat px = *coordsIter; coordsIter++;
-					VGfloat py = *coordsIter; coordsIter++;
-					
-					if ( isRelative ) {
-						cpx += prev.x;
-						cpy += prev.y;
-						px += prev.x;
-						py += prev.y;
-					}
-					
-					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
-					
-					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-						v2_t c;
-						c.x = calcQuadBezier1d( coords.x, cpx, px, t );
-						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
-						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
-						prev = c;
-					}
-					coords.x = px;
-					coords.y = py;
-                    
-                } break;
-	
-				case (VG_CUBIC_TO >> 1):	// todo
-				{
-					prev = coords;
-					VGfloat cp1x = *coordsIter; coordsIter++;
-					VGfloat cp1y = *coordsIter; coordsIter++;
-					VGfloat cp2x = *coordsIter; coordsIter++;
-					VGfloat cp2y = *coordsIter; coordsIter++;
-					VGfloat p3x = *coordsIter; coordsIter++;
-					VGfloat p3y = *coordsIter; coordsIter++;
-					
-					if ( isRelative ) {
-						cp1x += prev.x;
-						cp1y += prev.y;
-						cp2x += prev.x;
-						cp2y += prev.y;
-						p3x += prev.x;
-						p3y += prev.y;
-					}
-					
-					
-					VGfloat increment = 1.0f / IContext::instance().getTessellationIterations();
-					
-					for ( VGfloat t = increment; t < 1.0f + increment; t+=increment ) {
-						v2_t c;
-						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
-						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
-						prev = c;
-					}
-					coords.x = p3x;
-					coords.y = p3y;
-					
-				} break;
-				case (VG_SCCWARC_TO >> 1):
-				case (VG_SCWARC_TO >> 1):
-				case (VG_LCCWARC_TO >> 1):
-				case (VG_LCWARC_TO >> 1):	
-	
-				{
-					VGfloat rh = *coordsIter; coordsIter++;
-					VGfloat rv = *coordsIter; coordsIter++;
-					VGfloat rot = *coordsIter; coordsIter++;
-					VGfloat cp1x = *coordsIter; coordsIter++;
-					VGfloat cp1y = *coordsIter; coordsIter++;
-					if ( isRelative ) {
-						cp1x += prev.x;
-						cp1y += prev.y;
-					}
-					
-					
-					// convert to Center Parameterization (see OpenVG Spec Apendix A)
-					VGfloat cx0[2];
-					VGfloat cx1[2];
-					VGboolean success = findEllipses( rh, rv, rot,
-													 coords.x, coords.y, cp1x, cp1y,
-													 &cx0[0], &cx0[1], &cx1[0], &cx1[1] );
-					
-					if ( success ) {
-						// see: http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics 
-						const int steps = IContext::instance().getTessellationIterations();
-						VGfloat beta = 0;	// angle. todo
-						VGfloat sinbeta = sinf( beta );
-						VGfloat cosbeta = cosf( beta );
-						
-						// calculate the start and end angles
-						v2_t center;
-						center.x = cx0[0];//(cx0[0] + cx1[0])*0.5f;
-						center.y = cx0[1];//(cx0[1] + cx1[1])*0.5f;
-						v2_t norm[2];
-						norm[0].x = center.x - coords.x;
-						norm[0].y = center.y - coords.y;
-						VGfloat inverse_len = 1.0f/sqrtf( (norm[0].x * norm[0].x) + (norm[0].y * norm[0].y) );
-						norm[0].x *= inverse_len;
-						norm[0].y *= inverse_len;
-						
-						norm[1].x = center.x - cp1x;
-						norm[1].y = center.y - cp1y;
-						inverse_len = 1.0f/sqrtf( (norm[1].x * norm[1].x) + (norm[1].y * norm[1].y) );
-						norm[1].x *= inverse_len;
-						norm[1].y *= inverse_len;
-						VGfloat startAngle = degrees( acosf( -norm[0].x ) );
-						VGfloat endAngle = degrees( acosf( -norm[1].x ) );
-						VGfloat cross = norm[0].x;
-						if ( cross >= 0 ) {
-							startAngle = 360 - startAngle;
-							endAngle = 360 - endAngle;
-						}
-						if ( startAngle > endAngle ) {
-							VGfloat tmp = startAngle;
-							startAngle = endAngle;
-							endAngle = tmp;
-							startAngle = startAngle - 90;
-							endAngle = endAngle - 90;
-						}
-						
-						
-						prev = coords;
-						for ( VGfloat g = startAngle; g < endAngle + (360/steps); g+=360/steps ) {
-							v2_t c;
-							
-							VGfloat alpha = g * (M_PI / 180.0f);
-							VGfloat sinalpha = sinf( alpha );
-							VGfloat cosalpha = cosf( alpha );
-							c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
-							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-							//printf( "(%f, %f)\n", c[0], c[1] );
-							buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
-							prev = c;
-						}
-					}
-					
-					coords.x = cp1x;
-					coords.y = cp1y;
-					
-				} break;
-					
-				default:
-					printf("unkwown command: %d\n", segment >> 1);
-					break;
+			case (VG_LINE_TO >> 1):
+				x = *c++;
+				y = *c++;
+				stroker_line_to(&stroker, x, y);
+				break;
+			case (VG_MOVE_TO >> 1):
+				x0 = x = *c++;
+				y0 = y = *c++;
+				stroker_move_to(&stroker, x, y);
+				break;
+			case (VG_CUBIC_TO >> 1):
+				px1 = *c++;
+				py1 = *c++;
+				px2 = *c++;
+				py2 = *c++;
+				x = *c++;
+				y = *c++;
+				stroker_curve_to(&stroker, px1, py1, px2, py2, x, y);
+				break;	
+			default:
+				printf("unkwown command\n");
+				assert(0);
+				break;
 			}
-		}	// foreach segment
-		
-		
-		
+		}
+		stroker_end(&stroker);
+
+		stroker_cleanup(&stroker);
+
+
+		float mx = _minX;
+		float my = _minY;
+		float w = _width;
+		float h = _height;
+		_tessVertices = &_strokeTessVertices;
+		_vertices = &_strokeVertices;
+
+		VGFillRule fr = glContext.getFillRule();
+		glContext.setFillRule(VG_NON_ZERO);
+		buildGen(_strokeSegments, _strokeData);
+		glContext.setFillRule(fr);
+		_minX = mx;
+		_minY = my;
+		_width = w;
+		_height = h;
 	}
-	
-	void OpenGLPath::endOfTesselation( VGbitfield paintModes ) {
-		
+#if 0	
+	void OpenGLPath::fillBatch( glBatch * b, VGbitfield paintModes ) {
+		vector<textured_vertex_t> texturedVertices;
+
+		GLfloat * p0 = 0; size_t s0 = 0;
+		GLfloat * p1 = 0; size_t s1 = 0;
+				  
+
 		/// build fill vbo
 		// TODO: BUGBUG: if in batch mode don't build the VBO!
-		if ( _vertices.size() > 0 ) {
-			if ( _fillVBO != -1 ) {
-				GL->glDeleteBuffers( 1, &_fillVBO );
-				_fillVBO = -1;
-			}
+		if ( usesTexture( ) ) {
+			assert(0);
+/*
+			// setup the paints linear gradient
+			_fillPaintForPath->buildGradientImage( _width, _height );
 			
-			GL->glGenBuffers( 1, &_fillVBO );
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-			if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
-				GL->glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
-			} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
-				vector<textured_vertex_t> texturedVertices;
-				for ( vector<float>::const_iterator it = _vertices.begin(); it != _vertices.end(); it++ ) {
-					// build up the textured vertex
-					textured_vertex_t v;
-					v.v[0] = *it;
-					it++;
-					v.v[1] = *it;
-					v.uv[0] = fabsf(v.v[0] - _minX) / _width;
-					v.uv[1] = fabsf( v.v[1] - _minY ) / _height;
-					texturedVertices.push_back( v );
-				}
-				
-				GL->glBufferData( GL_ARRAY_BUFFER, texturedVertices.size() * sizeof(textured_vertex_t), &texturedVertices[0], GL_STATIC_DRAW );
-				
-				texturedVertices.clear();
-				
-				// setup the paints linear gradient
-				_fillPaintForPath->buildGradientImage( _width, _height );
-
+			// build up the textured vertex
+			for ( vector<float>::const_iterator it = _fillVertices.begin(); it != _fillVertices.end(); it++ ) {
+				textured_vertex_t v;
+				v.v[0] = *it;
+				it++;
+				v.v[1] = *it;
+				v.uv[0] = fabsf(v.v[0] - _minX) / _width;
+				v.uv[1] = fabsf( v.v[1] - _minY ) / _height;
+				texturedVertices.push_back( v );
 			}
-
-			_numberFillVertices = (int)_vertices.size()/2;
-			_tessVertices.clear();
-		} 
+			p0 = (GLfloat*)texturedVertices.data();
+			s0 = texturedVertices.size() * sizeof(textured_vertex_t);
+*/
+		} else {
+			p0 = _fillVertices.data(); 
+			s0 = _fillVertices.size() * sizeof(_fillVertices[0]);
+		}
 		
+
+/*		
 		/// build stroke vbo 
 		if ( _strokeVertices.size() > 0 ) {
-			// build the vertex buffer object VBO
-			if ( _strokeVBO != -1 ) {
-				GL->glDeleteBuffers( 1, &_strokeVBO );
-				_strokeVBO = -1;
-			}
-			
-			GL->glGenBuffers( 1, &_strokeVBO );
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-			GL->glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
-			_numberStrokeVertices = (int)_strokeVertices.size();
-
+			p1 = _strokeVertices.data();
+			s1 = _strokeVertices.size() * sizeof(_strokeVertices[0]);
+			_numberStrokeVertices = (int)_strokeVertices.size() / 2;
+			_strokeTessVertices.clear();
+			_strokeVertices.clear();
 		}
-		
-		OpenGLBatch* glBatch = (OpenGLBatch*)IContext::instance().currentBatch();
-		if( glBatch ) {	// if in batch mode update the current batch
-			glBatch->addPathVertexData( &_vertices[0], _vertices.size()/2, 
-									   (float*)&_strokeVertices[0], _strokeVertices.size(), 
-									   paintModes );
 
-		}
-		
-		// clear out vertex buffer
-		_vertices.clear();
-		_strokeVertices.clear();
+*/
+
 	}
-	
+#endif	
 	static GLdouble startVertex_[2];
 	static GLdouble lastVertex_[2];
 	static int vertexCount_ = 0;
@@ -961,19 +853,16 @@ namespace MonkVG {
 	}
 	
 	
-	void OpenGLPath::tessEnd( GLvoid* user ) {
-		//		OpenGLPath* me = (OpenGLPath*)user;
-		//		me->endOfTesselation();
-		
-		//printf("end\n");
-	}
+	void OpenGLPath::tessEnd( GLvoid* user ) {}
 	
 	
 	void OpenGLPath::tessVertex( GLvoid* vertex, GLvoid* user ) {
 		OpenGLPath* me = (OpenGLPath*)user;
 		GLdouble* v = (GLdouble*)vertex;
-		
-		if ( me->primType() == GL_TRIANGLE_FAN ) {
+		if (0) {
+		} else if ( me->primType() == GL_TRIANGLES ) {
+			me->addVertex( v );
+		} else if ( me->primType() == GL_TRIANGLE_FAN ) {
 			// break up fans and strips into triangles
 			switch ( vertexCount_ ) {
 				case 0:
@@ -993,8 +882,6 @@ namespace MonkVG {
 					lastVertex_[1] = v[1];
 					break;
 			}
-		} else if ( me->primType() == GL_TRIANGLES ) {
-			me->addVertex( v );
 		} else if ( me->primType() == GL_TRIANGLE_STRIP ) {
 			switch ( vertexCount_ ) {
 				case 0:
@@ -1040,12 +927,46 @@ namespace MonkVG {
 	}
 	
 	OpenGLPath::~OpenGLPath() {
-		if ( _fillTesseleator ) {
-			gluDeleteTess( _fillTesseleator );
-			_fillTesseleator = 0;
-		}
-		
-		GL->glDeleteBuffers( 1, &_fillVBO );
+		clear(0);
+	}
+
+	void OpenGLPath::appendStrokeData(VGint nseg, const VGubyte * segments, const void * data) {
+		_strokeSegments.insert(_strokeSegments.cend(), &segments[0], &segments[nseg]);
+		VGint n = num_elements_for_segments(segments, nseg);
+		GLfloat * fdata = (GLfloat *)data;
+		_strokeData.insert(_strokeData.cend(), &fdata[0], &fdata[n]);
 	}
 	
+extern "C" {
+
+void path_append_data(struct path *p,
+                      VGint numSegments,
+                      const VGubyte * pathSegments,
+                      const void * pathData){
+	OpenGLPath * gp = (OpenGLPath *)p;
+	gp->appendStrokeData(numSegments, pathSegments, pathData);
 }
+struct path *path_create(VGPathDatatype dt, VGfloat scale, VGfloat bias,
+                         VGint segmentCapacityHint,
+                         VGint coordCapacityHint,
+                         VGbitfield capabilities){
+	assert(0);
+}
+
+void path_move_to(struct path *p, float x, float y) {
+	assert(0);
+}
+		
+void path_line_to(struct path *p, float x, float y) {
+	assert(0);
+}
+
+void path_cubic_to(struct path *p, float px1, float py1,
+                   float px2, float py2,
+                   float x, float y) {
+	assert(0);
+}
+
+}
+
+};

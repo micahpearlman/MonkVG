@@ -35,8 +35,8 @@ namespace MonkVG {
 								VGImageFormat dataFormat,
 								VGint x, VGint y, VGint width, VGint height );
 		
-		void bind();
-		void unbind();
+		void bind() const;
+		static void unbind();
 
 	private:
 		GLuint		_name;

@@ -117,6 +117,8 @@ namespace MonkVG {
 		,	_width( 0 )
 		,	_height( 0 )
 		,	_stroke_line_width( 1.0f )
+		,	_stroke_cap_style(VG_CAP_BUTT)
+		, 	_stroke_join_style(VG_JOIN_MITER)
 		,	_stroke_paint( 0 )
 		,	_fill_paint( 0 )
 		,	_active_matrix( &_path_user_to_surface )
@@ -126,6 +128,7 @@ namespace MonkVG {
 		,	_matrixMode( VG_MATRIX_PATH_USER_TO_SURFACE )
 		,	_currentBatch( 0 )
 		,	_imageMode( VG_DRAW_IMAGE_NORMAL )
+
 	{
 		_path_user_to_surface.setIdentity();
 		_glyph_user_to_surface.setIdentity();
@@ -178,6 +181,12 @@ namespace MonkVG {
 			case VG_IMAGE_MODE:
 				setImageMode( (VGImageMode)i );
 				break;
+			case VG_STROKE_CAP_STYLE:
+				setStrokeCapStyle( (VGCapStyle) i);
+				break;
+			case VG_STROKE_JOIN_STYLE:
+				setStrokeJoinStyle( (VGJoinStyle) i);
+				break;
 			default:
 				break;
 		}
@@ -226,13 +235,18 @@ namespace MonkVG {
 			case VG_IMAGE_MODE:
 				i = getImageMode( );
 				break;
-            case VG_SURFACE_WIDTH_MNK:
-                i = getWidth();
-                break;
-            case VG_SURFACE_HEIGHT_MNK:
-                i = getHeight();
-                break;
-				
+			case VG_STROKE_CAP_STYLE:
+				i = getStrokeCapStyle( );
+				break;
+			case VG_STROKE_JOIN_STYLE:
+				i = getStrokeJoinStyle( );
+				break;
+			case VG_SURFACE_WIDTH_MNK:
+				i = getWidth();
+				break;
+			case VG_SURFACE_HEIGHT_MNK:
+				i = getHeight();
+				break;
 			default:
 				break;
 		}

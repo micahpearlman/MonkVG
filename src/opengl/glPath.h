@@ -17,15 +17,13 @@
 #include "glPaint.h"
 
 namespace MonkVG {
+	class glBatch;
 	
 	class OpenGLPath : public IPath {
 	public:
 	
 		OpenGLPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) 
 			:	IPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities )
-			,	_fillTesseleator( 0 )
-			,	_strokeVBO(-1)
-			,	_fillVBO(-1)
 			,	_fillPaintForPath( 0 )
 			,	_strokePaintForPath( 0 )
 		{
@@ -37,6 +35,10 @@ namespace MonkVG {
 		virtual bool draw( VGbitfield paintModes );
 		virtual void clear( VGbitfield caps );
 		virtual void buildFillIfDirty();
+		void buildStrokeIfDirty();
+
+		void appendStrokeData(VGint nseg, const VGubyte * segments, const void * data);
+
 
 	private:
 		struct v2_t {
@@ -60,14 +62,20 @@ namespace MonkVG {
 		};
 		
 	private:
-		
-		GLUtesselator*		_fillTesseleator;
-		vector<GLfloat>		_vertices;
-		vector<v2_t>		_strokeVertices;
-		list<v3_t>			_tessVertices;
+		vector<GLfloat>		_fillVertices;
+		vector<GLfloat>		_strokeVertices;
+		vector<GLfloat>		*_vertices;
+		list<v3_t>		_fillTessVertices;
+		list<v3_t>		_strokeTessVertices;
+		list<v3_t>		*_tessVertices;
+
+
+		vector<VGubyte> _strokeSegments;
+		vector<GLfloat> _strokeData;
+
 		GLenum				_primType;
-		GLuint				_fillVBO;
-		GLuint				_strokeVBO;
+		GLvoid*				_fillOffset;
+		GLvoid*				_strokeOffset;
 		int					_numberFillVertices;
 		int					_numberStrokeVertices;
 		OpenGLPaint*		_fillPaintForPath;
@@ -82,6 +90,7 @@ namespace MonkVG {
 								GLfloat weight[4], void **outData,
 								void *polygonData );
 		static void tessError( GLenum errorCode );
+		static void tessEdgeFlag( GLboolean f, void * data ) {}
 		void endOfTesselation( VGbitfield paintModes );
 		
 	private:	// utility methods
@@ -94,7 +103,7 @@ namespace MonkVG {
 		}
 		
 		GLdouble* tessVerticesBackPtr() {
-			return &(_tessVertices.back().x);
+			return &(_tessVertices->back().x);
 		} 
 		
 		void updateBounds(float x, float y) {
@@ -108,19 +117,20 @@ namespace MonkVG {
 			VGfloat x = (VGfloat)v[0];
 			VGfloat y = (VGfloat)v[1];
 			updateBounds(x, y);
-			_vertices.push_back(x);
-			_vertices.push_back(y);
+			_vertices->push_back(x);
+			_vertices->push_back(y);
 		}
 
 		GLdouble * addTessVertex( const v3_t & v ) {
-			//updateBounds(v.x, v.y);
-			_tessVertices.push_back( v );
+			_tessVertices->push_back( v );
 			return tessVerticesBackPtr();
 		}
 		
 		void buildFill();
 		void buildStroke();
-		void buildFatLineSegment( vector<v2_t>& vertices, const v2_t& p0, const v2_t& p1, const float stroke_width );
+		void buildGen(vector<VGubyte> &segments, vector<VGfloat> &coords);
+
+		bool usesTexture() const;
 
 	};
 }
