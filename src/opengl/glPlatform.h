@@ -55,7 +55,7 @@
     #include <GLES2/gl2ext.h>
     #endif // #if INCLUDE_ES1_HEADERS
 
-    #include "glu.h"
+    #include <GL/glu.h>
 #endif // #if defined(USE_OPENGL)
 
 
