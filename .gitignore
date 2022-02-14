@@ -53,3 +53,4 @@ depcomp
 .libs/
 .deps/
 libtool
+thirdparty/glu/**
