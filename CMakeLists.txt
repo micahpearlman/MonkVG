@@ -100,6 +100,8 @@ if (DO_EXAMPLES)
     # now add the build glfw3 OpenGL windowing package
     set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glfw/lib/cmake")
     find_package(glfw3 REQUIRED)
+    set(GLFW_LIBRARIES
+    ${CMAKE_SOURCE_DIR}/thirdparty/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
 
     # GLEW library
     ExternalProject_Add(glew PREFIX glew
@@ -143,10 +145,15 @@ if (DO_EXAMPLES)
                                 ${CMAKE_SOURCE_DIR}/include/MonkVG
                                 ${GLEW_INCLUDE_DIRS}
                                 ${GLM_INCLUDE_DIRS}
-                                glm
-                                glfw3
                                 )
-    target_link_libraries(hello_world ${GLEW_LIBRARIES} ${GLFW3_LIBRARIES})
+    target_link_libraries(hello_world  PUBLIC
+                            ${GLFW_LIBRARIES}   
+                            ${GLEW_LIBRARIES}                     
+                            OpenGL::GL
+                            OpenGL::GLX
+                            ${CMAKE_DL_LIBS}
+                            pthread
+                            )
     
 endif()
 
