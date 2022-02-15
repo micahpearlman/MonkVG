@@ -36,9 +36,12 @@ if(DO_GLU_TESSELATION)
     # now add the build GLU package
     set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig")
     find_package(GLU REQUIRED)
+
 endif()
 
 if(DO_OPENGL_BACKEND)
+    find_package(OpenGL REQUIRED)
+
     set(BACKEND_SOURCE ${BACKEND_SOURCE}
         ./src/opengl/glBatch.cpp
         ./src/opengl/glContext.cpp
@@ -81,6 +84,70 @@ target_link_libraries(monkvg ${GLU_LIBRARIES})
 
 if (DO_EXAMPLES)
     ## Build Examples
+
+    include(ExternalProject)
+
+    # GLFW
+    ExternalProject_Add(glfw
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        CMAKE_ARGS 
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/thirdparty/glfw
+            -DCMAKE_BUILD_TYPE=Release
+
+            LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+    )
+
+    # now add the build glfw3 OpenGL windowing package
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glfw/lib/cmake")
+    find_package(glfw3 REQUIRED)
+
+    # GLEW library
+    ExternalProject_Add(glew PREFIX glew
+        GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
+
+        CMAKE_ARGS
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/thirdparty/glew
+            -DCMAKE_BUILD_TYPE=Release
+
+        LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+    )    
+
+    set(glew_DIR ${CMAKE_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
+    find_package(glew REQUIRED)
+    
+    set(GLEW_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/thirdparty/glew/include)
+    set(GLEW_LIBRARIES
+    ${CMAKE_SOURCE_DIR}/thirdparty/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}GLEW${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+    # GLM Math Library
+    ExternalProject_Add(glm
+        GIT_REPOSITORY https://github.com/g-truc/glm.git
+        CMAKE_ARGS 
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/thirdparty/glm 
+            -DCMAKE_BUILD_TYPE=Release
+            -DBUILD_TESTING=0
+
+        LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+    )
+
+    # now add the build glm package
+    set(glm_DIR ${CMAKE_SOURCE_DIR}/thirdparty/glm/lib/cmake/glm)
+    find_package(glm REQUIRED)
+    set(GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/thirdparty/glm/include)
+
+
+    add_executable(hello_world examples/hello_world.cpp)
+    add_dependencies(glm glew glfw monkvg)
+    target_include_directories(hello_world 
+                                PRIVATE 
+                                ${CMAKE_SOURCE_DIR}/include/MonkVG
+                                ${GLEW_INCLUDE_DIRS}
+                                ${GLM_INCLUDE_DIRS}
+                                glm
+                                glfw3
+                                )
+    target_link_libraries(hello_world ${GLEW_LIBRARIES} ${GLFW3_LIBRARIES})
+    
 endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
