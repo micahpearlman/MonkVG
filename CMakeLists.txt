@@ -2,24 +2,29 @@ cmake_minimum_required(VERSION 3.0.0)
 project(monkvg VERSION 0.1.0)
 
 # configuration
-set(DO_VULKAN_BACKEND FALSE) # Not Implemented Yet
-set(DO_OPENGL_BACKEND TRUE)
-set(DO_GLU_TESSELATION TRUE)
-set(DO_EXAMPLES TRUE)
+option(DO_VULKAN_BACKEND "Use Vulkan as the rendering backend.  NOT IMPLEMENTED" OFF) # Not Implemented Yet
+option(DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
+option(DO_GLU_TESSELATION "Use GLU tesselator" ON)
+option(DO_EXAMPLES "Build examples in the ./examples directory" ON)
 
-message("Project Binary: ${PROJECT_BINARY_DIR}")
+# message(STATUS "Project Binary: ${PROJECT_BINARY_DIR}")
 
-find_program(Meson_EXECUTABLE meson)
-if(NOT Meson_EXECUTABLE)
-   message(FATAL_ERRORO
-       "Meson is required!")
-   
-endif()
+# require PkgConfig
+find_package(PkgConfig REQUIRED)
 
 if(DO_GLU_TESSELATION)
     # OpenGL GLU project for the tesselation
     # Uses Meson for building
     include(ExternalProject)
+
+    # Require Meson for GLU building
+    find_program(Meson_EXECUTABLE meson)
+    if(NOT Meson_EXECUTABLE)
+    message(FATAL_ERRORO
+        "Meson is required!")
+    
+    endif()
+
     ExternalProject_Add(glu
         GIT_REPOSITORY  https://gitlab.freedesktop.org/mesa/glu.git
         GIT_TAG           master
@@ -34,9 +39,11 @@ if(DO_GLU_TESSELATION)
     )
 
     # now add the build GLU package
-    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig")
-    find_package(GLU REQUIRED)
+    # set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig")
+    # find_package(GLU REQUIRED)
+    pkg_check_modules(GLU REQUIRED glu)
 
+    message(STATUS "MICAH GLU LIBRARIES ---\n: ${GLU_LIBRARIES}")
 endif()
 
 if(DO_OPENGL_BACKEND)
@@ -72,7 +79,7 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
 set(COMMON_INCLUDE ${COMMON_INCLUDE} ./src)
 
 ## Build the MonkVG library
-add_library(monkvg ${BACKEND_SOURCE})
+add_library(monkvg ${COMMON_SOURCE} ${BACKEND_SOURCE})
 target_include_directories(monkvg 
                             PUBLIC 
                             ./include 
@@ -80,6 +87,7 @@ target_include_directories(monkvg
                             ${COMMON_INCLUDE} 
                             ${BACKEND_INCLUDE})
 target_link_libraries(monkvg ${GLU_LIBRARIES})
+
 
 
 if (DO_EXAMPLES)
@@ -138,15 +146,17 @@ if (DO_EXAMPLES)
     set(GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/thirdparty/glm/include)
 
 
-    add_executable(hello_world examples/hello_world.cpp)
-    add_dependencies(glm glew glfw monkvg)
-    target_include_directories(hello_world 
+    add_executable(glfw_hello_world examples/glfw_hello_world.cpp)
+    add_dependencies(glm glew glfw glu monkvg)
+    target_include_directories(glfw_hello_world 
                                 PRIVATE 
                                 ${CMAKE_SOURCE_DIR}/include/MonkVG
                                 ${GLEW_INCLUDE_DIRS}
                                 ${GLM_INCLUDE_DIRS}
                                 )
-    target_link_libraries(hello_world  PUBLIC
+    target_link_libraries(glfw_hello_world  PUBLIC
+                            monkvg
+                            ${GLU_LIBRARIES} # Required by MonkVG
                             ${GLFW_LIBRARIES}   
                             ${GLEW_LIBRARIES}                     
                             OpenGL::GL
