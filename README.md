@@ -16,6 +16,7 @@ Projects using MonkVG include:
 
 ## Whats New
 
+- (2/17/2022) CMake build support and GLFW example.
 - (1/22/2012) Now supports OpenGL ES 1.1 *AND* 2.0
 
 ## Installation
@@ -25,7 +26,17 @@ Use git to clone:
 <tt>$ git clone git@github.com:micahpearlman/MonkVG.git</tt>
 
 There are currently iOS and OSX XCode 4 projects as well as contributed Android projects (thanks Paul Holden)and Windows project (thanks Vincent Richomme).
+### CMake Build
 
+```
+mkdir ./build
+cd ./build
+
+cmake --build .
+
+# run the GLFW example
+./glfw_hello_world 
+```
 ## What is implemented
 
 - Most all path segment commands including: moves, lines, bezier curves, elliptical arcs.
@@ -62,10 +73,12 @@ Also Luke contributed a great article on how to integrate MonkVG + MonkSWF with 
 
 ## Simple Example
 
+See `./examples` directory.
+
 NOTE:  MonkVG will not create a OpenGL context, it is the applications responsibility to create there own OpenGL context.
 Also, if your application does any other OpenGL rendering it should save off the GL state and then restore before calling any MonkVG methods.
 
-<tt>
+```
 	
 	VGPaint _paint;
 	VGPath _path;
@@ -105,12 +118,12 @@ Also, if your application does any other OpenGL rendering it should save off the
 		... end opengl context ...
 		... restore and GL state here ...
 	}
-</tt>
+```
 
 
-##Android Build instructions
+## Android Build instructions
 
-###Overview
+### Overview
 
 Tested with ndk r9d on ubuntu.
 
@@ -120,7 +133,7 @@ There are 2 projects needed to build the example app:
 
 2. MonkVG-Test-Android wraps them and makes them accessible from an activity.
 
-###Build steps
+### Build steps
 
 ```bash
 ndk-build V=1
@@ -130,7 +143,7 @@ I used android-17 but any of the available targets should do.
 If ndk-build fails it may be helpful to import the projects in Eclipse and add the Native Tools (Right click on project name->**Android Tools-> Add Native Support**)
 make sure to `rm -rf obj/local/armeabi` on both projects for rebuilding, in order not to use old builds of the static libraries.
 
-###Deploy on device
+### Deploy on device
 ```bash
 android list targets
 android update project -p . --target android-17
