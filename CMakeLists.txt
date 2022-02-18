@@ -39,11 +39,10 @@ if(DO_GLU_TESSELATION)
     )
 
     # now add the build GLU package
-    # set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig")
-    # find_package(GLU REQUIRED)
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig")
+    # find_package(GLU REQUIRED PATHS ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig)
     pkg_check_modules(GLU REQUIRED glu)
 
-    message(STATUS "MICAH GLU LIBRARIES ---\n: ${GLU_LIBRARIES}")
 endif()
 
 if(DO_OPENGL_BACKEND)
@@ -78,6 +77,9 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
 )
 set(COMMON_INCLUDE ${COMMON_INCLUDE} ./src)
 
+# GLES2-BC library 
+add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty/gles2-bc)
+
 ## Build the MonkVG library
 add_library(monkvg ${COMMON_SOURCE} ${BACKEND_SOURCE})
 target_include_directories(monkvg 
@@ -86,7 +88,7 @@ target_include_directories(monkvg
                             PRIVATE 
                             ${COMMON_INCLUDE} 
                             ${BACKEND_INCLUDE})
-target_link_libraries(monkvg ${GLU_LIBRARIES})
+target_link_libraries(monkvg ${GLU_LIBRARIES} gles2-bc)
 
 
 
