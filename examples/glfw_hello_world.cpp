@@ -71,7 +71,6 @@ int main(int argc, char **argv) {
     glfwWindowHint(GLFW_OPENGL_PROFILE,
                    GLFW_OPENGL_ANY_PROFILE); // We don't want the old OpenGL
 
-
     // Open a window and create its OpenGL context
     GLFWwindow *window; // (In the accompanying source code, this variable is
                         // global for simplicity)
@@ -85,18 +84,32 @@ int main(int argc, char **argv) {
         return -1;
     }
     glfwMakeContextCurrent(window); // Initialize GLEW
-    vgCreateContextMNK(320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES32);
+    vgCreateContextMNK(320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES20);
 
-
-    GLuint programID = loadShaders( "simple_vertex_shader.glsl", "simple_fragment_shader.glsl" );
+    GLuint programID =
+        loadShaders("simple_vertex_shader.glsl", "simple_fragment_shader.glsl");
 
     GLuint vertexBuffer = initialize_triangle();
+
+    VGPaint _paint;
+    VGPath  _path;
+
+    // create a paint
+    _paint = vgCreatePaint();
+    vgSetPaint(_paint, VG_FILL_PATH);
+    VGfloat color[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+    vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
+
+    // create a box path
+    _path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0,
+                         0, VG_PATH_CAPABILITY_ALL);
+    vguRect(_path, 50.0f, 50.0f, 90.0f, 50.0f);
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
     do {
-        
+
         // Clear the screen.
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -106,6 +119,13 @@ int main(int argc, char **argv) {
 
         // draw test
         draw_vertex_buffer(vertexBuffer);
+
+        /// draw the basic path
+        vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        vgLoadIdentity();
+        vgTranslate(480 / 2, 320 / 2);
+        vgSetPaint(_paint, VG_FILL_PATH);
+        vgDrawPath(_path, VG_FILL_PATH);
 
         // Swap buffers
         glfwSwapBuffers(window);
