@@ -189,6 +189,9 @@ namespace MonkVG {
         /// renderer
         virtual VGRenderingBackendTypeMNK getRenderingBackendType() const { return _backendRenderer; }
         virtual void setRenderingBackendType( VGRenderingBackendTypeMNK backendRenderer ) { _backendRenderer = backendRenderer; }
+
+		virtual void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom, VGfloat top, VGfloat near, VGfloat far) = 0;
+		virtual void popOrthoCamera() = 0;
 	
 	protected:
 	
