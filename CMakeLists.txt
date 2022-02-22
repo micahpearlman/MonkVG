@@ -147,7 +147,7 @@ if (DO_EXAMPLES)
     find_package(glm REQUIRED)
     set(GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/thirdparty/glm/include)
 
-
+    # GLFW Hello World
     add_executable(glfw_hello_world examples/glfw_hello_world.cpp)
     add_dependencies(glm glew glfw glu monkvg)
     target_include_directories(glfw_hello_world 
@@ -166,6 +166,28 @@ if (DO_EXAMPLES)
                             ${CMAKE_DL_LIBS}
                             pthread
                             )
+
+    # Tiger
+    add_executable(tiger examples/tiger.cpp examples/tiger_paths.c)
+    add_dependencies(glm glew glfw glu monkvg)
+    target_include_directories(tiger 
+                                PRIVATE 
+                                ${CMAKE_SOURCE_DIR}/.
+                                ${CMAKE_SOURCE_DIR}/include/MonkVG
+                                ${GLEW_INCLUDE_DIRS}
+                                ${GLM_INCLUDE_DIRS}
+                                )
+    target_link_libraries(tiger  PUBLIC
+                            monkvg
+                            ${GLU_LIBRARIES} # Required by MonkVG
+                            ${GLFW_LIBRARIES}   
+                            ${GLEW_LIBRARIES}                     
+                            OpenGL::GL
+                            OpenGL::GLX
+                            ${CMAKE_DL_LIBS}
+                            pthread
+                            )
+
     
 endif()
 
