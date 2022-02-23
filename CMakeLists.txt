@@ -75,16 +75,17 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
     ./src/mkPath.cpp
     ./src/mkVGU.cpp
 )
-set(COMMON_INCLUDE ${COMMON_INCLUDE} ./src)
+set(COMMON_INCLUDE ${COMMON_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # GLES2-BC library 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gles2-bc)
 
 ## Build the MonkVG library
 add_library(monkvg ${COMMON_SOURCE} ${BACKEND_SOURCE})
+add_dependencies(monkvg glu gles2-bc)
 target_include_directories(monkvg 
                             PUBLIC 
-                            ./include 
+                            ${CMAKE_CURRENT_SOURCE_DIR}/include 
                             PRIVATE 
                             ${COMMON_INCLUDE} 
                             ${BACKEND_INCLUDE})
@@ -149,7 +150,7 @@ if (MKVG_DO_EXAMPLES)
 
     # GLFW Hello World
     add_executable(glfw_hello_world examples/glfw_hello_world.cpp)
-    add_dependencies(glm glew glfw glu monkvg)
+    add_dependencies(glfw_hello_world glm glew glfw glu monkvg)
     target_include_directories(glfw_hello_world 
                                 PRIVATE 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/include/MonkVG
