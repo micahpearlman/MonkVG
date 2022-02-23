@@ -2,17 +2,17 @@ cmake_minimum_required(VERSION 3.0.0)
 project(monkvg VERSION 0.1.0)
 
 # configuration
-option(DO_VULKAN_BACKEND "Use Vulkan as the rendering backend.  NOT IMPLEMENTED" OFF) # Not Implemented Yet
-option(DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
-option(DO_GLU_TESSELATION "Use GLU tesselator" ON)
-option(DO_EXAMPLES "Build examples in the ./examples directory" ON)
+option(MKVG_DO_VULKAN_BACKEND "Use Vulkan as the rendering backend.  NOT IMPLEMENTED" OFF) # Not Implemented Yet
+option(MKVG_DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
+option(MKVG_DO_GLU_TESSELATION "Use GLU tesselator" ON)
+option(MKVG_DO_EXAMPLES "Build examples in the ./examples directory" ON)
 
 # message(STATUS "Project Binary: ${PROJECT_BINARY_DIR}")
 
 # require PkgConfig
 find_package(PkgConfig REQUIRED)
 
-if(DO_GLU_TESSELATION)
+if(MKVG_DO_GLU_TESSELATION)
     # OpenGL GLU project for the tesselation
     # Uses Meson for building
     include(ExternalProject)
@@ -45,7 +45,7 @@ if(DO_GLU_TESSELATION)
 
 endif()
 
-if(DO_OPENGL_BACKEND)
+if(MKVG_DO_OPENGL_BACKEND)
     find_package(OpenGL REQUIRED)
 
     set(BACKEND_SOURCE ${BACKEND_SOURCE}
@@ -92,7 +92,7 @@ target_link_libraries(monkvg ${GLU_LIBRARIES} gles2-bc)
 
 
 
-if (DO_EXAMPLES)
+if (MKVG_DO_EXAMPLES)
     ## Build Examples
 
     include(ExternalProject)
