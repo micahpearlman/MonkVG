@@ -30,7 +30,7 @@ if(MKVG_DO_GLU_TESSELATION)
         GIT_TAG           master
         SOURCE_DIR        "glu-src"
         BINARY_DIR        "glu-build"    
-        CONFIGURE_COMMAND meson setup --prefix=${CMAKE_SOURCE_DIR}/thirdparty/glu -Ddefault_library=static  ${PROJECT_BINARY_DIR}/glu-build  ${PROJECT_BINARY_DIR}/glu-src
+        CONFIGURE_COMMAND meson setup --prefix=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glu -Ddefault_library=static  ${PROJECT_BINARY_DIR}/glu-build  ${PROJECT_BINARY_DIR}/glu-src
         BUILD_COMMAND ninja -C  ${PROJECT_BINARY_DIR}/glu-build
         INSTALL_COMMAND meson install -C  ${PROJECT_BINARY_DIR}/glu-build/
         TEST_COMMAND      ""
@@ -39,8 +39,8 @@ if(MKVG_DO_GLU_TESSELATION)
     )
 
     # now add the build GLU package
-    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig")
-    # find_package(GLU REQUIRED PATHS ${CMAKE_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig)
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig")
+    # find_package(GLU REQUIRED PATHS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glu/lib/pkgconfig)
     pkg_check_modules(GLU REQUIRED glu)
 
 endif()
@@ -78,7 +78,7 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
 set(COMMON_INCLUDE ${COMMON_INCLUDE} ./src)
 
 # GLES2-BC library 
-add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty/gles2-bc)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gles2-bc)
 
 ## Build the MonkVG library
 add_library(monkvg ${COMMON_SOURCE} ${BACKEND_SOURCE})
@@ -101,41 +101,41 @@ if (MKVG_DO_EXAMPLES)
     ExternalProject_Add(glfw
         GIT_REPOSITORY https://github.com/glfw/glfw.git
         CMAKE_ARGS 
-            -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/thirdparty/glfw
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw
             -DCMAKE_BUILD_TYPE=Release
 
             LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     )
 
     # now add the build glfw3 OpenGL windowing package
-    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/thirdparty/glfw/lib/cmake")
+    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/lib/cmake")
     find_package(glfw3 REQUIRED)
     set(GLFW_LIBRARIES
-    ${CMAKE_SOURCE_DIR}/thirdparty/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
 
     # GLEW library
     ExternalProject_Add(glew PREFIX glew
         GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
 
         CMAKE_ARGS
-            -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/thirdparty/glew
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew
             -DCMAKE_BUILD_TYPE=Release
 
         LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
     )    
 
-    set(glew_DIR ${CMAKE_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
+    set(glew_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
     find_package(glew REQUIRED)
     
-    set(GLEW_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/thirdparty/glew/include)
+    set(GLEW_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include)
     set(GLEW_LIBRARIES
-    ${CMAKE_SOURCE_DIR}/thirdparty/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}GLEW${CMAKE_STATIC_LIBRARY_SUFFIX})
+    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}GLEW${CMAKE_STATIC_LIBRARY_SUFFIX})
 
     # GLM Math Library
     ExternalProject_Add(glm
         GIT_REPOSITORY https://github.com/g-truc/glm.git
         CMAKE_ARGS 
-            -DCMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/thirdparty/glm 
+            -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm 
             -DCMAKE_BUILD_TYPE=Release
             -DBUILD_TESTING=0
 
@@ -143,16 +143,16 @@ if (MKVG_DO_EXAMPLES)
     )
 
     # now add the build glm package
-    set(glm_DIR ${CMAKE_SOURCE_DIR}/thirdparty/glm/lib/cmake/glm)
+    set(glm_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/lib/cmake/glm)
     find_package(glm REQUIRED)
-    set(GLM_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/thirdparty/glm/include)
+    set(GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/include)
 
     # GLFW Hello World
     add_executable(glfw_hello_world examples/glfw_hello_world.cpp)
     add_dependencies(glm glew glfw glu monkvg)
     target_include_directories(glfw_hello_world 
                                 PRIVATE 
-                                ${CMAKE_SOURCE_DIR}/include/MonkVG
+                                ${CMAKE_CURRENT_SOURCE_DIR}/include/MonkVG
                                 ${GLEW_INCLUDE_DIRS}
                                 ${GLM_INCLUDE_DIRS}
                                 )
@@ -172,8 +172,8 @@ if (MKVG_DO_EXAMPLES)
     add_dependencies(glm glew glfw glu monkvg)
     target_include_directories(tiger 
                                 PRIVATE 
-                                ${CMAKE_SOURCE_DIR}/.
-                                ${CMAKE_SOURCE_DIR}/include/MonkVG
+                                ${CMAKE_CURRENT_SOURCE_DIR}/.
+                                ${CMAKE_CURRENT_SOURCE_DIR}/include/MonkVG
                                 ${GLEW_INCLUDE_DIRS}
                                 ${GLM_INCLUDE_DIRS}
                                 )
