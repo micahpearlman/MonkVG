@@ -7,10 +7,12 @@ option(MKVG_DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
 option(MKVG_DO_GLU_TESSELATION "Use GLU tesselator" ON)
 option(MKVG_DO_EXAMPLES "Build examples in the ./examples directory" ON)
 
-# message(STATUS "Project Binary: ${PROJECT_BINARY_DIR}")
 
 # require PkgConfig
 find_package(PkgConfig REQUIRED)
+
+# External Project Handler
+include(build_external_proj.cmake)
 
 if(MKVG_DO_GLU_TESSELATION)
     # OpenGL GLU project for the tesselation
@@ -98,15 +100,11 @@ if (MKVG_DO_EXAMPLES)
 
     include(ExternalProject)
 
-    # GLFW
-    ExternalProject_Add(glfw
-        GIT_REPOSITORY https://github.com/glfw/glfw.git
-        CMAKE_ARGS 
-            -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw
-            -DCMAKE_BUILD_TYPE=Release
-
-            LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
-    )
+    # GLFW Library
+    set(GLFW_OPTIONS "")
+    list(APPEND GLFW_OPTIONS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw)
+    list(APPEND GLFW_OPTIONS -DCMAKE_BUILD_TYPE=Release)
+    build_external_git_project(glfw https://github.com/glfw/glfw.git ${GLFW_OPTIONS})
 
     # now add the build glfw3 OpenGL windowing package
     set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/lib/cmake")
@@ -114,34 +112,26 @@ if (MKVG_DO_EXAMPLES)
     set(GLFW_LIBRARIES
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
 
+    
     # GLEW library
-    ExternalProject_Add(glew PREFIX glew
-        GIT_REPOSITORY https://github.com/Perlmint/glew-cmake.git
+    set(GLEW_OPTIONS "")
+    list(APPEND GLEW_OPTIONS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew)
+    list(APPEND GLEW_OPTIONS -DCMAKE_BUILD_TYPE=Release)
+    build_external_git_project(glew https://github.com/Perlmint/glew-cmake.git ${GLEW_OPTIONS})
 
-        CMAKE_ARGS
-            -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew
-            -DCMAKE_BUILD_TYPE=Release
-
-        LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
-    )    
-
-    set(glew_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
-    find_package(glew REQUIRED)
+    # set(glew_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
+    find_package(glew REQUIRED PATHS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
     
     set(GLEW_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include)
     set(GLEW_LIBRARIES
     ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}GLEW${CMAKE_STATIC_LIBRARY_SUFFIX})
 
     # GLM Math Library
-    ExternalProject_Add(glm
-        GIT_REPOSITORY https://github.com/g-truc/glm.git
-        CMAKE_ARGS 
-            -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm 
-            -DCMAKE_BUILD_TYPE=Release
-            -DBUILD_TESTING=0
-
-        LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
-    )
+    set(GLM_OPTIONS "")
+    list(APPEND GLM_OPTIONS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm)
+    list(APPEND GLM_OPTIONS -DCMAKE_BUILD_TYPE=Release)
+    list(APPEND GLM_OPTIONS -DBUILD_TESTING=0)
+    build_external_git_project(glm https://github.com/g-truc/glm.git ${GLM_OPTIONS})
 
     # now add the build glm package
     set(glm_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/lib/cmake/glm)
@@ -150,7 +140,7 @@ if (MKVG_DO_EXAMPLES)
 
     # GLFW Hello World
     add_executable(glfw_hello_world examples/glfw_hello_world.cpp)
-    add_dependencies(glfw_hello_world glm glew glfw glu monkvg)
+    add_dependencies(glfw_hello_world monkvg)
     target_include_directories(glfw_hello_world 
                                 PRIVATE 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/include/MonkVG
@@ -170,7 +160,7 @@ if (MKVG_DO_EXAMPLES)
 
     # Tiger
     add_executable(tiger examples/tiger.cpp examples/tiger_paths.c)
-    add_dependencies(glm glew glfw glu monkvg)
+    add_dependencies(tiger monkvg)
     target_include_directories(tiger 
                                 PRIVATE 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/.
