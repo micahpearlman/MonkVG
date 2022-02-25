@@ -24,7 +24,9 @@ Projects using MonkVG include:
 
 Use git to clone:  
 
-<tt>$ git clone git@github.com:micahpearlman/MonkVG.git</tt>
+```
+https://github.com/micahpearlman/MonkVG.git
+```
 
 There are currently iOS and OSX XCode 4 projects as well as contributed Android projects (thanks Paul Holden)and Windows project (thanks Vincent Richomme).
 ### CMake Build
