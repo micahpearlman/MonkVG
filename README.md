@@ -124,6 +124,8 @@ void draw() {
 
 ## Android Build instructions
 
+**NOTE VERY VERY OLD**
+
 ### Overview
 
 Tested with ndk r9d on ubuntu.
