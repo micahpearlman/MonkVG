@@ -28,7 +28,7 @@ Use git to clone:
 git clone --recursive https://github.com/micahpearlman/MonkVG.git
 ```
 
-There are currently iOS and OSX XCode 4 projects as well as contributed Android projects (thanks Paul Holden)and Windows project (thanks Vincent Richomme).
+There are currently, GLFW (see `./examples` diectory).  Also, *VERY OLD* iOS and OSX XCode 4 projects as well as *VERY OLD* contributed Android projects (thanks Paul Holden)and Windows project (thanks Vincent Richomme).
 ### CMake Build
 
 ```
