@@ -1,5 +1,6 @@
-MonkVG -- An OpenVG implementation
+MonkVG: An OpenVG implementation
 ==================================
+![Tiger](tiger.png)
 
 ## Overview
 
