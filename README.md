@@ -80,44 +80,42 @@ Also, if your application does any other OpenGL rendering it should save off the
 
 ```
 	
-	VGPaint _paint;
-	VGPath _path;
-	void init() {
-		... setup platform specific opengl ...
-		// setup the OpenVG context
-		vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES20 );
-		
-		...OR... for OpenGL ES 1.1
-		
-		vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
-		
-		// create a paint
-		_paint = vgCreatePaint();
-		vgSetPaint(_paint, VG_FILL_PATH );
-		VGfloat color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-		vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
-		
-		// create a box path
-		_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
-		vguRect( _path, 50.0f, 50.0f, 90.0f, 50.0f );
-		
-		
-	}
+VGPaint _paint;
+VGPath _path;
+void init() {
+	... setup platform specific opengl ...
+	// setup the OpenVG context
+	vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES20 );
+
+	...OR... for OpenGL ES 1.1
+
+	vgCreateContextMNK( 320, 480, VG_RENDERING_BACKEND_TYPE_OPENGLES11 );
+
+	// create a paint
+	_paint = vgCreatePaint();
+	vgSetPaint(_paint, VG_FILL_PATH );
+	VGfloat color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+	vgSetParameterfv(_paint, VG_PAINT_COLOR, 4, &color[0]);
+
+	// create a box path
+	_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
+	vguRect( _path, 50.0f, 50.0f, 90.0f, 50.0f );
+}
 	
-	void draw() {
-		... save any GL state here ...
-		... start opengl context ...
-		
-		/// draw the basic path
-		vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
-		vgLoadIdentity();
-		vgTranslate( screenWidth/2, screenHeight/2 );
-		vgSetPaint( _paint, VG_FILL_PATH );
-		vgDrawPath( _path, VG_FILL_PATH );
-		
-		... end opengl context ...
-		... restore and GL state here ...
-	}
+void draw() {
+	... save any GL state here ...
+	... start opengl context ...
+
+	/// draw the basic path
+	vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+	vgLoadIdentity();
+	vgTranslate( screenWidth/2, screenHeight/2 );
+	vgSetPaint( _paint, VG_FILL_PATH );
+	vgDrawPath( _path, VG_FILL_PATH );
+
+	... end opengl context ...
+	... restore and GL state here ...
+}
 ```
 
 
