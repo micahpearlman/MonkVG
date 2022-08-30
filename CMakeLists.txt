@@ -77,13 +77,16 @@ if (MKVG_DO_EXAMPLES)
     set(PLATFORM_LIBS )
     if (${CMAKE_SYSTEM_NAME} MATCHES Linux)
         set(PLATFORM_LIBS ${PLATFORM_LIBS} OpenGL::GLX)
+        find_package(glfw3 REQUIRED)
+
     endif()
 
 
-    find_package(glfw3 3.4 REQUIRED)
     find_package(glm REQUIRED)
 
-    if (APPLE) 
+    if (APPLE)
+        find_package(glfw3 3.4 REQUIRED)
+ 
         # M1s have an issue with GLFW includes.  See: https://stackoverflow.com/questions/67373307/macos-m1-fatal-error-glfw-glfw3-h-file-not-found
         set(PLATFORM_LIBS ${PLATFORM_LIBS} "-framework Cocoa" "-framework OpenGL" "-framework IOKit")
         set(GLM_INCLUDE_DIRS ${GLM_INCLUDE_DIRS} /opt/homebrew/include)
