@@ -1,0 +1,6 @@
+root = true
+
+[{meson.build,meson_options.txt}]
+indent_size = 2
+indent_style = space
+insert_final_newline = true
