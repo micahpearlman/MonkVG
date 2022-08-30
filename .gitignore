@@ -53,16 +53,7 @@ depcomp
 .libs/
 .deps/
 libtool
-thirdparty/glu/**
-thirdparty/glfw/**
-thirdparty/glm/**
-thirdparty/glew/bin/glewinfo
-thirdparty/glew/bin/visualinfo
-thirdparty/glew/include/GL/eglew.h
-thirdparty/glew/include/GL/glew.h
-thirdparty/glew/include/GL/glxew.h
-thirdparty/glew/include/GL/wglew.h
-thirdparty/glew/lib/libglew-shared.so
-thirdparty/glew/lib/libglew-shared.so.2.2.0
-thirdparty/glew/lib/cmake/glew/glewConfig-release.cmake
-thirdparty/glew/lib/cmake/glew/glewConfig.cmake
+# thirdparty/glu/**
+# thirdparty/glfw/**
+# thirdparty/glm/**
+# thirdparty/glew/**

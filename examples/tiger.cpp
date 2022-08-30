@@ -3,8 +3,15 @@
 #include <vgext.h>
 
 // OpenGL window creation libraries
+#if defined(__APPLE__)
+#define GL_SILENCE_DEPRECATION
+#include <OpenGL/gl.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+#else
 #define GLFW_INCLUDE_ES32
 #include <GLFW/glfw3.h>
+#endif 
 #include <glm/glm.hpp>
 
 // System
