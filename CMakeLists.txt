@@ -80,35 +80,23 @@ if (MKVG_DO_EXAMPLES)
     endif()
 
 
-    find_package(glfw3 REQUIRED)
-    if (${CMAKE_SYSTEM_NAME} MATCHES Darwin) 
-        # M1s have an issue with GLFW includes.  See: https://stackoverflow.com/questions/67373307/macos-m1-fatal-error-glfw-glfw3-h-file-not-found
-        set(GLFW_INCLUDE_DIRS ${GLFW_INCLUDE_DIRS} /opt/homebrew/include)
-    endif()
-
-    
-    # GLEW library
-    set(GLEW_OPTIONS "")
-    list(APPEND GLEW_OPTIONS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew)
-    list(APPEND GLEW_OPTIONS -DCMAKE_BUILD_TYPE=Release)
-    build_external_git_project(glew https://github.com/Perlmint/glew-cmake.git ${GLEW_OPTIONS})
-
-    # set(glew_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
-    find_package(glew REQUIRED PATHS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/cmake/glew)
-    
-    set(GLEW_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/include)
-    set(GLEW_LIBRARIES
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glew/lib/${CMAKE_STATIC_LIBRARY_PREFIX}GLEW${CMAKE_STATIC_LIBRARY_SUFFIX})
-
+    find_package(glfw3 3.4 REQUIRED)
     find_package(glm REQUIRED)
 
+    if (APPLE) 
+        # M1s have an issue with GLFW includes.  See: https://stackoverflow.com/questions/67373307/macos-m1-fatal-error-glfw-glfw3-h-file-not-found
+        set(PLATFORM_LIBS ${PLATFORM_LIBS} "-framework Cocoa" "-framework OpenGL" "-framework IOKit")
+        set(GLM_INCLUDE_DIRS ${GLM_INCLUDE_DIRS} /opt/homebrew/include)
+    endif(APPLE)
+
+    
+    
     # GLFW Hello World
     add_executable(glfw_hello_world examples/glfw_hello_world.cpp)
     add_dependencies(glfw_hello_world monkvg)
     target_include_directories(glfw_hello_world 
                                 PRIVATE 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/include/MonkVG
-                                ${GLEW_INCLUDE_DIRS}
                                 ${GLM_INCLUDE_DIRS}
                                 ${GLFW_INCLUDE_DIRS}                                
                                 )
@@ -116,7 +104,6 @@ if (MKVG_DO_EXAMPLES)
                             monkvg
                             ${GLU_LIBRARIES} # Required by MonkVG
                             glfw   
-                            ${GLEW_LIBRARIES}                     
                             OpenGL::GL
                             ${PLATFORM_LIBS}
                             ${CMAKE_DL_LIBS}
@@ -130,7 +117,6 @@ if (MKVG_DO_EXAMPLES)
                                 PRIVATE 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/.
                                 ${CMAKE_CURRENT_SOURCE_DIR}/include/MonkVG
-                                ${GLEW_INCLUDE_DIRS}
                                 ${GLM_INCLUDE_DIRS}
                                 ${GLFW_INCLUDE_DIRS}
                                 )
@@ -138,14 +124,13 @@ if (MKVG_DO_EXAMPLES)
                             monkvg
                             ${GLU_LIBRARIES} # Required by MonkVG
                             glfw   
-                            ${GLEW_LIBRARIES}                     
                             OpenGL::GL
                             ${PLATFORM_LIBS}
                             ${CMAKE_DL_LIBS}
                             pthread
                             )
 
-    
+
 endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

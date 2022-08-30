@@ -99,7 +99,15 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // create OpeGL window
+    // create OpenGL window
+#if defined(__APPLE__)
+    /* We need to explicitly ask for a 3.2 context on OS X */
+    // see: https://gist.github.com/v3n/27e810ac744b076ceeb7
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#else
     glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -107,6 +115,7 @@ int main(int argc, char **argv) {
                    GL_TRUE); // To make MacOS happy; should not be needed
     glfwWindowHint(GLFW_OPENGL_PROFILE,
                    GLFW_OPENGL_ANY_PROFILE); // We don't want the old OpenGL
+#endif
 
     // Open a window and create its OpenGL context
     GLFWwindow *window; // (In the accompanying source code, this variable is

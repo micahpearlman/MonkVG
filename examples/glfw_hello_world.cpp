@@ -5,7 +5,6 @@
 // OpenGL window creation libraries
 #if defined(__APPLE__)
 #define GL_SILENCE_DEPRECATION
-#include <OpenGL/gl.h>
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 #else
@@ -14,6 +13,7 @@
 #endif
 
 #include <glm/glm.hpp>
+
 
 // System
 #include <iostream>
@@ -30,10 +30,8 @@ int main(int argc, char **argv) {
 
     // create OpeGL window
 #if defined(__APPLE__)
-    /* We need to explicitly ask for a 3.2 context on OS X */
-    // see: https://gist.github.com/v3n/27e810ac744b076ceeb7
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #else
@@ -47,16 +45,14 @@ int main(int argc, char **argv) {
 #endif
 
     // Open a window and create its OpenGL context
-    GLFWwindow *window; // (In the accompanying source code, this variable is
-                        // global for simplicity)
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "MonkVG Hello World",
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "MonkVG Hello World",
                               NULL, NULL);
     if (window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.\n");
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(window); // Initialize GLEW
+    glfwMakeContextCurrent(window); 
 
     // Initialize MonkVG using GLES 2.0 rendering
     vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,

@@ -35,10 +35,27 @@ There are currently, GLFW (see `./examples` diectory).  Also, *VERY OLD* iOS and
 mkdir ./build
 cd ./build
 
+cmake ..
 cmake --build .
 
 # run the GLFW example
 ./glfw_hello_world 
+```
+
+#### MacOS Arm Notes
+
+The standard brew glfw library won't work on M1 Mac.  To install the correct version:
+
+```
+# Remove GLFW
+brew uninstall glfw
+
+# Build GLFW from source
+git clone https://github.com/glfw/glfw.git && \
+cd glfw && \
+cmake -DCMAKE_OSX_ARCHITECTURES=arm64 . && \
+make && \
+sudo make install
 ```
 ## What is implemented
 
