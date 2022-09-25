@@ -245,8 +245,7 @@ namespace MonkVG {
 		
 
 		_fillTesseleator = gluNewTess();
-		gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessBegin );
-		gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessEnd );
+		gluTessCallback( _fillTesseleator, GLU_TESS_EDGE_FLAG_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessEdgeFlag );
 		gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessVertex );
 		gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessCombine );
 		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (APIENTRY *)())&OpenGLPath::tessError );
@@ -931,101 +930,12 @@ namespace MonkVG {
 		_strokeVertices.clear();
 	}
 	
-	static GLdouble startVertex_[2];
-	static GLdouble lastVertex_[2];
-	static int vertexCount_ = 0;
-	
-	void OpenGLPath::tessBegin( GLenum type, GLvoid* user ) {
-		OpenGLPath* me = (OpenGLPath*)user;
-		me->setPrimType( type );
-		vertexCount_ = 0;
-		
-		switch( type )
-		{
-			case GL_TRIANGLES:
-				//printf( "begin(GL_TRIANGLES)\n" );
-				break;
-			case GL_TRIANGLE_FAN:
-				//printf( "begin(GL_TRIANGLE_FAN)\n" );
-				break;
-			case GL_TRIANGLE_STRIP:
-				//printf( "begin(GL_TRIANGLE_STRIP)\n" );
-				break;
-			case GL_LINE_LOOP:
-				//printf( "begin(GL_LINE_LOOP)\n" );
-				break;
-			default:
-				break;
-		}
-		
-	}
-	
-	
-	void OpenGLPath::tessEnd( GLvoid* user ) {
-		//		OpenGLPath* me = (OpenGLPath*)user;
-		//		me->endOfTesselation();
-		
-		//printf("end\n");
-	}
-	
-	
 	void OpenGLPath::tessVertex( GLvoid* vertex, GLvoid* user ) {
 		OpenGLPath* me = (OpenGLPath*)user;
 		GLdouble* v = (GLdouble*)vertex;
-		
-		if ( me->primType() == GL_TRIANGLE_FAN ) {
-			// break up fans and strips into triangles
-			switch ( vertexCount_ ) {
-				case 0:
-					startVertex_[0] = v[0];
-					startVertex_[1] = v[1];
-					break;
-				case 1:
-					lastVertex_[0] = v[0];
-					lastVertex_[1] = v[1];
-					break;
-					
-				default:
-					me->addVertex( startVertex_ );
-					me->addVertex( lastVertex_ );
-					me->addVertex( v );
-					lastVertex_[0] = v[0];
-					lastVertex_[1] = v[1];
-					break;
-			}
-		} else if ( me->primType() == GL_TRIANGLES ) {
-			me->addVertex( v );
-		} else if ( me->primType() == GL_TRIANGLE_STRIP ) {
-			switch ( vertexCount_ ) {
-				case 0:
-					me->addVertex( v );
-					break;
-				case 1:
-					startVertex_[0] = v[0];
-					startVertex_[1] = v[1];
-					me->addVertex( v );
-					break;
-				case 2:
-					lastVertex_[0] = v[0];
-					lastVertex_[1] = v[1];
-					me->addVertex( v );
-					break;
-					
-				default:
-					me->addVertex( startVertex_ );
-					me->addVertex( lastVertex_ );
-					me->addVertex( v );
-					startVertex_[0] = lastVertex_[0];
-					startVertex_[1] = lastVertex_[1];
-					lastVertex_[0] = v[0];
-					lastVertex_[1] = v[1];
-					break;
-			}
-		}
-		vertexCount_++;
-		
-				//printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
+		me->addVertex( v );
 	}
+
 	void OpenGLPath::tessCombine( GLdouble coords[3], void *data[4],
 								 GLfloat weight[4], void **outData,
 								 void *polygonData ) {
@@ -1038,6 +948,9 @@ namespace MonkVG {
 	void OpenGLPath::tessError( GLenum errorCode ) {
 		printf("tesselator error: [%d] %s\n", errorCode, gluErrorString( errorCode) );
 	}
+
+	void OpenGLPath::tessEdgeFlag( GLboolean f, void * data ) { }
+
 	
 	OpenGLPath::~OpenGLPath() {
 		if ( _fillTesseleator ) {
