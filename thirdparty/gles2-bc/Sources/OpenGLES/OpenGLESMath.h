@@ -21,6 +21,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <algorithm>
 #include "OpenGLESUtil.h"
 #include "OpenGLESConfig.h"
 
