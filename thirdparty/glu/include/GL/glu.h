@@ -31,6 +31,9 @@
 #ifndef __glu_h__
 #define __glu_h__
 #if defined(__APPLE__)
+// turn off opengl deprecated warnings
+#define GL_SILENCE_DEPRECATION
+
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>

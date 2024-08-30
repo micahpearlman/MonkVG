@@ -10,6 +10,8 @@
 #define MonkVG_iOS_glPlatform_h
 
 #if defined(__APPLE__)
+    // turn off opengl deprecated warnings
+    #define GL_SILENCE_DEPRECATION
 
     #include "TargetConditionals.h"
     #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
