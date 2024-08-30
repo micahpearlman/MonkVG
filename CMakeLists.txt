@@ -3,10 +3,14 @@ project(monkvg VERSION 0.1.0)
 
 # configuration
 option(MKVG_DO_VULKAN_BACKEND "Use Vulkan as the rendering backend.  NOT IMPLEMENTED" OFF) # Not Implemented Yet
+option(MKVG_DO_OPENGLES_BACKEND "Use OpenGL ES as the rendering backend." OFF)
 option(MKVG_DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
 option(MKVG_DO_GLU_TESSELATION "Use GLU tesselator" ON)
 option(MKVG_DO_EXAMPLES "Build examples in the ./examples directory" ON)
 
+if (MKVG_DO_OPENGLES_BACKEND AND MKVG_DO_OPENGL_BACKEND)
+    message(FATAL_ERROR "Cannot build both OpenGL and OpenGL ES backends MKVG_DO_OPENGLES_BACKEND: ${MKVG_DO_OPENGLES_BACKEND} MKVG_DO_OPENGL_BACKEND: ${MKVG_DO_OPENGL_BACKEND}" )
+endif()
 
 # require PkgConfig
 find_package(PkgConfig REQUIRED)
@@ -20,6 +24,31 @@ if(MKVG_DO_GLU_TESSELATION)
     set(GLU_INCLUDE_DIRS thirdparty/glu/include)
 endif()
 
+if(MKVG_DO_OPENGLES_BACKEND)
+    find_package(OpenGL REQUIRED)
+
+    set(BACKEND_SOURCE ${BACKEND_SOURCE}
+        ./src/opengl_es/glesBatch.cpp
+        ./src/opengl_es/glesContext.cpp
+        ./src/opengl_es/glesFont.cpp
+        ./src/opengl_es/glesImage.cpp
+        ./src/opengl_es/glesPaint.cpp
+        ./src/opengl_es/glesPath.cpp)
+    set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
+        ./src/opengl_es
+        ${GLU_INCLUDE_DIRS}
+        ./thirdparty/gles2-bc/Sources/OpenGLES
+        ./thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES11
+        ./thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES20)    
+
+        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gles2-bc)
+        set(MNKVG_DEPENDENCIES ${DMNKVG_EPENDENCIES} gles2-bc)
+        set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} gles2-bc)
+        set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_GLES_BACKEND)
+    
+endif()
+
+
 if(MKVG_DO_OPENGL_BACKEND)
     find_package(OpenGL REQUIRED)
 
@@ -32,11 +61,11 @@ if(MKVG_DO_OPENGL_BACKEND)
         ./src/opengl/glPath.cpp)
     set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
         ./src/opengl
-        ${GLU_INCLUDE_DIRS}
-        ./thirdparty/gles2-bc/Sources/OpenGLES
-        ./thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES11
-        ./thirdparty/gles2-bc/Sources/OpenGLES/OpenGLES20)    
+        ${GLU_INCLUDE_DIRS})
+
+    set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_GL_BACKEND)
 endif()
+
 
 set(COMMON_SOURCE ${COMMON_SOURCE}
     ./src/mkBaseObject.cpp
@@ -52,19 +81,24 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
 )
 set(COMMON_INCLUDE ${COMMON_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# GLES2-BC library 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gles2-bc)
+# if(MKVG_DO_OPENGLES_BACKEND)
+#     # GLES2-BC library 
+#     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gles2-bc)
+#     set(MNKVG_DEPENDENCIES ${DMNKVG_EPENDENCIES} gles2-bc)
+#     set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} gles2-bc)
+# endif()
 
 ## Build the MonkVG library
 add_library(monkvg ${COMMON_SOURCE} ${BACKEND_SOURCE})
-add_dependencies(monkvg ${GLU_LIBRARIES} gles2-bc)
+add_dependencies(monkvg ${GLU_LIBRARIES} ${MNKVG_DEPENDENCIES})
+target_compile_definitions(monkvg PRIVATE ${MNKVG_COMPILE_DEFS})
 target_include_directories(monkvg 
                             PUBLIC 
                             ${CMAKE_CURRENT_SOURCE_DIR}/include 
                             PRIVATE 
                             ${COMMON_INCLUDE} 
                             ${BACKEND_INCLUDE})
-target_link_libraries(monkvg ${GLU_LIBRARIES} gles2-bc)
+target_link_libraries(monkvg ${GLU_LIBRARIES} ${MNKVG_LIBRARIES})
 
 
 

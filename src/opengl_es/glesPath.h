@@ -7,14 +7,14 @@
  *
  */
 
-#ifndef __glPath_h__
-#define __glPath_h__
+#ifndef __glesPath_h__
+#define __glesPath_h__
 
 #include "mkPath.h"
-#include "glPlatform.h"
-#include "glPaint.h"
+#include "glesPlatform.h"
 #include <list>
 #include <vector>
+#include "glesPaint.h"
 
 namespace MonkVG {
 	
@@ -125,4 +125,4 @@ namespace MonkVG {
 	};
 }
 
-#endif // __glPath_h__
+#endif // __glesPath_h__

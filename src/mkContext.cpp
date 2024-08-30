@@ -7,12 +7,17 @@
  *
  */
 #include "mkContext.h"
-#include "glPath.h"
-#include "glContext.h"
+#if defined(MNKVG_GLES_BACKEND)
+#include "opengl_es/glesContext.h"
+#include "opengl_es/glesPath.h"
+#elif defined(MNKVG_GL_BACKEND)
+#include "opengl/glContext.h"
+#else
+#error "No backend defined"
+#endif
 
 using namespace MonkVG;
 
-// static VGContext *g_context = NULL;
 
 VG_API_CALL VGboolean vgCreateContextMNK(VGint width, VGint height,
                                          VGRenderingBackendTypeMNK backend) {

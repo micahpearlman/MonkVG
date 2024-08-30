@@ -19,7 +19,7 @@
     #if INCLUDE_ES1_HEADERS
         #include <OpenGLES/ES1/gl.h>
         #include <OpenGLES/ES1/glext.h>
-    #else
+    #else  // GLES 2
         #include <OpenGLES/ES2/gl.h>
         #include <OpenGLES/ES2/glext.h>
     #endif // INCLUDE_ES1_HEADERS

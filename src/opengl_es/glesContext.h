@@ -7,21 +7,25 @@
  *
  */
 
-#ifndef __glContext_h__
-#define __glContext_h__
+#ifndef __glesContext_h__
+#define __glesContext_h__
 
 #include "mkContext.h"
-#include "glPlatform.h"
+#include "glesPlatform.h"
+#include "OpenGLES11Context.h"
+#include "OpenGLES20Context.h"
 #undef CHECK_GL_ERROR // gles2-bc also leaves this defined.
 
 namespace MonkVG {
 
+#define GL (((GLESContext *)&IContext::instance())->gl())
+
 // todo: setup debug and release versions
 //#define CHECK_GL_ERROR OpenGLContext::checkGLError()
 #define CHECK_GL_ERROR
-class OpenGLContext : public IContext {
+class GLESContext : public IContext {
   public:
-    OpenGLContext();
+    GLESContext();
 
     virtual bool Initialize();
     virtual bool Terminate();
@@ -87,6 +91,8 @@ class OpenGLContext : public IContext {
                                  VGfloat top, VGfloat near, VGfloat far);
     virtual void popOrthoCamera();
 
+    OpenGLES::OpenGLESContext *getGLESBackendContext() { return _gl; }
+    OpenGLES::OpenGLESContext *gl() { return getGLESBackendContext(); }
 
   private:
     // restore values to play nice with other apps
@@ -95,7 +101,9 @@ class OpenGLContext : public IContext {
     float _modelview[16];
     float _color[4];
 
+    // the gl context
+    OpenGLES::OpenGLESContext *_gl;
 };
 } // namespace MonkVG
 
-#endif // __qlContext_h__
+#endif // __glesContext_h__

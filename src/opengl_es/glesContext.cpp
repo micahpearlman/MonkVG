@@ -7,25 +7,25 @@
  *
  */
 
-#include "glContext.h"
-#include "glPath.h"
-#include "glPaint.h"
-#include "glBatch.h"
-#include "glImage.h"
-#include "glFont.h"
+#include "glesContext.h"
+#include "glesPath.h"
+#include "glesPaint.h"
+#include "glesBatch.h"
+#include "glesImage.h"
+#include "glesFont.h"
 #include "mkCommon.h"
 
 namespace MonkVG {
 
 //// singleton implementation ////
 IContext &IContext::instance() {
-    static OpenGLContext g_context;
+    static GLESContext g_context;
     return g_context;
 }
 
-OpenGLContext::OpenGLContext() : IContext() {}
+GLESContext::GLESContext() : IContext() {}
 
-void OpenGLContext::checkGLError() {
+void GLESContext::checkGLError() {
 
     int err = glGetError();
 
@@ -63,64 +63,72 @@ void OpenGLContext::checkGLError() {
     }
 }
 
-bool OpenGLContext::Initialize() {
+bool GLESContext::Initialize() {
 
     CHECK_GL_ERROR;
 
     // create the gl backend context dependent on user selected backend
-    if (getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGL33) {
+    if (getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGLES11) {
+        _gl = new OpenGLES::OpenGLES1::OpenGLES11Context();
+    } else if (getRenderingBackendType() ==
+               VG_RENDERING_BACKEND_TYPE_OPENGLES20) {
+        _gl = new OpenGLES::OpenGLES2::OpenGLES20Context();
     } else { // error
-        MK_ASSERT(!"ERROR: Unsupported Rendering Backend.");
+        MK_ASSERT(!"ERROR: No OpenGL rendering backend selected");
     }
 
     // get viewport to restore back when we are done
-    glGetIntegerv(GL_VIEWPORT, _viewport);
+    gl()->glGetIntegerv(GL_VIEWPORT, _viewport);
     // fixme?		gl()->glGetFloatv( GL_PROJECTION_MATRIX, _projection );
     // fixme?		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
 
     // get the color to back up when we are done
-    glGetFloatv(GL_CURRENT_COLOR, _color);
+    gl()->glGetFloatv(GL_CURRENT_COLOR, _color);
 
     resize();
 
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_TEXTURE_2D);
+    gl()->glDisable(GL_CULL_FACE);
+    gl()->glDisable(GL_TEXTURE_2D);
 
     // turn on blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    gl()->glEnable(GL_BLEND);
+    gl()->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glDisable(GL_TEXTURE_2D);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
+    gl()->glDisable(GL_TEXTURE_2D);
+    gl()->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    gl()->glDisableClientState(GL_COLOR_ARRAY);
+    gl()->glEnableClientState(GL_VERTEX_ARRAY);
 
     CHECK_GL_ERROR;
 
     return true;
 }
 
-void OpenGLContext::resize() {
+void GLESContext::resize() {
     // setup GL projection
-    glViewport(0, 0, _width, _height);
+    gl()->glViewport(0, 0, _width, _height);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrthof(0, _width,  // left, right
+    gl()->glMatrixMode(GL_PROJECTION);
+    gl()->glLoadIdentity();
+    gl()->glOrthof(0, _width,  // left, right
                    0, _height, // top, botton
                    -1, 1);     // near value, far value (depth)
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    gl()->glMatrixMode(GL_MODELVIEW);
+    gl()->glLoadIdentity();
 }
 
-bool OpenGLContext::Terminate() {
-    _stroke_paint = nullptr;
-    _fill_paint = nullptr;
+bool GLESContext::Terminate() {
+    if (_gl) {
+        delete _gl;
+        _gl = NULL;
+    }
+    _stroke_paint = NULL;
+    _fill_paint = NULL;
     return true;
 }
 
-void OpenGLContext::beginRender() {
+void GLESContext::beginRender() {
     //		glDisable(GL_TEXTURE_2D);
     //		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
     //		glDisableClientState( GL_COLOR_ARRAY );
@@ -159,7 +167,7 @@ void OpenGLContext::beginRender() {
     //
     //		CHECK_GL_ERROR;
 }
-void OpenGLContext::endRender() {
+void GLESContext::endRender() {
     //
     //		CHECK_GL_ERROR;
     //
@@ -180,7 +188,7 @@ void OpenGLContext::endRender() {
 
 /// factories
 
-IPath *OpenGLContext::createPath(VGint pathFormat, VGPathDatatype datatype,
+IPath *GLESContext::createPath(VGint pathFormat, VGPathDatatype datatype,
                                  VGfloat scale, VGfloat bias,
                                  VGint      segmentCapacityHint,
                                  VGint      coordCapacityHint,
@@ -195,49 +203,49 @@ IPath *OpenGLContext::createPath(VGint pathFormat, VGPathDatatype datatype,
     return (IPath *)path;
 }
 
-void OpenGLContext::destroyPath(IPath *path) { delete (OpenGLPath *)path; }
+void GLESContext::destroyPath(IPath *path) { delete (OpenGLPath *)path; }
 
-void OpenGLContext::destroyPaint(IPaint *paint) { delete (OpenGLPaint *)paint; }
+void GLESContext::destroyPaint(IPaint *paint) { delete (OpenGLPaint *)paint; }
 
-IPaint *OpenGLContext::createPaint() {
+IPaint *GLESContext::createPaint() {
     OpenGLPaint *paint = new OpenGLPaint();
     if (paint == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
     return (IPaint *)paint;
 }
 
-IBatch *OpenGLContext::createBatch() {
+IBatch *GLESContext::createBatch() {
     OpenGLBatch *batch = new OpenGLBatch();
     if (batch == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
     return (IBatch *)batch;
 }
 
-void OpenGLContext::destroyBatch(IBatch *batch) {
+void GLESContext::destroyBatch(IBatch *batch) {
     if (batch) {
         delete batch;
     }
 }
 
-IImage *OpenGLContext::createImage(VGImageFormat format, VGint width,
+IImage *GLESContext::createImage(VGImageFormat format, VGint width,
                                    VGint height, VGbitfield allowedQuality) {
     return new OpenGLImage(format, width, height, allowedQuality);
 }
-void OpenGLContext::destroyImage(IImage *image) {
+void GLESContext::destroyImage(IImage *image) {
     if (image) {
         delete image;
     }
 }
 
-IFont *OpenGLContext::createFont() { return new OpenGLFont(); }
-void   OpenGLContext::destroyFont(IFont *font) {
+IFont *GLESContext::createFont() { return new OpenGLFont(); }
+void   GLESContext::destroyFont(IFont *font) {
     if (font) {
         delete font;
     }
 }
 
 /// state
-void OpenGLContext::setStrokePaint(IPaint *paint) {
+void GLESContext::setStrokePaint(IPaint *paint) {
     if (paint != _stroke_paint) {
         IContext::setStrokePaint(paint);
         OpenGLPaint *glPaint = (OpenGLPaint *)_stroke_paint;
@@ -247,7 +255,7 @@ void OpenGLContext::setStrokePaint(IPaint *paint) {
     }
 }
 
-void OpenGLContext::setFillPaint(IPaint *paint) {
+void GLESContext::setFillPaint(IPaint *paint) {
     if (paint != _fill_paint) {
         IContext::setFillPaint(paint);
         OpenGLPaint *glPaint = (OpenGLPaint *)_fill_paint;
@@ -257,7 +265,7 @@ void OpenGLContext::setFillPaint(IPaint *paint) {
     }
 }
 
-void OpenGLContext::stroke() {
+void GLESContext::stroke() {
     if (_stroke_paint) {
         OpenGLPaint *glPaint = (OpenGLPaint *)_stroke_paint;
         glPaint->setGLState();
@@ -270,7 +278,7 @@ void OpenGLContext::stroke() {
     }
 }
 
-void OpenGLContext::fill() {
+void GLESContext::fill() {
 
     if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
         OpenGLPaint *glPaint = (OpenGLPaint *)_fill_paint;
@@ -289,23 +297,23 @@ void OpenGLContext::fill() {
     //		}
 }
 
-void OpenGLContext::startBatch(IBatch *batch) {
+void GLESContext::startBatch(IBatch *batch) {
     assert(_currentBatch == 0); // can't have multiple batches going on at once
     _currentBatch = batch;
 }
-void OpenGLContext::dumpBatch(IBatch *batch, void **vertices, size_t *size) {
+void GLESContext::dumpBatch(IBatch *batch, void **vertices, size_t *size) {
     _currentBatch->dump(vertices, size);
 }
-void OpenGLContext::endBatch(IBatch *batch) {
+void GLESContext::endBatch(IBatch *batch) {
     _currentBatch->finalize();
     _currentBatch = 0;
 }
 
-void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {
+void GLESContext::clear(VGint x, VGint y, VGint width, VGint height) {
     // TODO:
 }
 
-void OpenGLContext::loadGLMatrix() {
+void GLESContext::loadGLMatrix() {
     Matrix33 &active = *getActiveMatrix();
     GLfloat   mat44[4][4];
     for (int x = 0; x < 4; x++)
@@ -326,16 +334,16 @@ void OpenGLContext::loadGLMatrix() {
     mat44[1][1] = active.d;
     mat44[3][0] = active.e;
     mat44[3][1] = active.f;
-    glLoadMatrixf(&mat44[0][0]);
+    gl()->glLoadMatrixf(&mat44[0][0]);
 }
 
-void OpenGLContext::setIdentity() {
+void GLESContext::setIdentity() {
     Matrix33 *active = getActiveMatrix();
     active->setIdentity();
     loadGLMatrix();
 }
 
-void OpenGLContext::transform(VGfloat *t) {
+void GLESContext::transform(VGfloat *t) {
     // a	b	0
     // c	d	0
     // tx	ty	1
@@ -344,7 +352,7 @@ void OpenGLContext::transform(VGfloat *t) {
         t[i] = active->m[i];
 }
 
-void OpenGLContext::setTransform(const VGfloat *t) {
+void GLESContext::setTransform(const VGfloat *t) {
     //	OpenVG:
     //	sh	shx	tx
     //	shy	sy	ty
@@ -361,7 +369,7 @@ void OpenGLContext::setTransform(const VGfloat *t) {
     loadGLMatrix();
 }
 
-void OpenGLContext::multiply(const VGfloat *t) {
+void GLESContext::multiply(const VGfloat *t) {
     Matrix33 m;
     for (int x = 0; x < 3; x++) {
         for (int y = 0; y < 3; y++) {
@@ -373,7 +381,7 @@ void OpenGLContext::multiply(const VGfloat *t) {
     loadGLMatrix();
 }
 
-void OpenGLContext::scale(VGfloat sx, VGfloat sy) {
+void GLESContext::scale(VGfloat sx, VGfloat sy) {
     Matrix33 *active = getActiveMatrix();
     Matrix33  scale;
     scale.setIdentity();
@@ -383,7 +391,7 @@ void OpenGLContext::scale(VGfloat sx, VGfloat sy) {
     active->copy(tmp);
     loadGLMatrix();
 }
-void OpenGLContext::translate(VGfloat x, VGfloat y) {
+void GLESContext::translate(VGfloat x, VGfloat y) {
 
     Matrix33 *active = getActiveMatrix();
     Matrix33  translate;
@@ -394,7 +402,7 @@ void OpenGLContext::translate(VGfloat x, VGfloat y) {
     active->copy(tmp);
     loadGLMatrix();
 }
-void OpenGLContext::rotate(VGfloat angle) {
+void GLESContext::rotate(VGfloat angle) {
     Matrix33 *active = getActiveMatrix();
     Matrix33  rotate;
     rotate.setRotation(radians(angle));
@@ -405,14 +413,14 @@ void OpenGLContext::rotate(VGfloat angle) {
     loadGLMatrix();
 }
 
-void OpenGLContext::setImageMode(VGImageMode im) {
+void GLESContext::setImageMode(VGImageMode im) {
     IContext::setImageMode(im);
     switch (im) {
     case VG_DRAW_IMAGE_NORMAL:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        gl()->glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         break;
     case VG_DRAW_IMAGE_MULTIPLY:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        gl()->glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         break;
     case VG_DRAW_IMAGE_STENCIL:
         break;
@@ -421,20 +429,20 @@ void OpenGLContext::setImageMode(VGImageMode im) {
     }
 }
 
-void OpenGLContext::pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
+void GLESContext::pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
                                     VGfloat top, VGfloat near, VGfloat far) {
 
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrthof(left, right, bottom, top, near, far);
+    gl()->glMatrixMode(GL_PROJECTION);
+    gl()->glPushMatrix();
+    gl()->glLoadIdentity();
+    gl()->glOrthof(left, right, bottom, top, near, far);
 
-    glMatrixMode(GL_MODELVIEW);
+    gl()->glMatrixMode(GL_MODELVIEW);
 }
-void OpenGLContext::popOrthoCamera() {
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
+void GLESContext::popOrthoCamera() {
+    gl()->glMatrixMode(GL_PROJECTION);
+    gl()->glPopMatrix();
+    gl()->glMatrixMode(GL_MODELVIEW);
 }
 
 } // namespace MonkVG

@@ -22,6 +22,7 @@
 #define WINDOW_HEIGHT 768
 
 int main(int argc, char **argv) {
+    std::cout << "Hello, MonkVG!\n";
     // Initialise GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
@@ -53,11 +54,16 @@ int main(int argc, char **argv) {
         return -1;
     }
     glfwMakeContextCurrent(window); 
+#if defined(__APPLE__)
+    // Initialize MonkVG using GLES 2.0 rendering
+    vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,
+                       VG_RENDERING_BACKEND_TYPE_OPENGL33);
 
+#else /// all other platforms use GLES
     // Initialize MonkVG using GLES 2.0 rendering
     vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,
                        VG_RENDERING_BACKEND_TYPE_OPENGLES20);
-
+#endif
     // create a paint
     VGPaint paint;
 

@@ -7,10 +7,10 @@
  *
  */
 
-#include "glPaint.h"
+#include "glesPaint.h"
 #include <cmath>
 #include <assert.h>
-#include "glContext.h"
+#include "glesContext.h"
 
 using namespace std;
 
@@ -33,7 +33,7 @@ namespace MonkVG {
 	void OpenGLPaint::setGLState() {
 		if ( isDirty() ) {
 			const VGfloat* c = getPaintColor();
-            glColor4f( c[0], c[1], c[2], c[3] );
+            GL->glColor4f( c[0], c[1], c[2], c[3] );
 		}
 	}
 

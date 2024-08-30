@@ -1,3 +1,0 @@
-[submodule "thirdparty/angle"]
-	path = thirdparty/angle
-	url = https://github.com/google/angle.git
