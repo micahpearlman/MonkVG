@@ -19,24 +19,20 @@
 namespace MonkVG {
 	
 	class OpenGLPath : public IPath {
+		constexpr static int GL_UNDEFINED = 0;
 	public:
 	
 		OpenGLPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) 
 			:	IPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities )
-			,	_fillTesseleator( 0 )
-			,	_strokeVBO(-1)
-			,	_fillVBO(-1)
-			,	_fillPaintForPath( 0 )
-			,	_strokePaintForPath( 0 )
 		{
 
 		}
 		virtual ~OpenGLPath();
 		
 		
-		virtual bool draw( VGbitfield paintModes );
-		virtual void clear( VGbitfield caps );
-		virtual void buildFillIfDirty();
+		bool draw( VGbitfield paintModes ) override;
+		void clear( VGbitfield caps ) override;
+		void buildFillIfDirty() override;
 
 	private:
 		struct v2_t {
@@ -61,17 +57,17 @@ namespace MonkVG {
 		
 	private:
 		
-		GLUtesselator*		_fillTesseleator;
-		vector<GLfloat>		_vertices;
-		vector<v2_t>		_strokeVertices;
-		list<v3_t>			_tessVertices;
-		GLenum				_primType;
-		GLuint				_fillVBO;
-		GLuint				_strokeVBO;
-		int					_numberFillVertices;
-		int					_numberStrokeVertices;
-		OpenGLPaint*		_fillPaintForPath;
-		OpenGLPaint*		_strokePaintForPath;
+		GLUtesselator*		_fillTesseleator = nullptr;
+		vector<GLfloat>		_vertices = {};
+		vector<v2_t>		_strokeVertices = {};
+		list<v3_t>			_tessVertices = {};
+		GLenum				_primType = GL_UNDEFINED;
+		GLuint				_fillVBO = GL_UNDEFINED;
+		GLuint				_strokeVBO = GL_UNDEFINED;
+		int					_numberFillVertices = 0;
+		int					_numberStrokeVertices = 0;
+		OpenGLPaint*		_fillPaintForPath = nullptr;
+		OpenGLPaint*		_strokePaintForPath = nullptr;
 		
 		
 	private:		// tesseleator callbacks

@@ -44,17 +44,13 @@
 #include "mkCommon.h"
 #include "mkMath.h"
 
-//#include "riMath.h"
 
-//using namespace OpenVGRI;
-
-/*-------------------------------------------------------------------*//*!
- * \brief	
- * \param	
- * \return	
- * \note		
- *//*-------------------------------------------------------------------*/
-
+/// @brief append a path segment to a path
+/// @param path the path to append to
+/// @param numSegments number of segments
+/// @param segments segment types
+/// @param numCoordinates number of coordinates
+/// @param coordinates coordinates
 static void append(VGPath path, int numSegments, const VGubyte* segments, int numCoordinates, const VGfloat* coordinates)
 {
 	MK_ASSERT(numCoordinates <= 26);
