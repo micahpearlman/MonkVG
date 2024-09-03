@@ -23,28 +23,28 @@ namespace MonkVG {
 		_vertices.clear();
 		
 		// delete vbo buffers
-		if ( _strokeVBO != -1 ) {
-			GL->glDeleteBuffers( 1, &_strokeVBO );
-			_strokeVBO = -1;
+		if ( _stroke_vbo != -1 ) {
+			GL->glDeleteBuffers( 1, &_stroke_vbo );
+			_stroke_vbo = -1;
 		}
 		
-		if ( _fillVBO != -1 ) {
-			GL->glDeleteBuffers( 1, &_fillVBO );
-			_fillVBO = -1;
+		if ( _fill_vbo != -1 ) {
+			GL->glDeleteBuffers( 1, &_fill_vbo );
+			_fill_vbo = -1;
 		}
 	}
 	
 	void OpenGLPath::buildFillIfDirty() {
 		IPaint* currentFillPaint = IContext::instance().getFillPaint();
-		if ( currentFillPaint != _fillPaintForPath ) {
-			_fillPaintForPath = (OpenGLPaint*)currentFillPaint;
-			_isFillDirty = true;
+		if ( currentFillPaint != _fill_paint ) {
+			_fill_paint = (OpenGLPaint*)currentFillPaint;
+			_is_fill_dirty = true;
 		}
 		// only build the fill if dirty or we are in batch build mode
-		if ( _isFillDirty || IContext::instance().currentBatch() ) {
+		if ( _is_fill_dirty || IContext::instance().currentBatch() ) {
 			buildFill();
 		}
-		_isFillDirty = false;
+		_is_fill_dirty = false;
 	}
 	
 	void printMat44( float m[4][4] ) {
@@ -88,10 +88,10 @@ namespace MonkVG {
 		VGImageMode oldImageMode = glContext.getImageMode();
 
 		// configure based on paint type
-		if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+		if ( _fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
 			GL->glDisable(GL_TEXTURE_2D);
 			GL->glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-		} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
+		} else if ( _fill_paint && (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 			GL->glEnable( GL_TEXTURE_2D );
 			GL->glEnableClientState( GL_TEXTURE_COORD_ARRAY );
             //GL->glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture with GL_REPLACE we don't use the current glColor
@@ -101,22 +101,22 @@ namespace MonkVG {
 		}
 		
 
-		if( (paintModes & VG_FILL_PATH) && _fillVBO != -1 && _fillPaintForPath) {
+		if( (paintModes & VG_FILL_PATH) && _fill_vbo != -1 && _fill_paint) {
 			// draw
 			IContext::instance().fill();
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-			if ( _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _fill_vbo );
+			if ( _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
 				GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-			} else if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
-				_fillPaintForPath->getGradientImage()->bind();
+			} else if ( (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
+				_fill_paint->getGradientImage()->bind();
 				GL->glVertexPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, v) );
 				GL->glTexCoordPointer( 2, GL_FLOAT, sizeof(textured_vertex_t), (GLvoid*)offsetof(textured_vertex_t, uv) );
 			}
-			GL->glDrawArrays( GL_TRIANGLES, 0, _numberFillVertices );
+			GL->glDrawArrays( GL_TRIANGLES, 0, _num_fill_verts );
 			
 			// unbind any textures being used
-			if ( (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
-				_fillPaintForPath->getGradientImage()->unbind();
+			if ( (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
+				_fill_paint->getGradientImage()->unbind();
 				glContext.setImageMode( oldImageMode );
 				
 				GL->glDisable(GL_TEXTURE_2D);
@@ -128,12 +128,12 @@ namespace MonkVG {
 			GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		}
 		
-		if ( (paintModes & VG_STROKE_PATH) && _strokeVBO != -1 ) {
+		if ( (paintModes & VG_STROKE_PATH) && _stroke_vbo != -1 ) {
 			// draw
 			IContext::instance().stroke();
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _stroke_vbo );
 			GL->glVertexPointer( 2, GL_FLOAT, sizeof(v2_t), 0 );
-			GL->glDrawArrays( GL_TRIANGLE_STRIP, 0, _numberStrokeVertices );
+			GL->glDrawArrays( GL_TRIANGLE_STRIP, 0, _num_stroke_verts );
 			GL->glBindBuffer( GL_ARRAY_BUFFER, 0 );			
 		}
 		
@@ -244,20 +244,20 @@ namespace MonkVG {
 		CHECK_GL_ERROR;
 		
 
-		_fillTesseleator = gluNewTess();
-		gluTessCallback( _fillTesseleator, GLU_TESS_BEGIN_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessBegin );
-		gluTessCallback( _fillTesseleator, GLU_TESS_END_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessEnd );
-		gluTessCallback( _fillTesseleator, GLU_TESS_VERTEX_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessVertex );
-		gluTessCallback( _fillTesseleator, GLU_TESS_COMBINE_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessCombine );
-		gluTessCallback( _fillTesseleator, GLU_TESS_ERROR, (GLvoid (APIENTRY *)())&OpenGLPath::tessError );
+		_fill_tess = gluNewTess();
+		gluTessCallback( _fill_tess, GLU_TESS_BEGIN_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessBegin );
+		gluTessCallback( _fill_tess, GLU_TESS_END_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessEnd );
+		gluTessCallback( _fill_tess, GLU_TESS_VERTEX_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessVertex );
+		gluTessCallback( _fill_tess, GLU_TESS_COMBINE_DATA, (GLvoid (APIENTRY *) ( )) &OpenGLPath::tessCombine );
+		gluTessCallback( _fill_tess, GLU_TESS_ERROR, (GLvoid (APIENTRY *)())&OpenGLPath::tessError );
 		if( IContext::instance().getFillRule() == VG_EVEN_ODD ) {
-			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
+			gluTessProperty( _fill_tess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD ); 
 		} else if( IContext::instance().getFillRule() == VG_NON_ZERO ) {
-			gluTessProperty( _fillTesseleator, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
+			gluTessProperty( _fill_tess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO ); 
 		}
-		gluTessProperty( _fillTesseleator, GLU_TESS_TOLERANCE, 0.5f );
+		gluTessProperty( _fill_tess, GLU_TESS_TOLERANCE, 0.5f );
 		
-		gluTessBeginPolygon( _fillTesseleator, this );
+		gluTessBeginPolygon( _fill_tess, this );
 		
 		
 		vector< VGfloat >::iterator coordsIter = _fcoords->begin();
@@ -292,7 +292,7 @@ namespace MonkVG {
 				case (VG_CLOSE_PATH >> 1):
 				{
 					if ( num_contours ) {
-						gluTessEndContour( _fillTesseleator );
+						gluTessEndContour( _fill_tess );
 						num_contours--;
 					}
 
@@ -300,17 +300,17 @@ namespace MonkVG {
 				case (VG_MOVE_TO >> 1):
 				{	
 					if ( num_contours ) {
-						gluTessEndContour( _fillTesseleator );
+						gluTessEndContour( _fill_tess );
 						num_contours--;
 					}
 					
-					gluTessBeginContour( _fillTesseleator );
+					gluTessBeginContour( _fill_tess );
 					num_contours++;
 					coords.x = *coordsIter; coordsIter++;
 					coords.y = *coordsIter; coordsIter++;
 					
 					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
+					gluTessVertex( _fill_tess, l, l );
 					
 				} break;
 				case (VG_LINE_TO >> 1):
@@ -324,7 +324,7 @@ namespace MonkVG {
 					}
 					
 					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
+					gluTessVertex( _fill_tess, l, l );
 				} break;
 				case (VG_HLINE_TO >> 1):
 				{
@@ -335,7 +335,7 @@ namespace MonkVG {
 					}
 					
 					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
+					gluTessVertex( _fill_tess, l, l );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
@@ -346,7 +346,7 @@ namespace MonkVG {
 					}
 					
 					GLdouble * l = addTessVertex( coords );
-					gluTessVertex( _fillTesseleator, l, l );
+					gluTessVertex( _fill_tess, l, l );
 				} break;
 				case (VG_SCUBIC_TO >> 1): 
 				{
@@ -376,7 +376,7 @@ namespace MonkVG {
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
 						c.z = 0;
 						GLdouble * l = addTessVertex( c );
-						gluTessVertex( _fillTesseleator, l, l );
+						gluTessVertex( _fill_tess, l, l );
 						//	c.print();
 					}
 					//printf("\n");
@@ -412,7 +412,7 @@ namespace MonkVG {
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
 						c.z = 0;
 						GLdouble * l = addTessVertex( c );
-						gluTessVertex( _fillTesseleator, l, l );
+						gluTessVertex( _fill_tess, l, l );
 					//	c.print();
 					}
 					//printf("\n");
@@ -443,7 +443,7 @@ namespace MonkVG {
 						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
 						c.z = 0;
 						GLdouble * l = addTessVertex( c );
-						gluTessVertex( _fillTesseleator, l, l );
+						gluTessVertex( _fill_tess, l, l );
 					}
                     
 					coords.x = px;
@@ -523,7 +523,7 @@ namespace MonkVG {
 							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
 							c.z = 0;
 							GLdouble * l = addTessVertex( c );
-							gluTessVertex( _fillTesseleator, l, l );
+							gluTessVertex( _fill_tess, l, l );
 						}
 					}
 					
@@ -539,16 +539,16 @@ namespace MonkVG {
 		}	// foreach segment
 		
 		if ( num_contours ) {
-			gluTessEndContour( _fillTesseleator );
+			gluTessEndContour( _fill_tess );
 			num_contours--;
 		}
 		
 		assert(num_contours == 0);
 		
-		gluTessEndPolygon( _fillTesseleator );
+		gluTessEndPolygon( _fill_tess );
 		
-		gluDeleteTess( _fillTesseleator );		
-		_fillTesseleator = 0;
+		gluDeleteTess( _fill_tess );		
+		_fill_tess = 0;
 
 		// final calculation of the width and height
 		_width = fabsf(_width - _minX);
@@ -593,7 +593,7 @@ namespace MonkVG {
 	}
 	
 	void OpenGLPath::buildStroke() {
-		_strokeVertices.clear();
+		_stroke_verts.clear();
 		
 		// get the native OpenGL context
 		GLESContext& glContext = (MonkVG::GLESContext&)IContext::instance();
@@ -630,7 +630,7 @@ namespace MonkVG {
 			switch (segment >> 1) {
 				case (VG_CLOSE_PATH >> 1):
 				{
-					buildFatLineSegment( _strokeVertices, coords, closeTo, stroke_width );
+					buildFatLineSegment( _stroke_verts, coords, closeTo, stroke_width );
 				} break;
 				case (VG_MOVE_TO >> 1):
 				{	
@@ -648,7 +648,7 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
+					buildFatLineSegment( _stroke_verts, prev, coords, stroke_width );
 					
 					
 				} break;
@@ -660,7 +660,7 @@ namespace MonkVG {
 						coords.x += prev.x;
 					}
 					
-					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
+					buildFatLineSegment( _stroke_verts, prev, coords, stroke_width );
 				} break;
 				case (VG_VLINE_TO >> 1):
 				{
@@ -670,7 +670,7 @@ namespace MonkVG {
 						coords.y += prev.y;
 					}
 					
-					buildFatLineSegment( _strokeVertices, prev, coords, stroke_width );
+					buildFatLineSegment( _stroke_verts, prev, coords, stroke_width );
 					
 				} break;
 				case (VG_SCUBIC_TO >> 1): 
@@ -699,7 +699,7 @@ namespace MonkVG {
 						v2_t c;
 						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
+						buildFatLineSegment( _stroke_verts, prev, c, stroke_width );
 						prev = c;
 					}
 					coords.x = p3x;
@@ -729,7 +729,7 @@ namespace MonkVG {
 						v2_t c;
 						c.x = calcQuadBezier1d( coords.x, cpx, px, t );
 						c.y = calcQuadBezier1d( coords.y, cpy, py, t );
-						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
+						buildFatLineSegment( _stroke_verts, prev, c, stroke_width );
 						prev = c;
 					}
 					coords.x = px;
@@ -763,7 +763,7 @@ namespace MonkVG {
 						v2_t c;
 						c.x = calcCubicBezier1d( coords.x, cp1x, cp2x, p3x, t );
 						c.y = calcCubicBezier1d( coords.y, cp1y, cp2y, p3y, t );
-						buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
+						buildFatLineSegment( _stroke_verts, prev, c, stroke_width );
 						prev = c;
 					}
 					coords.x = p3x;
@@ -843,7 +843,7 @@ namespace MonkVG {
 							c.x = cx0[0] + (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
 							c.y = cx0[1] + (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
 							//printf( "(%f, %f)\n", c[0], c[1] );
-							buildFatLineSegment( _strokeVertices, prev, c, stroke_width );
+							buildFatLineSegment( _stroke_verts, prev, c, stroke_width );
 							prev = c;
 						}
 					}
@@ -868,16 +868,16 @@ namespace MonkVG {
 		/// build fill vbo
 		// TODO: BUGBUG: if in batch mode don't build the VBO!
 		if ( _vertices.size() > 0 ) {
-			if ( _fillVBO != -1 ) {
-				GL->glDeleteBuffers( 1, &_fillVBO );
-				_fillVBO = -1;
+			if ( _fill_vbo != -1 ) {
+				GL->glDeleteBuffers( 1, &_fill_vbo );
+				_fill_vbo = -1;
 			}
 			
-			GL->glGenBuffers( 1, &_fillVBO );
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _fillVBO );
-			if ( _fillPaintForPath && _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR ) {
+			GL->glGenBuffers( 1, &_fill_vbo );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _fill_vbo );
+			if ( _fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR ) {
 				GL->glBufferData( GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), &_vertices[0], GL_STATIC_DRAW );
-			} else if ( _fillPaintForPath && (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
+			} else if ( _fill_paint && (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT || _fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) ) {
 				vector<textured_vertex_t> texturedVertices;
 				for ( vector<float>::const_iterator it = _vertices.begin(); it != _vertices.end(); it++ ) {
 					// build up the textured vertex
@@ -895,40 +895,40 @@ namespace MonkVG {
 				texturedVertices.clear();
 				
 				// setup the paints linear gradient
-				_fillPaintForPath->buildGradientImage( _width, _height );
+				_fill_paint->buildGradientImage( _width, _height );
 
 			}
 
-			_numberFillVertices = (int)_vertices.size()/2;
-			_tessVertices.clear();
+			_num_fill_verts = (int)_vertices.size()/2;
+			_tess_verts.clear();
 		} 
 		
 		/// build stroke vbo 
-		if ( _strokeVertices.size() > 0 ) {
+		if ( _stroke_verts.size() > 0 ) {
 			// build the vertex buffer object VBO
-			if ( _strokeVBO != -1 ) {
-				GL->glDeleteBuffers( 1, &_strokeVBO );
-				_strokeVBO = -1;
+			if ( _stroke_vbo != -1 ) {
+				GL->glDeleteBuffers( 1, &_stroke_vbo );
+				_stroke_vbo = -1;
 			}
 			
-			GL->glGenBuffers( 1, &_strokeVBO );
-			GL->glBindBuffer( GL_ARRAY_BUFFER, _strokeVBO );
-			GL->glBufferData( GL_ARRAY_BUFFER, _strokeVertices.size() * sizeof(float) * 2, &_strokeVertices[0], GL_STATIC_DRAW );
-			_numberStrokeVertices = (int)_strokeVertices.size();
+			GL->glGenBuffers( 1, &_stroke_vbo );
+			GL->glBindBuffer( GL_ARRAY_BUFFER, _stroke_vbo );
+			GL->glBufferData( GL_ARRAY_BUFFER, _stroke_verts.size() * sizeof(float) * 2, &_stroke_verts[0], GL_STATIC_DRAW );
+			_num_stroke_verts = (int)_stroke_verts.size();
 
 		}
 		
 		OpenGLBatch* glBatch = (OpenGLBatch*)IContext::instance().currentBatch();
 		if( glBatch ) {	// if in batch mode update the current batch
 			glBatch->addPathVertexData( &_vertices[0], _vertices.size()/2, 
-									   (float*)&_strokeVertices[0], _strokeVertices.size(), 
+									   (float*)&_stroke_verts[0], _stroke_verts.size(), 
 									   paintModes );
 
 		}
 		
 		// clear out vertex buffer
 		_vertices.clear();
-		_strokeVertices.clear();
+		_stroke_verts.clear();
 	}
 	
 	static GLdouble startVertex_[2];
@@ -1040,12 +1040,12 @@ namespace MonkVG {
 	}
 	
 	OpenGLPath::~OpenGLPath() {
-		if ( _fillTesseleator ) {
-			gluDeleteTess( _fillTesseleator );
-			_fillTesseleator = 0;
+		if ( _fill_tess ) {
+			gluDeleteTess( _fill_tess );
+			_fill_tess = 0;
 		}
 		
-		GL->glDeleteBuffers( 1, &_fillVBO );
+		GL->glDeleteBuffers( 1, &_fill_vbo );
 	}
 	
 }

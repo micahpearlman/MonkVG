@@ -65,7 +65,8 @@ if(MKVG_DO_OPENGL_BACKEND)
         ./src/opengl/glFont.cpp
         ./src/opengl/glImage.cpp
         ./src/opengl/glPaint.cpp
-        ./src/opengl/glPath.cpp)
+        ./src/opengl/glPath.cpp
+        ./src/opengl/glShader.cpp)
     set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
         ./src/opengl
         ${GLU_INCLUDE_DIRS})
@@ -106,7 +107,7 @@ if(MKVG_DO_OPENGL_BACKEND)
 
 endif()
 
-
+## setup common source 
 set(COMMON_SOURCE ${COMMON_SOURCE}
     ./src/mkBaseObject.cpp
     ./src/mkBatch.cpp
@@ -121,12 +122,6 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
 )
 set(COMMON_INCLUDE ${COMMON_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# if(MKVG_DO_OPENGLES_BACKEND)
-#     # GLES2-BC library 
-#     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/gles2-bc)
-#     set(MNKVG_DEPENDENCIES ${DMNKVG_EPENDENCIES} gles2-bc)
-#     set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} gles2-bc)
-# endif()
 
 ## Build the MonkVG library
 add_library(monkvg ${COMMON_SOURCE} ${BACKEND_SOURCE})

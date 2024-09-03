@@ -17,76 +17,75 @@
 namespace MonkVG {
 
 // todo: setup debug and release versions
-//#define CHECK_GL_ERROR OpenGLContext::checkGLError()
+// #define CHECK_GL_ERROR OpenGLContext::checkGLError()
 #define CHECK_GL_ERROR
 class OpenGLContext : public IContext {
   public:
     OpenGLContext();
 
-    virtual bool Initialize();
-    virtual bool Terminate();
+    bool Initialize() override;
+    bool Terminate() override;
 
     //// factories ////
-    virtual IPath  *createPath(VGint pathFormat, VGPathDatatype datatype,
-                               VGfloat scale, VGfloat bias,
-                               VGint segmentCapacityHint,
-                               VGint coordCapacityHint, VGbitfield capabilities);
-    virtual void    destroyPath(IPath *path);
-    virtual void    destroyPaint(IPaint *paint);
-    virtual IPaint *createPaint();
-    virtual IImage *createImage(VGImageFormat format, VGint width, VGint height,
-                                VGbitfield allowedQuality);
-    virtual void    destroyImage(IImage *image);
-    virtual IBatch *createBatch();
-    virtual void    destroyBatch(IBatch *batch);
-    virtual IFont  *createFont();
-    virtual void    destroyFont(IFont *font);
+    IPath  *createPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
+                       VGfloat bias, VGint segmentCapacityHint,
+                       VGint      coordCapacityHint,
+                       VGbitfield capabilities) override;
+    void    destroyPath(IPath *path) override;
+    void    destroyPaint(IPaint *paint) override;
+    IPaint *createPaint() override;
+    IImage *createImage(VGImageFormat format, VGint width, VGint height,
+                        VGbitfield allowedQuality) override;
+    void    destroyImage(IImage *image) override;
+    IBatch *createBatch() override;
+    void    destroyBatch(IBatch *batch) override;
+    IFont  *createFont() override;
+    void    destroyFont(IFont *font) override;
 
     /// paint overrides
-    virtual void setStrokePaint(IPaint *paint);
-    virtual void setFillPaint(IPaint *paint);
+    void setStrokePaint(IPaint *paint) override;
+    void setFillPaint(IPaint *paint) override;
 
     //// platform specific execution of stroke and fill ////
-    virtual void stroke();
-    virtual void fill();
+    void stroke() override;
+    void fill() override;
 
     //// platform specific execution of Masking and Clearing ////
-    virtual void clear(VGint x, VGint y, VGint width, VGint height);
+    void clear(VGint x, VGint y, VGint width, VGint height) override;
 
     //// platform specific implementation of transform ////
-    virtual void setIdentity();
-    virtual void transform(VGfloat *t);
-    virtual void scale(VGfloat sx, VGfloat sy);
-    virtual void translate(VGfloat x, VGfloat y);
-    virtual void rotate(VGfloat angle);
-    virtual void setTransform(const VGfloat *t);
-    virtual void multiply(const VGfloat *t);
-    virtual void setMatrixMode(VGMatrixMode mode) {
+    void setIdentity() override;
+    void transform(VGfloat *t) override;
+    void scale(VGfloat sx, VGfloat sy) override;
+    void translate(VGfloat x, VGfloat y) override;
+    void rotate(VGfloat angle) override;
+    void setTransform(const VGfloat *t) override;
+    void multiply(const VGfloat *t) override;
+    void setMatrixMode(VGMatrixMode mode) override {
         IContext::setMatrixMode(mode);
         loadGLMatrix();
     }
-    void loadGLMatrix();
 
-    void beginRender();
-    void endRender();
-
-    virtual void resize();
-
-    static void checkGLError();
-
-    /// batch drawing
-    virtual void startBatch(IBatch *batch);
-    virtual void dumpBatch(IBatch *batch, void **vertices, size_t *size);
-    virtual void endBatch(IBatch *batch);
+    /// batch drawing override
+    void startBatch(IBatch *batch) override;
+    void dumpBatch(IBatch *batch, void **vertices, size_t *size) override;
+    void endBatch(IBatch *batch) override;
 
     /// image
-    virtual void setImageMode(VGImageMode im);
+    void setImageMode(VGImageMode im) override;
 
     /// camera extension
-    virtual void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
-                                 VGfloat top, VGfloat near, VGfloat far);
-    virtual void popOrthoCamera();
+    void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
+                                 VGfloat top, VGfloat near, VGfloat far)  override;
+    void popOrthoCamera() override;
 
+    void resize() override;
+
+    /// OpenGL specific
+    void loadGLMatrix();
+    void beginRender();
+    void endRender();    
+    static void checkGLError();
 
   private:
     // restore values to play nice with other apps
@@ -94,7 +93,6 @@ class OpenGLContext : public IContext {
     float _projection[16];
     float _modelview[16];
     float _color[4];
-
 };
 } // namespace MonkVG
 

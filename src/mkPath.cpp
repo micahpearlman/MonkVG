@@ -11,9 +11,6 @@
 #include "mkContext.h"
 #include <cassert>
 
-/// shaders
-#include "shaders/color_vert.h"
-#include "shaders/color_frag.h"
 
 namespace MonkVG {	// Internal Implementation
 

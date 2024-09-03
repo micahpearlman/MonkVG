@@ -12,7 +12,20 @@
 #include "glBatch.h"
 #include <cassert>
 
+/// shaders
+#include "shaders/color_vert.h"
+#include "shaders/color_frag.h"
+
 namespace MonkVG {
+
+OpenGLPath::OpenGLPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
+                       VGfloat bias, VGint segmentCapacityHint,
+                       VGint coordCapacityHint, VGbitfield capabilities)
+    : IPath(pathFormat, datatype, scale, bias, segmentCapacityHint,
+            coordCapacityHint, capabilities) {
+	_color_shader = std::make_unique<OpenGLShader>();
+	_color_shader->compile(color_vert, color_frag);
+}
 
 void OpenGLPath::clear(VGbitfield caps) {
     IPath::clear(caps);
@@ -20,28 +33,28 @@ void OpenGLPath::clear(VGbitfield caps) {
     _vertices.clear();
 
     // delete vbo buffers
-    if (_strokeVBO != GL_UNDEFINED) {
-        glDeleteBuffers(1, &_strokeVBO);
-        _strokeVBO = GL_UNDEFINED;
+    if (_stroke_vbo != GL_UNDEFINED) {
+        glDeleteBuffers(1, &_stroke_vbo);
+        _stroke_vbo = GL_UNDEFINED;
     }
 
-    if (_fillVBO != GL_UNDEFINED) {
-        glDeleteBuffers(1, &_fillVBO);
-        _fillVBO = GL_UNDEFINED;
+    if (_fill_vbo != GL_UNDEFINED) {
+        glDeleteBuffers(1, &_fill_vbo);
+        _fill_vbo = GL_UNDEFINED;
     }
 }
 
 void OpenGLPath::buildFillIfDirty() {
-    IPaint *currentFillPaint = IContext::instance().getFillPaint();
-    if (currentFillPaint != _fillPaintForPath) {
-        _fillPaintForPath = (OpenGLPaint *)currentFillPaint;
-        _isFillDirty      = true;
+    IPaint *current_fill_paint = IContext::instance().getFillPaint();
+    if (current_fill_paint != _fill_paint) {
+        _fill_paint    = (OpenGLPaint *)current_fill_paint;
+        _is_fill_dirty = true;
     }
     // only build the fill if dirty or we are in batch build mode
-    if (_isFillDirty || IContext::instance().currentBatch()) {
+    if (_is_fill_dirty || IContext::instance().currentBatch()) {
         buildFill();
     }
-    _isFillDirty = false;
+    _is_fill_dirty = false;
 }
 
 void printMat44(float m[4][4]) {
@@ -51,94 +64,89 @@ void printMat44(float m[4][4]) {
     }
 }
 
-bool OpenGLPath::draw(VGbitfield paintModes) {
+bool OpenGLPath::draw(VGbitfield paint_modes) {
 
-    if (paintModes == 0)
+    if (paint_modes == 0)
         return false;
 
     CHECK_GL_ERROR;
 
     // get the native OpenGL context
-    OpenGLContext &glContext = (MonkVG::OpenGLContext &)IContext::instance();
+    OpenGLContext &gl_ctx = (MonkVG::OpenGLContext &)IContext::instance();
 
-    if (paintModes & VG_FILL_PATH) { // build the fill polygons
+    if (paint_modes & VG_FILL_PATH) { // build the fill polygons
         buildFillIfDirty();
     }
 
-    if (paintModes & VG_STROKE_PATH &&
+    if (paint_modes & VG_STROKE_PATH &&
         (_isStrokeDirty == true || IContext::instance().currentBatch())) {
         buildStroke();
         _isStrokeDirty = false;
     }
 
-    endOfTesselation(paintModes);
+    endOfTesselation(paint_modes);
 
-    if (glContext.currentBatch()) {
+    if (gl_ctx.currentBatch()) {
         return true; // creating a batch so bail from here
     }
 
-    glContext.beginRender();
+    gl_ctx.beginRender();
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
-    VGImageMode oldImageMode = glContext.getImageMode();
+    VGImageMode old_image_mode = gl_ctx.getImageMode();
 
     // configure based on paint type
-    if (_fillPaintForPath &&
-        _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR) {
+    if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
         glDisable(GL_TEXTURE_2D);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    } else if (_fillPaintForPath && (_fillPaintForPath->getPaintType() ==
-                                         VG_PAINT_TYPE_LINEAR_GRADIENT ||
-                                     _fillPaintForPath->getPaintType() ==
-                                         VG_PAINT_TYPE_RADIAL_GRADIENT ||
-                                     _fillPaintForPath->getPaintType() ==
-                                         VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
-                                     _fillPaintForPath->getPaintType() ==
-                                         VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
+    } else if (_fill_paint &&
+               (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ||
+                _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT ||
+                _fill_paint->getPaintType() ==
+                    VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
+                _fill_paint->getPaintType() ==
+                    VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         // glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture
         // with GL_REPLACE we don't use the current glColor
 
-        glContext.setImageMode(VG_DRAW_IMAGE_NORMAL);
+        gl_ctx.setImageMode(VG_DRAW_IMAGE_NORMAL);
     }
 
-	// draw the fill first
-    if ((paintModes & VG_FILL_PATH) && _fillVBO != GL_UNDEFINED &&
-        _fillPaintForPath) {
+    // draw the fill first
+    if ((paint_modes & VG_FILL_PATH) && _fill_vbo != GL_UNDEFINED &&
+        _fill_paint) {
         // draw
         IContext::instance().fill();
-        glBindBuffer(GL_ARRAY_BUFFER, _fillVBO);
-        if (_fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR) { // color
+        glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
+        if (_fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) { // color
             glVertexPointer(2, GL_FLOAT, sizeof(v2_t), 0);
-        } else if ((_fillPaintForPath->getPaintType() ==
+        } else if ((_fill_paint->getPaintType() ==
                         VG_PAINT_TYPE_LINEAR_GRADIENT ||
-                    _fillPaintForPath->getPaintType() ==
+                    _fill_paint->getPaintType() ==
                         VG_PAINT_TYPE_RADIAL_GRADIENT ||
-                    _fillPaintForPath->getPaintType() ==
+                    _fill_paint->getPaintType() ==
                         VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
-                    _fillPaintForPath->getPaintType() ==
+                    _fill_paint->getPaintType() ==
                         VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) { // gradient
-            _fillPaintForPath->getGradientImage()->bind();
+            _fill_paint->getGradientImage()->bind();
             glVertexPointer(2, GL_FLOAT, sizeof(textured_vertex_t),
                             (GLvoid *)offsetof(textured_vertex_t, v));
             glTexCoordPointer(2, GL_FLOAT, sizeof(textured_vertex_t),
                               (GLvoid *)offsetof(textured_vertex_t, uv));
         }
-        glDrawArrays(GL_TRIANGLES, 0, _numberFillVertices);
+        glDrawArrays(GL_TRIANGLES, 0, _num_fill_verts);
 
         // unbind any textures being used
-        if ((_fillPaintForPath->getPaintType() ==
-                 VG_PAINT_TYPE_LINEAR_GRADIENT ||
-             _fillPaintForPath->getPaintType() ==
-                 VG_PAINT_TYPE_RADIAL_GRADIENT ||
-             _fillPaintForPath->getPaintType() ==
-                 VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
-             _fillPaintForPath->getPaintType() ==
+        if ((_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ||
+             _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT ||
+             _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
+             _fill_paint->getPaintType() ==
                  VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
-            _fillPaintForPath->getGradientImage()->unbind();
-            glContext.setImageMode(oldImageMode);
+            _fill_paint->getGradientImage()->unbind();
+            gl_ctx.setImageMode(old_image_mode);
 
             glDisable(GL_TEXTURE_2D);
             glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -148,17 +156,17 @@ bool OpenGLPath::draw(VGbitfield paintModes) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-	// draw the stroke last
-    if ((paintModes & VG_STROKE_PATH) && _strokeVBO != GL_UNDEFINED) {
+    // draw the stroke last
+    if ((paint_modes & VG_STROKE_PATH) && _stroke_vbo != GL_UNDEFINED) {
         // draw
         IContext::instance().stroke();
-        glBindBuffer(GL_ARRAY_BUFFER, _strokeVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, _stroke_vbo);
         glVertexPointer(2, GL_FLOAT, sizeof(v2_t), 0);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, _numberStrokeVertices);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    glContext.endRender();
+    gl_ctx.endRender();
 
     CHECK_GL_ERROR;
 
@@ -168,17 +176,17 @@ bool OpenGLPath::draw(VGbitfield paintModes) {
 static inline VGfloat calcCubicBezier1d(VGfloat x0, VGfloat x1, VGfloat x2,
                                         VGfloat x3, VGfloat t) {
     // see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
-    VGfloat oneT = 1.0f - t;
-    VGfloat x    = x0 * (oneT * oneT * oneT) + 3.0f * x1 * (oneT * oneT) * t +
-                3.0f * x2 * oneT * (t * t) + x3 * (t * t * t);
+    VGfloat one_t = 1.0f - t;
+    VGfloat x = x0 * (one_t * one_t * one_t) + 3.0f * x1 * (one_t * one_t) * t +
+                3.0f * x2 * one_t * (t * t) + x3 * (t * t * t);
     return x;
 }
 
 static inline VGfloat calcQuadBezier1d(VGfloat start, VGfloat control,
                                        VGfloat end, VGfloat time) {
-    float inverseTime = 1.0f - time;
-    return (powf(inverseTime, 2.0f) * start) +
-           (2.0f * inverseTime * time * control) + (powf(time, 2.0f) * end);
+    float inverse_time = 1.0f - time;
+    return (powf(inverse_time, 2.0f) * start) +
+           (2.0f * inverse_time * time * control) + (powf(time, 2.0f) * end);
 }
 
 #ifndef M_PI
@@ -266,27 +274,27 @@ void OpenGLPath::buildFill() {
 
     CHECK_GL_ERROR;
 
-    _fillTesseleator = gluNewTess();
-    gluTessCallback(_fillTesseleator, GLU_TESS_BEGIN_DATA,
+    _fill_tess = gluNewTess();
+    gluTessCallback(_fill_tess, GLU_TESS_BEGIN_DATA,
                     (GLvoid(APIENTRY *)()) & OpenGLPath::tessBegin);
-    gluTessCallback(_fillTesseleator, GLU_TESS_END_DATA,
+    gluTessCallback(_fill_tess, GLU_TESS_END_DATA,
                     (GLvoid(APIENTRY *)()) & OpenGLPath::tessEnd);
-    gluTessCallback(_fillTesseleator, GLU_TESS_VERTEX_DATA,
+    gluTessCallback(_fill_tess, GLU_TESS_VERTEX_DATA,
                     (GLvoid(APIENTRY *)()) & OpenGLPath::tessVertex);
-    gluTessCallback(_fillTesseleator, GLU_TESS_COMBINE_DATA,
+    gluTessCallback(_fill_tess, GLU_TESS_COMBINE_DATA,
                     (GLvoid(APIENTRY *)()) & OpenGLPath::tessCombine);
-    gluTessCallback(_fillTesseleator, GLU_TESS_ERROR,
+    gluTessCallback(_fill_tess, GLU_TESS_ERROR,
                     (GLvoid(APIENTRY *)()) & OpenGLPath::tessError);
     if (IContext::instance().getFillRule() == VG_EVEN_ODD) {
-        gluTessProperty(_fillTesseleator, GLU_TESS_WINDING_RULE,
+        gluTessProperty(_fill_tess, GLU_TESS_WINDING_RULE,
                         GLU_TESS_WINDING_ODD);
     } else if (IContext::instance().getFillRule() == VG_NON_ZERO) {
-        gluTessProperty(_fillTesseleator, GLU_TESS_WINDING_RULE,
+        gluTessProperty(_fill_tess, GLU_TESS_WINDING_RULE,
                         GLU_TESS_WINDING_NONZERO);
     }
-    gluTessProperty(_fillTesseleator, GLU_TESS_TOLERANCE, 0.5f);
+    gluTessProperty(_fill_tess, GLU_TESS_TOLERANCE, 0.5f);
 
-    gluTessBeginPolygon(_fillTesseleator, this);
+    gluTessBeginPolygon(_fill_tess, this);
 
     vector<VGfloat>::iterator coordsIter = _fcoords->begin();
     VGbyte                    segment    = VG_CLOSE_PATH;
@@ -297,37 +305,32 @@ void OpenGLPath::buildFill() {
     for (auto segment : _segments) {
 
         //			VG_CLOSE_PATH                               = (
-        //0 << 1), 			VG_MOVE_TO                                  = ( 1 << 1),
-        //			VG_LINE_TO                                  = (
-        //2 << 1), 			VG_HLINE_TO                                 = ( 3 << 1),
-        //			VG_VLINE_TO                                 = (
-        //4 << 1), 			VG_QUAD_TO                                  = ( 5 << 1),
-        //			VG_CUBIC_TO                                 = (
-        //6 << 1), 			VG_SQUAD_TO                                 = ( 7 << 1),
-        //			VG_SCUBIC_TO                                = (
-        //8 << 1), 			VG_SCCWARC_TO                               = ( 9 << 1),
-        //			VG_SCWARC_TO                                =
-        //(10 << 1), 			VG_LCCWARC_TO                               = (11 << 1),
-        //			VG_LCWARC_TO                                =
-        //(12 << 1),
+        // 0 << 1), 			VG_MOVE_TO = ( 1 << 1),
+        // VG_LINE_TO = ( 2 << 1), 			VG_HLINE_TO = ( 3 << 1),
+        // VG_VLINE_TO = ( 4 << 1), 			VG_QUAD_TO = ( 5 << 1),
+        // VG_CUBIC_TO = ( 6 << 1), 			VG_SQUAD_TO = ( 7 << 1),
+        // VG_SCUBIC_TO =
+        //( 8 << 1), 			VG_SCCWARC_TO = ( 9 << 1),
+        // VG_SCWARC_TO = (10 << 1), 			VG_LCCWARC_TO = (11 <<
+        // 1), 			VG_LCWARC_TO = (12 << 1),
 
         // todo: deal with relative move
         bool isRelative = segment & VG_RELATIVE;
         switch (segment >> 1) {
         case (VG_CLOSE_PATH >> 1): {
             if (num_contours) {
-                gluTessEndContour(_fillTesseleator);
+                gluTessEndContour(_fill_tess);
                 num_contours--;
             }
 
         } break;
         case (VG_MOVE_TO >> 1): {
             if (num_contours) {
-                gluTessEndContour(_fillTesseleator);
+                gluTessEndContour(_fill_tess);
                 num_contours--;
             }
 
-            gluTessBeginContour(_fillTesseleator);
+            gluTessBeginContour(_fill_tess);
             num_contours++;
             coords.x = *coordsIter;
             coordsIter++;
@@ -335,7 +338,7 @@ void OpenGLPath::buildFill() {
             coordsIter++;
 
             GLdouble *l = addTessVertex(coords);
-            gluTessVertex(_fillTesseleator, l, l);
+            gluTessVertex(_fill_tess, l, l);
 
         } break;
         case (VG_LINE_TO >> 1): {
@@ -350,7 +353,7 @@ void OpenGLPath::buildFill() {
             }
 
             GLdouble *l = addTessVertex(coords);
-            gluTessVertex(_fillTesseleator, l, l);
+            gluTessVertex(_fill_tess, l, l);
         } break;
         case (VG_HLINE_TO >> 1): {
             prev     = coords;
@@ -361,7 +364,7 @@ void OpenGLPath::buildFill() {
             }
 
             GLdouble *l = addTessVertex(coords);
-            gluTessVertex(_fillTesseleator, l, l);
+            gluTessVertex(_fill_tess, l, l);
         } break;
         case (VG_VLINE_TO >> 1): {
             prev     = coords;
@@ -372,7 +375,7 @@ void OpenGLPath::buildFill() {
             }
 
             GLdouble *l = addTessVertex(coords);
-            gluTessVertex(_fillTesseleator, l, l);
+            gluTessVertex(_fill_tess, l, l);
         } break;
         case (VG_SCUBIC_TO >> 1): {
             prev         = coords;
@@ -404,7 +407,7 @@ void OpenGLPath::buildFill() {
                 c.y         = calcCubicBezier1d(coords.y, cp1y, cp2y, p3y, t);
                 c.z         = 0;
                 GLdouble *l = addTessVertex(c);
-                gluTessVertex(_fillTesseleator, l, l);
+                gluTessVertex(_fill_tess, l, l);
                 //	c.print();
             }
             // printf("\n");
@@ -445,7 +448,7 @@ void OpenGLPath::buildFill() {
                 c.y         = calcCubicBezier1d(coords.y, cp1y, cp2y, p3y, t);
                 c.z         = 0;
                 GLdouble *l = addTessVertex(c);
-                gluTessVertex(_fillTesseleator, l, l);
+                gluTessVertex(_fill_tess, l, l);
                 //	c.print();
             }
             // printf("\n");
@@ -480,7 +483,7 @@ void OpenGLPath::buildFill() {
                 c.y         = calcQuadBezier1d(coords.y, cpy, py, t);
                 c.z         = 0;
                 GLdouble *l = addTessVertex(c);
-                gluTessVertex(_fillTesseleator, l, l);
+                gluTessVertex(_fill_tess, l, l);
             }
 
             coords.x = px;
@@ -571,7 +574,7 @@ void OpenGLPath::buildFill() {
                           (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
                     c.z         = 0;
                     GLdouble *l = addTessVertex(c);
-                    gluTessVertex(_fillTesseleator, l, l);
+                    gluTessVertex(_fill_tess, l, l);
                 }
             }
 
@@ -587,16 +590,16 @@ void OpenGLPath::buildFill() {
     } // foreach segment
 
     if (num_contours) {
-        gluTessEndContour(_fillTesseleator);
+        gluTessEndContour(_fill_tess);
         num_contours--;
     }
 
     assert(num_contours == 0);
 
-    gluTessEndPolygon(_fillTesseleator);
+    gluTessEndPolygon(_fill_tess);
 
-    gluDeleteTess(_fillTesseleator);
-    _fillTesseleator = 0;
+    gluDeleteTess(_fill_tess);
+    _fill_tess = 0;
 
     // final calculation of the width and height
     _width  = fabsf(_width - _minX);
@@ -639,7 +642,7 @@ void OpenGLPath::buildFatLineSegment(vector<v2_t> &vertices, const v2_t &p0,
 }
 
 void OpenGLPath::buildStroke() {
-    _strokeVertices.clear();
+    _stroke_verts.clear();
 
     // get the native OpenGL context
     OpenGLContext &glContext = (MonkVG::OpenGLContext &)IContext::instance();
@@ -658,25 +661,20 @@ void OpenGLPath::buildStroke() {
         // segment ) ); segment = segment >> 1;
 
         //			VG_CLOSE_PATH                               = (
-        //0 << 1), 			VG_MOVE_TO                                  = ( 1 << 1),
-        //			VG_LINE_TO                                  = (
-        //2 << 1), 			VG_HLINE_TO                                 = ( 3 << 1),
-        //			VG_VLINE_TO                                 = (
-        //4 << 1), 			VG_QUAD_TO                                  = ( 5 << 1),
-        //			VG_CUBIC_TO                                 = (
-        //6 << 1), 			VG_SQUAD_TO                                 = ( 7 << 1),
-        //			VG_SCUBIC_TO                                = (
-        //8 << 1), 			VG_SCCWARC_TO                               = ( 9 << 1),
-        //			VG_SCWARC_TO                                =
-        //(10 << 1), 			VG_LCCWARC_TO                               = (11 << 1),
-        //			VG_LCWARC_TO                                =
-        //(12 << 1),
+        // 0 << 1), 			VG_MOVE_TO = ( 1 << 1),
+        // VG_LINE_TO = ( 2 << 1), 			VG_HLINE_TO = ( 3 << 1),
+        // VG_VLINE_TO = ( 4 << 1), 			VG_QUAD_TO = ( 5 << 1),
+        // VG_CUBIC_TO = ( 6 << 1), 			VG_SQUAD_TO = ( 7 << 1),
+        // VG_SCUBIC_TO =
+        //( 8 << 1), 			VG_SCCWARC_TO = ( 9 << 1),
+        // VG_SCWARC_TO = (10 << 1), 			VG_LCCWARC_TO = (11 <<
+        // 1), 			VG_LCWARC_TO = (12 << 1),
 
         // todo: deal with relative move
         bool isRelative = segment & VG_RELATIVE;
         switch (segment >> 1) {
         case (VG_CLOSE_PATH >> 1): {
-            buildFatLineSegment(_strokeVertices, coords, closeTo, stroke_width);
+            buildFatLineSegment(_stroke_verts, coords, closeTo, stroke_width);
         } break;
         case (VG_MOVE_TO >> 1): {
             prev.x = closeTo.x = coords.x = *coordsIter;
@@ -696,7 +694,7 @@ void OpenGLPath::buildStroke() {
                 coords.y += prev.y;
             }
 
-            buildFatLineSegment(_strokeVertices, prev, coords, stroke_width);
+            buildFatLineSegment(_stroke_verts, prev, coords, stroke_width);
 
         } break;
         case (VG_HLINE_TO >> 1): {
@@ -707,7 +705,7 @@ void OpenGLPath::buildStroke() {
                 coords.x += prev.x;
             }
 
-            buildFatLineSegment(_strokeVertices, prev, coords, stroke_width);
+            buildFatLineSegment(_stroke_verts, prev, coords, stroke_width);
         } break;
         case (VG_VLINE_TO >> 1): {
             prev     = coords;
@@ -717,7 +715,7 @@ void OpenGLPath::buildStroke() {
                 coords.y += prev.y;
             }
 
-            buildFatLineSegment(_strokeVertices, prev, coords, stroke_width);
+            buildFatLineSegment(_stroke_verts, prev, coords, stroke_width);
 
         } break;
         case (VG_SCUBIC_TO >> 1): {
@@ -748,7 +746,7 @@ void OpenGLPath::buildStroke() {
                 v2_t c;
                 c.x = calcCubicBezier1d(coords.x, cp1x, cp2x, p3x, t);
                 c.y = calcCubicBezier1d(coords.y, cp1y, cp2y, p3y, t);
-                buildFatLineSegment(_strokeVertices, prev, c, stroke_width);
+                buildFatLineSegment(_stroke_verts, prev, c, stroke_width);
                 prev = c;
             }
             coords.x = p3x;
@@ -782,7 +780,7 @@ void OpenGLPath::buildStroke() {
                 v2_t c;
                 c.x = calcQuadBezier1d(coords.x, cpx, px, t);
                 c.y = calcQuadBezier1d(coords.y, cpy, py, t);
-                buildFatLineSegment(_strokeVertices, prev, c, stroke_width);
+                buildFatLineSegment(_stroke_verts, prev, c, stroke_width);
                 prev = c;
             }
             coords.x = px;
@@ -822,7 +820,7 @@ void OpenGLPath::buildStroke() {
                 v2_t c;
                 c.x = calcCubicBezier1d(coords.x, cp1x, cp2x, p3x, t);
                 c.y = calcCubicBezier1d(coords.y, cp1y, cp2y, p3y, t);
-                buildFatLineSegment(_strokeVertices, prev, c, stroke_width);
+                buildFatLineSegment(_stroke_verts, prev, c, stroke_width);
                 prev = c;
             }
             coords.x = p3x;
@@ -912,7 +910,7 @@ void OpenGLPath::buildStroke() {
                     c.y = cx0[1] +
                           (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
                     // printf( "(%f, %f)\n", c[0], c[1] );
-                    buildFatLineSegment(_strokeVertices, prev, c, stroke_width);
+                    buildFatLineSegment(_stroke_verts, prev, c, stroke_width);
                     prev = c;
                 }
             }
@@ -934,26 +932,24 @@ void OpenGLPath::endOfTesselation(VGbitfield paintModes) {
     /// build fill vbo
     // TODO: BUGBUG: if in batch mode don't build the VBO!
     if (_vertices.size() > 0) {
-        if (_fillVBO != GL_UNDEFINED) {
-            glDeleteBuffers(1, &_fillVBO);
-            _fillVBO = GL_UNDEFINED;
+        if (_fill_vbo != GL_UNDEFINED) {
+            glDeleteBuffers(1, &_fill_vbo);
+            _fill_vbo = GL_UNDEFINED;
         }
 
-        glGenBuffers(1, &_fillVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, _fillVBO);
-        if (_fillPaintForPath &&
-            _fillPaintForPath->getPaintType() == VG_PAINT_TYPE_COLOR) {
+        glGenBuffers(1, &_fill_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
+        if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
             glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(float),
                          &_vertices[0], GL_STATIC_DRAW);
-        } else if (_fillPaintForPath &&
-                   (_fillPaintForPath->getPaintType() ==
-                        VG_PAINT_TYPE_LINEAR_GRADIENT ||
-                    _fillPaintForPath->getPaintType() ==
-                        VG_PAINT_TYPE_RADIAL_GRADIENT ||
-                    _fillPaintForPath->getPaintType() ==
-                        VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
-                    _fillPaintForPath->getPaintType() ==
-                        VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
+        } else if (_fill_paint && (_fill_paint->getPaintType() ==
+                                       VG_PAINT_TYPE_LINEAR_GRADIENT ||
+                                   _fill_paint->getPaintType() ==
+                                       VG_PAINT_TYPE_RADIAL_GRADIENT ||
+                                   _fill_paint->getPaintType() ==
+                                       VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
+                                   _fill_paint->getPaintType() ==
+                                       VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
             vector<textured_vertex_t> texturedVertices;
             for (vector<float>::const_iterator it = _vertices.begin();
                  it != _vertices.end(); it++) {
@@ -974,39 +970,38 @@ void OpenGLPath::endOfTesselation(VGbitfield paintModes) {
             texturedVertices.clear();
 
             // setup the paints linear gradient
-            _fillPaintForPath->buildGradientImage(_width, _height);
+            _fill_paint->buildGradientImage(_width, _height);
         }
 
-        _numberFillVertices = (int)_vertices.size() / 2;
-        _tessVertices.clear();
+        _num_fill_verts = (int)_vertices.size() / 2;
+        _tess_verts.clear();
     }
 
     /// build stroke vbo
-    if (_strokeVertices.size() > 0) {
+    if (_stroke_verts.size() > 0) {
         // build the vertex buffer object VBO
-        if (_strokeVBO != GL_UNDEFINED) {
-            glDeleteBuffers(1, &_strokeVBO);
-            _strokeVBO = GL_UNDEFINED;
+        if (_stroke_vbo != GL_UNDEFINED) {
+            glDeleteBuffers(1, &_stroke_vbo);
+            _stroke_vbo = GL_UNDEFINED;
         }
 
-        glGenBuffers(1, &_strokeVBO);
-        glBindBuffer(GL_ARRAY_BUFFER, _strokeVBO);
-        glBufferData(GL_ARRAY_BUFFER,
-                     _strokeVertices.size() * sizeof(v2_t),
-                     &_strokeVertices[0], GL_STATIC_DRAW);
-        _numberStrokeVertices = (int)_strokeVertices.size();
+        glGenBuffers(1, &_stroke_vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, _stroke_vbo);
+        glBufferData(GL_ARRAY_BUFFER, _stroke_verts.size() * sizeof(v2_t),
+                     &_stroke_verts[0], GL_STATIC_DRAW);
+        _num_stroke_verts = (int)_stroke_verts.size();
     }
 
     OpenGLBatch *glBatch = (OpenGLBatch *)IContext::instance().currentBatch();
     if (glBatch) { // if in batch mode update the current batch
         glBatch->addPathVertexData(&_vertices[0], _vertices.size() / 2,
-                                   (float *)&_strokeVertices[0],
-                                   _strokeVertices.size(), paintModes);
+                                   (float *)&_stroke_verts[0],
+                                   _stroke_verts.size(), paintModes);
     }
 
     // clear out vertex buffer
     _vertices.clear();
-    _strokeVertices.clear();
+    _stroke_verts.clear();
 }
 
 static GLdouble startVertex_[2];
@@ -1113,12 +1108,12 @@ void OpenGLPath::tessError(GLenum errorCode) {
 }
 
 OpenGLPath::~OpenGLPath() {
-    if (_fillTesseleator) {
-        gluDeleteTess(_fillTesseleator);
-        _fillTesseleator = 0;
+    if (_fill_tess) {
+        gluDeleteTess(_fill_tess);
+        _fill_tess = 0;
     }
 
-    glDeleteBuffers(1, &_fillVBO);
+    glDeleteBuffers(1, &_fill_vbo);
 }
 
 } // namespace MonkVG

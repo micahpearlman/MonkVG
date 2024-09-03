@@ -23,11 +23,11 @@ namespace MonkVG {
 	
 		OpenGLPath( VGint pathFormat, VGPathDatatype datatype, VGfloat scale, VGfloat bias, VGint segmentCapacityHint, VGint coordCapacityHint, VGbitfield capabilities ) 
 			:	IPath( pathFormat, datatype, scale, bias, segmentCapacityHint, coordCapacityHint, capabilities )
-			,	_fillTesseleator( 0 )
-			,	_strokeVBO(-1)
-			,	_fillVBO(-1)
-			,	_fillPaintForPath( 0 )
-			,	_strokePaintForPath( 0 )
+			,	_fill_tess( 0 )
+			,	_stroke_vbo(-1)
+			,	_fill_vbo(-1)
+			,	_fill_paint( 0 )
+			,	_stroke_paint( 0 )
 		{
 
 		}
@@ -61,17 +61,17 @@ namespace MonkVG {
 		
 	private:
 		
-		GLUtesselator*		_fillTesseleator;
+		GLUtesselator*		_fill_tess;
 		vector<GLfloat>		_vertices;
-		vector<v2_t>		_strokeVertices;
-		list<v3_t>			_tessVertices;
-		GLenum				_primType;
-		GLuint				_fillVBO;
-		GLuint				_strokeVBO;
-		int					_numberFillVertices;
-		int					_numberStrokeVertices;
-		OpenGLPaint*		_fillPaintForPath;
-		OpenGLPaint*		_strokePaintForPath;
+		vector<v2_t>		_stroke_verts;
+		list<v3_t>			_tess_verts;
+		GLenum				_prim_type;
+		GLuint				_fill_vbo;
+		GLuint				_stroke_vbo;
+		int					_num_fill_verts;
+		int					_num_stroke_verts;
+		OpenGLPaint*		_fill_paint;
+		OpenGLPaint*		_stroke_paint;
 		
 		
 	private:		// tesseleator callbacks
@@ -87,14 +87,14 @@ namespace MonkVG {
 	private:	// utility methods
 		
 		GLenum primType() {
-			return _primType;
+			return _prim_type;
 		}
 		void setPrimType( GLenum t ) {
-			_primType = t;
+			_prim_type = t;
 		}
 		
 		GLdouble* tessVerticesBackPtr() {
-			return &(_tessVertices.back().x);
+			return &(_tess_verts.back().x);
 		} 
 		
 		void updateBounds(float x, float y) {
@@ -114,7 +114,7 @@ namespace MonkVG {
 
 		GLdouble * addTessVertex( const v3_t & v ) {
 			//updateBounds(v.x, v.y);
-			_tessVertices.push_back( v );
+			_tess_verts.push_back( v );
 			return tessVerticesBackPtr();
 		}
 		
