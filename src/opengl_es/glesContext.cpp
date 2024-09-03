@@ -298,15 +298,15 @@ void GLESContext::fill() {
 }
 
 void GLESContext::startBatch(IBatch *batch) {
-    assert(_currentBatch == 0); // can't have multiple batches going on at once
-    _currentBatch = batch;
+    assert(_current_batch == 0); // can't have multiple batches going on at once
+    _current_batch = batch;
 }
 void GLESContext::dumpBatch(IBatch *batch, void **vertices, size_t *size) {
-    _currentBatch->dump(vertices, size);
+    _current_batch->dump(vertices, size);
 }
 void GLESContext::endBatch(IBatch *batch) {
-    _currentBatch->finalize();
-    _currentBatch = 0;
+    _current_batch->finalize();
+    _current_batch = 0;
 }
 
 void GLESContext::clear(VGint x, VGint y, VGint width, VGint height) {

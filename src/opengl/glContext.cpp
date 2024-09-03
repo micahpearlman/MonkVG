@@ -290,15 +290,15 @@ void OpenGLContext::fill() {
 }
 
 void OpenGLContext::startBatch(IBatch *batch) {
-    assert(_currentBatch == 0); // can't have multiple batches going on at once
-    _currentBatch = batch;
+    assert(_current_batch == 0); // can't have multiple batches going on at once
+    _current_batch = batch;
 }
 void OpenGLContext::dumpBatch(IBatch *batch, void **vertices, size_t *size) {
-    _currentBatch->dump(vertices, size);
+    _current_batch->dump(vertices, size);
 }
 void OpenGLContext::endBatch(IBatch *batch) {
-    _currentBatch->finalize();
-    _currentBatch = 0;
+    _current_batch->finalize();
+    _current_batch = 0;
 }
 
 void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {

@@ -23,6 +23,7 @@ namespace MonkVG {
 		,	_paintType( VG_PAINT_TYPE_COLOR )	// default paint type is color
 		,	_isDirty( true )
 		{}
+		virtual ~IPaint() = default;
 	
 		inline BaseObject::Type getType() const {
 			return BaseObject::kPaintType;

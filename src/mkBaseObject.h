@@ -14,6 +14,11 @@
 
 namespace MonkVG {
 	
+	/**
+	 * @brief Base object class that all MonkVG objects derive from. This class provides
+	 * 	  the interface for all objects to be able to set and get parameters as used by
+	 * 	  the OpenVG API.
+	 */
 	class BaseObject {
 	public:
 	
@@ -28,6 +33,8 @@ namespace MonkVG {
 			
 			kMAXIMUM_TYPE
 		};
+
+		virtual ~BaseObject() = default;
 		
 		virtual BaseObject::Type getType() const = 0;
 		

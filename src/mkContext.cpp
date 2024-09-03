@@ -113,16 +113,16 @@ namespace MonkVG {
 IContext::IContext()
     : _error(VG_NO_ERROR), _width(0), _height(0), _stroke_line_width(1.0f),
       _stroke_paint(0), _fill_paint(0), _active_matrix(&_path_user_to_surface),
-      _fill_rule(VG_EVEN_ODD), _renderingQuality(VG_RENDERING_QUALITY_BETTER),
-      _tessellationIterations(16), _matrixMode(VG_MATRIX_PATH_USER_TO_SURFACE),
-      _currentBatch(0), _imageMode(VG_DRAW_IMAGE_NORMAL) {
+      _fill_rule(VG_EVEN_ODD), _rendering_quality(VG_RENDERING_QUALITY_BETTER),
+      _tess_iterations(16), _matrix_mode(VG_MATRIX_PATH_USER_TO_SURFACE),
+      _current_batch(0), _image_mode(VG_DRAW_IMAGE_NORMAL) {
     _path_user_to_surface.setIdentity();
     _glyph_user_to_surface.setIdentity();
     _image_user_to_surface.setIdentity();
     _active_matrix->setIdentity();
     _glyph_origin[0] = _glyph_origin[1] = 0;
 
-    setImageMode(_imageMode);
+    setImageMode(_image_mode);
 }
 
 //// parameters ////

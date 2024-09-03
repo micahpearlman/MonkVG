@@ -22,6 +22,7 @@ namespace MonkVG {
 class OpenGLContext : public IContext {
   public:
     OpenGLContext();
+    virtual ~OpenGLContext() = default;
 
     bool Initialize() override;
     bool Terminate() override;

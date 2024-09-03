@@ -12,37 +12,30 @@
 #include "mkBaseObject.h"
 
 namespace MonkVG {
-	
-	class IBatch : public BaseObject {
-	public:
-		
-		IBatch()
-		:	BaseObject()
-		{}
-		
-		inline BaseObject::Type getType() const {
-			return BaseObject::kBatchType;
-		}
-		
-		//// parameter accessors/mutators ////
-		virtual VGint getParameteri( const VGint p ) const;
-		virtual VGfloat getParameterf( const VGint f ) const;
-		virtual void getParameterfv( const VGint p, VGfloat *fv ) const;
-		virtual void setParameter( const VGint p, const VGfloat f );
-		virtual void setParameter( const VGint p, const VGint i );
-		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt );
-		
-		virtual void draw() = 0;
-        virtual void dump( void **vertices, size_t *size ) = 0;
-		virtual void finalize() = 0;
-		
-		virtual ~IBatch() {}
-		
-	private:
-		
-		
-	};
-	
-}
+
+class IBatch : public BaseObject {
+  public:
+    IBatch() : BaseObject() {}
+    virtual ~IBatch() = default;
+
+    inline BaseObject::Type getType() const override {
+        return BaseObject::kBatchType;
+    }
+
+    //// parameter accessors/mutators ////
+    virtual VGint   getParameteri(const VGint p) const override;
+    virtual VGfloat getParameterf(const VGint f) const override;
+    virtual void    getParameterfv(const VGint p, VGfloat *fv) const override;
+    virtual void    setParameter(const VGint p, const VGfloat f) override;
+    virtual void    setParameter(const VGint p, const VGint i) override;
+    virtual void    setParameter(const VGint p, const VGfloat *fv,
+                                 const VGint cnt) override;
+
+    virtual void draw()                              = 0;
+    virtual void dump(void **vertices, size_t *size) = 0;
+    virtual void finalize()                          = 0;
+};
+
+} // namespace MonkVG
 
 #endif // __mkBatch_h__

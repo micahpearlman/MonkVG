@@ -12,6 +12,10 @@
 
 namespace MonkVG {
 	
+	/**
+	 * @brief Interface for image objects.
+	 * 
+	 */
 	class IImage : public BaseObject {
 	public:
 		
@@ -19,7 +23,7 @@ namespace MonkVG {
 			   VGint width, VGint height,
 			   VGbitfield allowedQuality );
 		IImage( IImage& image );
-        virtual ~IImage() {}
+        virtual ~IImage() = default;
 		
 		inline BaseObject::Type getType() const {
 			return BaseObject::kImageType;

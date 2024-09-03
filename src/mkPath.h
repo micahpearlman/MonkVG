@@ -19,6 +19,7 @@ namespace MonkVG {
 
 class IPath : public BaseObject {
   public:
+	
     virtual bool draw(VGbitfield paintModes) = 0;
 
     virtual void clear(VGbitfield caps);
