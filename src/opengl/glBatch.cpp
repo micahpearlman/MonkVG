@@ -32,8 +32,8 @@ void OpenGLBatch::addPathVertexData(GLfloat *fill_verts, size_t fill_vert_cnt,
         vertex_t vert;
 
         // get the paint color
-        IPaint        *paint = IContext::instance().getFillPaint();
-        const VGfloat *fc    = paint->getPaintColor();
+        IPaint *paint                   = IContext::instance().getFillPaint();
+        const std::array<VGfloat, 4> fc = paint->getPaintColor();
 
         vert.color = (uint32_t(fc[3] * 255.0f) << 24)   // a
                      | (uint32_t(fc[2] * 255.0f) << 16) // b

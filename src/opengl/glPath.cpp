@@ -92,16 +92,13 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         return true; // creating a batch so bail from here
     }
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
     // restore image mode later
     VGImageMode old_image_mode = gl_ctx.getImageMode();
 
     // configure based on paint type
     if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
-        glDisable(GL_TEXTURE_2D);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        gl_ctx.useShader(OpenGLContext::Shader::ColorShader);
+        // set the shader
+        gl_ctx.bindShader(OpenGLContext::ShaderType::ColorShader);
 
     } else if (_fill_paint &&
                (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ||
@@ -113,10 +110,6 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         throw std::runtime_error(
             "not implemented"); // TODO: do gradients in shader, implement
                                 // texture shaders
-        glEnable(GL_TEXTURE_2D);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        // glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture
-        // with GL_REPLACE we don't use the current glColor
 
         gl_ctx.setImageMode(VG_DRAW_IMAGE_NORMAL);
     }
@@ -160,8 +153,7 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
             _fill_paint->getGradientImage()->unbind();
             gl_ctx.setImageMode(old_image_mode);
 
-            glDisable(GL_TEXTURE_2D);
-            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
         }
 
         // this is important to unbind the vbo when done

@@ -90,10 +90,8 @@ bool OpenGLContext::Initialize() {
     // get viewport to restore back when we are done
     glGetIntegerv(GL_VIEWPORT, _restore_viewport);
 
-
     resize();
     CHECK_GL_ERROR;
-    
 
     glDisable(GL_CULL_FACE);
 
@@ -199,31 +197,29 @@ void OpenGLContext::setFillPaint(IPaint *paint) {
 }
 
 void OpenGLContext::stroke() {
-    if (_stroke_paint) {
-        OpenGLPaint *glPaint = (OpenGLPaint *)_stroke_paint;
-        glPaint->setGLState();
+    if (getStrokePaint() &&
+        getStrokePaint()->getPaintType() == VG_PAINT_TYPE_COLOR) {
+        const std::array<VGfloat, 4> color = getStrokePaint()->getPaintColor();
+        _color_shader->setColor({color[0], color[1], color[2], color[3]});
+
         glPaint->setIsDirty(false);
         // set the fill paint to dirty
-        if (_fill_paint) {
-            glPaint = (OpenGLPaint *)_fill_paint;
-            glPaint->setIsDirty(true);
+        if (getFillPaint()) {
+            getFillPaint()->setIsDirty(true);
         }
     }
 }
 
 void OpenGLContext::fill() {
 
-    if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
-        OpenGLPaint *glPaint = (OpenGLPaint *)_fill_paint;
-        glPaint->setGLState();
-        glPaint->setIsDirty(false);
+    if (getFillPaint() && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
+        const std::array<VGfloat, 4> color = getFillPaint()->getPaintColor();
+        _color_shader->setColor({color[0], color[1], color[2], color[3]});
         // set the stroke paint to dirty
-        if (_stroke_paint) {
-            glPaint = (OpenGLPaint *)_stroke_paint;
-            glPaint->setIsDirty(true);
+        if (getStrokePaint()) {
+            getStrokePaint()->setIsDirty(true);
         }
     }
-
 }
 
 void OpenGLContext::startBatch(IBatch *batch) {
@@ -241,6 +237,9 @@ void OpenGLContext::endBatch(IBatch *batch) {
 void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {
     // TODO:
 }
+
+void OpenGLContext::flush() { glFlush(); }
+void OpenGLContext::finish() { glFinish(); }
 
 /**
  * @brief load an OpenVG 3x3 matrix into the current OpenGL 4x4 matrix
@@ -373,28 +372,31 @@ const glm::mat4 &OpenGLContext::getGLProjectionMatrix() {
     return _projection_stack.top();
 }
 
-void OpenGLContext::useShader(Shader shader) {
-    if (_current_shader == shader) {
-        return;
+void OpenGLContext::bindShader(ShaderType shader) {
+    if (_current_shader != shader) {
+        switch (shader) {
+        case ColorShader:
+            _color_shader->bind();
+            break;
+        case TextureShader:
+            _texture_shader->bind();
+            break;
+        case GradientShader:
+            _gradient_shader->bind();
+            break;
+        case None:
+            glUseProgram(0);
+            break;
+        default:
+            throw std::runtime_error(
+                "OpenGLContext::useShader: invalid shader type");
+        }
+        _current_shader = shader;
     }
     if (_current_shader != None) {
-        getCurrentShader().unbind();
+        getCurrentShader().setProjectionMatrix(getGLProjectionMatrix());
+        getCurrentShader().setModelViewMatrix(getGLActiveMatrix());
     }
-    switch (shader) {
-    case ColorShader:
-        _color_shader->bind();
-        break;
-    case TextureShader:
-        _texture_shader->bind();
-        break;
-    case GradientShader:
-        _gradient_shader->bind();
-        break;
-    default:
-        throw std::runtime_error(
-            "OpenGLContext::useShader: invalid shader type");
-    }
-    _current_shader = shader;
 }
 
 OpenGLShader &OpenGLContext::getCurrentShader() {

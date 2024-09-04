@@ -25,10 +25,10 @@ namespace MonkVG {
 #endif
 
 /**
- * @brief Context implementation for OpenGL. Contains OpenGL specific implementations for the IContext interface,
- * as well as OpenGL specific methods for setting up the rendering context.
- * Such as matrices, shaders, etc.
- * 
+ * @brief Context implementation for OpenGL. Contains OpenGL specific
+ * implementations for the IContext interface, as well as OpenGL specific
+ * methods for setting up the rendering context. Such as matrices, shaders, etc.
+ *
  */
 class OpenGLContext : public IContext {
   public:
@@ -64,6 +64,8 @@ class OpenGLContext : public IContext {
 
     //// platform specific execution of Masking and Clearing ////
     void clear(VGint x, VGint y, VGint width, VGint height) override;
+    void flush() override;
+    void finish() override;
 
     //// platform specific implementation of transform ////
     void setIdentity() override;
@@ -87,45 +89,66 @@ class OpenGLContext : public IContext {
     void setImageMode(VGImageMode im) override;
 
     /// camera extension
+    /**
+     * @brief push an orthographic projection onto the stack
+     */
     void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
-                                 VGfloat top, VGfloat near, VGfloat far)  override;
+                         VGfloat top, VGfloat near, VGfloat far) override;
+
+    /**
+     * @brief pop the orthographic projection off the stack
+     *
+     */
     void popOrthoCamera() override;
 
     void resize() override;
 
     /// OpenGL specific
+    /**
+     * @brief load an OpenVG 3x3 matrix into the current OpenGL 4x4 matrix
+     *
+     */
     void setGLActiveMatrix();
-    const glm::mat4& getGLActiveMatrix();
-    const glm::mat4& getGLProjectionMatrix();
 
-    enum Shader {
-      ColorShader,
-      TextureShader,
-      GradientShader,
-      None
-    };
-    void useShader(Shader shader);
-    Shader getCurrentShaderType() const { return _current_shader; }
-    OpenGLShader& getCurrentShader();
+    /**
+     * @brief get the current OpenGL modelview matrix
+     *
+     */
+    const glm::mat4 &getGLActiveMatrix();
+    /**
+     * @brief get the current OpenGL projection matrix (the orthographic
+     * projection matrix)
+     *
+     */
+    const glm::mat4 &getGLProjectionMatrix();
 
+    enum ShaderType { ColorShader, TextureShader, GradientShader, None };
+
+    /**
+     * @brief bind the shader for the given type.  This will also setup 
+     * common uniforms for the shader.
+     *
+     * @param shader
+     */
+    void          bindShader(ShaderType shader);
+    ShaderType    getCurrentShaderType() const { return _current_shader; }
+    OpenGLShader &getCurrentShader();
 
     static void checkGLError();
 
   private:
     // restore values to play nice with other apps
-    int   _restore_viewport[4];
+    int _restore_viewport[4];
 
     std::stack<glm::mat4> _projection_stack = {};
     std::stack<glm::mat4> _modelview_stack  = {};
-    glm::mat4 _gl_active_matrix;
+    glm::mat4             _gl_active_matrix;
 
     std::unique_ptr<OpenGLShader> _color_shader;
     std::unique_ptr<OpenGLShader> _texture_shader;
     std::unique_ptr<OpenGLShader> _gradient_shader;
 
-    Shader _current_shader = Shader::None;
-
-
+    ShaderType _current_shader = ShaderType::None;
 };
 } // namespace MonkVG
 

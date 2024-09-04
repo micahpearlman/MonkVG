@@ -58,6 +58,8 @@ class IContext {
 
     //// platform specific execution of Masking and Clearing ////
     virtual void clear(VGint x, VGint y, VGint width, VGint height) = 0;
+    virtual void flush()                                            = 0;
+    virtual void finish()                                           = 0;
 
     //// Paints ////
     virtual void      setStrokePaint(IPaint *paint) { _stroke_paint = paint; }
@@ -134,15 +136,16 @@ class IContext {
     inline int32_t getTessellationIterations() const {
         return _tess_iterations;
     }
+
     inline void setTessellationIterations(int32_t i) { _tess_iterations = i; }
 
-    /// batch drawing
+    /// batch drawing ///
     virtual void startBatch(IBatch *batch)                               = 0;
     virtual void dumpBatch(IBatch *batch, void **vertices, size_t *size) = 0;
     virtual void endBatch(IBatch *batch)                                 = 0;
     IBatch      *currentBatch() { return _current_batch; }
 
-    /// font
+    /// font ///
     void setGlyphOrigin(const VGfloat o[2]) {
         _glyph_origin[0] = o[0];
         _glyph_origin[1] = o[1];
@@ -152,7 +155,7 @@ class IContext {
         o[1] = _glyph_origin[1];
     }
 
-    /// image
+    /// image ///
     virtual VGImageMode getImageMode() const { return _image_mode; }
     virtual void        setImageMode(VGImageMode im) { _image_mode = im; }
 
@@ -160,14 +163,24 @@ class IContext {
     virtual VGRenderingBackendTypeMNK getRenderingBackendType() const {
         return _backend_renderer;
     }
+
     virtual void
     setRenderingBackendType(VGRenderingBackendTypeMNK backendRenderer) {
         _backend_renderer = backendRenderer;
     }
 
+    /// orthographic projection ///
+    /**
+     * @brief push an orthographic projection onto the stack
+     */
     virtual void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
                                  VGfloat top, VGfloat near, VGfloat far) = 0;
-    virtual void popOrthoCamera()                                        = 0;
+
+    /**
+     * @brief pop the orthographic projection off the stack
+     *
+     */
+    virtual void popOrthoCamera() = 0;
 
   protected:
     // surface properties

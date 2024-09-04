@@ -87,8 +87,12 @@ VG_API_CALL void VG_API_ENTRY vgMask(VGHandle mask, VGMaskOperation operation,
                                      VGint height) VG_API_EXIT {}
 
 /* Finish and Flush */
-VG_API_CALL void VG_API_ENTRY vgFinish(void) VG_API_EXIT { glFinish(); }
-VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT { glFlush(); }
+VG_API_CALL void VG_API_ENTRY vgFinish(void) VG_API_EXIT {
+    IContext::instance().finish();
+}
+VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT {
+    IContext::instance().flush();
+}
 
 /*--------------------------------------------------
  * Returns the oldest error pending on the current

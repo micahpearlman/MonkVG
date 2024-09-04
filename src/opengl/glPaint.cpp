@@ -25,13 +25,6 @@ OpenGLPaint::~OpenGLPaint() {
     }
 }
 
-void OpenGLPaint::setGLState() {
-    if (isDirty()) {
-        const VGfloat *c = getPaintColor();
-        glColor4f(c[0], c[1], c[2], c[3]);
-		// TODO: implement as a uniform 
-    }
-}
 
 void OpenGLPaint::lerpColor(float *dst, float *stop0, float *stop1, float g) {
     float den =
