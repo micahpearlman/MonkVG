@@ -58,6 +58,11 @@ endif()
 ## OpenGL Backend
 if(MKVG_DO_OPENGL_BACKEND)
     find_package(OpenGL REQUIRED)
+    find_package(glm REQUIRED)
+    if (APPLE)
+        set(GLM_INCLUDE_DIRS ${GLM_INCLUDE_DIRS} /opt/homebrew/include)
+    endif(APPLE)
+
 
     set(BACKEND_SOURCE ${BACKEND_SOURCE}
         ./src/opengl/glBatch.cpp
@@ -69,7 +74,8 @@ if(MKVG_DO_OPENGL_BACKEND)
         ./src/opengl/glShader.cpp)
     set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
         ./src/opengl
-        ${GLU_INCLUDE_DIRS})
+        ${GLU_INCLUDE_DIRS}
+        ${GLM_INCLUDE_DIRS})
 
     set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_GL_BACKEND)
 
@@ -151,7 +157,6 @@ if (MKVG_DO_EXAMPLES)
     endif()
 
 
-    find_package(glm REQUIRED)
 
     if (APPLE)
         find_package(glfw3 3.4 REQUIRED)
