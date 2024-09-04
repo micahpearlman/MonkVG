@@ -13,10 +13,8 @@
 #include "mkPath.h"
 #include "glPlatform.h"
 #include "glPaint.h"
-#include "glShader.h"
 #include <list>
 #include <vector>
-
 
 namespace MonkVG {
 
@@ -58,13 +56,14 @@ class OpenGLPath : public IPath {
     list<v3_t>      _tess_verts       = {};
     GLenum          _prim_type        = GL_UNDEFINED;
     GLuint          _fill_vbo         = GL_UNDEFINED;
+    GLuint          _fill_vao         = GL_UNDEFINED;
     GLuint          _stroke_vbo       = GL_UNDEFINED;
+    GLuint          _stroke_vao       = GL_UNDEFINED;
     int             _num_fill_verts   = 0;
     int             _num_stroke_verts = 0;
     OpenGLPaint    *_fill_paint       = nullptr;
     OpenGLPaint    *_stroke_paint     = nullptr;
-    std::unique_ptr<OpenGLShader>     _color_shader;
-    std::unique_ptr<OpenGLShader>     _texture_shader;
+
     /// Glu tesseleator callbacks
     static void tessBegin(GLenum type, GLvoid *user);
     static void tessEnd(GLvoid *user);

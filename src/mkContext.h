@@ -28,7 +28,7 @@ namespace MonkVG {
 class IContext {
   public:
     IContext();
-	virtual ~IContext() = default;
+    virtual ~IContext() = default;
 
     // singleton instance
     static IContext &instance();
@@ -107,31 +107,9 @@ class IContext {
     inline void      setPathUserToSurface(const Matrix33 &m) {
         _path_user_to_surface = m;
     }
-    virtual void setMatrixMode(VGMatrixMode mode) {
-        //			VG_MATRIX_PATH_USER_TO_SURFACE              =
-        // 0x1400, 			VG_MATRIX_IMAGE_USER_TO_SURFACE =
-        // 0x1401, 			VG_MATRIX_FILL_PAINT_TO_USER                = 0x1402,
-        // VG_MATRIX_STROKE_PAINT_TO_USER              = 0x1403,
-        //			VG_MATRIX_GLYPH_USER_TO_SURFACE             =
-        // 0x1404,
-        _matrix_mode = mode;
-        switch (mode) {
-        case VG_MATRIX_PATH_USER_TO_SURFACE:
-            _active_matrix = &_path_user_to_surface;
-            break;
-        case VG_MATRIX_IMAGE_USER_TO_SURFACE:
-            _active_matrix = &_image_user_to_surface;
-            break;
-        case VG_MATRIX_GLYPH_USER_TO_SURFACE:
-            _active_matrix = &_glyph_user_to_surface;
-            break;
-        default:
-            SetError(VG_ILLEGAL_ARGUMENT_ERROR);
-            break;
-        }
-    }
+    virtual void        setMatrixMode(VGMatrixMode mode);
     inline VGMatrixMode getMatrixMode() const { return _matrix_mode; }
-    inline Matrix33    *getActiveMatrix() { return _active_matrix; }
+    inline Matrix33    &getActiveMatrix() { return *_active_matrix; }
 
     virtual void setIdentity()                   = 0;
     virtual void transform(VGfloat *t)           = 0;
@@ -193,39 +171,40 @@ class IContext {
 
   protected:
     // surface properties
-    VGint   _width, _height;
+    VGint   _width  = 0;
+    VGint   _height = 0;
     VGfloat _clear_color[4];
 
     // matrix transforms
     Matrix33     _path_user_to_surface;
     Matrix33     _image_user_to_surface;
     Matrix33     _glyph_user_to_surface;
-    Matrix33    *_active_matrix;
-    VGMatrixMode _matrix_mode;
+    Matrix33    *_active_matrix = &_path_user_to_surface;
+    VGMatrixMode _matrix_mode   = VG_MATRIX_PATH_USER_TO_SURFACE;
 
     // stroke properties
-    VGfloat _stroke_line_width; // VG_STROKE_LINE_WIDTH
+    VGfloat _stroke_line_width = 1.0; // VG_STROKE_LINE_WIDTH
 
     // rendering quality
-    VGRenderingQuality _rendering_quality;
-    int32_t            _tess_iterations;
+    VGRenderingQuality _rendering_quality = VG_RENDERING_QUALITY_BETTER;
+    int32_t            _tess_iterations   = 16;
 
     // paints
-    IPaint    *_stroke_paint;
-    IPaint    *_fill_paint;
-    VGFillRule _fill_rule;
+    IPaint    *_stroke_paint = nullptr;
+    IPaint    *_fill_paint   = nullptr;
+    VGFillRule _fill_rule    = VG_EVEN_ODD;
 
     // font
-    VGfloat _glyph_origin[2];
+    VGfloat _glyph_origin[2] = {0, 0};
 
     // batch
-    IBatch *_current_batch;
+    IBatch *_current_batch = nullptr;
 
     // imFW
-    VGImageMode _image_mode;
+    VGImageMode _image_mode = VG_DRAW_IMAGE_NORMAL;
 
     // error
-    VGErrorCode _error;
+    VGErrorCode _error = VG_NO_ERROR;
 
     // renderer
     VGRenderingBackendTypeMNK _backend_renderer;

@@ -12,13 +12,24 @@
 
 #include "mkContext.h"
 #include "glPlatform.h"
-#undef CHECK_GL_ERROR // gles2-bc also leaves this defined.
-
+#include "glShader.h"
+#include <glm/glm.hpp>
+#include <stack>
 namespace MonkVG {
 
-// todo: setup debug and release versions
-// #define CHECK_GL_ERROR OpenGLContext::checkGLError()
+// turn on GL error checking if debug
+#if !defined(NDEBUG)
+#define CHECK_GL_ERROR OpenGLContext::checkGLError()
+#else
 #define CHECK_GL_ERROR
+#endif
+
+/**
+ * @brief Context implementation for OpenGL. Contains OpenGL specific implementations for the IContext interface,
+ * as well as OpenGL specific methods for setting up the rendering context.
+ * Such as matrices, shaders, etc.
+ * 
+ */
 class OpenGLContext : public IContext {
   public:
     OpenGLContext();
@@ -64,7 +75,7 @@ class OpenGLContext : public IContext {
     void multiply(const VGfloat *t) override;
     void setMatrixMode(VGMatrixMode mode) override {
         IContext::setMatrixMode(mode);
-        loadGLMatrix();
+        setGLActiveMatrix();
     }
 
     /// batch drawing override
@@ -83,17 +94,38 @@ class OpenGLContext : public IContext {
     void resize() override;
 
     /// OpenGL specific
-    void loadGLMatrix();
-    void beginRender();
-    void endRender();    
+    void setGLActiveMatrix();
+    const glm::mat4& getGLActiveMatrix();
+    const glm::mat4& getGLProjectionMatrix();
+
+    enum Shader {
+      ColorShader,
+      TextureShader,
+      GradientShader,
+      None
+    };
+    void useShader(Shader shader);
+    Shader getCurrentShaderType() const { return _current_shader; }
+    OpenGLShader& getCurrentShader();
+
+
     static void checkGLError();
 
   private:
     // restore values to play nice with other apps
-    int   _viewport[4];
-    float _projection[16];
-    float _modelview[16];
-    float _color[4];
+    int   _restore_viewport[4];
+
+    std::stack<glm::mat4> _projection_stack = {};
+    std::stack<glm::mat4> _modelview_stack  = {};
+    glm::mat4 _gl_active_matrix;
+
+    std::unique_ptr<OpenGLShader> _color_shader;
+    std::unique_ptr<OpenGLShader> _texture_shader;
+    std::unique_ptr<OpenGLShader> _gradient_shader;
+
+    Shader _current_shader = Shader::None;
+
+
 };
 } // namespace MonkVG
 

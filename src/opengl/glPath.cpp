@@ -12,19 +12,21 @@
 #include "glBatch.h"
 #include <cassert>
 
-/// shaders
-#include "shaders/color_vert.h"
-#include "shaders/color_frag.h"
-
 namespace MonkVG {
 
 OpenGLPath::OpenGLPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
                        VGfloat bias, VGint segmentCapacityHint,
                        VGint coordCapacityHint, VGbitfield capabilities)
     : IPath(pathFormat, datatype, scale, bias, segmentCapacityHint,
-            coordCapacityHint, capabilities) {
-	_color_shader = std::make_unique<OpenGLShader>();
-	_color_shader->compile(color_vert, color_frag);
+            coordCapacityHint, capabilities) {}
+
+OpenGLPath::~OpenGLPath() {
+    if (_fill_tess) {
+        gluDeleteTess(_fill_tess);
+        _fill_tess = nullptr;
+    }
+
+    glDeleteBuffers(1, &_fill_vbo);
 }
 
 void OpenGLPath::clear(VGbitfield caps) {
@@ -90,16 +92,17 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         return true; // creating a batch so bail from here
     }
 
-    gl_ctx.beginRender();
-
     glEnableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
+    // restore image mode later
     VGImageMode old_image_mode = gl_ctx.getImageMode();
 
     // configure based on paint type
     if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
         glDisable(GL_TEXTURE_2D);
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        gl_ctx.useShader(OpenGLContext::Shader::ColorShader);
+
     } else if (_fill_paint &&
                (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ||
                 _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT ||
@@ -107,6 +110,9 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
                     VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
                 _fill_paint->getPaintType() ==
                     VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
+        throw std::runtime_error(
+            "not implemented"); // TODO: do gradients in shader, implement
+                                // texture shaders
         glEnable(GL_TEXTURE_2D);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         // glColor4f(1, 1, 1, 1);  // HACKHACK: need to fix when drawing texture
@@ -131,6 +137,9 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
                         VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
                     _fill_paint->getPaintType() ==
                         VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) { // gradient
+            throw std::runtime_error(
+                "not implemented"); // TODO: do gradients in shader, implement
+                                    // texture shaders
             _fill_paint->getGradientImage()->bind();
             glVertexPointer(2, GL_FLOAT, sizeof(textured_vertex_t),
                             (GLvoid *)offsetof(textured_vertex_t, v));
@@ -145,6 +154,9 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
              _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
              _fill_paint->getPaintType() ==
                  VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
+            throw std::runtime_error(
+                "not implemented"); // TODO: do gradients in shader, implement
+                                    // texture shaders
             _fill_paint->getGradientImage()->unbind();
             gl_ctx.setImageMode(old_image_mode);
 
@@ -165,8 +177,6 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
-
-    gl_ctx.endRender();
 
     CHECK_GL_ERROR;
 
@@ -645,30 +655,16 @@ void OpenGLPath::buildStroke() {
     _stroke_verts.clear();
 
     // get the native OpenGL context
-    OpenGLContext &glContext = (MonkVG::OpenGLContext &)IContext::instance();
+    OpenGLContext &gl_ctx = (MonkVG::OpenGLContext &)IContext::instance();
 
-    const VGfloat stroke_width = glContext.getStrokeLineWidth();
+    const VGfloat stroke_width = gl_ctx.getStrokeLineWidth();
 
     vector<VGfloat>::iterator coordsIter = _fcoords->begin();
     VGbyte                    segment    = VG_CLOSE_PATH;
     v2_t                      coords     = {0, 0};
     v2_t                      prev       = {0, 0};
     v2_t                      closeTo    = {0, 0};
-    for (vector<VGubyte>::iterator segmentIter = _segments.begin();
-         segmentIter != _segments.end(); segmentIter++) {
-        segment = (*segmentIter);
-        // int numCoords = segmentToNumCoordinates( static_cast<VGPathSegment>(
-        // segment ) ); segment = segment >> 1;
-
-        //			VG_CLOSE_PATH                               = (
-        // 0 << 1), 			VG_MOVE_TO = ( 1 << 1),
-        // VG_LINE_TO = ( 2 << 1), 			VG_HLINE_TO = ( 3 << 1),
-        // VG_VLINE_TO = ( 4 << 1), 			VG_QUAD_TO = ( 5 << 1),
-        // VG_CUBIC_TO = ( 6 << 1), 			VG_SQUAD_TO = ( 7 << 1),
-        // VG_SCUBIC_TO =
-        //( 8 << 1), 			VG_SCCWARC_TO = ( 9 << 1),
-        // VG_SCWARC_TO = (10 << 1), 			VG_LCCWARC_TO = (11 <<
-        // 1), 			VG_LCWARC_TO = (12 << 1),
+    for (const auto &segment : _segments) {
 
         // todo: deal with relative move
         bool isRelative = segment & VG_RELATIVE;
@@ -927,7 +923,7 @@ void OpenGLPath::buildStroke() {
     } // foreach segment
 }
 
-void OpenGLPath::endOfTesselation(VGbitfield paintModes) {
+void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
 
     /// build fill vbo
     // TODO: BUGBUG: if in batch mode don't build the VBO!
@@ -996,7 +992,7 @@ void OpenGLPath::endOfTesselation(VGbitfield paintModes) {
     if (glBatch) { // if in batch mode update the current batch
         glBatch->addPathVertexData(&_vertices[0], _vertices.size() / 2,
                                    (float *)&_stroke_verts[0],
-                                   _stroke_verts.size(), paintModes);
+                                   _stroke_verts.size(), paint_modes);
     }
 
     // clear out vertex buffer
@@ -1105,15 +1101,6 @@ void OpenGLPath::tessCombine(GLdouble coords[3], void *data[4],
 
 void OpenGLPath::tessError(GLenum errorCode) {
     printf("tesselator error: [%d] %s\n", errorCode, gluErrorString(errorCode));
-}
-
-OpenGLPath::~OpenGLPath() {
-    if (_fill_tess) {
-        gluDeleteTess(_fill_tess);
-        _fill_tess = 0;
-    }
-
-    glDeleteBuffers(1, &_fill_vbo);
 }
 
 } // namespace MonkVG

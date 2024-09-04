@@ -15,6 +15,12 @@
 #include "glFont.h"
 #include "mkCommon.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
+/// shaders
+#include "shaders/color_vert.h"
+#include "shaders/color_frag.h"
+
 namespace MonkVG {
 
 //// singleton implementation ////
@@ -73,28 +79,27 @@ bool OpenGLContext::Initialize() {
         MK_ASSERT(!"ERROR: Unsupported Rendering Backend.");
     }
 
-    // get viewport to restore back when we are done
-    glGetIntegerv(GL_VIEWPORT, _viewport);
-    // fixme?		gl()->glGetFloatv( GL_PROJECTION_MATRIX, _projection );
-    // fixme?		gl()->glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
+    // load the shaders
+    _color_shader = std::make_unique<OpenGLShader>();
+    bool status   = _color_shader->compile(color_vert, color_frag);
+    if (!status) {
+        throw std::runtime_error("failed to compile color shader shader");
+        return false;
+    }
 
-    // get the color to back up when we are done
-    glGetFloatv(GL_CURRENT_COLOR, _color);
+    // get viewport to restore back when we are done
+    glGetIntegerv(GL_VIEWPORT, _restore_viewport);
+
 
     resize();
+    CHECK_GL_ERROR;
+    
 
     glDisable(GL_CULL_FACE);
-    glDisable(GL_TEXTURE_2D);
 
     // turn on blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glDisable(GL_TEXTURE_2D);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
-
     CHECK_GL_ERROR;
 
     return true;
@@ -103,92 +108,27 @@ bool OpenGLContext::Initialize() {
 void OpenGLContext::resize() {
     // setup GL projection
     glViewport(0, 0, _width, _height);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrthof(0, _width,  // left, right
-                   0, _height, // top, botton
-                   -1, 1);     // near value, far value (depth)
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    pushOrthoCamera(0, _width, 0, _height, -1, 1);
+    CHECK_GL_ERROR;
 }
 
 bool OpenGLContext::Terminate() {
     _stroke_paint = nullptr;
-    _fill_paint = nullptr;
+    _fill_paint   = nullptr;
     return true;
-}
-
-void OpenGLContext::beginRender() {
-    //		glDisable(GL_TEXTURE_2D);
-    //		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-    //		glDisableClientState( GL_COLOR_ARRAY );
-    //		glEnableClientState( GL_VERTEX_ARRAY );
-
-    // glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-    //		CHECK_GL_ERROR;
-    //
-    //		// get viewport to restore back when we are done
-    //		glGetIntegerv( GL_VIEWPORT, _viewport );
-    //		glGetFloatv( GL_PROJECTION_MATRIX, _projection );
-    //		glGetFloatv( GL_MODELVIEW_MATRIX, _modelview );
-    //
-    //		// get the color to back up when we are done
-    //		glGetFloatv( GL_CURRENT_COLOR, _color );
-    //
-    //		// setup GL projection
-    //		glViewport(0,0, _width, _height);
-    //
-    //		glMatrixMode(GL_PROJECTION);
-    //		glLoadIdentity();
-    //		glOrthof(0, _width,		// left, right
-    //				 0, _height,	// top, botton
-    //				 -1, 1);		// near value, far value
-    //(depth)
-    //
-    //		glMatrixMode(GL_MODELVIEW);
-    //		glLoadIdentity();
-    //
-    //		glDisable( GL_CULL_FACE );
-    //
-    //		// turn on blending
-    //		glEnable(GL_BLEND);
-    //		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //
-    //		CHECK_GL_ERROR;
-}
-void OpenGLContext::endRender() {
-    //
-    //		CHECK_GL_ERROR;
-    //
-    //		// todo: restore state to be nice to other apps
-    //		// restore the old viewport
-    //		glMatrixMode( GL_PROJECTION );
-    //		glLoadMatrixf( _projection );
-    //		glViewport( _viewport[0], _viewport[1], _viewport[2],
-    //_viewport[3]
-    //); 		glMatrixMode( GL_MODELVIEW ); 		glLoadMatrixf( _modelview
-    //);
-    //
-    //		// restore color
-    //		glColor4f( _color[0], _color[1], _color[2], _color[3] );
-    //
-    //		CHECK_GL_ERROR;
 }
 
 /// factories
 
-IPath *OpenGLContext::createPath(VGint pathFormat, VGPathDatatype datatype,
+IPath *OpenGLContext::createPath(VGint path_format, VGPathDatatype data_type,
                                  VGfloat scale, VGfloat bias,
-                                 VGint      segmentCapacityHint,
-                                 VGint      coordCapacityHint,
+                                 VGint      segment_capacity_hint,
+                                 VGint      coord_capacity_hint,
                                  VGbitfield capabilities) {
 
-    OpenGLPath *path = new OpenGLPath(pathFormat, datatype, scale, bias,
-                                      segmentCapacityHint, coordCapacityHint,
-                                      capabilities &= VG_PATH_CAPABILITY_ALL);
+    OpenGLPath *path = new OpenGLPath(
+        path_format, data_type, scale, bias, segment_capacity_hint,
+        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL);
     if (path == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
 
@@ -223,6 +163,7 @@ IImage *OpenGLContext::createImage(VGImageFormat format, VGint width,
                                    VGint height, VGbitfield allowedQuality) {
     return new OpenGLImage(format, width, height, allowedQuality);
 }
+
 void OpenGLContext::destroyImage(IImage *image) {
     if (image) {
         delete image;
@@ -283,10 +224,6 @@ void OpenGLContext::fill() {
         }
     }
 
-    //		if ( _fill_paint ) {
-    //			const VGfloat* c = _fill_paint->getPaintColor();
-    //			glColor4f(c[0], c[1], c[2], c[3] );
-    //		}
 }
 
 void OpenGLContext::startBatch(IBatch *batch) {
@@ -305,43 +242,38 @@ void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {
     // TODO:
 }
 
-void OpenGLContext::loadGLMatrix() {
-    Matrix33 &active = *getActiveMatrix();
-    GLfloat   mat44[4][4];
-    for (int x = 0; x < 4; x++)
-        for (int y = 0; y < 4; y++)
-            mat44[x][y] = 0;
-    mat44[0][0] = 1.0f;
-    mat44[1][1] = 1.0f;
-    mat44[2][2] = 1.0f;
-    mat44[3][3] = 1.0f;
+/**
+ * @brief load an OpenVG 3x3 matrix into the current OpenGL 4x4 matrix
+ *
+ */
+void OpenGLContext::setGLActiveMatrix() {
+    throw std::runtime_error("OpenGLContext::loadGLMatrix not implemented");
+    Matrix33 &active = getActiveMatrix();
 
-    //		a, c, e,			// cos(a) -sin(a) tx
-    //		b, d, f,			// sin(a) cos(a)  ty
-    //		ff0, ff1, ff2;		// 0      0       1
+    // set identity
+    _gl_active_matrix = glm::mat4(1.0f);
 
-    mat44[0][0] = active.a;
-    mat44[0][1] = active.b;
-    mat44[1][0] = active.c;
-    mat44[1][1] = active.d;
-    mat44[3][0] = active.e;
-    mat44[3][1] = active.f;
-    glLoadMatrixf(&mat44[0][0]);
+    _gl_active_matrix[0][0] = active.a;
+    _gl_active_matrix[0][1] = active.b;
+    _gl_active_matrix[1][0] = active.c;
+    _gl_active_matrix[1][1] = active.d;
+    _gl_active_matrix[3][0] = active.e;
+    _gl_active_matrix[3][1] = active.f;
 }
 
 void OpenGLContext::setIdentity() {
-    Matrix33 *active = getActiveMatrix();
-    active->setIdentity();
-    loadGLMatrix();
+    Matrix33 &active = getActiveMatrix();
+    active.setIdentity();
+    setGLActiveMatrix();
 }
 
 void OpenGLContext::transform(VGfloat *t) {
     // a	b	0
     // c	d	0
     // tx	ty	1
-    Matrix33 *active = getActiveMatrix();
+    Matrix33 &active = getActiveMatrix();
     for (int i = 0; i < 9; i++)
-        t[i] = active->m[i];
+        t[i] = active.m[i];
 }
 
 void OpenGLContext::setTransform(const VGfloat *t) {
@@ -355,10 +287,10 @@ void OpenGLContext::setTransform(const VGfloat *t) {
     // c	d	0
     // tx	ty	1
 
-    Matrix33 *active = getActiveMatrix();
+    Matrix33 &active = getActiveMatrix();
     for (int i = 0; i < 9; i++)
-        active->m[i] = t[i];
-    loadGLMatrix();
+        active.m[i] = t[i];
+    setGLActiveMatrix();
 }
 
 void OpenGLContext::multiply(const VGfloat *t) {
@@ -368,41 +300,41 @@ void OpenGLContext::multiply(const VGfloat *t) {
             m.set(y, x, t[(y * 3) + x]);
         }
     }
-    Matrix33 *active = getActiveMatrix();
-    active->postMultiply(m);
-    loadGLMatrix();
+    Matrix33 &active = getActiveMatrix();
+    active.postMultiply(m);
+    setGLActiveMatrix();
 }
 
 void OpenGLContext::scale(VGfloat sx, VGfloat sy) {
-    Matrix33 *active = getActiveMatrix();
+    Matrix33 &active = getActiveMatrix();
     Matrix33  scale;
     scale.setIdentity();
     scale.setScale(sx, sy);
     Matrix33 tmp;
-    Matrix33::multiply(tmp, scale, *active);
-    active->copy(tmp);
-    loadGLMatrix();
+    Matrix33::multiply(tmp, scale, active);
+    active.copy(tmp);
+    setGLActiveMatrix();
 }
 void OpenGLContext::translate(VGfloat x, VGfloat y) {
 
-    Matrix33 *active = getActiveMatrix();
+    Matrix33 &active = getActiveMatrix();
     Matrix33  translate;
     translate.setTranslate(x, y);
     Matrix33 tmp;
     tmp.setIdentity();
-    Matrix33::multiply(tmp, translate, *active);
-    active->copy(tmp);
-    loadGLMatrix();
+    Matrix33::multiply(tmp, translate, active);
+    active.copy(tmp);
+    setGLActiveMatrix();
 }
 void OpenGLContext::rotate(VGfloat angle) {
-    Matrix33 *active = getActiveMatrix();
+    Matrix33 &active = getActiveMatrix();
     Matrix33  rotate;
     rotate.setRotation(radians(angle));
     Matrix33 tmp;
     tmp.setIdentity();
-    Matrix33::multiply(tmp, rotate, *active);
-    active->copy(tmp);
-    loadGLMatrix();
+    Matrix33::multiply(tmp, rotate, active);
+    active.copy(tmp);
+    setGLActiveMatrix();
 }
 
 void OpenGLContext::setImageMode(VGImageMode im) {
@@ -423,18 +355,60 @@ void OpenGLContext::setImageMode(VGImageMode im) {
 
 void OpenGLContext::pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
                                     VGfloat top, VGfloat near, VGfloat far) {
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrthof(left, right, bottom, top, near, far);
-
-    glMatrixMode(GL_MODELVIEW);
+    glm::mat4 projection = glm::ortho(left, right, bottom, top, near, far);
+    _projection_stack.push(projection);
 }
+
 void OpenGLContext::popOrthoCamera() {
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
+    if (_projection_stack.size() > 0) {
+        _projection_stack.pop();
+    }
+}
+
+const glm::mat4 &OpenGLContext::getGLActiveMatrix() {
+    return _gl_active_matrix;
+}
+
+const glm::mat4 &OpenGLContext::getGLProjectionMatrix() {
+    return _projection_stack.top();
+}
+
+void OpenGLContext::useShader(Shader shader) {
+    if (_current_shader == shader) {
+        return;
+    }
+    if (_current_shader != None) {
+        getCurrentShader().unbind();
+    }
+    switch (shader) {
+    case ColorShader:
+        _color_shader->bind();
+        break;
+    case TextureShader:
+        _texture_shader->bind();
+        break;
+    case GradientShader:
+        _gradient_shader->bind();
+        break;
+    default:
+        throw std::runtime_error(
+            "OpenGLContext::useShader: invalid shader type");
+    }
+    _current_shader = shader;
+}
+
+OpenGLShader &OpenGLContext::getCurrentShader() {
+    switch (_current_shader) {
+    case ColorShader:
+        return *_color_shader;
+    case TextureShader:
+        return *_texture_shader;
+    case GradientShader:
+        return *_gradient_shader;
+    default:
+        throw std::runtime_error(
+            "OpenGLContext::getCurrentShader: invalid shader type");
+    }
 }
 
 } // namespace MonkVG

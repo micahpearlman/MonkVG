@@ -18,7 +18,6 @@
 
 using namespace MonkVG;
 
-
 VG_API_CALL VGboolean vgCreateContextMNK(VGint width, VGint height,
                                          VGRenderingBackendTypeMNK backend) {
     MK_LOG("Creating context %d, %d, %d", width, height, (int)backend);
@@ -100,30 +99,15 @@ VG_API_CALL VGErrorCode vgGetError(void) {
     return IContext::instance().getError();
 }
 
-VG_API_CALL void vgPushOrthoCamera( VGfloat left, VGfloat right, VGfloat bottom, VGfloat top, VGfloat near, VGfloat far ) {
-	IContext::instance().pushOrthoCamera(left, right, bottom, top, near, far);
+VG_API_CALL void vgPushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
+                                   VGfloat top, VGfloat near, VGfloat far) {
+    IContext::instance().pushOrthoCamera(left, right, bottom, top, near, far);
 }
-VG_API_CALL void vgPopOrthoCamera() {
-	IContext::instance().popOrthoCamera();
-}
-
+VG_API_CALL void vgPopOrthoCamera() { IContext::instance().popOrthoCamera(); }
 
 namespace MonkVG {
 
-IContext::IContext()
-    : _error(VG_NO_ERROR), _width(0), _height(0), _stroke_line_width(1.0f),
-      _stroke_paint(0), _fill_paint(0), _active_matrix(&_path_user_to_surface),
-      _fill_rule(VG_EVEN_ODD), _rendering_quality(VG_RENDERING_QUALITY_BETTER),
-      _tess_iterations(16), _matrix_mode(VG_MATRIX_PATH_USER_TO_SURFACE),
-      _current_batch(0), _image_mode(VG_DRAW_IMAGE_NORMAL) {
-    _path_user_to_surface.setIdentity();
-    _glyph_user_to_surface.setIdentity();
-    _image_user_to_surface.setIdentity();
-    _active_matrix->setIdentity();
-    _glyph_origin[0] = _glyph_origin[1] = 0;
-
-    setImageMode(_image_mode);
-}
+IContext::IContext() { setImageMode(_image_mode); }
 
 //// parameters ////
 void IContext::set(VGuint type, VGfloat f) {
@@ -220,6 +204,24 @@ void IContext::get(VGuint type, VGint &i) const {
         break;
 
     default:
+        break;
+    }
+}
+
+void IContext::setMatrixMode(VGMatrixMode mode) {
+    _matrix_mode = mode;
+    switch (mode) {
+    case VG_MATRIX_PATH_USER_TO_SURFACE:
+        _active_matrix = &_path_user_to_surface;
+        break;
+    case VG_MATRIX_IMAGE_USER_TO_SURFACE:
+        _active_matrix = &_image_user_to_surface;
+        break;
+    case VG_MATRIX_GLYPH_USER_TO_SURFACE:
+        _active_matrix = &_glyph_user_to_surface;
+        break;
+    default:
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
         break;
     }
 }
