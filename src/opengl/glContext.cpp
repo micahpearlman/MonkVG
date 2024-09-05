@@ -193,10 +193,12 @@ void OpenGLContext::setFillPaint(IPaint *paint) {
 }
 
 void OpenGLContext::stroke() {
+    CHECK_GL_ERROR;
     if (getStrokePaint() &&
         getStrokePaint()->getPaintType() == VG_PAINT_TYPE_COLOR) {
         const std::array<VGfloat, 4> color = getStrokePaint()->getPaintColor();
         _color_shader->setColor({color[0], color[1], color[2], color[3]});
+        CHECK_GL_ERROR;
 
         getStrokePaint()->setIsDirty(false);
         // set the fill paint to dirty

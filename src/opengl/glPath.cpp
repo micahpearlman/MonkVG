@@ -59,6 +59,19 @@ void OpenGLPath::buildFillIfDirty() {
     _is_fill_dirty = false;
 }
 
+void OpenGLPath::buildStrokeIfDirty() {
+    IPaint *current_stroke_paint = IContext::instance().getStrokePaint();
+    if (current_stroke_paint != _stroke_paint) {
+        _stroke_paint    = (OpenGLPaint *)current_stroke_paint;
+        _is_stroke_dirty = true;
+    }
+    // only build the fill if dirty or we are in batch build mode
+    if (_is_stroke_dirty || IContext::instance().currentBatch()) {
+        buildStroke();
+    }
+    _is_stroke_dirty = false;
+}
+
 void printMat44(float m[4][4]) {
     printf("--\n");
     for (int x = 0; x < 4; x++) {
@@ -80,10 +93,8 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         buildFillIfDirty();
     }
 
-    if (paint_modes & VG_STROKE_PATH &&
-        (_isStrokeDirty == true || IContext::instance().currentBatch())) {
-        buildStroke();
-        _isStrokeDirty = false;
+    if (paint_modes & VG_STROKE_PATH) {
+        buildStrokeIfDirty();
     }
 
     endOfTesselation(paint_modes);
@@ -105,9 +116,7 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
 
         // bind the vao & vbo and draw
         glBindVertexArray(_fill_vao);
-        // glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
         glDrawArrays(GL_TRIANGLES, 0, _num_fill_verts);
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
 
     } else if (_fill_paint &&
@@ -125,16 +134,24 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
     }
 
     // this is important to unbind the vbo when done
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);    
 
-    // draw the stroke last
-    // if ((paint_modes & VG_STROKE_PATH) && _stroke_vbo != GL_UNDEFINED) {
-    //     // draw
-    //     IContext::instance().stroke();
-    //     glBindBuffer(GL_ARRAY_BUFFER, _stroke_vbo);
-    //     glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
-    //     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // }
+    // draw the stroke last so it renders on top of fill
+    if ((paint_modes & VG_STROKE_PATH) &&
+                             _stroke_vao != GL_UNDEFINED) {
+        if (_stroke_paint && _stroke_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
+            // set the shader to a color shader
+            gl_ctx.bindShader(OpenGLContext::ShaderType::ColorShader);
+
+        } else {
+            throw std::runtime_error("Non color stroke paint not implemented");
+        }
+        // draw
+        IContext::instance().stroke(); 
+        glBindVertexArray(_stroke_vao); 
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts); 
+        glBindVertexArray(0); 
+    }
 
     CHECK_GL_ERROR;
 
@@ -882,38 +899,6 @@ void OpenGLPath::buildStroke() {
 }
 
 void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
-#if 0
-    static bool once = true;
-    if (once) {
-        static GLfloat vertices[] = {// positions         // colors
-                              -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0,
-                              0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0,
-                              0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0};
-        for (GLfloat &v : vertices) {  
-            v *= 100;
-        }
-
-        glGenVertexArrays(1, &_fill_vao);
-        glGenBuffers(1, &_fill_vbo);
-        glBindVertexArray(_fill_vao);
-        glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
-
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
-                     GL_STATIC_DRAW);
-
-        // set vertex attribute pointers
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
-                              (GLvoid *)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
-                              (GLvoid *)(3 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(1);
-        CHECK_GL_ERROR;
-
-        once = false;
-    }
-
-#else
     /// build fill vao & vbo
     if (_vertices.size() > 0) {
         if (_fill_vbo != GL_UNDEFINED) {
@@ -932,7 +917,7 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
         if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
             glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(VGfloat),
                          _vertices.data(), GL_STATIC_DRAW);
-            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
             glEnableVertexAttribArray(0);
         } else if (_fill_paint && (_fill_paint->getPaintType() ==
                                        VG_PAINT_TYPE_LINEAR_GRADIENT ||
@@ -983,12 +968,14 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
             _stroke_vao = GL_UNDEFINED;
         }
         glGenVertexArrays(1, &_stroke_vao);
-        glBindVertexArray(_stroke_vao);
-
         glGenBuffers(1, &_stroke_vbo);
+        glBindVertexArray(_stroke_vao);
         glBindBuffer(GL_ARRAY_BUFFER, _stroke_vbo);
         glBufferData(GL_ARRAY_BUFFER, _stroke_verts.size() * sizeof(v2_t),
                      _stroke_verts.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
+        glEnableVertexAttribArray(0);
+
         _num_stroke_verts = (int)_stroke_verts.size();
     }
 
@@ -1002,7 +989,6 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
     // clear out vertex buffer
     _vertices.clear();
     _stroke_verts.clear();
-#endif // 0
 }
 
 static GLdouble startVertex_[2];

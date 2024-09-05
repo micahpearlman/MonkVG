@@ -68,9 +68,9 @@ namespace MonkVG {
 			buildFillIfDirty();
 		}
 
-		if( paintModes & VG_STROKE_PATH && (_isStrokeDirty == true || IContext::instance().currentBatch())  ) {
+		if( paintModes & VG_STROKE_PATH && (_is_stroke_dirty == true || IContext::instance().currentBatch())  ) {
 			buildStroke();
-			_isStrokeDirty = false;
+			_is_stroke_dirty = false;
 		}
 		
 		endOfTesselation( paintModes );

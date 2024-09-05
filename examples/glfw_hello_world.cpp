@@ -64,13 +64,16 @@ int main(int argc, char **argv) {
     vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,
                        VG_RENDERING_BACKEND_TYPE_OPENGLES20);
 #endif
-    // create a paint
-    VGPaint paint;
+    // create fill and stroke paints
+    VGPaint fill_paint = vgCreatePaint();
+    vgSetPaint(fill_paint, VG_FILL_PATH);
+    VGfloat fill_color[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+    vgSetParameterfv(fill_paint, VG_PAINT_COLOR, 4, &fill_color[0]);
 
-    paint = vgCreatePaint();
-    vgSetPaint(paint, VG_FILL_PATH);
-    VGfloat color[4] = {0.0f, 1.0f, 0.0f, 1.0f};
-    vgSetParameterfv(paint, VG_PAINT_COLOR, 4, &color[0]);
+    VGPaint stroke_paint = vgCreatePaint();
+    vgSetPaint(stroke_paint, VG_STROKE_PATH);
+    VGfloat stroke_color[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+    vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
 
     // create a simple box path
     VGPath path;
@@ -97,12 +100,22 @@ int main(int argc, char **argv) {
         vgPushOrthoCamera(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
 
         /// draw the basic path
+        // set up path trasnform
         vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
         vgLoadIdentity();
         vgTranslate(width / 2, height / 2);
-        vgSetPaint(paint, VG_FILL_PATH);
-        vgDrawPath(path, VG_FILL_PATH);
 
+        // stroke wideth
+        vgSetf(VG_STROKE_LINE_WIDTH, 5.0f);
+
+        // fill and stroke paints
+        vgSetPaint(fill_paint, VG_FILL_PATH);
+        vgSetPaint(stroke_paint, VG_STROKE_PATH);
+
+        // draw the path with fill and stroke
+        vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
+
+        // pop the ortho camera
         vgPopOrthoCamera();
 
         // Swap buffers
@@ -115,7 +128,7 @@ int main(int argc, char **argv) {
 
     // destroy MonkVG
     vgDestroyPath(path);
-    vgDestroyPaint(paint);
+    vgDestroyPaint(fill_paint);
     vgDestroyContextMNK();
 
     glfwDestroyWindow(window);

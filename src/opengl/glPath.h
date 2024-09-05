@@ -29,6 +29,7 @@ class OpenGLPath : public IPath {
     bool draw(VGbitfield paintModes) override;
     void clear(VGbitfield caps) override;
     void buildFillIfDirty() override;
+    void buildStrokeIfDirty() override;
 
   private:
     struct v2_t {
