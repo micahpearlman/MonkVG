@@ -25,7 +25,10 @@ include(build_external_proj.cmake)
 if(MKVG_DO_GLU_TESSELATION)
     add_subdirectory(thirdparty/glu)
     set(GLU_LIBRARIES glu_tess glu_util)
-    set(GLU_INCLUDE_DIRS thirdparty/glu/include)
+    set(GLU_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glu/include)
+    message(STATUS "GLU Tesselation Enabled")
+    message(STATUS "GLU_INCLUDE_DIRS: ${GLU_INCLUDE_DIRS}")
+    message(STATUS "GLU_LIBRARIES: ${GLU_LIBRARIES}")
 endif()
 
 
@@ -60,6 +63,7 @@ if(MKVG_DO_OPENGL_BACKEND)
     find_package(OpenGL REQUIRED)
     find_package(glm REQUIRED)
     if (APPLE)
+        # for whatever reason apple requires explicit include path
         set(GLM_INCLUDE_DIRS ${GLM_INCLUDE_DIRS} /opt/homebrew/include)
     endif(APPLE)
 
@@ -97,18 +101,31 @@ if(MKVG_DO_OPENGL_BACKEND)
 
     
     # build the shaders
-    set(SHADER_FILES 
-        ./src/opengl/shaders/color_vert.glsl 
-        ./src/opengl/shaders/color_frag.glsl)
+    # set(SHADER_FILES 
+    #     ./src/opengl/shaders/color_vert.glsl 
+    #     ./src/opengl/shaders/color_frag.glsl)
 
-    foreach(SHADER_FILE ${SHADER_FILES})
-        get_filename_component(SHADER_NAME ${SHADER_FILE} NAME_WE)
-        get_filename_component(SHADER_DIR ${SHADER_FILE} DIRECTORY)
+    # foreach(SHADER_FILE ${SHADER_FILES})
+    #     get_filename_component(SHADER_NAME ${SHADER_FILE} NAME_WE)
+    #     get_filename_component(SHADER_DIR ${SHADER_FILE} DIRECTORY)
 
-        set(HEADER_FILE "${SHADER_DIR}/${SHADER_NAME}.h")
-        embed_glsl_shader(${SHADER_FILE} ${HEADER_FILE})
-        list(APPEND GENERATED_HEADERS ${HEADER_FILE})
-    endforeach()
+    #     set(HEADER_FILE "${SHADER_DIR}/${SHADER_NAME}.h")
+    #     embed_glsl_shader(${SHADER_FILE} ${HEADER_FILE})
+    #     list(APPEND GENERATED_HEADERS ${HEADER_FILE})
+
+    #     # Add a custom command to rebuild the shader header when the shader file changes
+    #     # add_custom_command(
+    #     #     OUTPUT ${HEADER_FILE}
+    #     #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SHADER_FILE} ${HEADER_FILE}
+    #     #     DEPENDS ${SHADER_FILE}
+    #     #     COMMENT "Copying ${SHADER_FILE} to ${HEADER_FILE}"
+    #     # )
+    # endforeach()
+
+    # # Add a custom target to build the shaders
+    # add_custom_target(build_shaders DEPENDS ${GENERATED_HEADERS})
+
+    # set(MNKVG_DEPENDENCIES ${MNKVG_DEPENDENCIES} ${GLU_LIBRARIES} build_shaders)
 
 
 endif()
@@ -130,6 +147,7 @@ set(COMMON_INCLUDE ${COMMON_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 
 ## Build the MonkVG library
+message(STATUS "BACKEND_INCLUDE: ${BACKEND_INCLUDE}")
 add_library(monkvg ${COMMON_SOURCE} ${BACKEND_SOURCE})
 add_dependencies(monkvg ${GLU_LIBRARIES} ${MNKVG_DEPENDENCIES})
 target_compile_definitions(monkvg PRIVATE ${MNKVG_COMPILE_DEFS})

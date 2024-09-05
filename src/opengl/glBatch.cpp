@@ -55,7 +55,7 @@ void OpenGLBatch::addPathVertexData(GLfloat *fill_verts, size_t fill_vert_cnt,
 
         // get the paint color
         IPaint        *paint = IContext::instance().getStrokePaint();
-        const VGfloat *fc    = paint->getPaintColor();
+        const std::array<VGfloat,4> fc    = paint->getPaintColor();
 
         vert.color = (uint32_t(fc[3] * 255.0f) << 24)   // a
                      | (uint32_t(fc[2] * 255.0f) << 16) // b
@@ -122,20 +122,21 @@ void OpenGLBatch::dump(void **vertices, size_t *size) {
 void OpenGLBatch::draw() {
     // get the native OpenGL context
     OpenGLContext &glContext = (MonkVG::OpenGLContext &)IContext::instance();
+    throw std::runtime_error("OpenGLBatch::draw not implemented");
 
-    glDisable(GL_TEXTURE_2D);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    // glDisable(GL_TEXTURE_2D);
+    // glEnableClientState(GL_VERTEX_ARRAY);
+    // glEnableClientState(GL_COLOR_ARRAY);
+    // glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    // draw
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glVertexPointer(2, GL_FLOAT, sizeof(vertex_t),
-                    (GLvoid *)offsetof(vertex_t, v));
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex_t),
-                   (GLvoid *)offsetof(vertex_t, color));
-    glDrawArrays(GL_TRIANGLES, 0, (GLsizei)_vertexCount);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // // draw
+    // glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    // glVertexPointer(2, GL_FLOAT, sizeof(vertex_t),
+    //                 (GLvoid *)offsetof(vertex_t, v));
+    // glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(vertex_t),
+    //                (GLvoid *)offsetof(vertex_t, color));
+    // glDrawArrays(GL_TRIANGLES, 0, (GLsizei)_vertexCount);
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 } // namespace MonkVG

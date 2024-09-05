@@ -125,7 +125,7 @@ class OpenGLContext : public IContext {
     enum ShaderType { ColorShader, TextureShader, GradientShader, None };
 
     /**
-     * @brief bind the shader for the given type.  This will also setup 
+     * @brief bind the shader for the given type.  This will also setup
      * common uniforms for the shader.
      *
      * @param shader
@@ -147,6 +147,7 @@ class OpenGLContext : public IContext {
     std::unique_ptr<OpenGLShader> _color_shader;
     std::unique_ptr<OpenGLShader> _texture_shader;
     std::unique_ptr<OpenGLShader> _gradient_shader;
+
 
     ShaderType _current_shader = ShaderType::None;
 };

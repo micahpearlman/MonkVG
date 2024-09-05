@@ -16,10 +16,13 @@
 #include "mkCommon.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 /// shaders
-#include "shaders/color_vert.h"
-#include "shaders/color_frag.h"
+#define CPP_GLSL_INCLUDE
+#include "shaders/color_vert.glsl"
+#include "shaders/color_frag.glsl"
 
 namespace MonkVG {
 
@@ -50,12 +53,6 @@ void OpenGLContext::checkGLError() {
     case GL_INVALID_OPERATION:
         RVAL = "GL_INVALID_OPERATION";
         break;
-    case GL_STACK_OVERFLOW:
-        RVAL = "GL_STACK_OVERFLOW";
-        break;
-    case GL_STACK_UNDERFLOW:
-        RVAL = "GL_STACK_UNDERFLOW";
-        break;
     case GL_OUT_OF_MEMORY:
         RVAL = "GL_OUT_OF_MEMORY";
         break;
@@ -64,7 +61,7 @@ void OpenGLContext::checkGLError() {
     }
 
     if (err != GL_NO_ERROR) {
-        printf("GL_ERROR: %s\n", RVAL);
+        MK_LOG("GL_ERROR: %s\n", RVAL);
         MK_ASSERT(0);
     }
 }
@@ -81,7 +78,8 @@ bool OpenGLContext::Initialize() {
 
     // load the shaders
     _color_shader = std::make_unique<OpenGLShader>();
-    bool status   = _color_shader->compile(color_vert, color_frag);
+    bool status =
+        _color_shader->compile(color_vert.c_str(), color_frag.c_str());
     if (!status) {
         throw std::runtime_error("failed to compile color shader shader");
         return false;
@@ -180,7 +178,6 @@ void OpenGLContext::setStrokePaint(IPaint *paint) {
     if (paint != _stroke_paint) {
         IContext::setStrokePaint(paint);
         OpenGLPaint *glPaint = (OpenGLPaint *)_stroke_paint;
-        // glPaint->setGLState();
         if (glPaint)
             glPaint->setIsDirty(true);
     }
@@ -190,7 +187,6 @@ void OpenGLContext::setFillPaint(IPaint *paint) {
     if (paint != _fill_paint) {
         IContext::setFillPaint(paint);
         OpenGLPaint *glPaint = (OpenGLPaint *)_fill_paint;
-        // glPaint->setGLState();
         if (glPaint)
             glPaint->setIsDirty(true);
     }
@@ -202,7 +198,7 @@ void OpenGLContext::stroke() {
         const std::array<VGfloat, 4> color = getStrokePaint()->getPaintColor();
         _color_shader->setColor({color[0], color[1], color[2], color[3]});
 
-        glPaint->setIsDirty(false);
+        getStrokePaint()->setIsDirty(false);
         // set the fill paint to dirty
         if (getFillPaint()) {
             getFillPaint()->setIsDirty(true);
@@ -212,13 +208,19 @@ void OpenGLContext::stroke() {
 
 void OpenGLContext::fill() {
 
-    if (getFillPaint() && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
+    if (getFillPaint() == nullptr) {
+        return;
+    }
+
+    if (_fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
         const std::array<VGfloat, 4> color = getFillPaint()->getPaintColor();
         _color_shader->setColor({color[0], color[1], color[2], color[3]});
         // set the stroke paint to dirty
         if (getStrokePaint()) {
             getStrokePaint()->setIsDirty(true);
         }
+    } else {
+        throw std::runtime_error("OpenGLContext::fill: unsupported paint type");
     }
 }
 
@@ -246,12 +248,14 @@ void OpenGLContext::finish() { glFinish(); }
  *
  */
 void OpenGLContext::setGLActiveMatrix() {
-    throw std::runtime_error("OpenGLContext::loadGLMatrix not implemented");
     Matrix33 &active = getActiveMatrix();
 
     // set identity
     _gl_active_matrix = glm::mat4(1.0f);
 
+    //		a, c, e,			// cos(a) -sin(a) tx
+    //		b, d, f,			// sin(a) cos(a)  ty
+    //		ff0, ff1, ff2;		// 0      0       1
     _gl_active_matrix[0][0] = active.a;
     _gl_active_matrix[0][1] = active.b;
     _gl_active_matrix[1][0] = active.c;
@@ -340,10 +344,10 @@ void OpenGLContext::setImageMode(VGImageMode im) {
     IContext::setImageMode(im);
     switch (im) {
     case VG_DRAW_IMAGE_NORMAL:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+        // glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
         break;
     case VG_DRAW_IMAGE_MULTIPLY:
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+        // glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
         break;
     case VG_DRAW_IMAGE_STENCIL:
         break;
@@ -394,6 +398,7 @@ void OpenGLContext::bindShader(ShaderType shader) {
         _current_shader = shader;
     }
     if (_current_shader != None) {
+        // set the shader projection and modelview matrices
         getCurrentShader().setProjectionMatrix(getGLProjectionMatrix());
         getCurrentShader().setModelViewMatrix(getGLActiveMatrix());
     }

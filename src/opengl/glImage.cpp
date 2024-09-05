@@ -126,24 +126,14 @@ void OpenGLImage::draw() {
         // set the color to the current fill paint color
         IPaint *fillPaint = IContext::instance().getFillPaint();
         const std::array<VGfloat, 4> color = fillPaint->getPaintColor();
-        glColor4f(color[0], color[1], color[2], color[3]);
+		throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
     }
 
     bind();
-    //		glEnable(GL_TEXTURE_2D);
-    //		// turn on blending
-    //		glEnable(GL_BLEND);
-    //		glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //		glBindTexture(GL_TEXTURE_2D, _name);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
 
     glDisable(GL_CULL_FACE);
 
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -172,7 +162,7 @@ void OpenGLImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
         // set the color to the current fill paint color
         IPaint *fillPaint = IContext::instance().getFillPaint();
         const std::array<VGfloat, 4> color = fillPaint->getPaintColor();
-        glColor4f(color[0], color[1], color[2], color[3]);
+        throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
     }
 
     glEnable(GL_TEXTURE_2D);
@@ -180,15 +170,12 @@ void OpenGLImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
 
     glDisable(GL_CULL_FACE);
 
     glBindTexture(GL_TEXTURE_2D, _name);
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+    // glVertexPointer(3, GL_FLOAT, 0, vertices);
+    // glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -209,7 +196,7 @@ void OpenGLImage::drawToRect(VGint x, VGint y, VGint w, VGint h,
         // set the color to the current fill paint color
         IPaint *fillPaint = IContext::instance().getFillPaint();
         const std::array<VGfloat, 4> color = fillPaint->getPaintColor();
-        glColor4f(color[0], color[1], color[2], color[3]);
+        throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
     }
 
     glEnable(GL_TEXTURE_2D);
@@ -217,15 +204,12 @@ void OpenGLImage::drawToRect(VGint x, VGint y, VGint w, VGint h,
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
 
     glDisable(GL_CULL_FACE);
 
     glBindTexture(GL_TEXTURE_2D, _name);
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+    // glVertexPointer(3, GL_FLOAT, 0, vertices);
+    // glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     glBindTexture(GL_TEXTURE_2D, 0);

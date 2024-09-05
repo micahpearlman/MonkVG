@@ -19,7 +19,6 @@
 namespace MonkVG {
 
 class OpenGLPath : public IPath {
-    constexpr static int GL_UNDEFINED = 0;
 
   public:
     OpenGLPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,

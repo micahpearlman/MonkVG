@@ -180,7 +180,7 @@ VG_API_CALL void vgDrawPath(VGPath path, VGbitfield paintModes) {
 		return;
 	}
 	
-	// force image matrix mode
+	// force path user to surface matrix mode
 	if( IContext::instance().getMatrixMode() != VG_MATRIX_PATH_USER_TO_SURFACE ) {
 		IContext::instance().setMatrixMode( VG_MATRIX_PATH_USER_TO_SURFACE );
 	}

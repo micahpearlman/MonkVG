@@ -97,8 +97,18 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
 
     // configure based on paint type
     if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
-        // set the shader
+        // set the shader to a color shader
         gl_ctx.bindShader(OpenGLContext::ShaderType::ColorShader);
+
+        // context will setup any uniforms
+        IContext::instance().fill();
+
+        // bind the vao & vbo and draw
+        glBindVertexArray(_fill_vao);
+        // glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
+        glDrawArrays(GL_TRIANGLES, 0, _num_fill_verts);
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(0);
 
     } else if (_fill_paint &&
                (_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ||
@@ -114,61 +124,17 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         gl_ctx.setImageMode(VG_DRAW_IMAGE_NORMAL);
     }
 
-    // draw the fill first
-    if ((paint_modes & VG_FILL_PATH) && _fill_vbo != GL_UNDEFINED &&
-        _fill_paint) {
-        // draw
-        IContext::instance().fill();
-        glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
-        if (_fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) { // color
-            glVertexPointer(2, GL_FLOAT, sizeof(v2_t), 0);
-        } else if ((_fill_paint->getPaintType() ==
-                        VG_PAINT_TYPE_LINEAR_GRADIENT ||
-                    _fill_paint->getPaintType() ==
-                        VG_PAINT_TYPE_RADIAL_GRADIENT ||
-                    _fill_paint->getPaintType() ==
-                        VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
-                    _fill_paint->getPaintType() ==
-                        VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) { // gradient
-            throw std::runtime_error(
-                "not implemented"); // TODO: do gradients in shader, implement
-                                    // texture shaders
-            _fill_paint->getGradientImage()->bind();
-            glVertexPointer(2, GL_FLOAT, sizeof(textured_vertex_t),
-                            (GLvoid *)offsetof(textured_vertex_t, v));
-            glTexCoordPointer(2, GL_FLOAT, sizeof(textured_vertex_t),
-                              (GLvoid *)offsetof(textured_vertex_t, uv));
-        }
-        glDrawArrays(GL_TRIANGLES, 0, _num_fill_verts);
-
-        // unbind any textures being used
-        if ((_fill_paint->getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT ||
-             _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT ||
-             _fill_paint->getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
-             _fill_paint->getPaintType() ==
-                 VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
-            throw std::runtime_error(
-                "not implemented"); // TODO: do gradients in shader, implement
-                                    // texture shaders
-            _fill_paint->getGradientImage()->unbind();
-            gl_ctx.setImageMode(old_image_mode);
-
-
-        }
-
-        // this is important to unbind the vbo when done
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
+    // this is important to unbind the vbo when done
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // draw the stroke last
-    if ((paint_modes & VG_STROKE_PATH) && _stroke_vbo != GL_UNDEFINED) {
-        // draw
-        IContext::instance().stroke();
-        glBindBuffer(GL_ARRAY_BUFFER, _stroke_vbo);
-        glVertexPointer(2, GL_FLOAT, sizeof(v2_t), 0);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
+    // if ((paint_modes & VG_STROKE_PATH) && _stroke_vbo != GL_UNDEFINED) {
+    //     // draw
+    //     IContext::instance().stroke();
+    //     glBindBuffer(GL_ARRAY_BUFFER, _stroke_vbo);
+    //     glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
+    //     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // }
 
     CHECK_GL_ERROR;
 
@@ -916,20 +882,58 @@ void OpenGLPath::buildStroke() {
 }
 
 void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
+#if 0
+    static bool once = true;
+    if (once) {
+        static GLfloat vertices[] = {// positions         // colors
+                              -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0,
+                              0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0,
+                              0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0};
+        for (GLfloat &v : vertices) {  
+            v *= 100;
+        }
 
-    /// build fill vbo
-    // TODO: BUGBUG: if in batch mode don't build the VBO!
+        glGenVertexArrays(1, &_fill_vao);
+        glGenBuffers(1, &_fill_vbo);
+        glBindVertexArray(_fill_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
+
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices,
+                     GL_STATIC_DRAW);
+
+        // set vertex attribute pointers
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+                              (GLvoid *)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+                              (GLvoid *)(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(1);
+        CHECK_GL_ERROR;
+
+        once = false;
+    }
+
+#else
+    /// build fill vao & vbo
     if (_vertices.size() > 0) {
         if (_fill_vbo != GL_UNDEFINED) {
             glDeleteBuffers(1, &_fill_vbo);
             _fill_vbo = GL_UNDEFINED;
         }
+        if (_fill_vao != GL_UNDEFINED) {
+            // glDeleteVertexArrays(1, &_fill_vao);
+            _fill_vao = GL_UNDEFINED;
+        }
 
+        glGenVertexArrays(1, &_fill_vao);
         glGenBuffers(1, &_fill_vbo);
+        glBindVertexArray(_fill_vao);
         glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
         if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
-            glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(float),
-                         &_vertices[0], GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(VGfloat),
+                         _vertices.data(), GL_STATIC_DRAW);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
+            glEnableVertexAttribArray(0);
         } else if (_fill_paint && (_fill_paint->getPaintType() ==
                                        VG_PAINT_TYPE_LINEAR_GRADIENT ||
                                    _fill_paint->getPaintType() ==
@@ -938,6 +942,7 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
                                        VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
                                    _fill_paint->getPaintType() ==
                                        VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
+            throw std::runtime_error("Not implemented");
             vector<textured_vertex_t> texturedVertices;
             for (vector<float>::const_iterator it = _vertices.begin();
                  it != _vertices.end(); it++) {
@@ -973,10 +978,17 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
             _stroke_vbo = GL_UNDEFINED;
         }
 
+        if (_stroke_vao != GL_UNDEFINED) {
+            glDeleteVertexArrays(1, &_stroke_vao);
+            _stroke_vao = GL_UNDEFINED;
+        }
+        glGenVertexArrays(1, &_stroke_vao);
+        glBindVertexArray(_stroke_vao);
+
         glGenBuffers(1, &_stroke_vbo);
         glBindBuffer(GL_ARRAY_BUFFER, _stroke_vbo);
         glBufferData(GL_ARRAY_BUFFER, _stroke_verts.size() * sizeof(v2_t),
-                     &_stroke_verts[0], GL_STATIC_DRAW);
+                     _stroke_verts.data(), GL_STATIC_DRAW);
         _num_stroke_verts = (int)_stroke_verts.size();
     }
 
@@ -990,6 +1002,7 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
     // clear out vertex buffer
     _vertices.clear();
     _stroke_verts.clear();
+#endif // 0
 }
 
 static GLdouble startVertex_[2];
