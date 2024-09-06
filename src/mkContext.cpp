@@ -7,12 +7,16 @@
  *
  */
 #include "mkContext.h"
-#include "glPath.h"
-#include "glContext.h"
+#if defined(MNKVG_GLES_BACKEND)
+#include "opengl_es/glesContext.h"
+#include "opengl_es/glesPath.h"
+#elif defined(MNKVG_GL_BACKEND)
+#include "opengl/glContext.h"
+#else
+#error "No backend defined"
+#endif
 
 using namespace MonkVG;
-
-// static VGContext *g_context = NULL;
 
 VG_API_CALL VGboolean vgCreateContextMNK(VGint width, VGint height,
                                          VGRenderingBackendTypeMNK backend) {
@@ -83,8 +87,12 @@ VG_API_CALL void VG_API_ENTRY vgMask(VGHandle mask, VGMaskOperation operation,
                                      VGint height) VG_API_EXIT {}
 
 /* Finish and Flush */
-VG_API_CALL void VG_API_ENTRY vgFinish(void) VG_API_EXIT { glFinish(); }
-VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT { glFlush(); }
+VG_API_CALL void VG_API_ENTRY vgFinish(void) VG_API_EXIT {
+    IContext::instance().finish();
+}
+VG_API_CALL void VG_API_ENTRY vgFlush(void) VG_API_EXIT {
+    IContext::instance().flush();
+}
 
 /*--------------------------------------------------
  * Returns the oldest error pending on the current
@@ -95,30 +103,15 @@ VG_API_CALL VGErrorCode vgGetError(void) {
     return IContext::instance().getError();
 }
 
-VG_API_CALL void vgPushOrthoCamera( VGfloat left, VGfloat right, VGfloat bottom, VGfloat top, VGfloat near, VGfloat far ) {
-	IContext::instance().pushOrthoCamera(left, right, bottom, top, near, far);
+VG_API_CALL void vgPushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
+                                   VGfloat top, VGfloat near, VGfloat far) {
+    IContext::instance().pushOrthoCamera(left, right, bottom, top, near, far);
 }
-VG_API_CALL void vgPopOrthoCamera() {
-	IContext::instance().popOrthoCamera();
-}
-
+VG_API_CALL void vgPopOrthoCamera() { IContext::instance().popOrthoCamera(); }
 
 namespace MonkVG {
 
-IContext::IContext()
-    : _error(VG_NO_ERROR), _width(0), _height(0), _stroke_line_width(1.0f),
-      _stroke_paint(0), _fill_paint(0), _active_matrix(&_path_user_to_surface),
-      _fill_rule(VG_EVEN_ODD), _renderingQuality(VG_RENDERING_QUALITY_BETTER),
-      _tessellationIterations(16), _matrixMode(VG_MATRIX_PATH_USER_TO_SURFACE),
-      _currentBatch(0), _imageMode(VG_DRAW_IMAGE_NORMAL) {
-    _path_user_to_surface.setIdentity();
-    _glyph_user_to_surface.setIdentity();
-    _image_user_to_surface.setIdentity();
-    _active_matrix->setIdentity();
-    _glyph_origin[0] = _glyph_origin[1] = 0;
-
-    setImageMode(_imageMode);
-}
+IContext::IContext() { setImageMode(_image_mode); }
 
 //// parameters ////
 void IContext::set(VGuint type, VGfloat f) {
@@ -215,6 +208,24 @@ void IContext::get(VGuint type, VGint &i) const {
         break;
 
     default:
+        break;
+    }
+}
+
+void IContext::setMatrixMode(VGMatrixMode mode) {
+    _matrix_mode = mode;
+    switch (mode) {
+    case VG_MATRIX_PATH_USER_TO_SURFACE:
+        _active_matrix = &_path_user_to_surface;
+        break;
+    case VG_MATRIX_IMAGE_USER_TO_SURFACE:
+        _active_matrix = &_image_user_to_surface;
+        break;
+    case VG_MATRIX_GLYPH_USER_TO_SURFACE:
+        _active_matrix = &_glyph_user_to_surface;
+        break;
+    default:
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
         break;
     }
 }

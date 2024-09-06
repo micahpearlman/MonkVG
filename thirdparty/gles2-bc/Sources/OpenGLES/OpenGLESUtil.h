@@ -17,11 +17,11 @@
 #ifndef OpenGLESUtil_H_
 #define OpenGLESUtil_H_
 
-//#define OPENGLES_DEBUG  1
+#define OPENGLES_DEBUG  1
 
 #ifdef OPENGLES_DEBUG
 #define CHECK_GL_ERROR(X, Y, Z) OpenGLESUtil::checkGlError(X, Y, Z)
-#define LOG_DEBUG_MESSAGE(...) OpenGLESUtil::logMessage((__VA_ARGS__))
+#define LOG_DEBUG_MESSAGE(...) OpenGLESUtil::logMessage(__VA_ARGS__)
 #define PRINT(...) OpenGLESUtil::print(__VA_ARGS__)
 #define PRINT_BITS(X) OpenGLESUtil::printBits(X)
 #else
@@ -31,9 +31,11 @@
 #define PRINT_BITS(X)
 #endif
 
-//#define LOG_MESSAGE(...) if (OpenGLESConfig::DEBUG) { OpenGLESUtil::logMessage((__VA_ARGS__)); }
 #ifdef OPENGLES_DEBUG
-#define LOG_MESSAGE(...) { OpenGLESUtil::logMessage((__VA_ARGS__)); }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-value"
+#define LOG_MESSAGE(...) OpenGLESUtil::logMessage(__VA_ARGS__); 
+#pragma clang diagnostic pop
 #else
 #define LOG_MESSAGE(...)
 #endif
