@@ -23,6 +23,7 @@ namespace MonkVG {
 		IFont(  )
 		:	BaseObject()
 		{}
+		virtual ~IFont() = default;
 		
 		inline BaseObject::Type getType() const {
 			return BaseObject::kFontType;

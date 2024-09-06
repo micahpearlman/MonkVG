@@ -12,16 +12,21 @@
 #include <GLFW/glfw3.h>
 #endif
 
+// GLM math library
 #include <glm/glm.hpp>
 
+// STB image loader
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 // System
 #include <iostream>
 
-#define WINDOW_WIDTH 1024
+#define WINDOW_WIDTH  1024
 #define WINDOW_HEIGHT 768
 
 int main(int argc, char **argv) {
+    std::cout << "Hello, MonkVG!\n";
     // Initialise GLFW
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW\n";
@@ -45,32 +50,64 @@ int main(int argc, char **argv) {
 #endif
 
     // Open a window and create its OpenGL context
-    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "MonkVG Hello World",
-                              NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
+                                          "MonkVG Hello World", NULL, NULL);
     if (window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.\n");
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(window); 
-
-    // Initialize MonkVG using GLES 2.0 rendering
+    glfwMakeContextCurrent(window);
     vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,
-                       VG_RENDERING_BACKEND_TYPE_OPENGLES20);
+                       VG_RENDERING_BACKEND_TYPE_OPENGL33);
 
-    // create a paint
-    VGPaint paint;
+    // create fill and stroke paints
+    VGPaint fill_paint = vgCreatePaint();
+    vgSetPaint(fill_paint, VG_FILL_PATH);
+    VGfloat fill_color[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+    vgSetParameterfv(fill_paint, VG_PAINT_COLOR, 4, &fill_color[0]);
 
-    paint = vgCreatePaint();
-    vgSetPaint(paint, VG_FILL_PATH);
-    VGfloat color[4] = {0.0f, 1.0f, 0.0f, 1.0f};
-    vgSetParameterfv(paint, VG_PAINT_COLOR, 4, &color[0]);
+    VGPaint stroke_paint = vgCreatePaint();
+    vgSetPaint(stroke_paint, VG_STROKE_PATH);
+    VGfloat stroke_color[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+    vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
 
     // create a simple box path
     VGPath path;
     path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0, 0,
                         VG_PATH_CAPABILITY_ALL);
     vguRect(path, 0.0f, 0.0f, 100.0f, 150.0f);
+
+    // load and create an opencv image
+    int img_width, img_height, img_channels;
+
+    // Load the image (JPEG, PNG, etc.)
+    // Flip the image vertically to match OpenGL's coordinate system
+    stbi_set_flip_vertically_on_load(true);
+    const char    *filename = "roy.png"; // Replace with your image path
+    unsigned char *img_data =
+        stbi_load(filename, &img_width, &img_height, &img_channels, 0);
+
+    if (img_data == nullptr) {
+        std::cerr << "Failed to load image: " << filename << std::endl;
+        return -1;
+    }
+
+    // Display image info
+    std::cout << "Loaded image: " << filename << std::endl;
+    std::cout << "Width: " << img_width << ", Height: " << img_height
+              << ", Channels: " << img_channels << std::endl;
+    assert(img_channels == 4);
+    // Create an OpenVG image with the appropriate format
+    VGImage vg_image = vgCreateImage(VG_sRGBA_8888, img_width, img_height,
+                                     VG_IMAGE_QUALITY_BETTER);
+
+    // Copy the image data to the OpenVG image
+    vgImageSubData(vg_image, img_data, img_width * 4, VG_sRGBA_8888, 0, 0,
+                   img_width, img_height);
+
+    // Free image memory
+    stbi_image_free(img_data);
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -91,12 +128,29 @@ int main(int argc, char **argv) {
         vgPushOrthoCamera(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
 
         /// draw the basic path
+        // set up path trasnform
         vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
         vgLoadIdentity();
         vgTranslate(width / 2, height / 2);
-        vgSetPaint(paint, VG_FILL_PATH);
-        vgDrawPath(path, VG_FILL_PATH);
 
+        // stroke wideth
+        vgSetf(VG_STROKE_LINE_WIDTH, 5.0f);
+
+        // fill and stroke paints
+        vgSetPaint(fill_paint, VG_FILL_PATH);
+        vgSetPaint(stroke_paint, VG_STROKE_PATH);
+
+        // draw the path with fill and stroke
+        vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
+
+        // draw the image
+        vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+        vgLoadIdentity();
+        vgScale(0.25f, 0.25f);
+        vgTranslate(50, 50);
+        vgDrawImage(vg_image);
+
+        // pop the ortho camera
         vgPopOrthoCamera();
 
         // Swap buffers
@@ -109,7 +163,7 @@ int main(int argc, char **argv) {
 
     // destroy MonkVG
     vgDestroyPath(path);
-    vgDestroyPaint(paint);
+    vgDestroyPaint(fill_paint);
     vgDestroyContextMNK();
 
     glfwDestroyWindow(window);

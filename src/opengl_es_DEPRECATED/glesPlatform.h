@@ -6,12 +6,8 @@
 //  Copyright 2011 Zero Vision. All rights reserved.
 //
 
-#ifndef __GLPLATFORM_H__
-#define __GLPLATFORM_H__
-
-#ifndef GL_UNDEFINED
-    #define GL_UNDEFINED 0
-#endif // GL_UNDEFINED
+#ifndef __glesPlatform_h__
+#define __glesPlatform_h__
 
 #if defined(__APPLE__)
     // turn off opengl deprecated warnings
@@ -19,11 +15,10 @@
 
     #include "TargetConditionals.h"
     #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
-        #error "iOS not supported. TODO: Add support for iOS"
         #include "glu.h"
-    #else   // macos
-        #include <OpenGL/gl3.h>
-        #include <GL/glu.h>
+    #else   // OSX
+        #include <OpenGL/glu.h>
+        #define glOrthof glOrtho
     #endif
 
 #elif ANDROID
@@ -72,4 +67,4 @@
     #define APIENTRY
 #endif // APIENTRY
 
-#endif // __GLPLATFORM_H__
+#endif // __glesPlatform_h__

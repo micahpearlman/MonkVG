@@ -24,6 +24,10 @@
 #define MK_LOG(...) printf(__VA_ARGS__)
 #endif
 
-#define MK_ASSERT assert
+#if defined(NDEBUG)
+#define MK_ASSERT(x) ((void)0)
+#else
+#define MK_ASSERT(x) assert(x)
+#endif
 
 #endif // __mkCommon_h__
