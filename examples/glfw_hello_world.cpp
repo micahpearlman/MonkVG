@@ -146,7 +146,8 @@ int main(int argc, char **argv) {
         // draw the image
         vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
         vgLoadIdentity();
-        vgTranslate(0, 0);
+        vgScale(0.25f, 0.25f);
+        vgTranslate(50, 50);
         vgDrawImage(vg_image);
 
         // pop the ortho camera
