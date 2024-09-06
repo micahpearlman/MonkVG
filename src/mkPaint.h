@@ -12,6 +12,7 @@
 
 #include "mkBaseObject.h"
 #include <vector>
+#include <array>
 
 namespace MonkVG {
 
