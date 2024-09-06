@@ -13,34 +13,36 @@
 #include <vector>
 
 namespace MonkVG {
-	class OpenGLImage : public IImage {
-	public:
-		
-		OpenGLImage( VGImageFormat format,
-					VGint width, VGint height,
-					VGbitfield allowedQuality );
-		OpenGLImage( OpenGLImage& other );
+class OpenGLImage : public IImage {
+  public:
+    OpenGLImage(VGImageFormat format, VGint width, VGint height,
+                VGbitfield allowedQuality);
+    OpenGLImage(OpenGLImage &other);
 
-		virtual ~OpenGLImage();
-		
-		virtual IImage* createChild( VGint x, VGint y, VGint w, VGint h );
-		
-		// drawing
-		virtual void draw();
-		virtual void drawSubRect( VGint ox, VGint oy, VGint w, VGint h, VGbitfield paintModes );
-		virtual void drawToRect( VGint x, VGint y, VGint w, VGint h, VGbitfield paintModes );
-		virtual void drawAtPoint( VGint x, VGint y, VGbitfield paintModes );
-		
-		virtual void setSubData( const void * data, VGint dataStride,
-								VGImageFormat dataFormat,
-								VGint x, VGint y, VGint width, VGint height );
-		
-		void bind();
-		void unbind();
+    virtual ~OpenGLImage();
 
-	private:
-		GLuint		_name;
-	};
-}
+    virtual IImage *createChild(VGint x, VGint y, VGint w, VGint h);
+
+    // drawing
+    virtual void draw();
+    virtual void drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
+                             VGbitfield paintModes);
+    virtual void drawToRect(VGint x, VGint y, VGint w, VGint h,
+                            VGbitfield paintModes);
+    virtual void drawAtPoint(VGint x, VGint y, VGbitfield paintModes);
+
+    virtual void setSubData(const void *data, VGint dataStride,
+                            VGImageFormat dataFormat, VGint x, VGint y,
+                            VGint width, VGint height);
+
+    void bind();
+    void unbind();
+
+  private:
+    GLuint _gl_texture = GL_UNDEFINED;
+	GLuint _vao = GL_UNDEFINED;
+	GLuint _vbo = GL_UNDEFINED;
+};
+} // namespace MonkVG
 
 #endif // __glImage_h__

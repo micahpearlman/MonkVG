@@ -12,13 +12,17 @@
 #include <GLFW/glfw3.h>
 #endif
 
+// GLM math library
 #include <glm/glm.hpp>
 
+// STB image loader
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 // System
 #include <iostream>
 
-#define WINDOW_WIDTH 1024
+#define WINDOW_WIDTH  1024
 #define WINDOW_HEIGHT 768
 
 int main(int argc, char **argv) {
@@ -46,14 +50,14 @@ int main(int argc, char **argv) {
 #endif
 
     // Open a window and create its OpenGL context
-    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "MonkVG Hello World",
-                              NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
+                                          "MonkVG Hello World", NULL, NULL);
     if (window == NULL) {
         fprintf(stderr, "Failed to open GLFW window.\n");
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(window); 
+    glfwMakeContextCurrent(window);
 #if defined(__APPLE__)
     // Initialize MonkVG using GLES 2.0 rendering
     vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,
@@ -80,6 +84,37 @@ int main(int argc, char **argv) {
     path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0, 0,
                         VG_PATH_CAPABILITY_ALL);
     vguRect(path, 0.0f, 0.0f, 100.0f, 150.0f);
+
+    // load and create an opencv image
+    int img_width, img_height, img_channels;
+
+    // Load the image (JPEG, PNG, etc.)
+    // Flip the image vertically to match OpenGL's coordinate system
+    stbi_set_flip_vertically_on_load(true);
+    const char    *filename = "roy.png"; // Replace with your image path
+    unsigned char *img_data =
+        stbi_load(filename, &img_width, &img_height, &img_channels, 0);
+
+    if (img_data == nullptr) {
+        std::cerr << "Failed to load image: " << filename << std::endl;
+        return -1;
+    }
+
+    // Display image info
+    std::cout << "Loaded image: " << filename << std::endl;
+    std::cout << "Width: " << img_width << ", Height: " << img_height
+              << ", Channels: " << img_channels << std::endl;
+    assert(img_channels == 4);
+    // Create an OpenVG image with the appropriate format
+    VGImage vg_image = vgCreateImage(VG_sRGBA_8888, img_width, img_height,
+                                     VG_IMAGE_QUALITY_BETTER);
+
+    // Copy the image data to the OpenVG image
+    vgImageSubData(vg_image, img_data, img_width * 4, VG_sRGBA_8888, 0, 0,
+                   img_width, img_height);
+
+    // Free image memory
+    stbi_image_free(img_data);
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -114,6 +149,12 @@ int main(int argc, char **argv) {
 
         // draw the path with fill and stroke
         vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
+
+        // draw the image
+        vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+        vgLoadIdentity();
+        vgTranslate(0, 0);
+        vgDrawImage(vg_image);
 
         // pop the ortho camera
         vgPopOrthoCamera();

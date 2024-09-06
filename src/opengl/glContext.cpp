@@ -23,6 +23,8 @@
 #define CPP_GLSL_INCLUDE
 #include "shaders/color_vert.glsl"
 #include "shaders/color_frag.glsl"
+#include "shaders/texture_vert.glsl"
+#include "shaders/texture_frag.glsl"
 
 namespace MonkVG {
 
@@ -72,6 +74,7 @@ bool OpenGLContext::Initialize() {
 
     // create the gl backend context dependent on user selected backend
     if (getRenderingBackendType() == VG_RENDERING_BACKEND_TYPE_OPENGL33) {
+        MK_LOG("OpenGL 3.3 backend selected\n");
     } else { // error
         MK_ASSERT(!"ERROR: Unsupported Rendering Backend.");
     }
@@ -81,7 +84,14 @@ bool OpenGLContext::Initialize() {
     bool status =
         _color_shader->compile(color_vert.c_str(), color_frag.c_str());
     if (!status) {
-        throw std::runtime_error("failed to compile color shader shader");
+        throw std::runtime_error("failed to compile color shader");
+        return false;
+    }
+    _texture_shader = std::make_unique<OpenGLShader>();
+    status =
+        _texture_shader->compile(texture_vert.c_str(), texture_frag.c_str());
+    if (!status) {
+        throw std::runtime_error("failed to compile texture shader");
         return false;
     }
 

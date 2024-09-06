@@ -100,33 +100,6 @@ if(MKVG_DO_OPENGL_BACKEND)
     endfunction()
 
     
-    # build the shaders
-    # set(SHADER_FILES 
-    #     ./src/opengl/shaders/color_vert.glsl 
-    #     ./src/opengl/shaders/color_frag.glsl)
-
-    # foreach(SHADER_FILE ${SHADER_FILES})
-    #     get_filename_component(SHADER_NAME ${SHADER_FILE} NAME_WE)
-    #     get_filename_component(SHADER_DIR ${SHADER_FILE} DIRECTORY)
-
-    #     set(HEADER_FILE "${SHADER_DIR}/${SHADER_NAME}.h")
-    #     embed_glsl_shader(${SHADER_FILE} ${HEADER_FILE})
-    #     list(APPEND GENERATED_HEADERS ${HEADER_FILE})
-
-    #     # Add a custom command to rebuild the shader header when the shader file changes
-    #     # add_custom_command(
-    #     #     OUTPUT ${HEADER_FILE}
-    #     #     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SHADER_FILE} ${HEADER_FILE}
-    #     #     DEPENDS ${SHADER_FILE}
-    #     #     COMMENT "Copying ${SHADER_FILE} to ${HEADER_FILE}"
-    #     # )
-    # endforeach()
-
-    # # Add a custom target to build the shaders
-    # add_custom_target(build_shaders DEPENDS ${GENERATED_HEADERS})
-
-    # set(MNKVG_DEPENDENCIES ${MNKVG_DEPENDENCIES} ${GLU_LIBRARIES} build_shaders)
-
 
 endif()
 
@@ -193,7 +166,8 @@ if (MKVG_DO_EXAMPLES)
                                 PRIVATE 
                                 ${CMAKE_CURRENT_SOURCE_DIR}/include/MonkVG
                                 ${GLM_INCLUDE_DIRS}
-                                ${GLFW_INCLUDE_DIRS}                                
+                                ${GLFW_INCLUDE_DIRS}
+                                ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/stb                               
                                 )
     target_link_libraries(glfw_hello_world  PUBLIC
                             monkvg

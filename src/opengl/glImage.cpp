@@ -13,12 +13,16 @@ namespace MonkVG {
 
 OpenGLImage::OpenGLImage(VGImageFormat format, VGint width, VGint height,
                          VGbitfield allowedQuality)
-    : IImage(format, width, height, allowedQuality), _name(0) {
-    glEnable(GL_TEXTURE_2D);
-    glGenTextures(1, &_name);
-    glBindTexture(GL_TEXTURE_2D, _name);
+    : IImage(format, width, height, allowedQuality) {
+    CHECK_GL_ERROR;
+    // create the texture
+    glGenTextures(1, &_gl_texture);
+    glBindTexture(GL_TEXTURE_2D, _gl_texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    CHECK_GL_ERROR;
 
     //		/* RGB{A,X} channel ordering */
     //		VG_sRGBX_8888                               =  0,
@@ -53,18 +57,51 @@ OpenGLImage::OpenGLImage(VGImageFormat format, VGint width, VGint height,
         break;
     default:
         SetError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
-        assert(0);
+        throw std::runtime_error("VG_UNSUPPORTED_IMAGE_FORMAT_ERROR");
         break;
     }
+
+    CHECK_GL_ERROR;
+
+    // create the vertex array & buffer objects
+    const GLfloat w = (GLfloat)_width;
+    const GLfloat h = (GLfloat)_height;
+    const GLfloat x = 0, y = 0;
+    // NOTE: openvg coordinate system is bottom, left is 0,0
+    // clang-format off
+    std::array<GLfloat, 16> vertices = {
+        x,     y,     _s[0], _t[1], // left, bottom
+        x + w, y,     _s[1], _t[1], // right, bottom
+        x,     y + h, _s[0], _t[0], // left, top
+        x + w, y + h, _s[1], _t[0]  // right, top
+    };
+    // clang-format on
+
+    glGenVertexArrays(1, &_vao);
+    glBindVertexArray(_vao);
+    glGenBuffers(1, &_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat),
+                 vertices.data(),
+                 GL_DYNAMIC_DRAW); // we will be updating vertices at every draw
+                                   //  GL_STATIC_DRAW); // we will not be
+                                   //  updating vertices
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat),
+                          (GLvoid *)0); // position
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat),
+                          (GLvoid *)(2 * sizeof(GLfloat))); // texcoord
+    glEnableVertexAttribArray(1);
+    CHECK_GL_ERROR;
 }
 
 OpenGLImage::OpenGLImage(OpenGLImage &other)
-    : IImage(other), _name(other._name) {}
+    : IImage(other), _gl_texture(other._gl_texture) {}
 
 OpenGLImage::~OpenGLImage() {
-    if (!_parent && _name) {
-        glDeleteTextures(1, &_name);
-        _name = 0;
+    if (!_parent && _gl_texture != GL_UNDEFINED) {
+        glDeleteTextures(1, &_gl_texture);
+        _gl_texture = GL_UNDEFINED;
     }
 }
 
@@ -83,9 +120,9 @@ IImage *OpenGLImage::createChild(VGint x, VGint y, VGint w, VGint h) {
 void OpenGLImage::setSubData(const void *data, VGint dataStride,
                              VGImageFormat dataFormat, VGint x, VGint y,
                              VGint width, VGint height) {
-    assert(_name);
+    CHECK_GL_ERROR;
 
-    glBindTexture(GL_TEXTURE_2D, _name);
+    glBindTexture(GL_TEXTURE_2D, _gl_texture);
 
     switch (dataFormat) {
 
@@ -106,41 +143,50 @@ void OpenGLImage::setSubData(const void *data, VGint dataStride,
         assert(0);
         break;
     }
+    CHECK_GL_ERROR;
 }
 
 void OpenGLImage::draw() {
-
-    GLfloat coordinates[] = {_s[0], _t[1], _s[1], _t[1],
-                             _s[0], _t[0], _s[1], _t[0]};
-
-    GLfloat w = (GLfloat)_width;
-    GLfloat h = (GLfloat)_height;
-    GLfloat x = 0, y = 0;
-    // note openvg coordinate system is bottom, left is 0,0
-    GLfloat vertices[] = {x,     y,     0.0f,  // left, bottom
-                          x + w, y,     0.0f,  // right, bottom
-                          x,     y + h, 0.0f,  // left, top
-                          x + w, y + h, 0.0f}; // right, top
+    CHECK_GL_ERROR;
 
     if (IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY) {
         // set the color to the current fill paint color
         IPaint *fillPaint = IContext::instance().getFillPaint();
         const std::array<VGfloat, 4> color = fillPaint->getPaintColor();
-		throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
+        throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
     }
 
+    // draw the image
+    GLfloat w = (GLfloat)_width;
+    GLfloat h = (GLfloat)_height;
+    GLfloat x = 0, y = 0;
+
+    // NOTE: openvg coordinate system is bottom, left is 0,0
+    // clang-format off
+    std::array<GLfloat,16> vertices = {
+			x,     y,      _s[0], _t[1],  	// left, bottom
+			x + w, y,      _s[1], _t[1],	// right, bottom
+			x,     y + h,  _s[0], _t[0],	// left, top
+			x + w, y + h,  _s[1], _t[0] 	// right, top
+	};
+    // clang-format on
+
+    // bind texture
     bind();
 
-
-    glDisable(GL_CULL_FACE);
-
+    // glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    // glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat),
+    //                 vertices.data());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    unbind();
+
+    CHECK_GL_ERROR;
 }
 
 void OpenGLImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
                               VGbitfield paintModes) {
+    CHECK_GL_ERROR;
     GLfloat minS = GLfloat(ox) / GLfloat(_width);
     GLfloat maxS = GLfloat(ox + w) / GLfloat(_width);
     GLfloat minT = GLfloat(oy) / GLfloat(_width);
@@ -152,11 +198,15 @@ void OpenGLImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
                              maxS, minT}; // 1,	0
 
     GLfloat x = 0, y = 0;
-    // note openvg coordinate system is bottom, left is 0,0
-    GLfloat vertices[] = {x,     y,     0.0f,  // left, bottom
-                          x + w, y,     0.0f,  // right, bottom
-                          x,     y + h, 0.0f,  // left, top
-                          x + w, y + h, 0.0f}; // right, top
+
+    // clang-format off
+    std::array<GLfloat,16> vertices = {
+						x,     y,      minS, maxT,  // left, bottom
+                        x + w, y,      maxS, maxT,	// right, bottom
+                        x,     y + h,  minS, minT,	// left, top
+                        x + w, y + h,  maxS, minT 	// right, top
+	};
+    // clang-format on
 
     if (IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY) {
         // set the color to the current fill paint color
@@ -165,32 +215,32 @@ void OpenGLImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
         throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
     }
 
-    glEnable(GL_TEXTURE_2D);
-    // turn on blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-    glDisable(GL_CULL_FACE);
-
-    glBindTexture(GL_TEXTURE_2D, _name);
-    // glVertexPointer(3, GL_FLOAT, 0, vertices);
-    // glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+    bind();
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat),
+                    vertices.data());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    unbind();
+    CHECK_GL_ERROR;
 }
 
-void OpenGLImage::drawToRect(VGint x, VGint y, VGint w, VGint h,
+void OpenGLImage::drawToRect(VGint x_, VGint y_, VGint w_, VGint h_,
                              VGbitfield paintModes) {
-    GLfloat coordinates[] = {_s[0], _t[1], _s[1], _t[1],
-                             _s[0], _t[0], _s[1], _t[0]};
-    // note openvg coordinate system is bottom, left is 0,0
-    GLfloat vertices[] = {
-        (GLfloat)x,       (GLfloat)y,       0.0f,  // left, bottom
-        (GLfloat)(x + w), (GLfloat)y,       0.0f,  // right, bottom
-        (GLfloat)x,       (GLfloat)(y + h), 0.0f,  // left, top
-        (GLfloat)(x + w), (GLfloat)(y + h), 0.0f}; // right, top
+    CHECK_GL_ERROR;
+
+    GLfloat x = (GLfloat)x_;
+    GLfloat y = (GLfloat)y_;
+    GLfloat w = (GLfloat)w_;
+    GLfloat h = (GLfloat)h_;
+    // clang-format off
+    std::array<GLfloat,16> vertices = {
+			x,     y,      _s[0], _t[1],  	// left, bottom
+			x + w, y,      _s[1], _t[1],	// right, bottom
+			x,     y + h,  _s[0], _t[0],	// left, top
+			x + w, y + h,  _s[1], _t[0] 	// right, top
+	};
+    // clang-format on
 
     if (IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY) {
         // set the color to the current fill paint color
@@ -199,20 +249,15 @@ void OpenGLImage::drawToRect(VGint x, VGint y, VGint w, VGint h,
         throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
     }
 
-    glEnable(GL_TEXTURE_2D);
-    // turn on blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    bind();
 
-
-    glDisable(GL_CULL_FACE);
-
-    glBindTexture(GL_TEXTURE_2D, _name);
-    // glVertexPointer(3, GL_FLOAT, 0, vertices);
-    // glTexCoordPointer(2, GL_FLOAT, 0, coordinates);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat),
+                    vertices.data());
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    unbind();
+    CHECK_GL_ERROR;
 }
 
 void OpenGLImage::drawAtPoint(VGint x, VGint y, VGbitfield paintModes) {
@@ -220,13 +265,24 @@ void OpenGLImage::drawAtPoint(VGint x, VGint y, VGbitfield paintModes) {
 }
 
 void OpenGLImage::bind() {
-    glEnable(GL_TEXTURE_2D);
-    // turn on blending
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    CHECK_GL_ERROR;
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glBindTexture(GL_TEXTURE_2D, _name);
+    OpenGLContext &gl_ctx = (MonkVG::OpenGLContext &)IContext::instance();
+    gl_ctx.bindShader(OpenGLContext::ShaderType::TextureShader);
+
+    glBindTexture(GL_TEXTURE_2D, _gl_texture);
+    glBindVertexArray(_vao);
+    CHECK_GL_ERROR;
 }
-void OpenGLImage::unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
+void OpenGLImage::unbind() {
+    CHECK_GL_ERROR;
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindVertexArray(0);
+    OpenGLContext &gl_ctx = (MonkVG::OpenGLContext &)IContext::instance();
+    gl_ctx.bindShader(OpenGLContext::ShaderType::None);
+    CHECK_GL_ERROR;
+}
 
 } // namespace MonkVG
