@@ -109,7 +109,6 @@ endif()
 if (MKVG_DO_EXAMPLES)
     ## Build Examples
 
-    # include(ExternalProject)
     # suppress annoying C++ 20 deprecation warnings
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_compile_options(-Wno-deprecated-enum-enum-conversion)
