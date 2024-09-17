@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(monkvg VERSION 0.1.0)
 
-# configuration
+## configuration
+# Set CMP0077 policy to NEW
+cmake_policy(SET CMP0077 NEW)
 option(MKVG_DO_VULKAN_BACKEND "Use Vulkan as the rendering backend.  NOT IMPLEMENTED" OFF) # Not Implemented Yet
 option(MKVG_DO_OPENGLES_BACKEND "Use OpenGL ES as the rendering backend. NOT IMPLEMENTED" OFF)
 option(MKVG_DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
