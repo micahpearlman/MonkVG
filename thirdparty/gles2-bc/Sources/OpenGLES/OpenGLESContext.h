@@ -36,9 +36,11 @@ typedef float           GLclampf;
 typedef int             GLfixed;
 typedef int             GLclampx;
 
+#if !defined(_WIN32)
 /* GL types for handling large vertex buffer objects */
 typedef long             GLintptr;
 typedef long             GLsizeiptr;
+#endif
 
 /* Extensions */
 #define GL_OES_byte_coordinates           1
