@@ -2,7 +2,7 @@
 #define __TIGER_PATHS__
 
 // MonkVG OpenVG interface
-#include <openvg.h>
+#include <MonkVG/openvg.h>
 
 extern const VGint     pathCount;
 extern const VGint     commandCounts[];

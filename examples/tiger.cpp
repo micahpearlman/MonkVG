@@ -1,6 +1,6 @@
 // MonkVG OpenVG interface
-#include <openvg.h>
-#include <vgext.h>
+#include <MonkVG/openvg.h>
+#include <MonkVG/vgext.h>
 
 // OpenGL window creation libraries
 #if defined(__APPLE__)

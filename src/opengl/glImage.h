@@ -40,8 +40,8 @@ class OpenGLImage : public IImage {
 
   private:
     GLuint _gl_texture = GL_UNDEFINED;
-	GLuint _vao = GL_UNDEFINED;
-	GLuint _vbo = GL_UNDEFINED;
+    GLuint _vao        = GL_UNDEFINED;
+    GLuint _vbo        = GL_UNDEFINED;
 };
 } // namespace MonkVG
 

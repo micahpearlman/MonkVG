@@ -24,16 +24,43 @@ class IImage : public BaseObject {
     IImage(IImage &image);
     virtual ~IImage() = default;
 
+    /// @brief Get the type of the monk object type
+    /// @return
     inline BaseObject::Type getType() const { return BaseObject::kImageType; }
 
+    /// @brief Create a child image
+    /// @param x
+    /// @param y
+    /// @param w
+    /// @param h
+    /// @return IImage*
     virtual IImage *createChild(VGint x, VGint y, VGint w, VGint h) = 0;
 
+    /// @brief Draw the image
     virtual void draw() = 0;
 
+    /// @brief Draw a sub region of the image
+    /// @param ox
+    /// @param oy
+    /// @param w
+    /// @param h
+    /// @param paintModes
     virtual void drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
-                             VGbitfield paintModes)                   = 0;
+                             VGbitfield paintModes) = 0;
+
+    /// @brief Draw an image to a specific rectangle
+    /// @param x
+    /// @param y
+    /// @param w
+    /// @param h
+    /// @param paintModes
     virtual void drawToRect(VGint x, VGint y, VGint w, VGint h,
-                            VGbitfield paintModes)                    = 0;
+                            VGbitfield paintModes) = 0;
+
+    /// @brief Draw an image at a specific point
+    /// @param x
+    /// @param y
+    /// @param paintModes
     virtual void drawAtPoint(VGint x, VGint y, VGbitfield paintModes) = 0;
 
     //// parameter accessors/mutators ////
@@ -45,9 +72,24 @@ class IImage : public BaseObject {
     virtual void    setParameter(const VGint p, const VGfloat *fv,
                                  const VGint cnt);
 
+    /// @brief Set a sub region of the image data
+    /// @param data
+    /// @param dataStride
+    /// @param dataFormat
+    /// @param x
+    /// @param y
+    /// @param width
+    /// @param height
     virtual void setSubData(const void *data, VGint dataStride,
                             VGImageFormat dataFormat, VGint x, VGint y,
                             VGint width, VGint height) = 0;
+
+    /// accessors
+    inline VGImageFormat getFormat() const { return _format; }
+    inline VGint         getWidth() const { return _width; }
+    inline VGint         getHeight() const { return _height; }
+    inline VGbitfield    getAllowedQuality() const { return _allowed_quality; }
+    inline IImage       *getParent() const { return _parent; }
 
   protected:
     VGImageFormat _format          = VG_sRGBA_8888;
@@ -57,6 +99,7 @@ class IImage : public BaseObject {
 
     IImage *_parent = nullptr;
 
+    // texture coordinates
     std::array<VGfloat, 2> _s = {0, 1};
     std::array<VGfloat, 2> _t = {0, 1};
 };

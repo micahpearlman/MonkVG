@@ -55,10 +55,12 @@ class OpenGLPath : public IPath {
     vector<v2_t>    _stroke_verts     = {};
     list<v3_t>      _tess_verts       = {};
     GLenum          _prim_type        = GL_UNDEFINED;
+
     GLuint          _fill_vbo         = GL_UNDEFINED;
     GLuint          _fill_vao         = GL_UNDEFINED;
     GLuint          _stroke_vbo       = GL_UNDEFINED;
     GLuint          _stroke_vao       = GL_UNDEFINED;
+    
     int             _num_fill_verts   = 0;
     int             _num_stroke_verts = 0;
     OpenGLPaint    *_fill_paint       = nullptr;

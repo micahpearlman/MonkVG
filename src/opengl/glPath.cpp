@@ -21,12 +21,34 @@ OpenGLPath::OpenGLPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
             coordCapacityHint, capabilities) {}
 
 OpenGLPath::~OpenGLPath() {
+    CHECK_GL_ERROR;
+
     if (_fill_tess) {
         gluDeleteTess(_fill_tess);
         _fill_tess = nullptr;
     }
 
-    glDeleteBuffers(1, &_fill_vbo);
+    if (_fill_vbo != GL_UNDEFINED) {
+        glDeleteBuffers(1, &_fill_vbo);
+        _fill_vbo = GL_UNDEFINED;
+    }
+
+    if (_fill_vao != GL_UNDEFINED) {
+        glDeleteVertexArrays(1, &_fill_vao);
+        _fill_vao = GL_UNDEFINED;
+    }
+
+    if (_stroke_vbo != GL_UNDEFINED) {
+        glDeleteBuffers(1, &_stroke_vbo);
+        _stroke_vbo = GL_UNDEFINED;
+    }
+
+    if (_stroke_vao != GL_UNDEFINED) {
+        glDeleteVertexArrays(1, &_stroke_vao);
+        _stroke_vao = GL_UNDEFINED;
+    }
+    CHECK_GL_ERROR;
+
 }
 
 void OpenGLPath::clear(VGbitfield caps) {
@@ -134,12 +156,12 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
     }
 
     // this is important to unbind the vbo when done
-    glBindBuffer(GL_ARRAY_BUFFER, 0);    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // draw the stroke last so it renders on top of fill
-    if ((paint_modes & VG_STROKE_PATH) &&
-                             _stroke_vao != GL_UNDEFINED) {
-        if (_stroke_paint && _stroke_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
+    if ((paint_modes & VG_STROKE_PATH) && _stroke_vao != GL_UNDEFINED) {
+        if (_stroke_paint &&
+            _stroke_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
             // set the shader to a color shader
             gl_ctx.bindShader(OpenGLContext::ShaderType::ColorShader);
 
@@ -147,10 +169,10 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
             throw std::runtime_error("Non color stroke paint not implemented");
         }
         // draw
-        IContext::instance().stroke(); 
-        glBindVertexArray(_stroke_vao); 
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts); 
-        glBindVertexArray(0); 
+        IContext::instance().stroke();
+        glBindVertexArray(_stroke_vao);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
+        glBindVertexArray(0);
     }
 
     CHECK_GL_ERROR;
@@ -901,12 +923,16 @@ void OpenGLPath::buildStroke() {
 void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
     /// build fill vao & vbo
     if (_vertices.size() > 0) {
+
+        // delete the old vbo
         if (_fill_vbo != GL_UNDEFINED) {
             glDeleteBuffers(1, &_fill_vbo);
             _fill_vbo = GL_UNDEFINED;
         }
+
+        // delete the old vao
         if (_fill_vao != GL_UNDEFINED) {
-            // glDeleteVertexArrays(1, &_fill_vao);
+            glDeleteVertexArrays(1, &_fill_vao);
             _fill_vao = GL_UNDEFINED;
         }
 
