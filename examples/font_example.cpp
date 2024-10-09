@@ -70,10 +70,10 @@ int main(int argc, char **argv) {
     bmp_fnt_stream << bmp_fnt_file.rdbuf();
 
     // open bitmap font imageı
-    int            bmp_fnt_width = 0;
-    int            bmp_fnt_height = 0;
+    int            bmp_fnt_width    = 0;
+    int            bmp_fnt_height   = 0;
     int            bmp_fnt_channels = 0;
-    unsigned char *bmp_fnt_data = stbi_load(
+    unsigned char *bmp_fnt_data     = stbi_load(
         "arial.png", &bmp_fnt_width, &bmp_fnt_height, &bmp_fnt_channels, 0);
     if (bmp_fnt_data == nullptr) {
         std::cerr << "Failed to load image: arial.png" << std::endl;
@@ -93,9 +93,18 @@ int main(int argc, char **argv) {
     // Free image memory
     stbi_image_free(bmp_fnt_data);
 
+    // create font
     VGFont font =
-        vgCreateFontFromBmFnt(bmp_fnt_stream.str().c_str(),
-                               bmp_fnt_stream.str().size(), bmp_fnt_image);
+        vgCreateFontFromBmFnt(bmp_fnt_stream.str().c_str(), bmp_fnt_image);
+
+
+    // create fill paint
+    VGPaint fill = vgCreatePaint();
+    vgSetParameteri(fill, VG_PAINT_TYPE, VG_PAINT_TYPE_COLOR);
+    VGfloat color[4] = {0.8f, 0.8f, 0.8f, 1.0f};
+    vgSetParameterfv(fill, VG_PAINT_COLOR, 4, color);
+
+    
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -112,13 +121,31 @@ int main(int argc, char **argv) {
 
         /// do an ortho camera
         // NOTE:  this is not standard OpenVG
-        vgPushOrthoCamera(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
+        vgPushOrthoCamera(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
 
         /// draw the basic path
         // set up path trasnform
-        vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        // vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        // vgLoadIdentity();
+        // vgTranslate(width / 2, height / 2);
+        std::string text = "Hello, MonkVG!";
+
+        vgSeti(VG_MATRIX_MODE, VG_MATRIX_GLYPH_USER_TO_SURFACE);
         vgLoadIdentity();
-        vgTranslate(width / 2, height / 2);
+        VGfloat glyphOrigin[2] = {0, 0};
+        vgSetfv(VG_GLYPH_ORIGIN, 2, glyphOrigin);
+        vgScale(0.5f, 0.5f);
+        vgTranslate(10, height / 2);
+
+        std::vector<VGuint> glyphs;
+        for (char c : text) {
+            glyphs.push_back(VGuint(c));
+        }
+
+        vgSeti(VG_IMAGE_MODE, VG_DRAW_IMAGE_MULTIPLY);
+        vgSetPaint(fill, VG_FILL_PATH);
+        vgDrawGlyphs(font, glyphs.size(), &glyphs[0], NULL, NULL, VG_FILL_PATH,
+                     VG_TRUE);
 
         // pop the ortho camera
         vgPopOrthoCamera();

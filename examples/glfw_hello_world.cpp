@@ -82,8 +82,6 @@ int main(int argc, char **argv) {
     int img_width, img_height, img_channels;
 
     // Load the image (JPEG, PNG, etc.)
-    // Flip the image vertically to match OpenGL's coordinate system
-    stbi_set_flip_vertically_on_load(true);
     const char    *filename = "roy.png"; // Replace with your image path
     unsigned char *img_data =
         stbi_load(filename, &img_width, &img_height, &img_channels, 0);
@@ -129,7 +127,8 @@ int main(int argc, char **argv) {
 
         /// do an ortho camera
         // NOTE:  this is not standard OpenVG
-        vgPushOrthoCamera(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
+        // NOTE: Bottom left is 0,0
+        vgPushOrthoCamera(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
 
         /// draw the basic path
         // set up path trasnform

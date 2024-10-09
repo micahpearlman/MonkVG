@@ -17,8 +17,7 @@ struct BmpFntChar {
 };
 
 VG_API_CALL VGFont VG_API_ENTRY vgCreateFontFromBmFnt(
-    const char *bmp_fnt_text, VGImage bmp_fnt_image, VGImage **glyph_images,
-    VGuint *glyph_images_cnt) VG_API_EXIT {
+    const char *bmp_fnt_text, VGImage bmp_fnt_image) VG_API_EXIT {
     // create an openvg font object
     VGFont font = vgCreateFont(0);
     if (font == VG_INVALID_HANDLE) {
@@ -43,14 +42,10 @@ VG_API_CALL VGFont VG_API_ENTRY vgCreateFontFromBmFnt(
         // example: chars count=256
         if (tokens[0] == "chars") {
             std::stringstream ss(tokens[1]);
-            std::string key;
-            std::string value;
+            std::string       key;
+            std::string       value;
             std::getline(ss, key, '=');
             std::getline(ss, value, '=');
-
-            // generate the glyph images array
-            *glyph_images_cnt = std::stoi(value);
-            *glyph_images     = new VGImage[*glyph_images_cnt];
         }
         // example: char id=32 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0
         // xadvance=21 page=0 chnl=15
@@ -86,6 +81,19 @@ VG_API_CALL VGFont VG_API_ENTRY vgCreateFontFromBmFnt(
                 }
             }
             bmp_fnt_chars[c.id] = c;
+
+            // create a sub child image from the bitmap font image
+            VGImage glyph_image =
+                vgChildImage(bmp_fnt_image, c.x, c.y, c.width, c.height);
+
+            // add the glyph to the font
+            std::array<VGfloat, 2> glyph_origin = {VGfloat(c.x), VGfloat(c.y)};
+            std::array<VGfloat, 2> escapement   = {VGfloat(c.xadvance), 0};
+            vgSetGlyphToImage(font, c.id, glyph_image, glyph_origin.data(), escapement.data());
+
+            // we can destroy the glyph image after we create the font because
+            // vgSetGlyphToImage increments a reference count to the image
+            vgDestroyImage(glyph_image);
         }
     }
 

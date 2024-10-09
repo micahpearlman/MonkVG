@@ -136,6 +136,11 @@ vgSetGlyphToImage(VGFont font, VGuint glyphIndex, VGImage image,
         return;
     }
 
+    if (glyphOrigin == nullptr || escapement == nullptr) {
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
+        return;
+    }
+
     IFont *f = (IFont *)font;
     f->addGlyphImage(glyphIndex, (IImage *)image, glyphOrigin, escapement);
 }
@@ -164,6 +169,11 @@ vgDrawGlyphs(VGFont font, VGint glyphCount, VGuint *glyphIndices,
 
     if (font == VG_INVALID_HANDLE) {
         SetError(VG_BAD_HANDLE_ERROR);
+        return;
+    }
+
+    if (glyphIndices == nullptr || glyphCount <= 0) {
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
         return;
     }
 

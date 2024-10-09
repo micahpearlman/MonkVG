@@ -72,6 +72,14 @@ namespace MonkVG {
 			,	_image( image_ )
 			{
 				type = BaseObject::kImageType;
+
+				// increase the reference count of the image
+				_image->incRef();
+			}
+
+			virtual ~GlyphImage() {
+				// decrease the reference count of the image
+				_image->decRef();
 			}
 			
 			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ); 
@@ -85,6 +93,14 @@ namespace MonkVG {
 			,	_path( path_ )
 			{
 				type = BaseObject::kPathType;
+
+				// increase the reference count of the path
+				_path->incRef();
+			}
+
+			virtual ~GlyphPath() {
+				// decrease the reference count of the path
+				_path->decRef();
 			}
 			
 			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ) {
