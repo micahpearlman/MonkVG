@@ -33,7 +33,7 @@ void IPath::appendData(const VGint numSegments, const VGubyte *pathSegments,
     for (int i = 0; i < numCoords; i++) {
         switch (_datatype) {
         case VG_PATH_DATATYPE_F:
-            _fcoords->push_back(*(((VGfloat *)(pathData)) + i));
+            _fcoords.push_back(*(((VGfloat *)(pathData)) + i));
             break;
         default:
             // error
@@ -51,7 +51,7 @@ void IPath::copy(const IPath &src, const Matrix33 &transform) {
     setNumCoords(src.getNumCoords());
     setNumSegments(src.getNumSegments());
     _segments = src._segments;
-    *_fcoords = *src._fcoords;
+    _fcoords = src._fcoords;
 }
 
 void IPath::clear(VGbitfield caps) {
@@ -62,7 +62,7 @@ void IPath::clear(VGbitfield caps) {
 
     switch (_datatype) {
     case VG_PATH_DATATYPE_F:
-        _fcoords->clear();
+        _fcoords.clear();
         break;
     default:
         // error

@@ -16,9 +16,9 @@ struct BmpFntChar {
     char letter;   // the character
 };
 
-VG_API_CALL VGFont VG_API_ENTRY
-vgCreateFontFromBmFnt(const char *bmp_fnt_text, VGuint bmp_fnt_text_sz,
-                       VGImage bmp_fnt_image) VG_API_EXIT {
+VG_API_CALL VGFont VG_API_ENTRY vgCreateFontFromBmFnt(
+    const char *bmp_fnt_text, VGImage bmp_fnt_image, VGImage **glyph_images,
+    VGuint *glyph_images_cnt) VG_API_EXIT {
     // create an openvg font object
     VGFont font = vgCreateFont(0);
     if (font == VG_INVALID_HANDLE) {
@@ -26,19 +26,34 @@ vgCreateFontFromBmFnt(const char *bmp_fnt_text, VGuint bmp_fnt_text_sz,
     }
 
     // parse the bmp fnt text
-    std::istringstream iss(bmp_fnt_text);
-    std::string        line;
+    std::istringstream                  iss(bmp_fnt_text);
+    std::string                         line;
     std::unordered_map<int, BmpFntChar> bmp_fnt_chars;
     while (std::getline(iss, line)) {
-        std::istringstream iss_line(line);
-        std::string        token;
+        std::istringstream       iss_line(line);
+        std::string              token;
         std::vector<std::string> tokens;
         // split the line into tokens
         while (std::getline(iss_line, token, ' ')) {
             tokens.push_back(token);
         }
         // parse the tokens
-        // example: char id=32 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0 xadvance=21 page=0 chnl=15
+
+        // get the number of characters/glyphs
+        // example: chars count=256
+        if (tokens[0] == "chars") {
+            std::stringstream ss(tokens[1]);
+            std::string key;
+            std::string value;
+            std::getline(ss, key, '=');
+            std::getline(ss, value, '=');
+
+            // generate the glyph images array
+            *glyph_images_cnt = std::stoi(value);
+            *glyph_images     = new VGImage[*glyph_images_cnt];
+        }
+        // example: char id=32 x=0 y=0 width=0 height=0 xoffset=0 yoffset=0
+        // xadvance=21 page=0 chnl=15
         if (tokens[0] == "char") {
             BmpFntChar c;
             for (auto &t : tokens) {
@@ -48,7 +63,7 @@ vgCreateFontFromBmFnt(const char *bmp_fnt_text, VGuint bmp_fnt_text_sz,
                 std::getline(iss_token, key, '=');
                 std::getline(iss_token, value, '=');
                 if (key == "id") {
-                    c.id = std::stoi(value);
+                    c.id     = std::stoi(value);
                     c.letter = (char)c.id;
                 } else if (key == "x") {
                     c.x = std::stoi(value);
@@ -73,7 +88,6 @@ vgCreateFontFromBmFnt(const char *bmp_fnt_text, VGuint bmp_fnt_text_sz,
             bmp_fnt_chars[c.id] = c;
         }
     }
-
 
     return font;
 }

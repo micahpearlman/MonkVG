@@ -12,7 +12,6 @@
 #include <assert.h>
 #include "glContext.h"
 
-using namespace std;
 
 namespace MonkVG {
 

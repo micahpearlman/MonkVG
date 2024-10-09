@@ -34,6 +34,9 @@ namespace MonkVG {
 			kMAXIMUM_TYPE
 		};
 
+		BaseObject() {
+			incRef();
+		}
 		virtual ~BaseObject() = default;
 		
 		virtual BaseObject::Type getType() const = 0;
@@ -45,6 +48,13 @@ namespace MonkVG {
 		virtual void setParameter( const VGint p, const VGfloat f ) = 0;
 		virtual void setParameter( const VGint p, const VGint i ) = 0;
 		virtual void setParameter( const VGint p, const VGfloat* fv, const VGint cnt ) = 0;
+
+		//// reference counting ////
+		void incRef() { ++_ref_count; }
+		void decRef() { if ( --_ref_count == 0 ) delete this; }
+
+	private:
+		int _ref_count = 0;
 	};
 
 	void SetError( const VGErrorCode e );

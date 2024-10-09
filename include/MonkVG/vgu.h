@@ -117,9 +117,9 @@ VGU_API_CALL VGUErrorCode VGU_API_ENTRY vguComputeWarpQuadToQuad(
  *
  */
 
-VG_API_CALL VGFont VG_API_ENTRY
-vgCreateFontFromBmFnt(const char *bmp_fnt_text, VGuint bmp_fnt_text_sz,
-                       VGImage bmp_fnt_image) VG_API_EXIT;
+VG_API_CALL VGFont VG_API_ENTRY vgCreateFontFromBmFnt(
+    const char *bmp_fnt_text, VGImage bmp_fnt_image, VGImage **glyph_images,
+    VGuint *glyph_images_cnt) VG_API_EXIT;
 
 #ifdef __cplusplus
 } /* extern "C" */

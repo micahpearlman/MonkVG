@@ -100,6 +100,7 @@ vgCreateImage(VGImageFormat format, VGint width, VGint height,
     return (VGImage)IContext::instance().createImage(format, width, height,
                                                      allowed_quality);
 }
+
 VG_API_CALL void VG_API_ENTRY vgDestroyImage(VGImage image) VG_API_EXIT {
     IContext::instance().destroyImage((IImage *)image);
 }

@@ -48,7 +48,6 @@ OpenGLPath::~OpenGLPath() {
         _stroke_vao = GL_UNDEFINED;
     }
     CHECK_GL_ERROR;
-
 }
 
 void OpenGLPath::clear(VGbitfield caps) {
@@ -303,11 +302,11 @@ void OpenGLPath::buildFill() {
 
     gluTessBeginPolygon(_fill_tess, this);
 
-    vector<VGfloat>::iterator coordsIter = _fcoords->begin();
-    VGbyte                    segment    = VG_CLOSE_PATH;
-    v3_t                      coords(0, 0, 0);
-    v3_t                      prev(0, 0, 0);
-    int                       num_contours = 0;
+    std::vector<VGfloat>::iterator coordsIter = _fcoords.begin();
+    VGbyte                         segment    = VG_CLOSE_PATH;
+    v3_t                           coords(0, 0, 0);
+    v3_t                           prev(0, 0, 0);
+    int                            num_contours = 0;
 
     for (auto segment : _segments) {
 
@@ -615,8 +614,9 @@ void OpenGLPath::buildFill() {
     CHECK_GL_ERROR;
 }
 
-void OpenGLPath::buildFatLineSegment(vector<v2_t> &vertices, const v2_t &p0,
-                                     const v2_t &p1, const float stroke_width) {
+void OpenGLPath::buildFatLineSegment(std::vector<v2_t> &vertices,
+                                     const v2_t &p0, const v2_t &p1,
+                                     const float stroke_width) {
 
     if ((p0.x == p1.x) && (p0.y == p1.y)) {
         return;
@@ -656,11 +656,11 @@ void OpenGLPath::buildStroke() {
 
     const VGfloat stroke_width = gl_ctx.getStrokeLineWidth();
 
-    vector<VGfloat>::iterator coordsIter = _fcoords->begin();
-    VGbyte                    segment    = VG_CLOSE_PATH;
-    v2_t                      coords     = {0, 0};
-    v2_t                      prev       = {0, 0};
-    v2_t                      closeTo    = {0, 0};
+    std::vector<VGfloat>::iterator coordsIter = _fcoords.begin();
+    VGbyte                         segment    = VG_CLOSE_PATH;
+    v2_t                           coords     = {0, 0};
+    v2_t                           prev       = {0, 0};
+    v2_t                           closeTo    = {0, 0};
     for (const auto &segment : _segments) {
 
         // todo: deal with relative move
@@ -954,8 +954,8 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
                                    _fill_paint->getPaintType() ==
                                        VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
             throw std::runtime_error("Not implemented");
-            vector<textured_vertex_t> texturedVertices;
-            for (vector<float>::const_iterator it = _vertices.begin();
+            std::vector<textured_vertex_t> texturedVertices;
+            for (std::vector<float>::const_iterator it = _vertices.begin();
                  it != _vertices.end(); it++) {
                 // build up the textured vertex
                 textured_vertex_t v;

@@ -72,7 +72,7 @@ class IImage : public BaseObject {
     virtual void    setParameter(const VGint p, const VGfloat *fv,
                                  const VGint cnt);
 
-    /// @brief Set a sub region of the image data
+    /// @brief Copies image data to a sub region of the VGImage
     /// @param data
     /// @param dataStride
     /// @param dataFormat

@@ -41,6 +41,7 @@ namespace MonkVG {
 		
 		virtual void addGlyphImage( VGuint index_, IImage* image_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] );
 		virtual void addGlyphPath( VGuint index_, IPath* path_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] );
+		virtual void removeGlyph( VGuint index);
 		
 	protected:
 		struct Glyph {
@@ -57,16 +58,18 @@ namespace MonkVG {
 				escapement[0] = escapement_[0];
 				escapement[1] = escapement_[1];
 			}
+
+			virtual ~Glyph() = default;
 			
 			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ) = 0;
-		};
+		}; 
 		
 		struct GlyphImage : public Glyph {
-			IImage*				image;
+			IImage*				_image;
 			
 			GlyphImage( VGuint index_, IImage* image_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] )
 			:	Glyph( index_, glyphOrigin_, escapement_ )
-			,	image( image_ )
+			,	_image( image_ )
 			{
 				type = BaseObject::kImageType;
 			}
@@ -75,22 +78,23 @@ namespace MonkVG {
 		};
 		
 		struct GlyphPath : public Glyph {
-			IPath*				path;
+			IPath*				_path;
 			
 			GlyphPath( VGuint index_, IPath* path_, VGfloat glyphOrigin_[2], VGfloat escapement_[2] )
 			:	Glyph( index_, glyphOrigin_, escapement_ )
-			,	path( path_ )
+			,	_path( path_ )
 			{
 				type = BaseObject::kPathType;
 			}
 			
 			virtual void draw( VGbitfield paintModes, VGfloat adj_x, VGfloat adj_y ) {
-				path->draw( paintModes );
+				_path->draw( paintModes );
 			}
 
 		};
 		
-		std::unordered_map<VGuint, std::shared_ptr<Glyph> >	_glyphs;
+		// glyph map, key is the glyph index. value is the glyph object.
+		std::unordered_map<VGuint, std::unique_ptr<Glyph>>	_glyphs;
 	};
 	
 }
