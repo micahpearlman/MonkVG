@@ -21,12 +21,33 @@ OpenGLPath::OpenGLPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
             coordCapacityHint, capabilities) {}
 
 OpenGLPath::~OpenGLPath() {
+    CHECK_GL_ERROR;
+
     if (_fill_tess) {
         gluDeleteTess(_fill_tess);
         _fill_tess = nullptr;
     }
 
-    glDeleteBuffers(1, &_fill_vbo);
+    if (_fill_vbo != GL_UNDEFINED) {
+        glDeleteBuffers(1, &_fill_vbo);
+        _fill_vbo = GL_UNDEFINED;
+    }
+
+    if (_fill_vao != GL_UNDEFINED) {
+        glDeleteVertexArrays(1, &_fill_vao);
+        _fill_vao = GL_UNDEFINED;
+    }
+
+    if (_stroke_vbo != GL_UNDEFINED) {
+        glDeleteBuffers(1, &_stroke_vbo);
+        _stroke_vbo = GL_UNDEFINED;
+    }
+
+    if (_stroke_vao != GL_UNDEFINED) {
+        glDeleteVertexArrays(1, &_stroke_vao);
+        _stroke_vao = GL_UNDEFINED;
+    }
+    CHECK_GL_ERROR;
 }
 
 void OpenGLPath::clear(VGbitfield caps) {
@@ -134,12 +155,12 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
     }
 
     // this is important to unbind the vbo when done
-    glBindBuffer(GL_ARRAY_BUFFER, 0);    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // draw the stroke last so it renders on top of fill
-    if ((paint_modes & VG_STROKE_PATH) &&
-                             _stroke_vao != GL_UNDEFINED) {
-        if (_stroke_paint && _stroke_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
+    if ((paint_modes & VG_STROKE_PATH) && _stroke_vao != GL_UNDEFINED) {
+        if (_stroke_paint &&
+            _stroke_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
             // set the shader to a color shader
             gl_ctx.bindShader(OpenGLContext::ShaderType::ColorShader);
 
@@ -147,10 +168,10 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
             throw std::runtime_error("Non color stroke paint not implemented");
         }
         // draw
-        IContext::instance().stroke(); 
-        glBindVertexArray(_stroke_vao); 
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts); 
-        glBindVertexArray(0); 
+        IContext::instance().stroke();
+        glBindVertexArray(_stroke_vao);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
+        glBindVertexArray(0);
     }
 
     CHECK_GL_ERROR;
@@ -281,11 +302,11 @@ void OpenGLPath::buildFill() {
 
     gluTessBeginPolygon(_fill_tess, this);
 
-    vector<VGfloat>::iterator coordsIter = _fcoords->begin();
-    VGbyte                    segment    = VG_CLOSE_PATH;
-    v3_t                      coords(0, 0, 0);
-    v3_t                      prev(0, 0, 0);
-    int                       num_contours = 0;
+    std::vector<VGfloat>::iterator coordsIter = _fcoords.begin();
+    VGbyte                         segment    = VG_CLOSE_PATH;
+    v3_t                           coords(0, 0, 0);
+    v3_t                           prev(0, 0, 0);
+    int                            num_contours = 0;
 
     for (auto segment : _segments) {
 
@@ -593,8 +614,9 @@ void OpenGLPath::buildFill() {
     CHECK_GL_ERROR;
 }
 
-void OpenGLPath::buildFatLineSegment(vector<v2_t> &vertices, const v2_t &p0,
-                                     const v2_t &p1, const float stroke_width) {
+void OpenGLPath::buildFatLineSegment(std::vector<v2_t> &vertices,
+                                     const v2_t &p0, const v2_t &p1,
+                                     const float stroke_width) {
 
     if ((p0.x == p1.x) && (p0.y == p1.y)) {
         return;
@@ -634,11 +656,11 @@ void OpenGLPath::buildStroke() {
 
     const VGfloat stroke_width = gl_ctx.getStrokeLineWidth();
 
-    vector<VGfloat>::iterator coordsIter = _fcoords->begin();
-    VGbyte                    segment    = VG_CLOSE_PATH;
-    v2_t                      coords     = {0, 0};
-    v2_t                      prev       = {0, 0};
-    v2_t                      closeTo    = {0, 0};
+    std::vector<VGfloat>::iterator coordsIter = _fcoords.begin();
+    VGbyte                         segment    = VG_CLOSE_PATH;
+    v2_t                           coords     = {0, 0};
+    v2_t                           prev       = {0, 0};
+    v2_t                           closeTo    = {0, 0};
     for (const auto &segment : _segments) {
 
         // todo: deal with relative move
@@ -901,12 +923,16 @@ void OpenGLPath::buildStroke() {
 void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
     /// build fill vao & vbo
     if (_vertices.size() > 0) {
+
+        // delete the old vbo
         if (_fill_vbo != GL_UNDEFINED) {
             glDeleteBuffers(1, &_fill_vbo);
             _fill_vbo = GL_UNDEFINED;
         }
+
+        // delete the old vao
         if (_fill_vao != GL_UNDEFINED) {
-            // glDeleteVertexArrays(1, &_fill_vao);
+            glDeleteVertexArrays(1, &_fill_vao);
             _fill_vao = GL_UNDEFINED;
         }
 
@@ -928,8 +954,8 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
                                    _fill_paint->getPaintType() ==
                                        VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
             throw std::runtime_error("Not implemented");
-            vector<textured_vertex_t> texturedVertices;
-            for (vector<float>::const_iterator it = _vertices.begin();
+            std::vector<textured_vertex_t> texturedVertices;
+            for (std::vector<float>::const_iterator it = _vertices.begin();
                  it != _vertices.end(); it++) {
                 // build up the textured vertex
                 textured_vertex_t v;

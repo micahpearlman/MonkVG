@@ -50,19 +50,21 @@ class OpenGLPath : public IPath {
     };
 
   private:
-    GLUtesselator  *_fill_tess        = nullptr;
-    vector<GLfloat> _vertices         = {};
-    vector<v2_t>    _stroke_verts     = {};
-    list<v3_t>      _tess_verts       = {};
-    GLenum          _prim_type        = GL_UNDEFINED;
-    GLuint          _fill_vbo         = GL_UNDEFINED;
-    GLuint          _fill_vao         = GL_UNDEFINED;
-    GLuint          _stroke_vbo       = GL_UNDEFINED;
-    GLuint          _stroke_vao       = GL_UNDEFINED;
-    int             _num_fill_verts   = 0;
-    int             _num_stroke_verts = 0;
-    OpenGLPaint    *_fill_paint       = nullptr;
-    OpenGLPaint    *_stroke_paint     = nullptr;
+    GLUtesselator       *_fill_tess    = nullptr;
+    std::vector<GLfloat> _vertices     = {};
+    std::vector<v2_t>    _stroke_verts = {};
+    std::list<v3_t>      _tess_verts   = {};
+    GLenum               _prim_type    = GL_UNDEFINED;
+
+    GLuint _fill_vbo   = GL_UNDEFINED;
+    GLuint _fill_vao   = GL_UNDEFINED;
+    GLuint _stroke_vbo = GL_UNDEFINED;
+    GLuint _stroke_vao = GL_UNDEFINED;
+
+    int          _num_fill_verts   = 0;
+    int          _num_stroke_verts = 0;
+    OpenGLPaint *_fill_paint       = nullptr;
+    OpenGLPaint *_stroke_paint     = nullptr;
 
     /// Glu tesseleator callbacks
     static void tessBegin(GLenum type, GLvoid *user);
@@ -103,7 +105,7 @@ class OpenGLPath : public IPath {
 
     void buildFill();
     void buildStroke();
-    void buildFatLineSegment(vector<v2_t> &vertices, const v2_t &p0,
+    void buildFatLineSegment(std::vector<v2_t> &vertices, const v2_t &p0,
                              const v2_t &p1, const float stroke_width);
 };
 } // namespace MonkVG

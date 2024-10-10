@@ -13,7 +13,6 @@
 #include "mkBaseObject.h"
 #include "mkMath.h"
 #include <vector>
-using namespace std;
 
 namespace MonkVG {
 
@@ -80,7 +79,8 @@ class IPath : public BaseObject {
   protected:
     explicit IPath(VGint f, VGPathDatatype dt, VGfloat s, VGfloat b, VGint ns,
                    VGint nc, VGbitfield cap)
-        : _format(f),
+        : BaseObject(),
+          _format(f),
           _datatype(dt),
           _scale(s),
           _bias(b),
@@ -95,7 +95,7 @@ class IPath : public BaseObject {
           _height(-VG_MAX_FLOAT) {
         switch (_datatype) {
         case VG_PATH_DATATYPE_F:
-            _fcoords = new vector<float>(_num_coords);
+            _fcoords = std::vector<float>(_num_coords);
             break;
         default:
             // error
@@ -103,18 +103,7 @@ class IPath : public BaseObject {
         }
     }
 
-    virtual ~IPath() {
-        switch (_datatype) {
-        case VG_PATH_DATATYPE_F:
-            _fcoords->clear();
-            delete _fcoords;
-            _fcoords = 0;
-            break;
-        default:
-            // error
-            break;
-        }
-    }
+    virtual ~IPath() {}
 
   protected:
     VGint          _format;       // VG_PATH_FORMAT
@@ -126,10 +115,10 @@ class IPath : public BaseObject {
     VGbitfield     _capabilities;
 
     // data
-    vector<VGubyte>  _segments;
-    vector<VGfloat> *_fcoords;
-    bool             _is_fill_dirty;
-    bool             _is_stroke_dirty;
+    std::vector<VGubyte> _segments;
+    std::vector<VGfloat> _fcoords;
+    bool                 _is_fill_dirty;
+    bool                 _is_stroke_dirty;
 
     // bounds
     VGfloat _minX;

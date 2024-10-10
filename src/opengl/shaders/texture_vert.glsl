@@ -4,7 +4,6 @@ std::string texture_vert = R"(
 
 uniform mat4 u_model_view;
 uniform mat4 u_projection;
-uniform vec4 u_color;
 
 layout (location = 0) in vec2 position;
 layout (location = 1) in vec2 tex_coords;

@@ -33,11 +33,11 @@ void IPath::appendData(const VGint numSegments, const VGubyte *pathSegments,
     for (int i = 0; i < numCoords; i++) {
         switch (_datatype) {
         case VG_PATH_DATATYPE_F:
-            _fcoords->push_back(*(((VGfloat *)(pathData)) + i));
+            _fcoords.push_back(*(((VGfloat *)(pathData)) + i));
             break;
         default:
             // error
-            assert(!"unsupported path data type");
+            throw std::runtime_error("Unsupported path data type. Currently only VG_PATH_DATATYPE_F is supported.");
             break;
         }
     }
@@ -51,7 +51,7 @@ void IPath::copy(const IPath &src, const Matrix33 &transform) {
     setNumCoords(src.getNumCoords());
     setNumSegments(src.getNumSegments());
     _segments = src._segments;
-    *_fcoords = *src._fcoords;
+    _fcoords  = src._fcoords;
 }
 
 void IPath::clear(VGbitfield caps) {
@@ -62,7 +62,7 @@ void IPath::clear(VGbitfield caps) {
 
     switch (_datatype) {
     case VG_PATH_DATATYPE_F:
-        _fcoords->clear();
+        _fcoords.clear();
         break;
     default:
         // error
@@ -162,15 +162,26 @@ VG_API_CALL VGPath vgCreatePath(VGint pathFormat, VGPathDatatype datatype,
 }
 
 VG_API_CALL void VG_API_ENTRY vgDestroyPath(VGPath path) VG_API_EXIT {
-    if (path) {
-        IContext::instance().destroyPath((IPath *)path);
-        path = VG_INVALID_HANDLE;
+    if (path == VG_INVALID_HANDLE) {
+        SetError(VG_BAD_HANDLE_ERROR);
+        return;
     }
+    IContext::instance().destroyPath((IPath *)path);
+    path = VG_INVALID_HANDLE;
 }
 
 VG_API_CALL void vgAppendPathData(VGPath dstPath, VGint numSegments,
                                   const VGubyte *pathSegments,
                                   const void    *pathData) {
+    if (dstPath == VG_INVALID_HANDLE) {
+        SetError(VG_BAD_HANDLE_ERROR);
+        return;
+    }
+    if (numSegments <= 0) {
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
+        return;
+    }
+
     IPath *path = (IPath *)dstPath;
     path->appendData(numSegments, pathSegments, pathData);
 }
@@ -205,6 +216,10 @@ VG_API_CALL void VG_API_ENTRY vgClearPath(VGPath     path,
 
 VG_API_CALL void VG_API_ENTRY vgTransformPath(VGPath dstPath,
                                               VGPath srcPath) VG_API_EXIT {
+    if (dstPath == VG_INVALID_HANDLE || srcPath == VG_INVALID_HANDLE) {
+        SetError(VG_BAD_HANDLE_ERROR);
+        return;
+    }
     IPath *dp = (IPath *)dstPath;
     dp->copy(*(IPath *)srcPath, IContext::instance().getPathUserToSurface());
 }
@@ -213,6 +228,10 @@ VG_API_CALL void VG_API_ENTRY vgPathBounds(VGPath path, VGfloat *minX,
                                            VGfloat *minY, VGfloat *width,
                                            VGfloat *height) VG_API_EXIT {
 
+    if (path == VG_INVALID_HANDLE) {
+        SetError(VG_BAD_HANDLE_ERROR);
+        return;
+    }
     IPath *p = (IPath *)path;
     p->buildFillIfDirty(); // NOTE: according to the OpenVG specs we only care
                            // about the fill bounds, NOT the fill + stroke
@@ -225,6 +244,11 @@ VG_API_CALL void VG_API_ENTRY vgPathBounds(VGPath path, VGfloat *minX,
 VG_API_CALL void VG_API_ENTRY
 vgPathTransformedBounds(VGPath path, VGfloat *minX, VGfloat *minY,
                         VGfloat *width, VGfloat *height) VG_API_EXIT {
+
+    if (path == VG_INVALID_HANDLE) {
+        SetError(VG_BAD_HANDLE_ERROR);
+        return;
+    }
     IPath *p = (IPath *)path;
     p->buildFillIfDirty(); // NOTE: according to the OpenVG specs we only care
                            // about the fill bounds, NOT the fill + stroke

@@ -141,9 +141,9 @@ IPath *OpenGLContext::createPath(VGint path_format, VGPathDatatype data_type,
     return (IPath *)path;
 }
 
-void OpenGLContext::destroyPath(IPath *path) { delete (OpenGLPath *)path; }
+void OpenGLContext::destroyPath(IPath *path) { path->decRef(); }
 
-void OpenGLContext::destroyPaint(IPaint *paint) { delete (OpenGLPaint *)paint; }
+void OpenGLContext::destroyPaint(IPaint *paint) { paint->decRef(); }
 
 IPaint *OpenGLContext::createPaint() {
     OpenGLPaint *paint = new OpenGLPaint();
@@ -161,7 +161,7 @@ IBatch *OpenGLContext::createBatch() {
 
 void OpenGLContext::destroyBatch(IBatch *batch) {
     if (batch) {
-        delete batch;
+        batch->decRef();
     }
 }
 
@@ -172,14 +172,14 @@ IImage *OpenGLContext::createImage(VGImageFormat format, VGint width,
 
 void OpenGLContext::destroyImage(IImage *image) {
     if (image) {
-        delete image;
+        image->decRef();
     }
 }
 
 IFont *OpenGLContext::createFont() { return new OpenGLFont(); }
 void   OpenGLContext::destroyFont(IFont *font) {
     if (font) {
-        delete font;
+        font->decRef();
     }
 }
 

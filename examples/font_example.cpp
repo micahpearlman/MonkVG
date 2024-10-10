@@ -1,6 +1,7 @@
 // MonkVG OpenVG interface
 #include <MonkVG/openvg.h>
 #include <MonkVG/vgext.h>
+#include <MonkVG/vgu.h>
 
 // OpenGL window creation libraries
 #if defined(__APPLE__)
@@ -21,6 +22,8 @@
 
 // System
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #define WINDOW_WIDTH  1024
 #define WINDOW_HEIGHT 768
@@ -61,55 +64,48 @@ int main(int argc, char **argv) {
     vgCreateContextMNK(WINDOW_WIDTH, WINDOW_HEIGHT,
                        VG_RENDERING_BACKEND_TYPE_OPENGL33);
 
-    // create fill and stroke paints
-    VGPaint fill_paint = vgCreatePaint();
-    vgSetPaint(fill_paint, VG_FILL_PATH);
-    VGfloat fill_color[4] = {0.0f, 1.0f, 0.0f, 1.0f};
-    vgSetParameterfv(fill_paint, VG_PAINT_COLOR, 4, &fill_color[0]);
+    // open bitmap font file and read it into a string
+    std::ifstream     bmp_fnt_file("arial.fnt");
+    std::stringstream bmp_fnt_stream;
+    bmp_fnt_stream << bmp_fnt_file.rdbuf();
 
-    VGPaint stroke_paint = vgCreatePaint();
-    vgSetPaint(stroke_paint, VG_STROKE_PATH);
-    VGfloat stroke_color[4] = {1.0f, 0.0f, 0.0f, 1.0f};
-    vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
-
-    // create a simple box path
-    VGPath path;
-    path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0, 0,
-                        VG_PATH_CAPABILITY_ALL);
-    vguRect(path, 0.0f, 0.0f, 100.0f, 150.0f);
-
-    // load and create an opencv image
-    int img_width, img_height, img_channels;
-
-    // Load the image (JPEG, PNG, etc.)
-    const char    *filename = "roy.png"; // Replace with your image path
-    unsigned char *img_data =
-        stbi_load(filename, &img_width, &img_height, &img_channels, 0);
-
-    if (img_data == nullptr) {
-        std::cerr << "Failed to load image: " << filename << std::endl;
+    // open bitmap font imageı
+    int            bmp_fnt_width    = 0;
+    int            bmp_fnt_height   = 0;
+    int            bmp_fnt_channels = 0;
+    unsigned char *bmp_fnt_data     = stbi_load(
+        "arial.png", &bmp_fnt_width, &bmp_fnt_height, &bmp_fnt_channels, 0);
+    if (bmp_fnt_data == nullptr) {
+        std::cerr << "Failed to load image: arial.png" << std::endl;
         return -1;
     }
-
     // Display image info
-    std::cout << "Loaded image: " << filename << std::endl;
-    std::cout << "Width: " << img_width << ", Height: " << img_height
-              << ", Channels: " << img_channels << std::endl;
-    assert(img_channels == 4);
-    // Create an OpenVG image with the appropriate format
-    VGImage vg_image = vgCreateImage(VG_sRGBA_8888, img_width, img_height,
-                                     VG_IMAGE_QUALITY_BETTER);
+    std::cout << "Width: " << bmp_fnt_width << ", Height: " << bmp_fnt_height
+              << ", Channels: " << bmp_fnt_channels << std::endl;
+    assert(bmp_fnt_channels == 4);
 
+    // Create an OpenVG image with the appropriate format
+    VGImage bmp_fnt_image = vgCreateImage(
+        VG_sRGBA_8888, bmp_fnt_width, bmp_fnt_height, VG_IMAGE_QUALITY_BETTER);
     // Copy the image data to the OpenVG image
-    vgImageSubData(vg_image, img_data, img_width * 4, VG_sRGBA_8888, 0, 0,
-                   img_width, img_height);
+    vgImageSubData(bmp_fnt_image, bmp_fnt_data, bmp_fnt_width * 4,
+                   VG_sRGBA_8888, 0, 0, bmp_fnt_width, bmp_fnt_height);
 
     // Free image memory
-    stbi_image_free(img_data);
+    stbi_image_free(bmp_fnt_data);
 
-    // create a child image
-    VGImage child_image =
-        vgChildImage(vg_image, 0, 0, img_width / 2, img_height / 2);
+    // create BmpFnt font
+    VGFont font =
+        vguCreateFontFromBmFnt(bmp_fnt_stream.str().c_str(), bmp_fnt_image);
+
+
+    // create fill paint
+    VGPaint fill = vgCreatePaint();
+    vgSetParameteri(fill, VG_PAINT_TYPE, VG_PAINT_TYPE_COLOR);
+    VGfloat color[4] = {0.8f, 0.8f, 0.8f, 1.0f};
+    vgSetParameterfv(fill, VG_PAINT_COLOR, 4, color);
+
+    
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -120,45 +116,38 @@ int main(int argc, char **argv) {
     glViewport(0, 0, width, height);
 
     do {
-
         // Clear the screen.
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         /// do an ortho camera
         // NOTE:  this is not standard OpenVG
-        // NOTE: Bottom left is 0,0
         vgPushOrthoCamera(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
 
         /// draw the basic path
         // set up path trasnform
-        vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        // vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        // vgLoadIdentity();
+        // vgTranslate(width / 2, height / 2);
+        std::string text = "Hello, MonkVG!";
+
+        vgSeti(VG_MATRIX_MODE, VG_MATRIX_GLYPH_USER_TO_SURFACE);
         vgLoadIdentity();
-        vgTranslate(width / 2, height / 2);
+        VGfloat glyphOrigin[2] = {0, 0};
+        vgSetfv(VG_GLYPH_ORIGIN, 2, glyphOrigin);
+        vgScale(0.5f, 0.5f);
+        vgTranslate(10, height / 2);
 
-        // stroke wideth
-        vgSetf(VG_STROKE_LINE_WIDTH, 5.0f);
+        // std::vector<VGuint> glyphs;
+        // for (char c : text) {
+        //     glyphs.push_back(VGuint(c));
+        // }
 
-        // fill and stroke paints
-        vgSetPaint(fill_paint, VG_FILL_PATH);
-        vgSetPaint(stroke_paint, VG_STROKE_PATH);
-
-        // draw the path with fill and stroke
-        vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
-
-        // draw the image
-        vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
-        vgLoadIdentity();
-        vgScale(0.25f, 0.25f);
-        vgTranslate(50, 50);
-        vgDrawImage(vg_image);
-
-        // draw the child image
-        vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
-        vgLoadIdentity();
-        vgScale(0.25f, 0.25f);
-        vgTranslate(50, 200);
-        vgDrawImage(child_image);
+        vgSeti(VG_IMAGE_MODE, VG_DRAW_IMAGE_MULTIPLY);
+        vgSetPaint(fill, VG_FILL_PATH);
+        // vgDrawGlyphs(font, glyphs.size(), &glyphs[0], NULL, NULL, VG_FILL_PATH,
+        //              VG_TRUE);
+        vguDrawText(font, text.c_str(), NULL, NULL);
 
         // pop the ortho camera
         vgPopOrthoCamera();
@@ -172,11 +161,6 @@ int main(int argc, char **argv) {
            glfwWindowShouldClose(window) == 0);
 
     // destroy MonkVG
-    vgDestroyPath(path);
-    vgDestroyPaint(fill_paint);
-    vgDestroyPaint(stroke_paint);
-    vgDestroyImage(child_image);
-    vgDestroyImage(vg_image);
     vgDestroyContextMNK();
 
     glfwDestroyWindow(window);

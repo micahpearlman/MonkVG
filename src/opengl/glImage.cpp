@@ -96,13 +96,29 @@ OpenGLImage::OpenGLImage(VGImageFormat format, VGint width, VGint height,
 }
 
 OpenGLImage::OpenGLImage(OpenGLImage &other)
-    : IImage(other), _gl_texture(other._gl_texture) {}
+    : IImage(other),
+      _gl_texture(other._gl_texture),
+      _vao(other._vao),
+      _vbo(other._vbo) {}
 
 OpenGLImage::~OpenGLImage() {
+    CHECK_GL_ERROR;
+
+    // if this is a child image then don't delete the texture
     if (!_parent && _gl_texture != GL_UNDEFINED) {
         glDeleteTextures(1, &_gl_texture);
         _gl_texture = GL_UNDEFINED;
     }
+
+    if (!_parent && _vbo != GL_UNDEFINED) {
+        glDeleteBuffers(1, &_vbo);
+        _vbo = GL_UNDEFINED;
+    }
+    if (!_parent && _vao != GL_UNDEFINED) {
+        glDeleteVertexArrays(1, &_vao);
+        _vao = GL_UNDEFINED;
+    }
+    CHECK_GL_ERROR;
 }
 
 IImage *OpenGLImage::createChild(VGint x, VGint y, VGint w, VGint h) {
@@ -149,17 +165,11 @@ void OpenGLImage::setSubData(const void *data, VGint dataStride,
 void OpenGLImage::draw() {
     CHECK_GL_ERROR;
 
-    if (IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY) {
-        // set the color to the current fill paint color
-        IPaint *fillPaint = IContext::instance().getFillPaint();
-        const std::array<VGfloat, 4> color = fillPaint->getPaintColor();
-        throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
-    }
-
     // draw the image
-    GLfloat w = (GLfloat)_width;
-    GLfloat h = (GLfloat)_height;
-    GLfloat x = 0, y = 0;
+    const GLfloat w = (GLfloat)_width;
+    const GLfloat h = (GLfloat)_height;
+    const GLfloat x = 0;
+    const GLfloat y = 0;
 
     // NOTE: openvg coordinate system is bottom, left is 0,0
     // clang-format off
@@ -174,9 +184,10 @@ void OpenGLImage::draw() {
     // bind texture
     bind();
 
-    // glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    // glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat),
-    //                 vertices.data());
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat),
+                    vertices.data());
+
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     unbind();
@@ -187,15 +198,16 @@ void OpenGLImage::draw() {
 void OpenGLImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
                               VGbitfield paintModes) {
     CHECK_GL_ERROR;
+    if (ox < 0 || oy < 0 || w < 0 || h < 0 || ox + w > _width ||
+        oy + h > _height) {
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
+        return;
+    }
+
     GLfloat minS = GLfloat(ox) / GLfloat(_width);
     GLfloat maxS = GLfloat(ox + w) / GLfloat(_width);
-    GLfloat minT = GLfloat(oy) / GLfloat(_width);
-    GLfloat maxT = GLfloat(oy + h) / GLfloat(_width);
-
-    GLfloat coordinates[] = {minS, maxT,  // 0,	1,
-                             maxS, maxT,  // 1,	1,
-                             minS, minT,  // 0,	0,
-                             maxS, minT}; // 1,	0
+    GLfloat minT = GLfloat(oy) / GLfloat(_height);
+    GLfloat maxT = GLfloat(oy + h) / GLfloat(_height);
 
     GLfloat x = 0, y = 0;
 
@@ -206,14 +218,8 @@ void OpenGLImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,
                         x,     y + h,  minS, minT,	// left, top
                         x + w, y + h,  maxS, minT 	// right, top
 	};
-    // clang-format on
 
-    if (IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY) {
-        // set the color to the current fill paint color
-        IPaint *fillPaint = IContext::instance().getFillPaint();
-        const std::array<VGfloat, 4> color = fillPaint->getPaintColor();
-        throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
-    }
+    // clang-format on
 
     bind();
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -242,13 +248,6 @@ void OpenGLImage::drawToRect(VGint x_, VGint y_, VGint w_, VGint h_,
 	};
     // clang-format on
 
-    if (IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY) {
-        // set the color to the current fill paint color
-        IPaint *fillPaint = IContext::instance().getFillPaint();
-        const std::array<VGfloat, 4> color = fillPaint->getPaintColor();
-        throw std::runtime_error("VG_DRAW_IMAGE_MULTIPLY not implemented");
-    }
-
     bind();
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -271,6 +270,18 @@ void OpenGLImage::bind() {
 
     OpenGLContext &gl_ctx = (MonkVG::OpenGLContext &)IContext::instance();
     gl_ctx.bindShader(OpenGLContext::ShaderType::TextureShader);
+
+    std::array<VGfloat, 4> color = {1, 1, 1, 1};
+    if (IContext::instance().getImageMode() == VG_DRAW_IMAGE_MULTIPLY) {
+        // set the color to the current fill paint color
+        IPaint *fill_paint = IContext::instance().getFillPaint();
+
+        if (fill_paint) {
+            color = fill_paint->getPaintColor();
+        }
+    }
+    gl_ctx.getCurrentShader().setColor(
+        {color[0], color[1], color[2], color[3]});
 
     glBindTexture(GL_TEXTURE_2D, _gl_texture);
     glBindVertexArray(_vao);

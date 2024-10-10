@@ -100,12 +100,11 @@ vgCreateImage(VGImageFormat format, VGint width, VGint height,
     return (VGImage)IContext::instance().createImage(format, width, height,
                                                      allowed_quality);
 }
+
 VG_API_CALL void VG_API_ENTRY vgDestroyImage(VGImage image) VG_API_EXIT {
     IContext::instance().destroyImage((IImage *)image);
 }
-VG_API_CALL void VG_API_ENTRY vgClearImage(VGImage image, VGint x, VGint y,
-                                           VGint width,
-                                           VGint height) VG_API_EXIT {}
+
 VG_API_CALL void VG_API_ENTRY vgImageSubData(VGImage image, const void *data,
                                              VGint         dataStride,
                                              VGImageFormat dataFormat, VGint x,
@@ -119,11 +118,7 @@ VG_API_CALL void VG_API_ENTRY vgImageSubData(VGImage image, const void *data,
     IImage *mkImage = (IImage *)image;
     mkImage->setSubData(data, dataStride, dataFormat, x, y, width, height);
 }
-VG_API_CALL void VG_API_ENTRY    vgGetImageSubData(VGImage image, void *data,
-                                                   VGint         dataStride,
-                                                   VGImageFormat dataFormat,
-                                                   VGint x, VGint y, VGint width,
-                                                   VGint height) VG_API_EXIT {}
+
 VG_API_CALL VGImage VG_API_ENTRY vgChildImage(VGImage parent, VGint x, VGint y,
                                               VGint width,
                                               VGint height) VG_API_EXIT {
@@ -133,17 +128,34 @@ VG_API_CALL VGImage VG_API_ENTRY vgChildImage(VGImage parent, VGint x, VGint y,
         return VG_INVALID_HANDLE;
     }
 
-    IImage *p     = (IImage *)parent;
+    if (x < 0 || y < 0 || width < 0 || height < 0) {
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
+        return VG_INVALID_HANDLE;
+    }
+
+    IImage *p = (IImage *)parent;
+
+    if (x + width > p->getWidth() || y + height > p->getHeight()) {
+        SetError(VG_ILLEGAL_ARGUMENT_ERROR);
+        return VG_INVALID_HANDLE;
+    }
+
     IImage *child = p->createChild(x, y, width, height);
 
     return (VGImage)child;
 }
-VG_API_CALL VGImage VG_API_ENTRY vgGetParent(VGImage image) VG_API_EXIT;
-VG_API_CALL void VG_API_ENTRY    vgCopyImage(VGImage dst, VGint dx, VGint dy,
-                                             VGImage src, VGint sx, VGint sy,
-                                             VGint width, VGint height,
-                                             VGboolean dither) VG_API_EXIT {}
-VG_API_CALL void VG_API_ENTRY    vgDrawImage(VGImage image) VG_API_EXIT {
+
+VG_API_CALL VGImage VG_API_ENTRY vgGetParent(VGImage image) VG_API_EXIT {
+    if (image == VG_INVALID_HANDLE) {
+        SetError(VG_BAD_HANDLE_ERROR);
+        return VG_INVALID_HANDLE;
+    }
+
+    IImage *mkImage = (IImage *)image;
+    return (VGImage)mkImage->getParent();
+}
+
+VG_API_CALL void VG_API_ENTRY vgDrawImage(VGImage image) VG_API_EXIT {
     if (image == VG_INVALID_HANDLE) {
         SetError(VG_BAD_HANDLE_ERROR);
         return;
@@ -156,22 +168,55 @@ VG_API_CALL void VG_API_ENTRY    vgDrawImage(VGImage image) VG_API_EXIT {
     }
 
     IImage *mkImage = (IImage *)image;
+
     mkImage->draw();
 }
+
+VG_API_CALL void VG_API_ENTRY vgCopyImage(VGImage dst, VGint dx, VGint dy,
+                                          VGImage src, VGint sx, VGint sy,
+                                          VGint width, VGint height,
+                                          VGboolean dither) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
+
+VG_API_CALL void VG_API_ENTRY vgClearImage(VGImage image, VGint x, VGint y,
+                                           VGint width,
+                                           VGint height) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
+
 VG_API_CALL void VG_API_ENTRY vgSetPixels(VGint dx, VGint dy, VGImage src,
                                           VGint sx, VGint sy, VGint width,
-                                          VGint height) VG_API_EXIT {}
+                                          VGint height) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
 VG_API_CALL void VG_API_ENTRY vgWritePixels(const void *data, VGint dataStride,
                                             VGImageFormat dataFormat, VGint dx,
                                             VGint dy, VGint width,
-                                            VGint height) VG_API_EXIT {}
+                                            VGint height) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
 VG_API_CALL void VG_API_ENTRY vgGetPixels(VGImage dst, VGint dx, VGint dy,
                                           VGint sx, VGint sy, VGint width,
-                                          VGint height) VG_API_EXIT {}
+                                          VGint height) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
 VG_API_CALL void VG_API_ENTRY vgReadPixels(void *data, VGint dataStride,
                                            VGImageFormat dataFormat, VGint sx,
                                            VGint sy, VGint width,
-                                           VGint height) VG_API_EXIT {}
+                                           VGint height) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
 VG_API_CALL void VG_API_ENTRY vgCopyPixels(VGint dx, VGint dy, VGint sx,
                                            VGint sy, VGint width,
-                                           VGint height) VG_API_EXIT {}
+                                           VGint height) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
+
+VG_API_CALL void VG_API_ENTRY vgGetImageSubData(VGImage image, void *data,
+                                                VGint         dataStride,
+                                                VGImageFormat dataFormat,
+                                                VGint x, VGint y, VGint width,
+                                                VGint height) VG_API_EXIT {
+    throw std::runtime_error("Not implemented");
+}
