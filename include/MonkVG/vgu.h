@@ -125,7 +125,7 @@ VGU_API_CALL VGUErrorCode VGU_API_ENTRY vguComputeWarpQuadToQuad(
  * @param bmp_fnt_image The bmFont image.
  * @return VGFont The created font. 
  */
-VG_API_CALL VGFont VG_API_ENTRY vgCreateFontFromBmFnt(
+VG_API_CALL VGFont VG_API_ENTRY vguCreateFontFromBmFnt(
     const char *bmp_fnt_text, VGImage bmp_fnt_image) VG_API_EXIT;
 
 #ifdef __cplusplus

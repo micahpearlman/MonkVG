@@ -16,7 +16,7 @@ struct BmpFntChar {
     char letter;   // the character
 };
 
-VG_API_CALL VGFont VG_API_ENTRY vgCreateFontFromBmFnt(
+VG_API_CALL VGFont VG_API_ENTRY vguCreateFontFromBmFnt(
     const char *bmp_fnt_text, VGImage bmp_fnt_image) VG_API_EXIT {
     // create an openvg font object
     VGFont font = vgCreateFont(0);

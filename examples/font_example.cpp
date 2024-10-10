@@ -84,6 +84,7 @@ int main(int argc, char **argv) {
               << ", Channels: " << bmp_fnt_channels << std::endl;
     assert(bmp_fnt_channels == 4);
 
+    // Create an OpenVG image with the appropriate format
     VGImage bmp_fnt_image = vgCreateImage(
         VG_sRGBA_8888, bmp_fnt_width, bmp_fnt_height, VG_IMAGE_QUALITY_BETTER);
     // Copy the image data to the OpenVG image
@@ -93,9 +94,9 @@ int main(int argc, char **argv) {
     // Free image memory
     stbi_image_free(bmp_fnt_data);
 
-    // create font
+    // create BmpFnt font
     VGFont font =
-        vgCreateFontFromBmFnt(bmp_fnt_stream.str().c_str(), bmp_fnt_image);
+        vguCreateFontFromBmFnt(bmp_fnt_stream.str().c_str(), bmp_fnt_image);
 
 
     // create fill paint
