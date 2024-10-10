@@ -37,7 +37,7 @@ void IPath::appendData(const VGint numSegments, const VGubyte *pathSegments,
             break;
         default:
             // error
-            assert(!"unsupported path data type");
+            throw std::runtime_error("Unsupported path data type. Currently only VG_PATH_DATATYPE_F is supported.");
             break;
         }
     }

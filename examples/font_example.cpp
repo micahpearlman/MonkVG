@@ -138,15 +138,16 @@ int main(int argc, char **argv) {
         vgScale(0.5f, 0.5f);
         vgTranslate(10, height / 2);
 
-        std::vector<VGuint> glyphs;
-        for (char c : text) {
-            glyphs.push_back(VGuint(c));
-        }
+        // std::vector<VGuint> glyphs;
+        // for (char c : text) {
+        //     glyphs.push_back(VGuint(c));
+        // }
 
         vgSeti(VG_IMAGE_MODE, VG_DRAW_IMAGE_MULTIPLY);
         vgSetPaint(fill, VG_FILL_PATH);
-        vgDrawGlyphs(font, glyphs.size(), &glyphs[0], NULL, NULL, VG_FILL_PATH,
-                     VG_TRUE);
+        // vgDrawGlyphs(font, glyphs.size(), &glyphs[0], NULL, NULL, VG_FILL_PATH,
+        //              VG_TRUE);
+        vguDrawText(font, text.c_str(), NULL, NULL);
 
         // pop the ortho camera
         vgPopOrthoCamera();

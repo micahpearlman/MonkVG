@@ -117,16 +117,28 @@ VGU_API_CALL VGUErrorCode VGU_API_ENTRY vguComputeWarpQuadToQuad(
  *
  */
 
-
 /**
  * @brief Creates a font from a bmFont text file and image
- * 
+ *
  * @param bmp_fnt_text The bmFont text string.
  * @param bmp_fnt_image The bmFont image.
- * @return VGFont The created font. 
+ * @return VGFont The created font.
  */
 VG_API_CALL VGFont VG_API_ENTRY vguCreateFontFromBmFnt(
     const char *bmp_fnt_text, VGImage bmp_fnt_image) VG_API_EXIT;
+
+/**
+ * @brief Render text using a font.
+ *
+ * @param font Font to use.
+ * @param text Text string to render.
+ * @param adjustments_x Array of x adjustments for each character.
+ * @param adjustments_y Array of y adjustments for each character.
+ * @return VG_API_CALL
+ */
+VG_API_CALL VGUErrorCode VG_API_ENTRY
+vguDrawText(VGFont font, const char *text, VGfloat *adjustments_x,
+            VGfloat *adjustments_y) VG_API_EXIT;
 
 #ifdef __cplusplus
 } /* extern "C" */

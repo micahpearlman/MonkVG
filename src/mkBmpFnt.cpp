@@ -89,7 +89,8 @@ VG_API_CALL VGFont VG_API_ENTRY vguCreateFontFromBmFnt(
             // add the glyph to the font
             std::array<VGfloat, 2> glyph_origin = {VGfloat(c.x), VGfloat(c.y)};
             std::array<VGfloat, 2> escapement   = {VGfloat(c.xadvance), 0};
-            vgSetGlyphToImage(font, c.id, glyph_image, glyph_origin.data(), escapement.data());
+            vgSetGlyphToImage(font, c.id, glyph_image, glyph_origin.data(),
+                              escapement.data());
 
             // we can destroy the glyph image after we create the font because
             // vgSetGlyphToImage increments a reference count to the image
@@ -98,4 +99,26 @@ VG_API_CALL VGFont VG_API_ENTRY vguCreateFontFromBmFnt(
     }
 
     return font;
+}
+
+VG_API_CALL VGUErrorCode VG_API_ENTRY
+vguDrawText(VGFont font, const char *text, VGfloat *adjustments_x,
+            VGfloat *adjustments_y) VG_API_EXIT {
+    if (font == VG_INVALID_HANDLE) {
+        return VGU_ILLEGAL_ARGUMENT_ERROR;
+    }
+
+    if (text == nullptr) {
+        return VGU_ILLEGAL_ARGUMENT_ERROR;
+    }
+
+    std::vector<VGuint> glyphs;
+    for (int i = 0; text[i] != '\0'; i++) {
+        glyphs.push_back(VGuint(text[i]));
+    }
+
+    vgDrawGlyphs(font, glyphs.size(), &glyphs[0], adjustments_x, adjustments_y,
+                 VG_FILL_PATH, VG_TRUE);
+
+    return VGU_NO_ERROR;
 }

@@ -14,7 +14,7 @@ VGint IFont::getParameteri(const VGint p) const {
     switch (p) {
     default:
         SetError(VG_ILLEGAL_ARGUMENT_ERROR);
-        return -1; // todo: set error
+        return -1;
         break;
     }
 }
@@ -23,7 +23,7 @@ VGfloat IFont::getParameterf(const VGint p) const {
     switch (p) {
     default:
         SetError(VG_ILLEGAL_ARGUMENT_ERROR);
-        return -1; // todo: set error
+        return -1;
         break;
     }
 }
@@ -72,9 +72,7 @@ void IFont::addGlyphPath(VGuint index_, IPath *path_, VGfloat glyphOrigin_[2],
         index_, path_, glyphOrigin_, escapement_);
 }
 
-void IFont::removeGlyph(VGuint index) { 
-	_glyphs.erase(index); 
-}
+void IFont::removeGlyph(VGuint index) { _glyphs.erase(index); }
 
 void IFont::drawGlyph(VGuint index, VGfloat adj_x, VGfloat adj_y,
                       VGbitfield paintModes) {
@@ -82,7 +80,6 @@ void IFont::drawGlyph(VGuint index, VGfloat adj_x, VGfloat adj_y,
         Glyph  &glyph = *_glyphs[index];
         VGfloat origin[2];
         IContext::instance().getGlyphOrigin(origin);
-        //			vgTranslate( origin[0], origin[1] );
         glyph.draw(paintModes, adj_x, adj_y);
         origin[0] += glyph.escapement[0];
         IContext::instance().setGlyphOrigin(origin);
@@ -91,8 +88,6 @@ void IFont::drawGlyph(VGuint index, VGfloat adj_x, VGfloat adj_y,
 
 void IFont::GlyphImage::draw(VGbitfield paintModes, VGfloat adj_x,
                              VGfloat adj_y) {
-    //_image->drawSubRect( glyphOrigin[0], glyphOrigin[1], escapement[0],
-    // escapement[1], paintModes ); _image->draw( );
     VGfloat origin[2];
     IContext::instance().getGlyphOrigin(origin);
     origin[0] += adj_x;
@@ -200,6 +195,12 @@ vgDrawGlyphs(VGFont font, VGint glyphCount, VGuint *glyphIndices,
 
 VG_API_CALL void VG_API_ENTRY vgClearGlyph(VGFont font,
                                            VGuint glyphIndex) VG_API_EXIT {
+    if (font == VG_INVALID_HANDLE) {
+        SetError(VG_BAD_HANDLE_ERROR);
+        return;
+    }
 
-										   }
+    IFont *f = (IFont *)font;
 
+    f->removeGlyph(glyphIndex);
+}
