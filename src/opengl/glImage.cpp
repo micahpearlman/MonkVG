@@ -146,6 +146,10 @@ void OpenGLImage::setSubData(const void *data, VGint dataStride,
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA,
                         GL_UNSIGNED_BYTE, data);
         break;
+    case VG_sARGB_8888:
+        glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_BGRA,
+                        GL_UNSIGNED_BYTE, data);
+        break;
     case VG_sRGB_565:
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_RGB,
                         GL_UNSIGNED_SHORT_5_6_5, data);
@@ -155,8 +159,7 @@ void OpenGLImage::setSubData(const void *data, VGint dataStride,
                         GL_UNSIGNED_BYTE, data);
         break;
     default:
-        SetError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);
-        assert(0);
+        SetError(VG_UNSUPPORTED_IMAGE_FORMAT_ERROR);        
         break;
     }
     CHECK_GL_ERROR;
