@@ -10,9 +10,10 @@ option(MKVG_DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
 option(MKVG_DO_GLU_TESSELATION "Use GLU tesselator" ON)
 option(MKVG_DO_EXAMPLES "Build examples in the ./examples directory" ON)
 
-if (MKVG_DO_VULKAN_BACKEND)
-    message(FATAL_ERROR "Vulkan Backend Not Implemented Yet")
-endif()
+# if (MKVG_DO_VULKAN_BACKEND)
+#     message(WARNING "Vulkan Backend Not Fully Implemented Yet")
+# endif()
+
 if (MKVG_DO_OPENGLES_BACKEND)
     message(FATAL_ERROR "OpenGL ES Backend Not Implemented Yet")
 endif()
@@ -47,12 +48,7 @@ if(MKVG_DO_OPENGL_BACKEND)
     endif()
 
     find_package(OpenGL REQUIRED)
-    find_package(glm REQUIRED)
-    if (APPLE)
-        # for whatever reason apple requires explicit include path
-        set(GLM_INCLUDE_DIRS ${GLM_INCLUDE_DIRS} /opt/homebrew/include)
-    endif(APPLE)
-
+    add_subdirectory(thirdparty/glm)
 
     set(BACKEND_SOURCE ${BACKEND_SOURCE}
         ./src/opengl/glBatch.cpp
@@ -63,12 +59,35 @@ if(MKVG_DO_OPENGL_BACKEND)
         ./src/opengl/glPath.cpp
         ./src/opengl/glShader.cpp)
     set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
-        ./src/opengl
-        ${GLU_INCLUDE_DIRS}
-        ${GLM_INCLUDE_DIRS})
+        ${GLU_INCLUDE_DIRS})
 
     set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_GL_BACKEND)
+    set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} glm::glm)
 
+    message(STATUS "OpenGL Include: ${OPENGL_INCLUDE_DIR}")
+    message(STATUS "OpenGL Libraries: ${OPENGL_LIBRARIES}")
+
+endif()
+
+## Vulkan Backend
+if(MKVG_DO_VULKAN_BACKEND)
+    find_package(Vulkan REQUIRED)
+    find_package(SDL2 REQUIRED)
+    add_subdirectory(thirdparty/glm)
+
+    set(BACKEND_SOURCE ${BACKEND_SOURCE}
+        ./src/vulkan/vkBatch.cpp
+        ./src/vulkan/vkContext.cpp
+        ./src/vulkan/vkFont.cpp
+        ./src/vulkan/vkImage.cpp
+        ./src/vulkan/vkPaint.cpp
+        ./src/vulkan/vkPath.cpp
+        ./src/vulkan/vkShader.cpp)
+    set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
+        ${GLU_INCLUDE_DIRS})
+
+    set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_VULKAN_BACKEND)
+    set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} glm::glm Vulkan::Vulkan)
 
 endif()
 
@@ -106,6 +125,7 @@ target_include_directories(monkvg
 target_link_libraries(monkvg ${GLU_LIBRARIES} ${MNKVG_LIBRARIES})
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    # stop annoying warnings.  assuming this is okay.
     target_compile_options(monkvg PRIVATE -Wno-deprecated-enum-enum-conversion)
 endif()
 

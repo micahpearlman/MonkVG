@@ -8,12 +8,11 @@
  */
 #include "mkContext.h"
 #if defined(MNKVG_GLES_BACKEND)
-#include "opengl_es/glesContext.h"
-#include "opengl_es/glesPath.h"
+#error "No longer supported directly.  See the GL or Vulkan backends"
 #elif defined(MNKVG_GL_BACKEND)
 #include "opengl/glContext.h"
-#else
-#error "No backend defined"
+#elif defined(MNKVG_VULKAN_BACKEND)
+#include "vulkan/vkContext.h"
 #endif
 
 using namespace MonkVG;

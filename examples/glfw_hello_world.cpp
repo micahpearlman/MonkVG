@@ -82,7 +82,7 @@ int main(int argc, char **argv) {
     int img_width, img_height, img_channels;
 
     // Load the image (JPEG, PNG, etc.)
-    const char    *filename = "roy.png"; // Replace with your image path
+    const char    *filename = "assets/roy.png"; // Replace with your image path
     unsigned char *img_data =
         stbi_load(filename, &img_width, &img_height, &img_channels, 0);
 

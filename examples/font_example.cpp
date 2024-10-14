@@ -65,7 +65,7 @@ int main(int argc, char **argv) {
                        VG_RENDERING_BACKEND_TYPE_OPENGL33);
 
     // open bitmap font file and read it into a string
-    std::ifstream     bmp_fnt_file("arial.fnt");
+    std::ifstream     bmp_fnt_file("assets/arial.fnt");
     std::stringstream bmp_fnt_stream;
     bmp_fnt_stream << bmp_fnt_file.rdbuf();
 
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
     int            bmp_fnt_height   = 0;
     int            bmp_fnt_channels = 0;
     unsigned char *bmp_fnt_data     = stbi_load(
-        "arial.png", &bmp_fnt_width, &bmp_fnt_height, &bmp_fnt_channels, 0);
+        "assets/arial.png", &bmp_fnt_width, &bmp_fnt_height, &bmp_fnt_channels, 0);
     if (bmp_fnt_data == nullptr) {
         std::cerr << "Failed to load image: arial.png" << std::endl;
         return -1;
