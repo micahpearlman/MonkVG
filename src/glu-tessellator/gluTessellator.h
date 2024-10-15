@@ -13,6 +13,7 @@
 #include "mkTessellator.h"
 #include <GL/glu.h>
 #include <vector>
+#include <list>
 #include <functional>
 namespace MonkVG {
 class GLUTessellator : public ITessellator {
@@ -46,7 +47,9 @@ class GLUTessellator : public ITessellator {
 
     // storage for the tesselated vertices
     // NOTE: these verts are in 3D space
-    std::vector<v3_t>     _tess_verts       = {};
+    // NOTE: the use of list is because we need pointers to items in the list
+    // and vector will reallocate memory and invalidate the pointers
+    std::list<v3_t>     _tess_verts       = {};
     GLdouble *tessVerticesBackPtr() { return &(_tess_verts.back().x); }
 
     /// @brief Add a vertex to the tesselation vertex list

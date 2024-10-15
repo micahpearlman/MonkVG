@@ -14,7 +14,11 @@
 
 namespace MonkVG {
 
-GLUTessellator::GLUTessellator(IContext &context) : ITessellator(context) {}
+GLUTessellator::GLUTessellator(IContext &context) : ITessellator(context) {
+    // BUGBUG: wanted to avoid resizing as we pass a pointer to the data
+    // in gluTessVertex
+    // _tess_verts.reserve(1024);
+}
 
 void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
                                 const std::vector<VGfloat> &fcoords,
