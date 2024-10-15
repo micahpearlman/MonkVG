@@ -18,7 +18,7 @@ namespace MonkVG {
 
 class OpenGLPaint : public IPaint {
   public:
-    OpenGLPaint();
+    OpenGLPaint(IContext& context);
     virtual ~OpenGLPaint();
     void buildLinearGradientImage(VGfloat pathWidth, VGfloat pathHeight);
     void buildRadialGradientImage(VGfloat pathWidth, VGfloat pathHeight);

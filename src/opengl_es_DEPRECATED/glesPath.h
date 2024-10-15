@@ -98,9 +98,9 @@ namespace MonkVG {
 		} 
 		
 		void updateBounds(float x, float y) {
-			_minX = std::min(_minX, x);
+			_min_x = std::min(_min_x, x);
 			_width = std::max(_width, x);
-			_minY = std::min(_minY, y);
+			_min_y = std::min(_min_y, y);
 			_height = std::max(_height, y);
 		}
 

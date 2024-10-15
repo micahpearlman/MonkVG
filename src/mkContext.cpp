@@ -15,6 +15,10 @@
 #include "vulkan/vkContext.h"
 #endif
 
+#if defined(MNKVG_GLU_TESSELATION)
+#include "glu-tessellator/gluTessellator.h"
+#endif
+
 using namespace MonkVG;
 
 VG_API_CALL VGboolean vgCreateContextMNK(VGint width, VGint height,
@@ -110,7 +114,16 @@ VG_API_CALL void vgPopOrthoCamera() { IContext::instance().popOrthoCamera(); }
 
 namespace MonkVG {
 
-IContext::IContext() { setImageMode(_image_mode); }
+IContext::IContext() { 
+    setImageMode(_image_mode); 
+
+#if defined(MNKVG_GLU_TESSELATION)
+    _tessellator = std::make_unique<GLUTessellator>(*this);
+#else
+    static_assert(false, "No tessellator defined");
+#endif
+    
+}
 
 //// parameters ////
 void IContext::set(VGuint type, VGfloat f) {

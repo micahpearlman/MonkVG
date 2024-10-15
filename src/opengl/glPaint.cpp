@@ -15,8 +15,8 @@
 
 namespace MonkVG {
 
-OpenGLPaint::OpenGLPaint()
-    : IPaint(), _isDirty(true), _gradientImage(VG_INVALID_HANDLE) {}
+OpenGLPaint::OpenGLPaint(IContext &context)
+    : IPaint(context), _isDirty(true), _gradientImage(VG_INVALID_HANDLE) {}
 
 OpenGLPaint::~OpenGLPaint() {
     if (_gradientImage != VG_INVALID_HANDLE) {

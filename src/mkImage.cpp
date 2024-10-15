@@ -12,8 +12,8 @@
 namespace MonkVG { // Internal Implementation
 
 IImage::IImage(VGImageFormat format, VGint width, VGint height,
-               VGbitfield allowed_quality)
-    : BaseObject(),
+               VGbitfield allowed_quality, IContext &context)
+    : BaseObject(context),
       _format(format),
       _width(width),
       _height(height),
@@ -24,7 +24,7 @@ IImage::IImage(VGImageFormat format, VGint width, VGint height,
 }
 
 IImage::IImage(IImage &other)
-    : BaseObject(),
+    : BaseObject(other.getContext()),
       _format(other._format),
       _width(other._width),
       _height(other._height),

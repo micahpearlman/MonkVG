@@ -21,6 +21,14 @@ bool VulkanContext::Terminate() {
 IPath *VulkanContext::createPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
                                  VGfloat bias, VGint segmentCapacityHint,
                                  VGint coordCapacityHint, VGbitfield capabilities) {
+    VulkanGLPath *path = new VulkanGLPath(
+        path_format, data_type, scale, bias, segment_capacity_hint,
+        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL);
+    if (path == 0)
+        SetError(VG_OUT_OF_MEMORY_ERROR);
+
+    return (IPath *)path;
+
     return nullptr;
 }
 

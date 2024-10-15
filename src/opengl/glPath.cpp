@@ -16,17 +16,18 @@ namespace MonkVG {
 
 OpenGLPath::OpenGLPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
                        VGfloat bias, VGint segmentCapacityHint,
-                       VGint coordCapacityHint, VGbitfield capabilities)
+                       VGint coordCapacityHint, VGbitfield capabilities,
+                       IContext &context)
     : IPath(pathFormat, datatype, scale, bias, segmentCapacityHint,
-            coordCapacityHint, capabilities) {}
+            coordCapacityHint, capabilities, context) {}
 
 OpenGLPath::~OpenGLPath() {
     CHECK_GL_ERROR;
 
-    if (_fill_tess) {
-        gluDeleteTess(_fill_tess);
-        _fill_tess = nullptr;
-    }
+    // if (_fill_tess) {
+    //     gluDeleteTess(_fill_tess);
+    //     _fill_tess = nullptr;
+    // }
 
     if (_fill_vbo != GL_UNDEFINED) {
         glDeleteBuffers(1, &_fill_vbo);
@@ -53,7 +54,7 @@ OpenGLPath::~OpenGLPath() {
 void OpenGLPath::clear(VGbitfield caps) {
     IPath::clear(caps);
 
-    _vertices.clear();
+    _fill_vertices.clear();
 
     // delete vbo buffers
     if (_stroke_vbo != GL_UNDEFINED) {
@@ -179,102 +180,14 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
     return true;
 }
 
-static inline VGfloat calcCubicBezier1d(VGfloat x0, VGfloat x1, VGfloat x2,
-                                        VGfloat x3, VGfloat t) {
-    // see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
-    VGfloat one_t = 1.0f - t;
-    VGfloat x = x0 * (one_t * one_t * one_t) + 3.0f * x1 * (one_t * one_t) * t +
-                3.0f * x2 * one_t * (t * t) + x3 * (t * t * t);
-    return x;
-}
-
-static inline VGfloat calcQuadBezier1d(VGfloat start, VGfloat control,
-                                       VGfloat end, VGfloat time) {
-    float inverse_time = 1.0f - time;
-    return (powf(inverse_time, 2.0f) * start) +
-           (2.0f * inverse_time * time * control) + (powf(time, 2.0f) * end);
-}
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-// Given: Points (x0, y0) and (x1, y1)
-// Return: TRUE if a solution exists, FALSE otherwise
-//	Circle centers are written to (cx0, cy0) and (cx1, cy1)
-static VGboolean findUnitCircles(VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1,
-                                 VGfloat *cx0, VGfloat *cy0, VGfloat *cx1,
-                                 VGfloat *cy1) {
-
-    // Compute differences and averages
-    VGfloat dx = x0 - x1;
-    VGfloat dy = y0 - y1;
-    VGfloat xm = (x0 + x1) / 2;
-    VGfloat ym = (y0 + y1) / 2;
-    VGfloat dsq, disc, s, sdx, sdy;
-    // Solve for intersecting unit circles
-    dsq = dx * dx + dy * dy;
-    if (dsq == 0.0)
-        return VG_FALSE; // Points are coincident
-    disc = 1.0f / dsq - 1.0f / 4.0f;
-    if (disc < 0.0)
-        return VG_FALSE; // Points are too far apart
-
-    s    = sqrt(disc);
-    sdx  = s * dx;
-    sdy  = s * dy;
-    *cx0 = xm + sdy;
-    *cy0 = ym - sdx;
-    *cx1 = xm - sdy;
-    *cy1 = ym + sdx;
-
-    return VG_TRUE;
-}
-
-// Given:
-// Return:
-// Ellipse parameters rh, rv, rot (in degrees), endpoints (x0, y0) and (x1, y1)
-// TRUE if a solution exists, FALSE otherwise. Ellipse centers are written to
-// (cx0, cy0) and (cx1, cy1)
-
-static VGboolean findEllipses(VGfloat rh, VGfloat rv, VGfloat rot, VGfloat x0,
-                              VGfloat y0, VGfloat x1, VGfloat y1, VGfloat *cx0,
-                              VGfloat *cy0, VGfloat *cx1, VGfloat *cy1) {
-    VGfloat COS, SIN, x0p, y0p, x1p, y1p, pcx0, pcy0, pcx1, pcy1;
-    // Convert rotation angle from degrees to radians
-    rot *= M_PI / 180.0;
-    // Pre-compute rotation matrix entries
-    COS = cos(rot);
-    SIN = sin(rot);
-    // Transform (x0, y0) and (x1, y1) into unit space
-    // using (inverse) rotate, followed by (inverse) scale
-    x0p = (x0 * COS + y0 * SIN) / rh;
-    y0p = (-x0 * SIN + y0 * COS) / rv;
-    x1p = (x1 * COS + y1 * SIN) / rh;
-    y1p = (-x1 * SIN + y1 * COS) / rv;
-    if (!findUnitCircles(x0p, y0p, x1p, y1p, &pcx0, &pcy0, &pcx1, &pcy1)) {
-        return VG_FALSE;
-    }
-    // Transform back to original coordinate space
-    // using (forward) scale followed by (forward) rotate
-    pcx0 *= rh;
-    pcy0 *= rv;
-    pcx1 *= rh;
-    pcy1 *= rv;
-    *cx0 = pcx0 * COS - pcy0 * SIN;
-    *cy0 = pcx0 * SIN + pcy0 * COS;
-    *cx1 = pcx1 * COS - pcy1 * SIN;
-    *cy1 = pcx1 * SIN + pcy1 * COS;
-
-    return VG_TRUE;
-}
-
 void OpenGLPath::buildFill() {
-
-    _vertices.clear();
+    getContext().getTessellator().tessellate(_segments, _fcoords, _fill_vertices, _bounds);
+#if 0
+    _fill_vertices.clear();
 
     // reset the bounds
-    _minX   = VG_MAX_FLOAT;
-    _minY   = VG_MAX_FLOAT;
+    _min_x  = VG_MAX_FLOAT;
+    _min_y  = VG_MAX_FLOAT;
     _width  = -VG_MAX_FLOAT;
     _height = -VG_MAX_FLOAT;
 
@@ -608,9 +521,9 @@ void OpenGLPath::buildFill() {
     _fill_tess = 0;
 
     // final calculation of the width and height
-    _width  = fabsf(_width - _minX);
-    _height = fabsf(_height - _minY);
-
+    _width  = fabsf(_width - _min_x);
+    _height = fabsf(_height - _min_y);
+#endif // 0
     CHECK_GL_ERROR;
 }
 
@@ -922,7 +835,7 @@ void OpenGLPath::buildStroke() {
 
 void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
     /// build fill vao & vbo
-    if (_vertices.size() > 0) {
+    if (_fill_vertices.size() > 0) {
 
         // delete the old vbo
         if (_fill_vbo != GL_UNDEFINED) {
@@ -941,8 +854,9 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
         glBindVertexArray(_fill_vao);
         glBindBuffer(GL_ARRAY_BUFFER, _fill_vbo);
         if (_fill_paint && _fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
-            glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(VGfloat),
-                         _vertices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER,
+                         _fill_vertices.size() * sizeof(VGfloat),
+                         _fill_vertices.data(), GL_STATIC_DRAW);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid *)0);
             glEnableVertexAttribArray(0);
         } else if (_fill_paint && (_fill_paint->getPaintType() ==
@@ -955,15 +869,15 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
                                        VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
             throw std::runtime_error("Not implemented");
             std::vector<textured_vertex_t> texturedVertices;
-            for (std::vector<float>::const_iterator it = _vertices.begin();
-                 it != _vertices.end(); it++) {
+            for (std::vector<float>::const_iterator it = _fill_vertices.begin();
+                 it != _fill_vertices.end(); it++) {
                 // build up the textured vertex
                 textured_vertex_t v;
                 v.v[0] = *it;
                 it++;
                 v.v[1]  = *it;
-                v.uv[0] = fabsf(v.v[0] - _minX) / _width;
-                v.uv[1] = fabsf(v.v[1] - _minY) / _height;
+                v.uv[0] = fabsf(v.v[0] - getMinX()) / getWidth();
+                v.uv[1] = fabsf(v.v[1] - getMinY()) / getHeight();
                 texturedVertices.push_back(v);
             }
 
@@ -974,11 +888,11 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
             texturedVertices.clear();
 
             // setup the paints linear gradient
-            _fill_paint->buildGradientImage(_width, _height);
+            _fill_paint->buildGradientImage(getWidth(), getHeight());
         }
 
-        _num_fill_verts = (int)_vertices.size() / 2;
-        _tess_verts.clear();
+        _num_fill_verts = (int)_fill_vertices.size() / 2;
+        // _tess_verts.clear();
     }
 
     /// build stroke vbo
@@ -1007,117 +921,118 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
 
     OpenGLBatch *glBatch = (OpenGLBatch *)IContext::instance().currentBatch();
     if (glBatch) { // if in batch mode update the current batch
-        glBatch->addPathVertexData(&_vertices[0], _vertices.size() / 2,
-                                   (float *)&_stroke_verts[0],
-                                   _stroke_verts.size(), paint_modes);
+        glBatch->addPathVertexData(
+            &_fill_vertices[0], _fill_vertices.size() / 2,
+            (float *)&_stroke_verts[0], _stroke_verts.size(), paint_modes);
     }
 
     // clear out vertex buffer
-    _vertices.clear();
+    _fill_vertices.clear();
     _stroke_verts.clear();
 }
 
-static GLdouble startVertex_[2];
-static GLdouble lastVertex_[2];
-static int      vertexCount_ = 0;
+// static GLdouble startVertex_[2];
+// static GLdouble lastVertex_[2];
+// static int      vertexCount_ = 0;
 
-void OpenGLPath::tessBegin(GLenum type, GLvoid *user) {
-    OpenGLPath *me = (OpenGLPath *)user;
-    me->setPrimType(type);
-    vertexCount_ = 0;
+// void OpenGLPath::tessBegin(GLenum type, GLvoid *user) {
+//     OpenGLPath *me = (OpenGLPath *)user;
+//     me->setPrimType(type);
+//     vertexCount_ = 0;
 
-    switch (type) {
-    case GL_TRIANGLES:
-        // printf( "begin(GL_TRIANGLES)\n" );
-        break;
-    case GL_TRIANGLE_FAN:
-        // printf( "begin(GL_TRIANGLE_FAN)\n" );
-        break;
-    case GL_TRIANGLE_STRIP:
-        // printf( "begin(GL_TRIANGLE_STRIP)\n" );
-        break;
-    case GL_LINE_LOOP:
-        // printf( "begin(GL_LINE_LOOP)\n" );
-        break;
-    default:
-        break;
-    }
-}
+//     switch (type) {
+//     case GL_TRIANGLES:
+//         // printf( "begin(GL_TRIANGLES)\n" );
+//         break;
+//     case GL_TRIANGLE_FAN:
+//         // printf( "begin(GL_TRIANGLE_FAN)\n" );
+//         break;
+//     case GL_TRIANGLE_STRIP:
+//         // printf( "begin(GL_TRIANGLE_STRIP)\n" );
+//         break;
+//     case GL_LINE_LOOP:
+//         // printf( "begin(GL_LINE_LOOP)\n" );
+//         break;
+//     default:
+//         break;
+//     }
+// }
 
-void OpenGLPath::tessEnd(GLvoid *user) {
-    //		OpenGLPath* me = (OpenGLPath*)user;
-    //		me->endOfTesselation();
+// void OpenGLPath::tessEnd(GLvoid *user) {
+//     //		OpenGLPath* me = (OpenGLPath*)user;
+//     //		me->endOfTesselation();
 
-    // printf("end\n");
-}
+//     // printf("end\n");
+// }
 
-void OpenGLPath::tessVertex(GLvoid *vertex, GLvoid *user) {
-    OpenGLPath *me = (OpenGLPath *)user;
-    GLdouble   *v  = (GLdouble *)vertex;
+// void OpenGLPath::tessVertex(GLvoid *vertex, GLvoid *user) {
+//     OpenGLPath *me = (OpenGLPath *)user;
+//     GLdouble   *v  = (GLdouble *)vertex;
 
-    if (me->primType() == GL_TRIANGLE_FAN) {
-        // break up fans and strips into triangles
-        switch (vertexCount_) {
-        case 0:
-            startVertex_[0] = v[0];
-            startVertex_[1] = v[1];
-            break;
-        case 1:
-            lastVertex_[0] = v[0];
-            lastVertex_[1] = v[1];
-            break;
+//     if (me->primType() == GL_TRIANGLE_FAN) {
+//         // break up fans and strips into triangles
+//         switch (vertexCount_) {
+//         case 0:
+//             startVertex_[0] = v[0];
+//             startVertex_[1] = v[1];
+//             break;
+//         case 1:
+//             lastVertex_[0] = v[0];
+//             lastVertex_[1] = v[1];
+//             break;
 
-        default:
-            me->addVertex(startVertex_);
-            me->addVertex(lastVertex_);
-            me->addVertex(v);
-            lastVertex_[0] = v[0];
-            lastVertex_[1] = v[1];
-            break;
-        }
-    } else if (me->primType() == GL_TRIANGLES) {
-        me->addVertex(v);
-    } else if (me->primType() == GL_TRIANGLE_STRIP) {
-        switch (vertexCount_) {
-        case 0:
-            me->addVertex(v);
-            break;
-        case 1:
-            startVertex_[0] = v[0];
-            startVertex_[1] = v[1];
-            me->addVertex(v);
-            break;
-        case 2:
-            lastVertex_[0] = v[0];
-            lastVertex_[1] = v[1];
-            me->addVertex(v);
-            break;
+//         default:
+//             me->addVertex(startVertex_);
+//             me->addVertex(lastVertex_);
+//             me->addVertex(v);
+//             lastVertex_[0] = v[0];
+//             lastVertex_[1] = v[1];
+//             break;
+//         }
+//     } else if (me->primType() == GL_TRIANGLES) {
+//         me->addVertex(v);
+//     } else if (me->primType() == GL_TRIANGLE_STRIP) {
+//         switch (vertexCount_) {
+//         case 0:
+//             me->addVertex(v);
+//             break;
+//         case 1:
+//             startVertex_[0] = v[0];
+//             startVertex_[1] = v[1];
+//             me->addVertex(v);
+//             break;
+//         case 2:
+//             lastVertex_[0] = v[0];
+//             lastVertex_[1] = v[1];
+//             me->addVertex(v);
+//             break;
 
-        default:
-            me->addVertex(startVertex_);
-            me->addVertex(lastVertex_);
-            me->addVertex(v);
-            startVertex_[0] = lastVertex_[0];
-            startVertex_[1] = lastVertex_[1];
-            lastVertex_[0]  = v[0];
-            lastVertex_[1]  = v[1];
-            break;
-        }
-    }
-    vertexCount_++;
+//         default:
+//             me->addVertex(startVertex_);
+//             me->addVertex(lastVertex_);
+//             me->addVertex(v);
+//             startVertex_[0] = lastVertex_[0];
+//             startVertex_[1] = lastVertex_[1];
+//             lastVertex_[0]  = v[0];
+//             lastVertex_[1]  = v[1];
+//             break;
+//         }
+//     }
+//     vertexCount_++;
 
-    // printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
-}
-void OpenGLPath::tessCombine(GLdouble coords[3], void *data[4],
-                             GLfloat weight[4], void **outData,
-                             void *polygonData) {
+//     // printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
+// }
+// void OpenGLPath::tessCombine(GLdouble coords[3], void *data[4],
+//                              GLfloat weight[4], void **outData,
+//                              void *polygonData) {
 
-    OpenGLPath *me = (OpenGLPath *)polygonData;
-    *outData       = me->addTessVertex(coords);
-}
+//     OpenGLPath *me = (OpenGLPath *)polygonData;
+//     *outData       = me->addTessVertex(coords);
+// }
 
-void OpenGLPath::tessError(GLenum errorCode) {
-    printf("tesselator error: [%d] %s\n", errorCode, gluErrorString(errorCode));
-}
+// void OpenGLPath::tessError(GLenum errorCode) {
+//     printf("tesselator error: [%d] %s\n", errorCode,
+//     gluErrorString(errorCode));
+// }
 
 } // namespace MonkVG

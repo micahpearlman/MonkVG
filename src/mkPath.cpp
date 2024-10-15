@@ -13,9 +13,24 @@
 
 namespace MonkVG { // Internal Implementation
 
-int32_t IPath::segmentToNumCoordinates(VGPathSegment segment) {
-    static const int32_t coords[13] = {0, 2, 2, 1, 1, 4, 6, 2, 4, 5, 5, 5, 5};
-    return coords[(int32_t)segment >> 1];
+uint32_t IPath::segmentToNumCoordinates(VGPathSegment segment) {
+
+    static const int32_t segment_to_coord_num[13] = {
+        0, // VG_CLOSE_PATH                               = ( 0 << 1),
+        2, // VG_MOVE_TO                                  = ( 1 << 1),
+        2, // VG_LINE_TO                                  = ( 2 << 1),
+        1, // VG_HLINE_TO                                 = ( 3 << 1),
+        1, // VG_VLINE_TO                                 = ( 4 << 1),
+        4, // VG_QUAD_TO                                  = ( 5 << 1),
+        6, // VG_CUBIC_TO                                 = ( 6 << 1),
+        2, // VG_SQUAD_TO                                 = ( 7 << 1),
+        4, // VG_SCUBIC_TO                                = ( 8 << 1),
+        5, // VG_SCCWARC_TO                               = ( 9 << 1),
+        5, // VG_SCWARC_TO                                = (10 << 1),
+        5, // VG_LCCWARC_TO                               = (11 << 1),
+        5  // VG_LCWARC_TO                                = (12 << 1),
+    };
+    return segment_to_coord_num[(uint32_t)segment >> 1];
 }
 
 void IPath::appendData(const VGint numSegments, const VGubyte *pathSegments,
@@ -37,7 +52,8 @@ void IPath::appendData(const VGint numSegments, const VGubyte *pathSegments,
             break;
         default:
             // error
-            throw std::runtime_error("Unsupported path data type. Currently only VG_PATH_DATATYPE_F is supported.");
+            throw std::runtime_error("Unsupported path data type. Currently "
+                                     "only VG_PATH_DATATYPE_F is supported.");
             break;
         }
     }

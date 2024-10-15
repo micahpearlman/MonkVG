@@ -11,8 +11,8 @@
 
 namespace MonkVG {
 	
-	OpenGLFont::OpenGLFont( )
-	:	IFont( )
+	OpenGLFont::OpenGLFont(IContext& context)
+	:	IFont(context)
 	{
 	}
 	

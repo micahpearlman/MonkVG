@@ -228,8 +228,8 @@ VGUErrorCode vguRoundRect(VGPath path, VGfloat x, VGfloat y, VGfloat width, VGfl
 	if(width <= 0 || height <= 0)
 		return VGU_ILLEGAL_ARGUMENT_ERROR;
 	
-	arcWidth = RI_CLAMP(arcWidth, 0.0f, width);
-	arcHeight = RI_CLAMP(arcHeight, 0.0f, height);
+	arcWidth = std::clamp(arcWidth, 0.0f, width);
+	arcHeight = std::clamp(arcHeight, 0.0f, height);
 	
 	static const VGubyte segments[10] = {VG_MOVE_TO | VG_ABSOLUTE,
 		VG_HLINE_TO | VG_ABSOLUTE,

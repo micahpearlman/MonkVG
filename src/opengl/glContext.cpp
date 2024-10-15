@@ -134,7 +134,7 @@ IPath *OpenGLContext::createPath(VGint path_format, VGPathDatatype data_type,
 
     OpenGLPath *path = new OpenGLPath(
         path_format, data_type, scale, bias, segment_capacity_hint,
-        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL);
+        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL, *this);
     if (path == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
 
@@ -146,14 +146,14 @@ void OpenGLContext::destroyPath(IPath *path) { path->decRef(); }
 void OpenGLContext::destroyPaint(IPaint *paint) { paint->decRef(); }
 
 IPaint *OpenGLContext::createPaint() {
-    OpenGLPaint *paint = new OpenGLPaint();
+    OpenGLPaint *paint = new OpenGLPaint(*this);
     if (paint == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
     return (IPaint *)paint;
 }
 
 IBatch *OpenGLContext::createBatch() {
-    OpenGLBatch *batch = new OpenGLBatch();
+    OpenGLBatch *batch = new OpenGLBatch(*this);
     if (batch == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
     return (IBatch *)batch;
@@ -167,7 +167,7 @@ void OpenGLContext::destroyBatch(IBatch *batch) {
 
 IImage *OpenGLContext::createImage(VGImageFormat format, VGint width,
                                    VGint height, VGbitfield allowedQuality) {
-    return new OpenGLImage(format, width, height, allowedQuality);
+    return new OpenGLImage(format, width, height, allowedQuality, *this);
 }
 
 void OpenGLContext::destroyImage(IImage *image) {
@@ -176,8 +176,9 @@ void OpenGLContext::destroyImage(IImage *image) {
     }
 }
 
-IFont *OpenGLContext::createFont() { return new OpenGLFont(); }
-void   OpenGLContext::destroyFont(IFont *font) {
+IFont *OpenGLContext::createFont() { return new OpenGLFont(*this); }
+
+void OpenGLContext::destroyFont(IFont *font) {
     if (font) {
         font->decRef();
     }

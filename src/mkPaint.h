@@ -18,13 +18,6 @@ namespace MonkVG {
 
 class IPaint : public BaseObject {
   public:
-    IPaint()
-        : BaseObject(),
-          _paintType(VG_PAINT_TYPE_COLOR) // default paint type is color
-          ,
-          _isDirty(true) {}
-    virtual ~IPaint() = default;
-
     inline BaseObject::Type getType() const { return BaseObject::kPaintType; }
 
     //// parameter accessors/mutators ////
@@ -38,28 +31,37 @@ class IPaint : public BaseObject {
 
     const std::array<VGfloat, 4> getPaintColor() const { return _paintColor; }
 
-    VGPaintType  getPaintType() { return _paintType; }
+    VGPaintType  getPaintType() const { return _paintType; }
     virtual void setPaintType(VGPaintType t) { _paintType = t; }
 
-    virtual bool isDirty() { return _isDirty; }
+    virtual bool isDirty() const { return _isDirty; }
     virtual void setIsDirty(bool b) { _isDirty = b; }
 
   protected:
-    bool _isDirty;
+    IPaint(IContext &context)
+        : BaseObject(context),
+          _paintType(VG_PAINT_TYPE_COLOR) // default paint type is color
+          ,
+          _isDirty(true) {}
+    virtual ~IPaint() = default;
 
-    VGPaintType            _paintType;
-    std::array<VGfloat, 4> _paintColor;
-    VGColorRampSpreadMode  _colorRampSpreadMode;
-    VGboolean              _colorRampPremultiplied;
-    std::array<VGfloat, 4> _paintLinearGradient;
-    std::array<VGfloat, 5> _paintRadialGradient;
-    std::array<VGfloat, 6> _paint2x3Gradient;
-    VGTilingMode           _patternTilingMode;
+    bool _isDirty = true;
+
+    VGPaintType            _paintType              = VG_PAINT_TYPE_COLOR;
+    std::array<VGfloat, 4> _paintColor             = {1.0f, 1.0f, 1.0f, 1.0f};
+    VGColorRampSpreadMode  _colorRampSpreadMode    = VG_COLOR_RAMP_SPREAD_PAD;
+    VGboolean              _colorRampPremultiplied = VG_FALSE;
+    std::array<VGfloat, 4> _paintLinearGradient    = {0.0f, 0.0f, 0.0f, 0.0f};
+    std::array<VGfloat, 5> _paintRadialGradient    = {0.0f, 0.0f, 0.0f, 0.0f,
+                                                      0.0f};
+    std::array<VGfloat, 6> _paint2x3Gradient       = {0.0f, 0.0f, 0.0f,
+                                                      0.0f, 0.0f, 0.0f};
+    VGTilingMode           _patternTilingMode      = VG_TILE_FILL;
 
     struct Stop_t {
-        VGfloat a[5];
+        VGfloat a[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
     };
-    std::vector<Stop_t> _colorRampStops;
+    std::vector<Stop_t> _colorRampStops = {};
 };
 
 } // namespace MonkVG

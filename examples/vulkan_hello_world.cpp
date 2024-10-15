@@ -309,7 +309,7 @@ void init_vulkan(vulkan_test_ctx_t &ctx) {
     }
 
     /// Create The Shaders
-    std::ifstream     vert_is("shaders/test.vert.spv",
+    std::ifstream     vert_is("assets/shaders/test.vert.spv",
                               std::ios::ate | std::ios::binary);
     std::vector<char> vert_shader_bin(vert_is.tellg());
     vert_is.seekg(0);
@@ -330,7 +330,7 @@ void init_vulkan(vulkan_test_ctx_t &ctx) {
         .module = ctx.vert_shader_module,
         .pName = "main"};
 
-    std::ifstream     frag_is("shaders/test.frag.spv",
+    std::ifstream     frag_is("assets/shaders/test.frag.spv",
                               std::ios::ate | std::ios::binary);
     std::vector<char> frag_shader_bin(frag_is.tellg());
     frag_is.seekg(0);

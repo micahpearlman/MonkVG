@@ -31,9 +31,14 @@ find_package(PkgConfig REQUIRED)
 
 ## GLU Tesselation
 if(MKVG_DO_GLU_TESSELATION)
+    
     add_subdirectory(thirdparty/glu)
     set(GLU_LIBRARIES glu_tess glu_util)
     set(GLU_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glu/include)
+
+    set(BACKEND_SOURCE ${BACKEND_SOURCE} ./src/glu-tessellator/gluTessellator.cpp)
+    set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_GLU_TESSELATION)
+
     message(STATUS "GLU Tesselation Enabled")
     message(STATUS "GLU_INCLUDE_DIRS: ${GLU_INCLUDE_DIRS}")
     message(STATUS "GLU_LIBRARIES: ${GLU_LIBRARIES}")
@@ -91,8 +96,6 @@ if(MKVG_DO_VULKAN_BACKEND)
 
 endif()
 
-
-
 ## setup common source 
 set(COMMON_SOURCE ${COMMON_SOURCE}
     ./src/mkBaseObject.cpp
@@ -106,6 +109,7 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
     ./src/mkPath.cpp
     ./src/mkVGU.cpp
     ./src/mkBmpFnt.cpp
+    ./src/mkTessellator.cpp
 )
 set(COMMON_INCLUDE ${COMMON_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 

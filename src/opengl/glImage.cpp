@@ -12,8 +12,8 @@
 namespace MonkVG {
 
 OpenGLImage::OpenGLImage(VGImageFormat format, VGint width, VGint height,
-                         VGbitfield allowedQuality)
-    : IImage(format, width, height, allowedQuality) {
+                         VGbitfield allowedQuality, IContext &context)
+    : IImage(format, width, height, allowedQuality, context) {
     CHECK_GL_ERROR;
     // create the texture
     glGenTextures(1, &_gl_texture);
@@ -287,6 +287,7 @@ void OpenGLImage::bind() {
     glBindVertexArray(_vao);
     CHECK_GL_ERROR;
 }
+
 void OpenGLImage::unbind() {
     CHECK_GL_ERROR;
     glBindTexture(GL_TEXTURE_2D, 0);

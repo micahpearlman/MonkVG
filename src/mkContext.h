@@ -18,6 +18,7 @@
 #include "mkBatch.h"
 #include "mkFont.h"
 #include "mkMath.h"
+#include "mkTessellator.h"
 
 namespace MonkVG {
 
@@ -182,6 +183,8 @@ class IContext {
      */
     virtual void popOrthoCamera() = 0;
 
+    ITessellator& getTessellator() { return *_tessellator; }
+
   protected:
     // surface properties
     VGint   _width  = 0;
@@ -221,6 +224,9 @@ class IContext {
 
     // renderer
     VGRenderingBackendTypeMNK _backend_renderer;
+
+    // tessellator
+    std::unique_ptr<ITessellator> _tessellator = nullptr;
 };
 } // namespace MonkVG
 

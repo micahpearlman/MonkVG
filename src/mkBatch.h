@@ -15,8 +15,6 @@ namespace MonkVG {
 
 class IBatch : public BaseObject {
   public:
-    IBatch() : BaseObject() {}
-    virtual ~IBatch() = default;
 
     inline BaseObject::Type getType() const override {
         return BaseObject::kBatchType;
@@ -34,6 +32,10 @@ class IBatch : public BaseObject {
     virtual void draw()                              = 0;
     virtual void dump(void **vertices, size_t *size) = 0;
     virtual void finalize()                          = 0;
+
+  protected:
+    IBatch(IContext &context) : BaseObject(context) {}
+    virtual ~IBatch() = default;
 };
 
 } // namespace MonkVG

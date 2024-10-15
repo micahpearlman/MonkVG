@@ -16,7 +16,7 @@ namespace MonkVG {
 class OpenGLImage : public IImage {
   public:
     OpenGLImage(VGImageFormat format, VGint width, VGint height,
-                VGbitfield allowedQuality);
+                VGbitfield allowedQuality, IContext &context);
     OpenGLImage(OpenGLImage &other);
 
     virtual ~OpenGLImage();

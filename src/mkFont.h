@@ -19,8 +19,6 @@ namespace MonkVG {
 
 class IFont : public BaseObject {
   public:
-    IFont() : BaseObject() {}
-    virtual ~IFont() = default;
 
     inline BaseObject::Type getType() const override { return BaseObject::kFontType; }
 
@@ -43,11 +41,15 @@ class IFont : public BaseObject {
     virtual void removeGlyph(VGuint index);
 
   protected:
+
+    IFont(IContext& context) : BaseObject(context) {}
+    virtual ~IFont() = default;
+
     struct Glyph {
-        VGuint           index;
+        VGuint           index = 0;
         BaseObject::Type type; // type can be either: kPathType or kImageType
-        VGfloat          glyphOrigin[2];
-        VGfloat          escapement[2];
+        VGfloat          glyphOrigin[2] = {0, 0};
+        VGfloat          escapement[2] = {0, 0};
 
         Glyph(VGuint index_, VGfloat glyphOrigin_[2], VGfloat escapement_[2])
             : index(index_), type(BaseObject::kMAXIMUM_TYPE) {

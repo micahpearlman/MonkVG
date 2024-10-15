@@ -235,8 +235,8 @@ namespace MonkVG {
 		_vertices.clear();
 		
 		// reset the bounds
-		_minX = VG_MAX_FLOAT;
-		_minY = VG_MAX_FLOAT;
+		_min_x = VG_MAX_FLOAT;
+		_min_y = VG_MAX_FLOAT;
 		_width = -VG_MAX_FLOAT;
 		_height = -VG_MAX_FLOAT;
 
@@ -551,8 +551,8 @@ namespace MonkVG {
 		_fill_tess = 0;
 
 		// final calculation of the width and height
-		_width = fabsf(_width - _minX);
-		_height = fabsf(_height - _minY);
+		_width = fabsf(_width - _min_x);
+		_height = fabsf(_height - _min_y);
 		
 		CHECK_GL_ERROR;
 		
@@ -885,8 +885,8 @@ namespace MonkVG {
 					v.v[0] = *it;
 					it++;
 					v.v[1] = *it;
-					v.uv[0] = fabsf(v.v[0] - _minX) / _width;
-					v.uv[1] = fabsf( v.v[1] - _minY ) / _height;
+					v.uv[0] = fabsf(v.v[0] - _min_x) / _width;
+					v.uv[1] = fabsf( v.v[1] - _min_y ) / _height;
 					texturedVertices.push_back( v );
 				}
 				
