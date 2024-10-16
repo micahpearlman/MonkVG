@@ -1,4 +1,15 @@
+/**
+ * @file vkContext.cpp
+ * @author Micah Pearlman (micahpearlman@gmail.com)
+ * @brief Vulkan context management implementation. Singleton implementation.
+ * @version 0.1
+ * @date 2024-10-16
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "vkContext.h"
+#include "vkPath.h"
 
 namespace MonkVG {
 //// singleton implementation ////
@@ -18,18 +29,17 @@ bool VulkanContext::Terminate() {
     return true;
 }
 
-IPath *VulkanContext::createPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
-                                 VGfloat bias, VGint segmentCapacityHint,
-                                 VGint coordCapacityHint, VGbitfield capabilities) {
-    VulkanGLPath *path = new VulkanGLPath(
-        path_format, data_type, scale, bias, segment_capacity_hint,
-        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL);
-    if (path == 0)
+IPath *VulkanContext::createPath(VGint path_format, VGPathDatatype datatype, VGfloat scale,
+                                 VGfloat bias, VGint segment_capacity_hint,
+                                 VGint coord_capacity_hint, VGbitfield capabilities) {
+    VulkanPath *path = new VulkanPath(
+        path_format, datatype, scale, bias, segment_capacity_hint,
+        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL, *this);
+    if (path == 0) {
         SetError(VG_OUT_OF_MEMORY_ERROR);
+    }
 
     return (IPath *)path;
-
-    return nullptr;
 }
 
 void VulkanContext::destroyPath(IPath *path) {}

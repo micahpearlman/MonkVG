@@ -73,8 +73,7 @@ int main(int argc, char **argv) {
     vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
 
     // create a simple box path
-    VGPath path;
-    path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0, 0,
+    VGPath path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0, 0,
                         VG_PATH_CAPABILITY_ALL);
     vguRect(path, 0.0f, 0.0f, 100.0f, 150.0f);
 

@@ -91,12 +91,6 @@ void OpenGLPath::buildStrokeIfDirty() {
     _is_stroke_dirty = false;
 }
 
-void printMat44(float m[4][4]) {
-    printf("--\n");
-    for (int x = 0; x < 4; x++) {
-        printf("%f\t%f\t%f\t%f\n", m[x][0], m[x][1], m[x][2], m[x][3]);
-    }
-}
 
 bool OpenGLPath::draw(VGbitfield paint_modes) {
 

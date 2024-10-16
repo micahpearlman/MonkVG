@@ -68,14 +68,18 @@ typedef enum {
     VG_PARAM_TYPE_MNK_FORCE_SIZE = VG_MAX_ENUM
 } VGParamTypeMNK;
 
-/*
- * Rendering backend to use
+/**
+ * @brief Rendering backend types.
+ * NOTE: Need to compile with the correct backend type.
+ * See: CMakeLists.txt for details.
+ * 
  */
 typedef enum {
     VG_RENDERING_BACKEND_TYPE_OPENGLES11 = 0,
     VG_RENDERING_BACKEND_TYPE_OPENGLES20 = 1,
     VG_RENDERING_BACKEND_TYPE_OPENGLES32 = 2,
     VG_RENDERING_BACKEND_TYPE_OPENGL33   = 3,
+    VG_RENDERING_BACKEND_TYPE_VULKAN     = 4,
     VG_RENDERING_BACKEND_TYPE_FORCE_SIZE = VG_MAX_ENUM
 } VGRenderingBackendTypeMNK;
 
