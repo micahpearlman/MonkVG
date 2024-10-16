@@ -60,7 +60,7 @@ class OpenGLPath : public IPath {
 
   private: // utility methods
 
-    void buildFill();
+    // TODO: move this to tessellator
     void buildStroke();
     void buildFatLineSegment(std::vector<v2_t> &vertices, const v2_t &p0,
                              const v2_t &p1, const float stroke_width);

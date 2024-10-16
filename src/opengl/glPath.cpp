@@ -24,7 +24,6 @@ OpenGLPath::OpenGLPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
 OpenGLPath::~OpenGLPath() {
     CHECK_GL_ERROR;
 
-
     if (_fill_vbo != GL_UNDEFINED) {
         glDeleteBuffers(1, &_fill_vbo);
         _fill_vbo = GL_UNDEFINED;
@@ -65,26 +64,28 @@ void OpenGLPath::clear(VGbitfield caps) {
 }
 
 void OpenGLPath::buildFillIfDirty() {
-    IPaint *current_fill_paint = IContext::instance().getFillPaint();
+    IPaint *current_fill_paint = getContext().getFillPaint();
     if (current_fill_paint != _fill_paint) {
         _fill_paint    = (OpenGLPaint *)current_fill_paint;
         _is_fill_dirty = true;
     }
     // only build the fill if dirty or we are in batch build mode
-    if (_is_fill_dirty || IContext::instance().currentBatch()) {
-        buildFill();
+    if (_is_fill_dirty || getContext().currentBatch()) {
+        // tessellate the path
+        getContext().getTessellator().tessellate(_segments, _fcoords,
+                                                 _fill_vertices, _bounds);
     }
     _is_fill_dirty = false;
 }
 
 void OpenGLPath::buildStrokeIfDirty() {
-    IPaint *current_stroke_paint = IContext::instance().getStrokePaint();
+    IPaint *current_stroke_paint = getContext().getStrokePaint();
     if (current_stroke_paint != _stroke_paint) {
         _stroke_paint    = (OpenGLPaint *)current_stroke_paint;
         _is_stroke_dirty = true;
     }
     // only build the fill if dirty or we are in batch build mode
-    if (_is_stroke_dirty || IContext::instance().currentBatch()) {
+    if (_is_stroke_dirty || getContext().currentBatch()) {
         buildStroke();
     }
     _is_stroke_dirty = false;
@@ -130,7 +131,7 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         gl_ctx.bindShader(OpenGLContext::ShaderType::ColorShader);
 
         // context will setup any uniforms
-        IContext::instance().fill();
+        getContext().fill();
 
         // bind the vao & vbo and draw
         glBindVertexArray(_fill_vao);
@@ -165,7 +166,7 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
             throw std::runtime_error("Non color stroke paint not implemented");
         }
         // draw
-        IContext::instance().stroke();
+        getContext().stroke();
         glBindVertexArray(_stroke_vao);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, _num_stroke_verts);
         glBindVertexArray(0);
@@ -174,10 +175,6 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
     CHECK_GL_ERROR;
 
     return true;
-}
-
-void OpenGLPath::buildFill() {
-    getContext().getTessellator().tessellate(_segments, _fcoords, _fill_vertices, _bounds);
 }
 
 void OpenGLPath::buildFatLineSegment(std::vector<v2_t> &vertices,
@@ -299,7 +296,7 @@ void OpenGLPath::buildStroke() {
             VGfloat cp1y = 2.0f * cp2y - p3y;
 
             VGfloat increment =
-                1.0f / IContext::instance().getTessellationIterations();
+                1.0f / getContext().getTessellationIterations();
             // printf("\tcubic: ");
             for (VGfloat t = increment; t < 1.0f + increment; t += increment) {
                 v2_t c;
@@ -333,7 +330,7 @@ void OpenGLPath::buildStroke() {
             }
 
             VGfloat increment =
-                1.0f / IContext::instance().getTessellationIterations();
+                1.0f / getContext().getTessellationIterations();
 
             for (VGfloat t = increment; t < 1.0f + increment; t += increment) {
                 v2_t c;
@@ -373,7 +370,7 @@ void OpenGLPath::buildStroke() {
             }
 
             VGfloat increment =
-                1.0f / IContext::instance().getTessellationIterations();
+                1.0f / getContext().getTessellationIterations();
 
             for (VGfloat t = increment; t < 1.0f + increment; t += increment) {
                 v2_t c;
@@ -418,7 +415,7 @@ void OpenGLPath::buildStroke() {
                 // see:
                 // http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics
                 const int steps =
-                    IContext::instance().getTessellationIterations();
+                    getContext().getTessellationIterations();
                 VGfloat beta    = 0; // angle. todo
                 VGfloat sinbeta = sinf(beta);
                 VGfloat cosbeta = cosf(beta);
@@ -572,7 +569,7 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
         _num_stroke_verts = (int)_stroke_verts.size();
     }
 
-    OpenGLBatch *glBatch = (OpenGLBatch *)IContext::instance().currentBatch();
+    OpenGLBatch *glBatch = (OpenGLBatch *)getContext().currentBatch();
     if (glBatch) { // if in batch mode update the current batch
         glBatch->addPathVertexData(
             &_fill_vertices[0], _fill_vertices.size() / 2,
@@ -584,108 +581,5 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
     _stroke_verts.clear();
 }
 
-// static GLdouble startVertex_[2];
-// static GLdouble lastVertex_[2];
-// static int      vertexCount_ = 0;
-
-// void OpenGLPath::tessBegin(GLenum type, GLvoid *user) {
-//     OpenGLPath *me = (OpenGLPath *)user;
-//     me->setPrimType(type);
-//     vertexCount_ = 0;
-
-//     switch (type) {
-//     case GL_TRIANGLES:
-//         // printf( "begin(GL_TRIANGLES)\n" );
-//         break;
-//     case GL_TRIANGLE_FAN:
-//         // printf( "begin(GL_TRIANGLE_FAN)\n" );
-//         break;
-//     case GL_TRIANGLE_STRIP:
-//         // printf( "begin(GL_TRIANGLE_STRIP)\n" );
-//         break;
-//     case GL_LINE_LOOP:
-//         // printf( "begin(GL_LINE_LOOP)\n" );
-//         break;
-//     default:
-//         break;
-//     }
-// }
-
-// void OpenGLPath::tessEnd(GLvoid *user) {
-//     //		OpenGLPath* me = (OpenGLPath*)user;
-//     //		me->endOfTesselation();
-
-//     // printf("end\n");
-// }
-
-// void OpenGLPath::tessVertex(GLvoid *vertex, GLvoid *user) {
-//     OpenGLPath *me = (OpenGLPath *)user;
-//     GLdouble   *v  = (GLdouble *)vertex;
-
-//     if (me->primType() == GL_TRIANGLE_FAN) {
-//         // break up fans and strips into triangles
-//         switch (vertexCount_) {
-//         case 0:
-//             startVertex_[0] = v[0];
-//             startVertex_[1] = v[1];
-//             break;
-//         case 1:
-//             lastVertex_[0] = v[0];
-//             lastVertex_[1] = v[1];
-//             break;
-
-//         default:
-//             me->addVertex(startVertex_);
-//             me->addVertex(lastVertex_);
-//             me->addVertex(v);
-//             lastVertex_[0] = v[0];
-//             lastVertex_[1] = v[1];
-//             break;
-//         }
-//     } else if (me->primType() == GL_TRIANGLES) {
-//         me->addVertex(v);
-//     } else if (me->primType() == GL_TRIANGLE_STRIP) {
-//         switch (vertexCount_) {
-//         case 0:
-//             me->addVertex(v);
-//             break;
-//         case 1:
-//             startVertex_[0] = v[0];
-//             startVertex_[1] = v[1];
-//             me->addVertex(v);
-//             break;
-//         case 2:
-//             lastVertex_[0] = v[0];
-//             lastVertex_[1] = v[1];
-//             me->addVertex(v);
-//             break;
-
-//         default:
-//             me->addVertex(startVertex_);
-//             me->addVertex(lastVertex_);
-//             me->addVertex(v);
-//             startVertex_[0] = lastVertex_[0];
-//             startVertex_[1] = lastVertex_[1];
-//             lastVertex_[0]  = v[0];
-//             lastVertex_[1]  = v[1];
-//             break;
-//         }
-//     }
-//     vertexCount_++;
-
-//     // printf("\tvert[%d]: %f, %f, %f\n", vertexCount_, v[0], v[1], v[2] );
-// }
-// void OpenGLPath::tessCombine(GLdouble coords[3], void *data[4],
-//                              GLfloat weight[4], void **outData,
-//                              void *polygonData) {
-
-//     OpenGLPath *me = (OpenGLPath *)polygonData;
-//     *outData       = me->addTessVertex(coords);
-// }
-
-// void OpenGLPath::tessError(GLenum errorCode) {
-//     printf("tesselator error: [%d] %s\n", errorCode,
-//     gluErrorString(errorCode));
-// }
 
 } // namespace MonkVG
