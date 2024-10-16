@@ -96,16 +96,66 @@ VG_API_CALL void VG_API_ENTRY vgDrawBatchMNK(VGBatchMNK batch) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgDumpBatchMNK(VGBatchMNK batch, void **vertices,
                                              size_t *size) VG_API_EXIT;
 
-/* context MonkVG */
+/**
+ * @brief Creates a MonkVG context with the specified rendering backend.
+ * 
+ * @param width width of the rendering surface
+ * @param height height of the rendering surface
+ * @param backend the rendering backend type.  NOTE: Must be compiled with the
+ * correct backend type.
+ * @return VG_API_CALL 
+ */
 VG_API_CALL VGboolean vgCreateContextMNK(VGint width, VGint height,
                                          VGRenderingBackendTypeMNK backend);
+
+/**
+ * @brief Handle surface resize events.
+ * 
+ * @param width new surface width
+ * @param height new surface height
+ * @return * VG_API_CALL 
+ */
 VG_API_CALL void      vgResizeSurfaceMNK(VGint width, VGint height);
+
+/**
+ * @brief Cleans up MonkVG context.
+ * 
+ * @return VG_API_CALL 
+ */
 VG_API_CALL void      vgDestroyContextMNK(void);
+
+/**
+ * @brief Set Vulkan context for MonkVG.
+ * 
+ * @param instance 
+ * @param logical_device 
+ * @return VG_API_CALL 
+ */
+VG_API_CALL VGboolean vgSetVulkanContextMNK(void *logical_device);
 
 /* Helper function for things like camera
  */
+
+/**
+ * @brief Push an orthographic camera onto the matrix stack.
+ * NOTE: OpenVG has 0,0 as the bottom left corner.
+ * 
+ * @param left 
+ * @param right 
+ * @param bottom 
+ * @param top 
+ * @param near 
+ * @param far 
+ * @return VG_API_CALL 
+ */
 VG_API_CALL void vgPushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
                                    VGfloat top, VGfloat near, VGfloat far);
+
+/**
+ * @brief Pop the orthographic camera off the matrix stack.
+ * 
+ * @return * VG_API_CALL 
+ */
 VG_API_CALL void vgPopOrthoCamera();
 
 #ifdef __cplusplus

@@ -67,42 +67,47 @@ void OpenGLPath::buildFillIfDirty() {
     IPaint *current_fill_paint = getContext().getFillPaint();
     if (current_fill_paint != _fill_paint) {
         _fill_paint    = (OpenGLPaint *)current_fill_paint;
-        _is_fill_dirty = true;
+        setFillDirty(true);
     }
     // only build the fill if dirty or we are in batch build mode
-    if (_is_fill_dirty || getContext().currentBatch()) {
+    if (getIsFillDirty() || getContext().currentBatch()) {
         // tessellate the path
         getContext().getTessellator().tessellate(_segments, _fcoords,
                                                  _fill_vertices, _bounds);
     }
-    _is_fill_dirty = false;
+    setFillDirty(false);
 }
 
 void OpenGLPath::buildStrokeIfDirty() {
     IPaint *current_stroke_paint = getContext().getStrokePaint();
     if (current_stroke_paint != _stroke_paint) {
         _stroke_paint    = (OpenGLPaint *)current_stroke_paint;
-        _is_stroke_dirty = true;
+        setStrokeDirty(true);
     }
     // only build the fill if dirty or we are in batch build mode
-    if (_is_stroke_dirty || getContext().currentBatch()) {
+    if (getIsStrokeDirty() || getContext().currentBatch()) {
         buildStroke();
     }
-    _is_stroke_dirty = false;
+    setStrokeDirty(false);
 }
 
 
 bool OpenGLPath::draw(VGbitfield paint_modes) {
 
-    if (paint_modes == 0)
+    // if there are no paint modes then do nothing
+    if (paint_modes == 0) {
         return false;
+    }
 
     CHECK_GL_ERROR;
 
     // get the native OpenGL context
-    OpenGLContext &gl_ctx = (MonkVG::OpenGLContext &)IContext::instance();
+    OpenGLContext &gl_ctx = (MonkVG::OpenGLContext &)getContext();
 
-    if (paint_modes & VG_FILL_PATH) { // build the fill polygons
+    // if dirty build the stroke and fill
+    // this will take the path data and build the vertex data
+    // through tessellation
+    if (paint_modes & VG_FILL_PATH) { 
         buildFillIfDirty();
     }
 
@@ -110,7 +115,7 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
         buildStrokeIfDirty();
     }
 
-    endOfTesselation(paint_modes);
+    buildOpenGLBuffers(paint_modes);
 
     if (gl_ctx.currentBatch()) {
         return true; // creating a batch so bail from here
@@ -477,7 +482,7 @@ void OpenGLPath::buildStroke() {
     } // foreach segment
 }
 
-void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
+void OpenGLPath::buildOpenGLBuffers(VGbitfield paint_modes) {
     /// build fill vao & vbo
     if (_fill_vertices.size() > 0) {
 
@@ -536,7 +541,6 @@ void OpenGLPath::endOfTesselation(VGbitfield paint_modes) {
         }
 
         _num_fill_verts = (int)_fill_vertices.size() / 2;
-        // _tess_verts.clear();
     }
 
     /// build stroke vbo

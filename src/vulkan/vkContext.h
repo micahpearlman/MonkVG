@@ -14,6 +14,7 @@
 
 #include "mkContext.h"
 #include "vkPlatform.h"
+#include "vkShader.h"
 
 namespace MonkVG {
 class VulkanContext : public IContext {
@@ -22,8 +23,8 @@ class VulkanContext : public IContext {
     ~VulkanContext() = default;
 
     // singleton instance
-    bool             Initialize() override;
-    bool             Terminate() override;
+    bool Initialize() override;
+    bool Terminate() override;
 
     //// factories ////
     IPath  *createPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
@@ -68,6 +69,17 @@ class VulkanContext : public IContext {
                          VGfloat top, VGfloat near, VGfloat far) override;
 
     void popOrthoCamera() override;
+
+    // Vulkan specific
+    bool     setVulkanContext(VkDevice logical_dev);
+    VkDevice getVulkanLogicalDevice() const { return _logical_dev; }
+
+  private:
+    VkDevice _logical_dev = VK_NULL_HANDLE;
+
+  private:
+    std::unique_ptr<VulkanShader> _color_shader   = nullptr;
+    std::unique_ptr<VulkanShader> _texture_shader = nullptr;
 
 }; // class VulkanContext
 

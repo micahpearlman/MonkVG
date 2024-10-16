@@ -58,7 +58,9 @@ void IPath::appendData(const VGint numSegments, const VGubyte *pathSegments,
         }
     }
 
-    setIsDirty(true);
+    // added new data so we are dirty
+    setFillDirty(true);
+    setStrokeDirty(true);
 }
 
 void IPath::copy(const IPath &src, const Matrix33 &transform) {

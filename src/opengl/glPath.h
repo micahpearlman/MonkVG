@@ -56,7 +56,7 @@ class OpenGLPath : public IPath {
     OpenGLPaint *_fill_paint       = nullptr;
     OpenGLPaint *_stroke_paint     = nullptr;
 
-    void endOfTesselation(VGbitfield paintModes);
+    void buildOpenGLBuffers(VGbitfield paintModes);
 
   private: // utility methods
 

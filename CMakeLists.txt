@@ -94,6 +94,33 @@ if(MKVG_DO_VULKAN_BACKEND)
     set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_VULKAN_BACKEND)
     set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} glm::glm Vulkan::Vulkan)
 
+
+    # make sure there is a vulkan glslc executable
+    if(EXISTS ${Vulkan_GLSLC_EXECUTABLE})
+        ### Build Vulkan Shaders ###
+        # See: https://stackoverflow.com/questions/57478571/why-wont-cmake-build-my-vulkan-spirv-shaders
+        set(SHADER_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/vulkan/shaders)
+        file(GLOB SHADERS 
+            ${SHADER_DIR}/*.vert 
+            ${SHADER_DIR}/*.frag)
+
+        message(STATUS "Vulkan Shader Compiler: ${Vulkan_GLSLC_EXECUTABLE}")
+
+        # make spv header files for glsl shaders
+        foreach(SHADER IN LISTS SHADERS)
+            message(STATUS "SHADER: ${SHADER}")
+            get_filename_component(FILENAME ${SHADER} NAME)
+            add_custom_command(      
+                COMMAND ${Vulkan_GLSLC_EXECUTABLE} -mfmt=c ${SHADER} -o ${SHADER_DIR}/${FILENAME}.h
+                OUTPUT ${SHADER_DIR}/${FILENAME}.h
+                DEPENDS ${SHADER} ${SHADER_DIR}
+                COMMENT "Compiling ${FILENAME}"
+            )
+            list(APPEND SPV_SHADERS ${SHADER_DIR}/${FILENAME}.h)
+        endforeach(SHADER IN LISTS SHADERS)
+        add_custom_target(shaders ALL DEPENDS ${SPV_SHADERS})   
+        
+    endif()
 endif()
 
 ## setup common source 

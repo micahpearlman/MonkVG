@@ -11,6 +11,7 @@
 #ifndef __VK_PATH_H__
 #define __VK_PATH_H__
 #include "mkPath.h"
+#include "vkPaint.h"
 namespace MonkVG {
 class VulkanPath : public IPath {
   public:
@@ -27,6 +28,9 @@ class VulkanPath : public IPath {
   private:
     std::vector<float> _fill_vertices = {};
     std::vector<float> _stroke_vertices = {};
+
+    VulkanPaint *_fill_paint = nullptr;
+    VulkanPaint *_stroke_paint = nullptr;
 
 }; // VulkanPath
 

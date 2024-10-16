@@ -63,11 +63,15 @@ class IPath : public BaseObject {
     inline VGbitfield getCapabilities() const { return _capabilities; }
     inline void       setCapabilities(const VGbitfield c) { _capabilities = c; }
 
-    inline bool getIsDirty() { return _is_fill_dirty; }
-    inline void setIsDirty(bool b) {
+    inline bool getIsFillDirty() const { return _is_fill_dirty; }
+    inline void setFillDirty(bool b) {
         _is_fill_dirty   = b;
+    }
+    inline bool getIsStrokeDirty() const { return _is_stroke_dirty; }
+    inline void setStrokeDirty(bool b) {
         _is_stroke_dirty = b;
     }
+
 
     // bounds
     inline VGfloat getMinX() const { return _bounds.min_x; }

@@ -66,6 +66,11 @@ class GLUTessellator : public ITessellator {
     std::vector<VGfloat> *_out_vertices     = nullptr;
     bounding_box_t       *_out_bounding_box = nullptr;
 
+    /**
+     * @brief Add a vertex to the output vertex list and update the bounding box
+     *
+     * @param v
+     */
     void addVertex(const std::array<GLdouble, 2> &v) {
         const VGfloat x = static_cast<VGfloat>(v[0]);
         const VGfloat y = static_cast<VGfloat>(v[1]);
@@ -86,7 +91,7 @@ class GLUTessellator : public ITessellator {
     std::array<GLdouble, 2> _last_vert  = {0.0, 0.0};
     int                     _vert_cnt   = 0;
 
-    // GLU Tessalator callback functions
+    // GLU Tessellator callback functions
     static void tessBegin(GLenum type, GLvoid *user);
     static void tessEnd(GLvoid *user);
     static void tessVertex(GLvoid *vertex, GLvoid *user);
@@ -94,7 +99,6 @@ class GLUTessellator : public ITessellator {
                             GLfloat weight[4], void **outData,
                             void *polygonData);
     static void tessError(GLenum errorCode);
-    void        endOfTesselation(VGbitfield paintModes);
 
 }; // GLUTessellator
 } // namespace MonkVG

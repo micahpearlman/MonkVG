@@ -678,6 +678,9 @@ int main(int, char **) {
     // Initilize MonkVG
     vgCreateContextMNK(WIDTH, HEIGHT, VG_RENDERING_BACKEND_TYPE_VULKAN);
 
+    // Initialize Vulkan Specific MonkVG with the Vulkan Context
+    vgSetVulkanContextMNK(vulkan_test_ctx.logical_device);
+
     // create a simple box path
     VGPath path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1,
                                0, 0, 0, VG_PATH_CAPABILITY_ALL);
