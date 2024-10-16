@@ -25,11 +25,14 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
                                 std::vector<VGfloat>       &vertices,
                                 bounding_box_t             &bounding_box) {
 
-    _out_vertices = &vertices;
+    _out_vertices     = &vertices;
     _out_bounding_box = &bounding_box;
 
     // create the tesselator
     _glu_tessellator = gluNewTess();
+    _tess_verts.clear();
+    _start_vert = {0,0};
+    _last_vert = {0,0};
 
     // set the callback functions
     gluTessCallback(_glu_tessellator, GLU_TESS_BEGIN_DATA,
@@ -54,8 +57,8 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
                     0.5f); // HARDWIRED: TODO: make this a parameter
 
     gluTessBeginPolygon(_glu_tessellator, this);
-    auto   coordsIter = fcoords.begin();
-    VGbyte segment    = VG_CLOSE_PATH;
+    auto   coords_it = fcoords.begin();
+    VGbyte segment   = VG_CLOSE_PATH;
     v3_t   coords(0, 0, 0);
     v3_t   prev(0, 0, 0);
     int    num_contours = 0;
@@ -80,10 +83,10 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
 
             gluTessBeginContour(_glu_tessellator);
             num_contours++;
-            coords.x = *coordsIter;
-            coordsIter++;
-            coords.y = *coordsIter;
-            coordsIter++;
+            coords.x = *coords_it;
+            coords_it++;
+            coords.y = *coords_it;
+            coords_it++;
 
             GLdouble *l = addTessVertex(coords);
             gluTessVertex(_glu_tessellator, l, l);
@@ -91,10 +94,10 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
         } break;
         case (VG_LINE_TO >> 1): {
             prev     = coords;
-            coords.x = *coordsIter;
-            coordsIter++;
-            coords.y = *coordsIter;
-            coordsIter++;
+            coords.x = *coords_it;
+            coords_it++;
+            coords.y = *coords_it;
+            coords_it++;
             if (isRelative) {
                 coords.x += prev.x;
                 coords.y += prev.y;
@@ -105,8 +108,8 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
         } break;
         case (VG_HLINE_TO >> 1): {
             prev     = coords;
-            coords.x = *coordsIter;
-            coordsIter++;
+            coords.x = *coords_it;
+            coords_it++;
             if (isRelative) {
                 coords.x += prev.x;
             }
@@ -116,8 +119,8 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
         } break;
         case (VG_VLINE_TO >> 1): {
             prev     = coords;
-            coords.y = *coordsIter;
-            coordsIter++;
+            coords.y = *coords_it;
+            coords_it++;
             if (isRelative) {
                 coords.y += prev.y;
             }
@@ -127,14 +130,14 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
         } break;
         case (VG_SCUBIC_TO >> 1): {
             prev         = coords;
-            VGfloat cp2x = *coordsIter;
-            coordsIter++;
-            VGfloat cp2y = *coordsIter;
-            coordsIter++;
-            VGfloat p3x = *coordsIter;
-            coordsIter++;
-            VGfloat p3y = *coordsIter;
-            coordsIter++;
+            VGfloat cp2x = *coords_it;
+            coords_it++;
+            VGfloat cp2y = *coords_it;
+            coords_it++;
+            VGfloat p3x = *coords_it;
+            coords_it++;
+            VGfloat p3y = *coords_it;
+            coords_it++;
 
             if (isRelative) {
                 cp2x += prev.x;
@@ -161,18 +164,18 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
         } break;
         case (VG_CUBIC_TO >> 1): {
             prev         = coords;
-            VGfloat cp1x = *coordsIter;
-            coordsIter++;
-            VGfloat cp1y = *coordsIter;
-            coordsIter++;
-            VGfloat cp2x = *coordsIter;
-            coordsIter++;
-            VGfloat cp2y = *coordsIter;
-            coordsIter++;
-            VGfloat p3x = *coordsIter;
-            coordsIter++;
-            VGfloat p3y = *coordsIter;
-            coordsIter++;
+            VGfloat cp1x = *coords_it;
+            coords_it++;
+            VGfloat cp1y = *coords_it;
+            coords_it++;
+            VGfloat cp2x = *coords_it;
+            coords_it++;
+            VGfloat cp2y = *coords_it;
+            coords_it++;
+            VGfloat p3x = *coords_it;
+            coords_it++;
+            VGfloat p3y = *coords_it;
+            coords_it++;
 
             if (isRelative) {
                 cp1x += prev.x;
@@ -199,14 +202,14 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
 
         case (VG_QUAD_TO >> 1): {
             prev        = coords;
-            VGfloat cpx = *coordsIter;
-            coordsIter++;
-            VGfloat cpy = *coordsIter;
-            coordsIter++;
-            VGfloat px = *coordsIter;
-            coordsIter++;
-            VGfloat py = *coordsIter;
-            coordsIter++;
+            VGfloat cpx = *coords_it;
+            coords_it++;
+            VGfloat cpy = *coords_it;
+            coords_it++;
+            VGfloat px = *coords_it;
+            coords_it++;
+            VGfloat py = *coords_it;
+            coords_it++;
 
             if (isRelative) {
                 cpx += prev.x;
@@ -236,16 +239,16 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
         case (VG_LCWARC_TO >> 1):
 
         {
-            VGfloat rh = *coordsIter;
-            coordsIter++;
-            VGfloat rv = *coordsIter;
-            coordsIter++;
-            VGfloat rot = *coordsIter;
-            coordsIter++;
-            VGfloat cp1x = *coordsIter;
-            coordsIter++;
-            VGfloat cp1y = *coordsIter;
-            coordsIter++;
+            VGfloat rh = *coords_it;
+            coords_it++;
+            VGfloat rv = *coords_it;
+            coords_it++;
+            VGfloat rot = *coords_it;
+            coords_it++;
+            VGfloat cp1x = *coords_it;
+            coords_it++;
+            VGfloat cp1y = *coords_it;
+            coords_it++;
             if (isRelative) {
                 cp1x += prev.x;
                 cp1y += prev.y;
@@ -306,11 +309,13 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
                     VGfloat alpha    = g * (M_PI / 180.0f);
                     VGfloat sinalpha = sinf(alpha);
                     VGfloat cosalpha = cosf(alpha);
-                    c.x              = cx0[0] +
+
+                    c.x = cx0[0] +
                           (rh * cosalpha * cosbeta - rv * sinalpha * sinbeta);
                     c.y = cx0[1] +
                           (rh * cosalpha * sinbeta + rv * sinalpha * cosbeta);
-                    c.z         = 0;
+                    c.z = 0;
+
                     GLdouble *l = addTessVertex(c);
                     gluTessVertex(_glu_tessellator, l, l);
                 }
@@ -342,9 +347,8 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
     gluDeleteTess(_glu_tessellator);
     _glu_tessellator = nullptr;
 
-    _out_vertices = nullptr;
+    _out_vertices     = nullptr;
     _out_bounding_box = nullptr;
-
 }
 
 void GLUTessellator::tessellate(IPath *path, std::vector<VGfloat> &vertices,
@@ -362,9 +366,18 @@ void GLUTessellator::tessEnd(GLvoid *user) {
     // DO NOTHING
 }
 
+/**
+ * @brief GLU Tessellator vertex callback.  This is called for each vertex
+ * in the tesselation. We use this to convert the 3D vertex to a 2D vertex
+ * and add it to the vertex list. We also convert triangle fans and strips
+ * to triangles.
+ * 
+ * @param vertex 
+ * @param user 
+ */
 void GLUTessellator::tessVertex(GLvoid *vertex, GLvoid *user) {
     GLUTessellator *me = (GLUTessellator *)user;
-    GLdouble       *v  = (GLdouble *)vertex;
+    std::array<GLdouble,2> v  = {((GLdouble *)vertex)[0], ((GLdouble *)vertex)[1]};
 
     if (me->primType() == GL_TRIANGLE_FAN) {
         // break up fans and strips into triangles

@@ -15,6 +15,7 @@
 #include <vector>
 #include <list>
 #include <functional>
+#include <array>
 namespace MonkVG {
 class GLUTessellator : public ITessellator {
   public:
@@ -22,16 +23,16 @@ class GLUTessellator : public ITessellator {
     virtual ~GLUTessellator() = default;
 
     void tessellate(const std::vector<VGubyte> &segments,
-                   const std::vector<VGfloat> &coords,
-                   std::vector<VGfloat>       &vertices,
-                   bounding_box_t             &bounding_box) override;
+                    const std::vector<VGfloat> &coords,
+                    std::vector<VGfloat>       &vertices,
+                    bounding_box_t             &bounding_box) override;
 
     void tessellate(IPath *path, std::vector<VGfloat> &vertices,
-                   bounding_box_t &bounding_box) override;
+                    bounding_box_t &bounding_box) override;
 
   private:
     /**
-     * @brief Used by the GLU tesselator to track vertices.
+     * @brief Used by the GLU tessellator to track vertices.
      *
      */
     struct v3_t {
@@ -43,14 +44,14 @@ class GLUTessellator : public ITessellator {
 
   private:
     // GLU Tessalator
-    GLUtesselator        *_glu_tessellator        = nullptr;
+    GLUtesselator *_glu_tessellator = nullptr;
 
     // storage for the tesselated vertices
     // NOTE: these verts are in 3D space
     // NOTE: the use of list is because we need pointers to items in the list
     // and vector will reallocate memory and invalidate the pointers
-    std::list<v3_t>     _tess_verts       = {};
-    GLdouble *tessVerticesBackPtr() { return &(_tess_verts.back().x); }
+    std::list<v3_t> _tess_verts = {};
+    GLdouble       *tessVerticesBackPtr() { return &(_tess_verts.back().x); }
 
     /// @brief Add a vertex to the tesselation vertex list
     /// @param v a 3D vertex
@@ -61,12 +62,11 @@ class GLUTessellator : public ITessellator {
         return tessVerticesBackPtr();
     }
 
-
-
     // output vertices and bounding box
     std::vector<VGfloat> *_out_vertices     = nullptr;
     bounding_box_t       *_out_bounding_box = nullptr;
-    void addVertex(GLdouble *v) {
+
+    void addVertex(const std::array<GLdouble, 2> &v) {
         const VGfloat x = static_cast<VGfloat>(v[0]);
         const VGfloat y = static_cast<VGfloat>(v[1]);
         _out_bounding_box->update(x, y);
@@ -82,9 +82,9 @@ class GLUTessellator : public ITessellator {
     void         setPrimType(GLenum t) { _prim_type = t; }
 
     // tesselation vertex tracking
-    GLdouble _start_vert[2] = {0.0, 0.0};
-    GLdouble _last_vert[2]  = {0.0, 0.0};
-    int      _vert_cnt      = 0;
+    std::array<GLdouble, 2> _start_vert = {0.0, 0.0};
+    std::array<GLdouble, 2> _last_vert  = {0.0, 0.0};
+    int                     _vert_cnt   = 0;
 
     // GLU Tessalator callback functions
     static void tessBegin(GLenum type, GLvoid *user);
