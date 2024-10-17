@@ -36,7 +36,10 @@ IContext &IContext::instance() {
 
 VulkanContext::VulkanContext() : IContext() {}
 
-bool VulkanContext::Initialize() { return true; }
+bool VulkanContext::Initialize() {
+    resize();
+    return true;
+}
 
 bool VulkanContext::Terminate() { return true; }
 
@@ -86,7 +89,18 @@ void VulkanContext::flush() {}
 
 void VulkanContext::finish() {}
 
-void VulkanContext::resize() {}
+void VulkanContext::resize() {
+    // setup the Vulkan viewport
+    _viewport.x      = 0;
+    _viewport.y      = 0;
+    _viewport.width  = getWidth();
+    _viewport.height = getHeight();
+
+    // setup the Vulkan scissor
+    _scissor.offset = {0, 0};
+    _scissor.extent = {static_cast<uint32_t>(getWidth()),
+                       static_cast<uint32_t>(getHeight())};
+}
 
 void VulkanContext::setIdentity() {}
 
@@ -113,13 +127,22 @@ void VulkanContext::pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
 
 void VulkanContext::popOrthoCamera() {}
 
-bool VulkanContext::setVulkanContext(VkDevice logical_dev) {
+bool VulkanContext::setVulkanContext(VkDevice     logical_dev,
+                                     VkRenderPass render_pass) {
     _logical_dev = logical_dev;
+    _render_pass = render_pass;
+
+    // Define vertex input binding description
+    VkVertexInputBindingDescription binding_desc = {};
+    binding_desc.binding                         = 0;
+    binding_desc.stride                          = sizeof(vertex_2d_t);
+    binding_desc.inputRate                       = VK_VERTEX_INPUT_RATE_VERTEX;
 
     // Create the graphics pipelines
     /// Color Pipeline
     // for the color pipeline the vertex type is just a 2d position
     // the color is a uniform
+
     std::vector<VkVertexInputAttributeDescription> vertex_input_attribs = {};
     VkVertexInputAttributeDescription              vertex_attrib        = {};
     vertex_attrib.binding                                               = 0;
@@ -127,9 +150,21 @@ bool VulkanContext::setVulkanContext(VkDevice logical_dev) {
     vertex_attrib.format = VK_FORMAT_R32G32_SFLOAT;
     vertex_attrib.offset = offsetof(vertex_2d_t, v);
     vertex_input_attribs.push_back(vertex_attrib);
+
+    VkPipelineVertexInputStateCreateInfo color_vertex_state = {};
+    color_vertex_state.sType =
+        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    color_vertex_state.vertexBindingDescriptionCount = 1;
+    color_vertex_state.pVertexBindingDescriptions    = &binding_desc;
+    color_vertex_state.vertexAttributeDescriptionCount =
+        vertex_input_attribs.size();
+    color_vertex_state.pVertexAttributeDescriptions =
+        vertex_input_attribs.data();
+
     _color_pipeline = std::make_unique<VulkanGraphicsPipeline>(
         *this, color_vert, sizeof(color_vert), color_frag, sizeof(color_frag),
-        vertex_input_attribs);
+        color_vertex_state);
+
     /// Texture Pipeline
     // for the texture pipeline the vertex type is a 2d position and a 2d uv
     VkVertexInputAttributeDescription uv_attrib = {};
@@ -138,18 +173,35 @@ bool VulkanContext::setVulkanContext(VkDevice logical_dev) {
     uv_attrib.format                            = VK_FORMAT_R32G32_SFLOAT;
     uv_attrib.offset = offsetof(textured_vertex_2d_t, uv);
     vertex_input_attribs.push_back(uv_attrib);
+
+    binding_desc.stride =
+        sizeof(textured_vertex_2d_t); // reset the stride to be the sizeof
+                                      // texture vertex
+
+    VkPipelineVertexInputStateCreateInfo texture_vertex_state = {};
+    texture_vertex_state.sType =
+        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    texture_vertex_state.vertexBindingDescriptionCount = 1;
+    texture_vertex_state.pVertexBindingDescriptions    = &binding_desc;
+    texture_vertex_state.vertexAttributeDescriptionCount =
+        vertex_input_attribs.size();
+    texture_vertex_state.pVertexAttributeDescriptions =
+        vertex_input_attribs.data();
+
     _texture_pipeline = std::make_unique<VulkanGraphicsPipeline>(
         *this, texture_vert, sizeof(texture_vert), texture_frag,
-        sizeof(texture_frag), vertex_input_attribs);
+        sizeof(texture_frag), texture_vertex_state);
     return true;
 }
 
 } // namespace MonkVG
 
-VG_API_CALL VGboolean vgSetVulkanContextMNK(void *logical_device) {
+VG_API_CALL VGboolean vgSetVulkanContextMNK(void *logical_device,
+                                            void *render_pass) {
     MonkVG::VulkanContext &vk_ctx =
         (MonkVG::VulkanContext &)MonkVG::IContext::instance();
-    vk_ctx.setVulkanContext((VkDevice)logical_device);
+    vk_ctx.setVulkanContext((VkDevice)logical_device,
+                            (VkRenderPass)render_pass);
 
     return VG_TRUE;
 }

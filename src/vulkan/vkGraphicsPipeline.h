@@ -21,12 +21,10 @@ namespace MonkVG {
 class VulkanContext;
 class VulkanGraphicsPipeline {
   public:
-    VulkanGraphicsPipeline(IContext &context, const uint32_t *vertex_src,
-                           const size_t    vert_src_sz,
-                           const uint32_t *fragment_src,
-                           const size_t    frag_src_sz,
-                           const std::vector<VkVertexInputAttributeDescription>
-                               &vertex_input_attribs);
+    VulkanGraphicsPipeline(
+        IContext &context, const uint32_t *vertex_src, const size_t vert_src_sz,
+        const uint32_t *fragment_src, const size_t frag_src_sz,
+        VkPipelineVertexInputStateCreateInfo &vertex_input_state);
     virtual ~VulkanGraphicsPipeline();
 
     /**
@@ -68,7 +66,8 @@ class VulkanGraphicsPipeline {
     VkShaderModule _vertex_shader_module   = VK_NULL_HANDLE;
     VkShaderModule _fragment_shader_module = VK_NULL_HANDLE;
 
-    VkPipeline _pipeline = VK_NULL_HANDLE;
+    VkPipeline       _pipeline        = VK_NULL_HANDLE;
+    VkPipelineLayout _pipeline_layout = VK_NULL_HANDLE;
 
     /**
      * @brief Create a Pipeline object
@@ -77,8 +76,7 @@ class VulkanGraphicsPipeline {
      * @return VkPipeline
      */
     VkPipeline
-    createPipeline(const std::vector<VkVertexInputAttributeDescription>
-                       &vertex_input_attribs);
+    createPipeline(VkPipelineVertexInputStateCreateInfo &vertex_input_state);
 
     /**
      * @brief Compile a shader given the vertex and fragment.

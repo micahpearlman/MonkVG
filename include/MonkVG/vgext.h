@@ -127,11 +127,11 @@ VG_API_CALL void      vgDestroyContextMNK(void);
 /**
  * @brief Set Vulkan context for MonkVG.
  * 
- * @param instance 
- * @param logical_device 
+ * @param logical_device The Vulkan logical device
+ * @param render_pass The Vulkan render pass
  * @return VG_API_CALL 
  */
-VG_API_CALL VGboolean vgSetVulkanContextMNK(void *logical_device);
+VG_API_CALL VGboolean vgSetVulkanContextMNK(void *logical_device, void* render_pass);
 
 /* Helper function for things like camera
  */

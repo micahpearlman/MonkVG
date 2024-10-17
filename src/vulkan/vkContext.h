@@ -71,15 +71,56 @@ class VulkanContext : public IContext {
     void popOrthoCamera() override;
 
     // Vulkan specific
-    bool     setVulkanContext(VkDevice logical_dev);
+    /**
+     * @brief Setup the Vulkan context for MonkVG from the application Vulkan
+     * context.
+     *
+     * @param logical_dev Vulkan logical device
+     * @param render_pass Vulkan render pass
+     * @return true
+     * @return false
+     */
+    bool setVulkanContext(VkDevice logical_dev, VkRenderPass render_pass);
+
+    /**
+     * @brief Get the Vulkan Logical Device object
+     *
+     * @return VkDevice
+     */
     VkDevice getVulkanLogicalDevice() const { return _logical_dev; }
 
-  private:
-    VkDevice _logical_dev = VK_NULL_HANDLE;
+    /**
+     * @brief Get the Vulkan Render Pass object
+     *
+     *
+     * @return VkRenderPass
+     */
+    VkRenderPass getVulkanRenderPass() const { return _render_pass; }
 
-  private:
+    /**
+     * @brief Get the Vulkan viewport.
+     *
+     */
+    const VkViewport &getVulkanViewport() const { return _viewport; }
+
+    /**
+     * @brief Get the Vulkan scissor
+     *
+     */
+    const VkRect2D &getVulkanScissor() const { return _scissor; }
+
+  private: /// Vulkan state passed in by the application
+    VkDevice     _logical_dev = VK_NULL_HANDLE;
+    VkRenderPass _render_pass = VK_NULL_HANDLE;
+
+  private: /// Internal Vulkan state
+    // Graphics Pipelines
     std::unique_ptr<VulkanGraphicsPipeline> _color_pipeline   = nullptr;
     std::unique_ptr<VulkanGraphicsPipeline> _texture_pipeline = nullptr;
+
+    // Viewport & Scissor
+    VkViewport _viewport = {};
+    VkRect2D   _scissor  = {};
 
 }; // class VulkanContext
 
