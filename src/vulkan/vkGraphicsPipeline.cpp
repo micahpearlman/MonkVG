@@ -38,6 +38,14 @@ VulkanGraphicsPipeline::~VulkanGraphicsPipeline() {
         vkDestroyShaderModule(_context.getVulkanLogicalDevice(),
                               _fragment_shader_module, nullptr);
     }
+    if (_pipeline_layout != VK_NULL_HANDLE) {
+        vkDestroyPipelineLayout(_context.getVulkanLogicalDevice(),
+                                _pipeline_layout, nullptr);
+    }
+    if (_pipeline != VK_NULL_HANDLE) {
+        vkDestroyPipeline(_context.getVulkanLogicalDevice(), _pipeline,
+                          nullptr);
+    }
 }
 
 bool VulkanGraphicsPipeline::compile(const uint32_t *vertex_src,
@@ -97,16 +105,19 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
     rasterizer.rasterizerDiscardEnable = VK_FALSE;
     rasterizer.polygonMode             = VK_POLYGON_MODE_FILL;
     rasterizer.lineWidth               = 1.0f;
-    rasterizer.cullMode                = VK_CULL_MODE_NONE; // assuming because this is UI we never want to cull
-    rasterizer.frontFace               = VK_FRONT_FACE_COUNTER_CLOCKWISE; // ?? does it matter with VK_CULL_MODE_NONE?
-    rasterizer.depthBiasEnable         = VK_FALSE;
+    rasterizer.cullMode =
+        VK_CULL_MODE_NONE; // assuming because this is UI we never want to cull
+    rasterizer.frontFace =
+        VK_FRONT_FACE_COUNTER_CLOCKWISE; // ?? does it matter with
+                                         // VK_CULL_MODE_NONE?
+    rasterizer.depthBiasEnable = VK_FALSE;
 
     // TODO: maybe we want to enable antialiasing???
     VkPipelineMultisampleStateCreateInfo multisampling = {};
     multisampling.sType =
         VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-    multisampling.sampleShadingEnable   = VK_FALSE;
-    multisampling.rasterizationSamples  = VK_SAMPLE_COUNT_1_BIT;
+    multisampling.sampleShadingEnable  = VK_FALSE;
+    multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
     // NOTE: assuming we do not want depth testing
     // TODO: future we may want to support stencil buffers
@@ -123,7 +134,8 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
     color_blend_attachment.colorWriteMask =
         VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
         VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-    color_blend_attachment.blendEnable         = VK_FALSE; // TODO: maybe we want to enable blending
+    color_blend_attachment.blendEnable =
+        VK_FALSE; // TODO: maybe we want to enable blending
     color_blend_attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
     color_blend_attachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
     color_blend_attachment.colorBlendOp        = VK_BLEND_OP_ADD;
@@ -151,19 +163,20 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
     }
 
     VkGraphicsPipelineCreateInfo pipeline_info = {};
-    pipeline_info.sType =
-        VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipeline_info.sType      = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
     pipeline_info.stageCount = 2; // vertex and fragment
     VkPipelineShaderStageCreateInfo shader_stages[2] = {};
-    shader_stages[0].sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    shader_stages[0].sType =
+        VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     shader_stages[0].stage  = VK_SHADER_STAGE_VERTEX_BIT;
     shader_stages[0].module = _vertex_shader_module;
     shader_stages[0].pName  = "main";
-    shader_stages[1].sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    shader_stages[1].stage  = VK_SHADER_STAGE_FRAGMENT_BIT;
-    shader_stages[1].module = _fragment_shader_module;
-    shader_stages[1].pName  = "main";
-    pipeline_info.pStages   = shader_stages;
+    shader_stages[1].sType =
+        VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    shader_stages[1].stage            = VK_SHADER_STAGE_FRAGMENT_BIT;
+    shader_stages[1].module           = _fragment_shader_module;
+    shader_stages[1].pName            = "main";
+    pipeline_info.pStages             = shader_stages;
     pipeline_info.pVertexInputState   = &vertex_input_state;
     pipeline_info.pInputAssemblyState = &input_assembly;
     pipeline_info.pViewportState      = &viewport_state;
@@ -173,7 +186,7 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
     pipeline_info.pColorBlendState    = &color_blending;
     pipeline_info.layout              = _pipeline_layout;
     pipeline_info.renderPass          = _context.getVulkanRenderPass();
-    pipeline_info.subpass = 0;
+    pipeline_info.subpass             = 0;
 
     if (vkCreateGraphicsPipelines(_context.getVulkanLogicalDevice(),
                                   VK_NULL_HANDLE, 1, &pipeline_info, nullptr,
@@ -181,6 +194,13 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
         return VK_NULL_HANDLE;
     }
 
+    // can destroy the shader modules now that the pipeline is created
+    vkDestroyShaderModule(_context.getVulkanLogicalDevice(),
+                          _vertex_shader_module, nullptr);
+    vkDestroyShaderModule(_context.getVulkanLogicalDevice(),
+                          _fragment_shader_module, nullptr);
+    _vertex_shader_module   = VK_NULL_HANDLE;
+    _fragment_shader_module = VK_NULL_HANDLE;
 
     return _pipeline;
 }
