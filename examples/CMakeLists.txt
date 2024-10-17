@@ -87,16 +87,17 @@ endif() # MKVG_DO_OPENGL_BACKEND
 if (MKVG_DO_VULKAN_BACKEND)
     add_executable(vulkan_hello_world vulkan_hello_world.cpp)
     add_dependencies(vulkan_hello_world monkvg)
+    
     target_include_directories(vulkan_hello_world 
                                 PRIVATE 
                                 ${GLM_INCLUDE_DIRS}
                                 ${GLFW_INCLUDE_DIRS}
                                 ${CMAKE_SOURCE_DIR}/thirdparty/stb                               
                                 )
-    target_link_libraries(vulkan_hello_world  PUBLIC
+    target_link_libraries(vulkan_hello_world  PRIVATE
                             monkvg
                             ${GLU_LIBRARIES} # Required by MonkVG
-                            glfw   
+                            glfw                               
                             ${PLATFORM_LIBS}
                             ${CMAKE_DL_LIBS}
                             pthread

@@ -8,8 +8,13 @@
  * @copyright Copyright (c) 2024
  *
  */
+// #define VMA_IMPLEMENTATION
+// #include <vk_mem_alloc.h>
+
 #include "vkContext.h"
 #include "vkPath.h"
+
+
 
 const static uint32_t color_vert[] =
 #include "shaders/color.vert.h"
@@ -41,7 +46,13 @@ bool VulkanContext::Initialize() {
     return true;
 }
 
-bool VulkanContext::Terminate() { return true; }
+bool VulkanContext::Terminate() {
+    if (_allocator != VK_NULL_HANDLE) {
+        vmaDestroyAllocator(_allocator);
+        _allocator = VK_NULL_HANDLE;
+    }
+    return true;
+}
 
 IPath *VulkanContext::createPath(VGint path_format, VGPathDatatype datatype,
                                  VGfloat scale, VGfloat bias,
@@ -127,10 +138,24 @@ void VulkanContext::pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
 
 void VulkanContext::popOrthoCamera() {}
 
-bool VulkanContext::setVulkanContext(VkDevice     logical_dev,
-                                     VkRenderPass render_pass) {
+bool VulkanContext::setVulkanContext(VkInstance       instance,
+                                     VkPhysicalDevice physical_device,
+                                     VkDevice         logical_dev,
+                                     VkRenderPass     render_pass) {
     _logical_dev = logical_dev;
     _render_pass = render_pass;
+    _instance    = instance;
+    _phys_dev    = physical_device;
+
+    // create the memory allocator
+    VmaAllocatorCreateInfo allocator_info = {};
+    allocator_info.physicalDevice         = physical_device;
+    allocator_info.device                 = logical_dev;
+    allocator_info.instance               = instance;
+    vmaCreateAllocator(&allocator_info, &_allocator);
+    if (_allocator == VK_NULL_HANDLE) {
+        return false;
+    }
 
     // Define vertex input binding description
     VkVertexInputBindingDescription binding_desc = {};
@@ -196,12 +221,15 @@ bool VulkanContext::setVulkanContext(VkDevice     logical_dev,
 
 } // namespace MonkVG
 
-VG_API_CALL VGboolean vgSetVulkanContextMNK(void *logical_device,
+VG_API_CALL VGboolean vgSetVulkanContextMNK(void *instance,
+                                            void *physical_device,
+                                            void *logical_device,
                                             void *render_pass) {
     MonkVG::VulkanContext &vk_ctx =
         (MonkVG::VulkanContext &)MonkVG::IContext::instance();
-    vk_ctx.setVulkanContext((VkDevice)logical_device,
-                            (VkRenderPass)render_pass);
+    vk_ctx.setVulkanContext(
+        (VkInstance)instance, (VkPhysicalDevice)physical_device,
+        (VkDevice)logical_device, (VkRenderPass)render_pass);
 
     return VG_TRUE;
 }

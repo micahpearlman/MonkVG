@@ -21,6 +21,10 @@ VulkanPath::VulkanPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
 
 VulkanPath::~VulkanPath() {}
 
+VulkanContext &VulkanPath::getVulkanContext() {
+    return static_cast<VulkanContext &>(getContext());
+}
+
 bool VulkanPath::draw(VGbitfield paint_modes) {
     // if there are no paint modes then do nothing
     if (paint_modes == 0) {
@@ -54,6 +58,19 @@ void VulkanPath::buildFillIfDirty() {
         // tessellate the path
         getContext().getTessellator().tessellate(_segments, _fcoords,
                                                  _fill_vertices, _bounds);
+
+        // create the vertex buffer
+        VkBufferCreateInfo buffer_info = {};
+        buffer_info.sType              = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        buffer_info.size               = _fill_vertices.size() * sizeof(float);
+        buffer_info.usage              = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+
+        VmaAllocationCreateInfo alloc_info = {};
+        alloc_info.usage                   = VMA_MEMORY_USAGE_CPU_TO_GPU;
+
+        vmaCreateBuffer(getVulkanContext().getVulkanAllocator(), &buffer_info,
+                        &alloc_info, &_fill_vertex_buffer,
+                        &_fill_vertex_buffer_allocation, nullptr);
     }
     setFillDirty(false);
 }

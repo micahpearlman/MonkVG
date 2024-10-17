@@ -12,7 +12,9 @@
 #define __VK_PATH_H__
 #include "mkPath.h"
 #include "vkPaint.h"
+#include <vk_mem_alloc.h>
 namespace MonkVG {
+class VulkanContext;
 class VulkanPath : public IPath {
   public:
     VulkanPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
@@ -25,12 +27,21 @@ class VulkanPath : public IPath {
     void buildFillIfDirty() override;
     void buildStrokeIfDirty() override;
 
+private:
+    VulkanContext& getVulkanContext();
+
   private:
-    std::vector<float> _fill_vertices = {};
+    std::vector<float> _fill_vertices   = {};
     std::vector<float> _stroke_vertices = {};
 
-    VulkanPaint *_fill_paint = nullptr;
+    VulkanPaint *_fill_paint   = nullptr;
     VulkanPaint *_stroke_paint = nullptr;
+
+  private:
+    VkBuffer      _fill_vertex_buffer              = VK_NULL_HANDLE;
+    VkBuffer      _stroke_vertex_buffer            = VK_NULL_HANDLE;
+    VmaAllocation _fill_vertex_buffer_allocation   = VK_NULL_HANDLE;
+    VmaAllocation _stroke_vertex_buffer_allocation = VK_NULL_HANDLE;
 
 }; // VulkanPath
 

@@ -15,6 +15,8 @@
 #include "mkContext.h"
 #include "vkPlatform.h"
 #include "vkGraphicsPipeline.h"
+#include <vk_mem_alloc.h>
+
 
 namespace MonkVG {
 class VulkanContext : public IContext {
@@ -75,12 +77,31 @@ class VulkanContext : public IContext {
      * @brief Setup the Vulkan context for MonkVG from the application Vulkan
      * context.
      *
+     * @param instance Vulkan instance
+     * @param physical_device Vulkan physical device
      * @param logical_dev Vulkan logical device
      * @param render_pass Vulkan render pass
      * @return true
      * @return false
      */
-    bool setVulkanContext(VkDevice logical_dev, VkRenderPass render_pass);
+    bool setVulkanContext(VkInstance instance, VkPhysicalDevice physical_device,
+                          VkDevice logical_dev, VkRenderPass render_pass);
+
+    
+    /**
+     * @brief Get the Vulkan Instance object
+     * 
+     * @return VkInstance 
+     */
+    VkInstance getVulkanInstance() const { return _instance; }  
+
+    /**
+     * @brief Get the Vulkan Physical Device object
+     * 
+     * @return VkPhysicalDevice 
+     */
+    VkPhysicalDevice getVulkanPhysicalDevice() const { return _phys_dev; }
+
 
     /**
      * @brief Get the Vulkan Logical Device object
@@ -109,9 +130,17 @@ class VulkanContext : public IContext {
      */
     const VkRect2D &getVulkanScissor() const { return _scissor; }
 
+    /**
+     * @brief Get the Vulkan allocator
+     *
+     */
+    VmaAllocator getVulkanAllocator() const { return _allocator; }
+
   private: /// Vulkan state passed in by the application
-    VkDevice     _logical_dev = VK_NULL_HANDLE;
-    VkRenderPass _render_pass = VK_NULL_HANDLE;
+    VkInstance       _instance    = VK_NULL_HANDLE;
+    VkPhysicalDevice _phys_dev    = VK_NULL_HANDLE;
+    VkDevice         _logical_dev = VK_NULL_HANDLE;
+    VkRenderPass     _render_pass = VK_NULL_HANDLE;
 
   private: /// Internal Vulkan state
     // Graphics Pipelines
@@ -121,6 +150,9 @@ class VulkanContext : public IContext {
     // Viewport & Scissor
     VkViewport _viewport = {};
     VkRect2D   _scissor  = {};
+
+    // allocator
+    VmaAllocator _allocator = VK_NULL_HANDLE;
 
 }; // class VulkanContext
 

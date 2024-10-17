@@ -77,10 +77,14 @@ endif()
 ## Vulkan Backend
 if(MKVG_DO_VULKAN_BACKEND)
     find_package(Vulkan REQUIRED)
-    find_package(SDL2 REQUIRED)
+
+    ## thirdparty dependencies
     add_subdirectory(thirdparty/glm)
+    add_subdirectory(thirdparty/vma)
+
 
     set(BACKEND_SOURCE ${BACKEND_SOURCE}
+        ./src/vulkan/vkVmaUsage.cpp
         ./src/vulkan/vkBatch.cpp
         ./src/vulkan/vkContext.cpp
         ./src/vulkan/vkFont.cpp
@@ -92,7 +96,7 @@ if(MKVG_DO_VULKAN_BACKEND)
         ${GLU_INCLUDE_DIRS})
 
     set(MNKVG_COMPILE_DEFS ${MNKVG_COMPILE_DEFS} MNKVG_VULKAN_BACKEND)
-    set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} glm::glm Vulkan::Vulkan)
+    set(MNKVG_LIBRARIES ${MNKVG_LIBRARIES} glm::glm GPUOpen::VulkanMemoryAllocator Vulkan::Vulkan)
 
 
     # make sure there is a vulkan glslc executable
@@ -155,10 +159,16 @@ target_include_directories(monkvg
                             ${BACKEND_INCLUDE})
 target_link_libraries(monkvg ${GLU_LIBRARIES} ${MNKVG_LIBRARIES})
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" 
+    OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" 
+    OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+
     # stop annoying warnings.  assuming this is okay.
-    target_compile_options(monkvg PRIVATE -Wno-deprecated-enum-enum-conversion)
+    # Disable annoying warnings from vulkan memory allocator with -Wno-nullability-completeness
+    # Disable annoying warnings from OpenVG with -Wno-deprecated-enum-enum-conversion
+    target_compile_options(monkvg PUBLIC -Wno-deprecated-enum-enum-conversion -Wno-nullability-completeness)
 endif()
+
 
 if (MKVG_DO_EXAMPLES)
     add_subdirectory(examples)
