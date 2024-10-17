@@ -87,7 +87,7 @@ if(MKVG_DO_VULKAN_BACKEND)
         ./src/vulkan/vkImage.cpp
         ./src/vulkan/vkPaint.cpp
         ./src/vulkan/vkPath.cpp
-        ./src/vulkan/vkShader.cpp)
+        ./src/vulkan/vkGraphicsPipeline.cpp)
     set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
         ${GLU_INCLUDE_DIRS})
 

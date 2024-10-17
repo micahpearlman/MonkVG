@@ -14,6 +14,11 @@
 #include <algorithm>
 
 namespace MonkVG {
+
+/**
+ * @brief A "plain" 2d position vertex.
+ * 
+ */
 union vertex_2d_t {
     struct {
         float x, y;
@@ -21,6 +26,11 @@ union vertex_2d_t {
     float v[2];
 };
 
+
+/**
+ * @brief A 2d position + texture coordinate vertex.
+ * 
+ */
 struct textured_vertex_2d_t {
     vertex_2d_t vert;
     union {
@@ -31,6 +41,11 @@ struct textured_vertex_2d_t {
     };
 };
 
+/**
+ * @brief Bounding box with min x, min y, width, and height.
+ * NOTE: OpenVG origin is lower left corner.
+ * 
+ */
 struct bounding_box_t {
     float min_x = 0;
     float min_y = 0;
@@ -41,7 +56,13 @@ struct bounding_box_t {
     bounding_box_t(float x, float y, float w, float h)
         : min_x(x), min_y(y), width(w), height(h) {}
 
-    // update the bounding box with the given point
+    /**
+     * @brief Add a point that the bounding box should contain and
+     * expand the bounding box if necessary.
+     * 
+     * @param x 
+     * @param y 
+     */
     void update(float x, float y) {
         min_x = std::min(min_x, x);
         min_y = std::min(min_y, y);

@@ -116,25 +116,31 @@ void VulkanContext::popOrthoCamera() {}
 bool VulkanContext::setVulkanContext(VkDevice logical_dev) {
     _logical_dev = logical_dev;
 
-    // load the shaders
-    _color_shader = std::make_unique<VulkanShader>(*this);
-    bool status   = _color_shader->compile(
-        color_vert, sizeof(color_vert) / sizeof(color_vert[0]), color_frag,
-        sizeof(color_frag) / sizeof(color_frag[0]));
-    if (!status) {
-        throw std::runtime_error("failed to compile color shader");
-        return false;
-    }
-    _texture_shader = std::make_unique<VulkanShader>(*this);
-    status          = _texture_shader->compile(
-        texture_vert,
-        sizeof(texture_vert) / sizeof(texture_vert[0]), texture_frag,
-        sizeof(texture_frag) / sizeof(texture_frag[0]));
-    if (!status) {
-        throw std::runtime_error("failed to compile texture shader");
-        return false;
-    }
-
+    // Create the graphics pipelines
+    /// Color Pipeline
+    // for the color pipeline the vertex type is just a 2d position
+    // the color is a uniform
+    std::vector<VkVertexInputAttributeDescription> vertex_input_attribs = {};
+    VkVertexInputAttributeDescription              vertex_attrib        = {};
+    vertex_attrib.binding                                               = 0;
+    vertex_attrib.location                                              = 0;
+    vertex_attrib.format = VK_FORMAT_R32G32_SFLOAT;
+    vertex_attrib.offset = offsetof(vertex_2d_t, v);
+    vertex_input_attribs.push_back(vertex_attrib);
+    _color_pipeline = std::make_unique<VulkanGraphicsPipeline>(
+        *this, color_vert, sizeof(color_vert), color_frag, sizeof(color_frag),
+        vertex_input_attribs);
+    /// Texture Pipeline
+    // for the texture pipeline the vertex type is a 2d position and a 2d uv
+    VkVertexInputAttributeDescription uv_attrib = {};
+    uv_attrib.binding                           = 0;
+    uv_attrib.location                          = 1;
+    uv_attrib.format                            = VK_FORMAT_R32G32_SFLOAT;
+    uv_attrib.offset = offsetof(textured_vertex_2d_t, uv);
+    vertex_input_attribs.push_back(uv_attrib);
+    _texture_pipeline = std::make_unique<VulkanGraphicsPipeline>(
+        *this, texture_vert, sizeof(texture_vert), texture_frag,
+        sizeof(texture_frag), vertex_input_attribs);
     return true;
 }
 

@@ -14,7 +14,7 @@
 
 #include "mkContext.h"
 #include "vkPlatform.h"
-#include "vkShader.h"
+#include "vkGraphicsPipeline.h"
 
 namespace MonkVG {
 class VulkanContext : public IContext {
@@ -78,8 +78,8 @@ class VulkanContext : public IContext {
     VkDevice _logical_dev = VK_NULL_HANDLE;
 
   private:
-    std::unique_ptr<VulkanShader> _color_shader   = nullptr;
-    std::unique_ptr<VulkanShader> _texture_shader = nullptr;
+    std::unique_ptr<VulkanGraphicsPipeline> _color_pipeline   = nullptr;
+    std::unique_ptr<VulkanGraphicsPipeline> _texture_pipeline = nullptr;
 
 }; // class VulkanContext
 
