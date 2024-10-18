@@ -681,7 +681,8 @@ int main(int, char **) {
     // Initialize Vulkan Specific MonkVG with the Vulkan Context
     vgSetVulkanContextMNK(
         vulkan_test_ctx.instance, vulkan_test_ctx.physical_device,
-        vulkan_test_ctx.logical_device, vulkan_test_ctx.render_pass);
+        vulkan_test_ctx.logical_device, vulkan_test_ctx.render_pass,
+        vulkan_test_ctx.command_buffer, 0);
 
     // create a simple box path
     VGPath path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1,

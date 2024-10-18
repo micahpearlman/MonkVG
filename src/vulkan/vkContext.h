@@ -14,11 +14,11 @@
 
 #include "mkContext.h"
 #include "vkPlatform.h"
-#include "vkGraphicsPipeline.h"
 #include <vk_mem_alloc.h>
 
-
 namespace MonkVG {
+class ColorPipeline;
+class TexturePipeline;
 class VulkanContext : public IContext {
   public:
     VulkanContext();
@@ -81,27 +81,28 @@ class VulkanContext : public IContext {
      * @param physical_device Vulkan physical device
      * @param logical_dev Vulkan logical device
      * @param render_pass Vulkan render pass
+     * @param command_buffer Vulkan command buffer
      * @return true
      * @return false
      */
     bool setVulkanContext(VkInstance instance, VkPhysicalDevice physical_device,
-                          VkDevice logical_dev, VkRenderPass render_pass);
+                          VkDevice logical_dev, VkRenderPass render_pass,
+                          VkCommandBuffer  command_buffer,
+                          VkDescriptorPool descriptor_pool);
 
-    
     /**
      * @brief Get the Vulkan Instance object
-     * 
-     * @return VkInstance 
+     *
+     * @return VkInstance
      */
-    VkInstance getVulkanInstance() const { return _instance; }  
+    VkInstance getVulkanInstance() const { return _instance; }
 
     /**
      * @brief Get the Vulkan Physical Device object
-     * 
-     * @return VkPhysicalDevice 
+     *
+     * @return VkPhysicalDevice
      */
     VkPhysicalDevice getVulkanPhysicalDevice() const { return _phys_dev; }
-
 
     /**
      * @brief Get the Vulkan Logical Device object
@@ -136,16 +137,46 @@ class VulkanContext : public IContext {
      */
     VmaAllocator getVulkanAllocator() const { return _allocator; }
 
+    /**
+     * @brief Get the Vulkan command buffer
+     *
+     */
+    VkCommandBuffer getVulkanCommandBuffer() const { return _command_buffer; }
+
+    /**
+     * @brief Get the Vulkan descriptor pool
+     *
+     */
+    VkDescriptorPool getVulkanDescriptorPool() const {
+        return _descriptor_pool;
+    }
+
+    /**
+     * @brief Get the color pipeline
+     *
+     */
+    ColorPipeline &getColorPipeline() const { return *_color_pipeline; }
+
+    /**
+     * @brief Get the texture pipeline
+     *
+     */
+    TexturePipeline &getTexturePipeline() const { return *_texture_pipeline; }
+
   private: /// Vulkan state passed in by the application
-    VkInstance       _instance    = VK_NULL_HANDLE;
-    VkPhysicalDevice _phys_dev    = VK_NULL_HANDLE;
-    VkDevice         _logical_dev = VK_NULL_HANDLE;
-    VkRenderPass     _render_pass = VK_NULL_HANDLE;
+    VkInstance       _instance        = VK_NULL_HANDLE;
+    VkPhysicalDevice _phys_dev        = VK_NULL_HANDLE;
+    VkDevice         _logical_dev     = VK_NULL_HANDLE;
+    VkRenderPass     _render_pass     = VK_NULL_HANDLE;
+    VkCommandBuffer  _command_buffer  = VK_NULL_HANDLE;
+    VkDescriptorPool _descriptor_pool = VK_NULL_HANDLE;
+
+    bool _own_descriptor_pool = false;
 
   private: /// Internal Vulkan state
     // Graphics Pipelines
-    std::unique_ptr<VulkanGraphicsPipeline> _color_pipeline   = nullptr;
-    std::unique_ptr<VulkanGraphicsPipeline> _texture_pipeline = nullptr;
+    std::unique_ptr<ColorPipeline>   _color_pipeline   = nullptr;
+    std::unique_ptr<TexturePipeline> _texture_pipeline = nullptr;
 
     // Viewport & Scissor
     VkViewport _viewport = {};

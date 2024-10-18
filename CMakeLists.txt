@@ -82,7 +82,7 @@ if(MKVG_DO_VULKAN_BACKEND)
     add_subdirectory(thirdparty/glm)
     add_subdirectory(thirdparty/vma)
 
-
+   
     set(BACKEND_SOURCE ${BACKEND_SOURCE}
         ./src/vulkan/vkVmaUsage.cpp
         ./src/vulkan/vkBatch.cpp
@@ -90,8 +90,9 @@ if(MKVG_DO_VULKAN_BACKEND)
         ./src/vulkan/vkFont.cpp
         ./src/vulkan/vkImage.cpp
         ./src/vulkan/vkPaint.cpp
-        ./src/vulkan/vkPath.cpp
-        ./src/vulkan/vkGraphicsPipeline.cpp)
+        ./src/vulkan/vkPath.cpp        
+        ./src/vulkan/vkColorPipeline.cpp
+        ./src/vulkan/vkTexturePipeline.cpp)
     set(BACKEND_INCLUDE ${BACKEND_INCLUDE}
         ${GLU_INCLUDE_DIRS})
 

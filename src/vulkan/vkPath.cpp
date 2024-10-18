@@ -10,7 +10,8 @@
  */
 #include "vkPath.h"
 #include "vkContext.h"
-
+#include "vkColorPipeline.h"
+#include "vkTexturePipeline.h"
 namespace MonkVG {
 VulkanPath::VulkanPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
                        VGfloat bias, VGint segmentCapacityHint,
@@ -31,15 +32,46 @@ bool VulkanPath::draw(VGbitfield paint_modes) {
         return false;
     }
 
-    // get the native Vulkan context
-    VulkanContext &vk_ctx = (MonkVG::VulkanContext &)getContext();
-
     if (paint_modes & VG_FILL_PATH) {
         buildFillIfDirty();
+        // figure out the appropriate pipeline and bind it
+        if (_fill_paint) {
+            if (_fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
+                // get the color pipeline
+                getVulkanContext().getColorPipeline().bind();
+            } else if (_fill_paint->getPaintType() ==
+                       VG_PAINT_TYPE_LINEAR_GRADIENT) {
+                // get the linear gradient pipeline
+                getVulkanContext().getTexturePipeline().bind();
+            } else if (_fill_paint->getPaintType() ==
+                       VG_PAINT_TYPE_RADIAL_GRADIENT) {
+                // get the radial gradient pipeline
+                getVulkanContext().getTexturePipeline().bind();
+            } else if (_fill_paint->getPaintType() == VG_PAINT_TYPE_PATTERN) {
+                // get the pattern pipeline
+                getVulkanContext().getTexturePipeline().bind();
+            } else {
+                // error
+                // HACK: we are just going to bind the color pipeline
+                getVulkanContext().getColorPipeline().bind();
+            }
+        }
+
+        // bind the vertex buffer
+        VkBuffer     vertex_buffers[] = {_fill_vertex_buffer};
+        VkDeviceSize offsets[]        = {0};
+        vkCmdBindVertexBuffers(getVulkanContext().getVulkanCommandBuffer(), 0,
+                               1, vertex_buffers, offsets);
+
+        // draw the fill
+        vkCmdDraw(getVulkanContext().getVulkanCommandBuffer(),
+                  _fill_vertices.size() / 2, 1, 0, 0);
     }
 
     if (paint_modes & VG_STROKE_PATH) {
         buildStrokeIfDirty();
+
+        // TODO: implement stroke
     }
 
     return true;

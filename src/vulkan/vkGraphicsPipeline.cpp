@@ -15,8 +15,7 @@ namespace MonkVG {
 
 VulkanGraphicsPipeline::VulkanGraphicsPipeline(
     IContext &context, const uint32_t *vertex_src, const size_t vert_src_sz,
-    const uint32_t *fragment_src, const size_t frag_src_sz,
-    VkPipelineVertexInputStateCreateInfo &vertex_input_state)
+    const uint32_t *fragment_src, const size_t frag_src_sz)
     : _context(static_cast<VulkanContext &>(context)) {
 
     if (!compile(vertex_src, vert_src_sz, fragment_src, frag_src_sz)) {
@@ -31,19 +30,19 @@ VulkanGraphicsPipeline::VulkanGraphicsPipeline(
 
 VulkanGraphicsPipeline::~VulkanGraphicsPipeline() {
     if (_vertex_shader_module != VK_NULL_HANDLE) {
-        vkDestroyShaderModule(_context.getVulkanLogicalDevice(),
+        vkDestroyShaderModule(getVulkanContext().getVulkanLogicalDevice(),
                               _vertex_shader_module, nullptr);
     }
     if (_fragment_shader_module != VK_NULL_HANDLE) {
-        vkDestroyShaderModule(_context.getVulkanLogicalDevice(),
+        vkDestroyShaderModule(getVulkanContext().getVulkanLogicalDevice(),
                               _fragment_shader_module, nullptr);
     }
     if (_pipeline_layout != VK_NULL_HANDLE) {
-        vkDestroyPipelineLayout(_context.getVulkanLogicalDevice(),
+        vkDestroyPipelineLayout(getVulkanContext().getVulkanLogicalDevice(),
                                 _pipeline_layout, nullptr);
     }
     if (_pipeline != VK_NULL_HANDLE) {
-        vkDestroyPipeline(_context.getVulkanLogicalDevice(), _pipeline,
+        vkDestroyPipeline(getVulkanContext().getVulkanLogicalDevice(), _pipeline,
                           nullptr);
     }
 }
@@ -70,7 +69,7 @@ VkShaderModule VulkanGraphicsPipeline::createShaderModule(const uint32_t *code,
     create_info.pCode    = code;
 
     VkShaderModule shader_module;
-    if (vkCreateShaderModule(_context.getVulkanLogicalDevice(), &create_info,
+    if (vkCreateShaderModule(getVulkanContext().getVulkanLogicalDevice(), &create_info,
                              nullptr, &shader_module) != VK_SUCCESS) {
         return VK_NULL_HANDLE;
     }
@@ -94,9 +93,9 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
     viewport_state.sType =
         VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     viewport_state.viewportCount = 1;
-    viewport_state.pViewports    = &_context.getVulkanViewport();
+    viewport_state.pViewports    = &getVulkanContext().getVulkanViewport();
     viewport_state.scissorCount  = 1;
-    viewport_state.pScissors     = &_context.getVulkanScissor();
+    viewport_state.pScissors     = &getVulkanContext().getVulkanScissor();
 
     VkPipelineRasterizationStateCreateInfo rasterizer = {};
     rasterizer.sType =
@@ -156,7 +155,7 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
     pipeline_layout_info.pushConstantRangeCount = 0;
     pipeline_layout_info.pPushConstantRanges    = nullptr;
 
-    if (vkCreatePipelineLayout(_context.getVulkanLogicalDevice(),
+    if (vkCreatePipelineLayout(getVulkanContext().getVulkanLogicalDevice(),
                                &pipeline_layout_info, nullptr,
                                &_pipeline_layout) != VK_SUCCESS) {
         return VK_NULL_HANDLE;
@@ -188,21 +187,26 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
     pipeline_info.renderPass          = _context.getVulkanRenderPass();
     pipeline_info.subpass             = 0;
 
-    if (vkCreateGraphicsPipelines(_context.getVulkanLogicalDevice(),
+    if (vkCreateGraphicsPipelines(getVulkanContext().getVulkanLogicalDevice(),
                                   VK_NULL_HANDLE, 1, &pipeline_info, nullptr,
                                   &_pipeline) != VK_SUCCESS) {
         return VK_NULL_HANDLE;
     }
 
     // can destroy the shader modules now that the pipeline is created
-    vkDestroyShaderModule(_context.getVulkanLogicalDevice(),
+    vkDestroyShaderModule(getVulkanContext().getVulkanLogicalDevice(),
                           _vertex_shader_module, nullptr);
-    vkDestroyShaderModule(_context.getVulkanLogicalDevice(),
+    vkDestroyShaderModule(getVulkanContext().getVulkanLogicalDevice(),
                           _fragment_shader_module, nullptr);
     _vertex_shader_module   = VK_NULL_HANDLE;
     _fragment_shader_module = VK_NULL_HANDLE;
 
     return _pipeline;
+}
+
+void VulkanGraphicsPipeline::bind() {
+    vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
+                      VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
 }
 
 } // namespace MonkVG

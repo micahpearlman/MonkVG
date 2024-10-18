@@ -8,29 +8,12 @@
  * @copyright Copyright (c) 2024
  *
  */
-// #define VMA_IMPLEMENTATION
-// #include <vk_mem_alloc.h>
 
 #include "vkContext.h"
 #include "vkPath.h"
+#include "vkColorPipeline.h"
+#include "vkTexturePipeline.h"
 
-
-
-const static uint32_t color_vert[] =
-#include "shaders/color.vert.h"
-    ;
-
-const static uint32_t color_frag[] =
-#include "shaders/color.frag.h"
-    ;
-
-const static uint32_t texture_vert[] =
-#include "shaders/texture.vert.h"
-    ;
-
-const static uint32_t texture_frag[] =
-#include "shaders/texture.frag.h"
-    ;
 
 namespace MonkVG {
 //// singleton implementation ////
@@ -50,6 +33,10 @@ bool VulkanContext::Terminate() {
     if (_allocator != VK_NULL_HANDLE) {
         vmaDestroyAllocator(_allocator);
         _allocator = VK_NULL_HANDLE;
+    }
+    if (_own_descriptor_pool && _descriptor_pool != VK_NULL_HANDLE) {
+        vkDestroyDescriptorPool(_logical_dev, _descriptor_pool, nullptr);
+        _descriptor_pool = VK_NULL_HANDLE;
     }
     return true;
 }
@@ -141,7 +128,9 @@ void VulkanContext::popOrthoCamera() {}
 bool VulkanContext::setVulkanContext(VkInstance       instance,
                                      VkPhysicalDevice physical_device,
                                      VkDevice         logical_dev,
-                                     VkRenderPass     render_pass) {
+                                     VkRenderPass     render_pass,
+                                     VkCommandBuffer  command_buffer,
+                                     VkDescriptorPool descriptor_pool) {
     _logical_dev = logical_dev;
     _render_pass = render_pass;
     _instance    = instance;
@@ -155,6 +144,28 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
     vmaCreateAllocator(&allocator_info, &_allocator);
     if (_allocator == VK_NULL_HANDLE) {
         return false;
+    }
+
+    // if no descriptor pool is passed in then create one
+    if (descriptor_pool == VK_NULL_HANDLE) {
+        VkDescriptorPoolSize pool_sizes[] = {
+            {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100},
+            {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100},
+        };
+
+        VkDescriptorPoolCreateInfo pool_info = {};
+        pool_info.sType         = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        pool_info.poolSizeCount = 2;
+        pool_info.pPoolSizes    = pool_sizes;
+        pool_info.maxSets       = 100;
+
+        if (vkCreateDescriptorPool(logical_dev, &pool_info, nullptr,
+                                   &_descriptor_pool) != VK_SUCCESS) {
+            return false;
+        }
+        _own_descriptor_pool = true;
+    } else {
+        _descriptor_pool = descriptor_pool;
     }
 
     // Define vertex input binding description
@@ -186,36 +197,37 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
     color_vertex_state.pVertexAttributeDescriptions =
         vertex_input_attribs.data();
 
-    _color_pipeline = std::make_unique<VulkanGraphicsPipeline>(
-        *this, color_vert, sizeof(color_vert), color_frag, sizeof(color_frag),
-        color_vertex_state);
+    // _color_pipeline = std::make_unique<VulkanGraphicsPipeline>(
+    //     *this, color_vert, sizeof(color_vert), color_frag, sizeof(color_frag),
+    //     color_vertex_state);
+    _color_pipeline = std::make_unique<ColorPipeline>(*this);
 
     /// Texture Pipeline
     // for the texture pipeline the vertex type is a 2d position and a 2d uv
-    VkVertexInputAttributeDescription uv_attrib = {};
-    uv_attrib.binding                           = 0;
-    uv_attrib.location                          = 1;
-    uv_attrib.format                            = VK_FORMAT_R32G32_SFLOAT;
-    uv_attrib.offset = offsetof(textured_vertex_2d_t, uv);
-    vertex_input_attribs.push_back(uv_attrib);
+    // VkVertexInputAttributeDescription uv_attrib = {};
+    // uv_attrib.binding                           = 0;
+    // uv_attrib.location                          = 1;
+    // uv_attrib.format                            = VK_FORMAT_R32G32_SFLOAT;
+    // uv_attrib.offset = offsetof(textured_vertex_2d_t, uv);
+    // vertex_input_attribs.push_back(uv_attrib);
 
-    binding_desc.stride =
-        sizeof(textured_vertex_2d_t); // reset the stride to be the sizeof
-                                      // texture vertex
+    // binding_desc.stride =
+    //     sizeof(textured_vertex_2d_t); // reset the stride to be the sizeof
+    //                                   // texture vertex
 
-    VkPipelineVertexInputStateCreateInfo texture_vertex_state = {};
-    texture_vertex_state.sType =
-        VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    texture_vertex_state.vertexBindingDescriptionCount = 1;
-    texture_vertex_state.pVertexBindingDescriptions    = &binding_desc;
-    texture_vertex_state.vertexAttributeDescriptionCount =
-        vertex_input_attribs.size();
-    texture_vertex_state.pVertexAttributeDescriptions =
-        vertex_input_attribs.data();
+    // VkPipelineVertexInputStateCreateInfo texture_vertex_state = {};
+    // texture_vertex_state.sType =
+    //     VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    // texture_vertex_state.vertexBindingDescriptionCount = 1;
+    // texture_vertex_state.pVertexBindingDescriptions    = &binding_desc;
+    // texture_vertex_state.vertexAttributeDescriptionCount =
+    //     vertex_input_attribs.size();
+    // texture_vertex_state.pVertexAttributeDescriptions =
+    //     vertex_input_attribs.data();
 
-    _texture_pipeline = std::make_unique<VulkanGraphicsPipeline>(
-        *this, texture_vert, sizeof(texture_vert), texture_frag,
-        sizeof(texture_frag), texture_vertex_state);
+    // _texture_pipeline = std::make_unique<VulkanGraphicsPipeline>(
+    //     *this, texture_vert, sizeof(texture_vert), texture_frag,
+    //     sizeof(texture_frag), texture_vertex_state);
     return true;
 }
 
@@ -224,12 +236,16 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
 VG_API_CALL VGboolean vgSetVulkanContextMNK(void *instance,
                                             void *physical_device,
                                             void *logical_device,
-                                            void *render_pass) {
+                                            void *render_pass,
+                                            void *command_buffer,
+                                            void *descriptor_pool) {
     MonkVG::VulkanContext &vk_ctx =
         (MonkVG::VulkanContext &)MonkVG::IContext::instance();
-    vk_ctx.setVulkanContext(
-        (VkInstance)instance, (VkPhysicalDevice)physical_device,
-        (VkDevice)logical_device, (VkRenderPass)render_pass);
+    vk_ctx.setVulkanContext((VkInstance)instance,
+                            (VkPhysicalDevice)physical_device,
+                            (VkDevice)logical_device, (VkRenderPass)render_pass,
+                            (VkCommandBuffer)command_buffer,
+                            (VkDescriptorPool)descriptor_pool);
 
     return VG_TRUE;
 }

@@ -131,12 +131,14 @@ VG_API_CALL void vgDestroyContextMNK(void);
  * @param physical_device The Vulkan physical device
  * @param logical_device The Vulkan logical device
  * @param render_pass The Vulkan render pass
+ * @param command_buffer The Vulkan command buffer
+ * @param descriptor_pool The Vulkan descriptor pool. If null handle then MonkVG
+ * will create one.
  * @return VG_API_CALL
  */
-VG_API_CALL VGboolean vgSetVulkanContextMNK(void *instance,
-                                            void *physical_device,
-                                            void *logical_device,
-                                            void *render_pass);
+VG_API_CALL VGboolean vgSetVulkanContextMNK(
+    void *instance, void *physical_device, void *logical_device,
+    void *render_pass, void *command_buffer, void *descriptor_pool);
 
 /* Helper function for things like camera
  */
