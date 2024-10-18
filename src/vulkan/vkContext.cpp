@@ -14,7 +14,6 @@
 #include "vkColorPipeline.h"
 #include "vkTexturePipeline.h"
 
-
 namespace MonkVG {
 //// singleton implementation ////
 IContext &IContext::instance() {
@@ -30,6 +29,9 @@ bool VulkanContext::Initialize() {
 }
 
 bool VulkanContext::Terminate() {
+    _color_pipeline.reset();
+    _texture_pipeline.reset();
+    
     if (_allocator != VK_NULL_HANDLE) {
         vmaDestroyAllocator(_allocator);
         _allocator = VK_NULL_HANDLE;
@@ -131,10 +133,11 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
                                      VkRenderPass     render_pass,
                                      VkCommandBuffer  command_buffer,
                                      VkDescriptorPool descriptor_pool) {
-    _logical_dev = logical_dev;
-    _render_pass = render_pass;
-    _instance    = instance;
-    _phys_dev    = physical_device;
+    _logical_dev    = logical_dev;
+    _render_pass    = render_pass;
+    _instance       = instance;
+    _phys_dev       = physical_device;
+    _command_buffer = command_buffer;
 
     // create the memory allocator
     VmaAllocatorCreateInfo allocator_info = {};
@@ -198,8 +201,8 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
         vertex_input_attribs.data();
 
     // _color_pipeline = std::make_unique<VulkanGraphicsPipeline>(
-    //     *this, color_vert, sizeof(color_vert), color_frag, sizeof(color_frag),
-    //     color_vertex_state);
+    //     *this, color_vert, sizeof(color_vert), color_frag,
+    //     sizeof(color_frag), color_vertex_state);
     _color_pipeline = std::make_unique<ColorPipeline>(*this);
 
     /// Texture Pipeline
@@ -233,19 +236,15 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
 
 } // namespace MonkVG
 
-VG_API_CALL VGboolean vgSetVulkanContextMNK(void *instance,
-                                            void *physical_device,
-                                            void *logical_device,
-                                            void *render_pass,
-                                            void *command_buffer,
-                                            void *descriptor_pool) {
+VG_API_CALL VGboolean vgSetVulkanContextMNK(
+    void *instance, void *physical_device, void *logical_device,
+    void *render_pass, void *command_buffer, void *descriptor_pool) {
     MonkVG::VulkanContext &vk_ctx =
         (MonkVG::VulkanContext &)MonkVG::IContext::instance();
-    vk_ctx.setVulkanContext((VkInstance)instance,
-                            (VkPhysicalDevice)physical_device,
-                            (VkDevice)logical_device, (VkRenderPass)render_pass,
-                            (VkCommandBuffer)command_buffer,
-                            (VkDescriptorPool)descriptor_pool);
+    vk_ctx.setVulkanContext(
+        (VkInstance)instance, (VkPhysicalDevice)physical_device,
+        (VkDevice)logical_device, (VkRenderPass)render_pass,
+        (VkCommandBuffer)command_buffer, (VkDescriptorPool)descriptor_pool);
 
     return VG_TRUE;
 }

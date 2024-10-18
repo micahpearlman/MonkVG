@@ -205,6 +205,8 @@ VkPipeline VulkanGraphicsPipeline::createPipeline(
 }
 
 void VulkanGraphicsPipeline::bind() {
+
+
     vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
                       VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
 }

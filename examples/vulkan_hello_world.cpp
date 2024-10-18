@@ -561,7 +561,7 @@ void init_vulkan(vulkan_test_ctx_t &ctx) {
                   &ctx.in_flight_fence);
 }
 
-void render(vulkan_test_ctx_t &ctx) {
+uint32_t start_render(vulkan_test_ctx_t &ctx) {
     vkWaitForFences(ctx.logical_device, 1, &ctx.in_flight_fence, VK_TRUE,
                     UINT64_MAX);
     vkResetFences(ctx.logical_device, 1, &ctx.in_flight_fence);
@@ -594,10 +594,15 @@ void render(vulkan_test_ctx_t &ctx) {
     vkCmdBeginRenderPass(ctx.command_buffer, &render_pass_begin_info,
                          VK_SUBPASS_CONTENTS_INLINE);
 
-    vkCmdBindPipeline(ctx.command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                      ctx.graphics_pipeline);
+    return image_idx;
 
-    vkCmdDraw(ctx.command_buffer, 3, 1, 0, 0);
+}
+void end_render(vulkan_test_ctx_t &ctx, uint32_t image_idx) {
+
+    // vkCmdBindPipeline(ctx.command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+    //                   ctx.graphics_pipeline);
+
+    // vkCmdDraw(ctx.command_buffer, 3, 1, 0, 0);
 
     vkCmdEndRenderPass(ctx.command_buffer);
 
@@ -701,7 +706,7 @@ int main(int, char **) {
     vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
 
     while (!glfwWindowShouldClose(vulkan_test_ctx.glfw_window)) {
-        render(vulkan_test_ctx);
+        uint32_t image_idx = start_render(vulkan_test_ctx);
 
         /// do an ortho camera
         // NOTE:  this is not standard OpenVG
@@ -726,9 +731,13 @@ int main(int, char **) {
 
         vgPopOrthoCamera();
 
+        end_render(vulkan_test_ctx, image_idx);
+
         glfwPollEvents();
         std::this_thread::sleep_for(std::chrono::milliseconds(15));
     }
+
+    vgDestroyContextMNK();
 
     terminate_vulkan(vulkan_test_ctx);
 

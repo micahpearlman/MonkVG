@@ -35,7 +35,6 @@ ColorPipeline::ColorPipeline(VulkanContext &context)
     /// Color Pipeline
     // for the color pipeline the vertex type is just a 2d position
     // the color is a uniform
-
     std::vector<VkVertexInputAttributeDescription> vertex_input_attribs = {};
     VkVertexInputAttributeDescription              vertex_attrib        = {};
     vertex_attrib.binding                                               = 0;
@@ -59,6 +58,7 @@ ColorPipeline::ColorPipeline(VulkanContext &context)
     if (_pipeline == VK_NULL_HANDLE) {
         throw std::runtime_error("failed to create pipeline");
     }
+
 }
 
 ColorPipeline::~ColorPipeline() {}

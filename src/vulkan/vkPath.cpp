@@ -55,6 +55,10 @@ bool VulkanPath::draw(VGbitfield paint_modes) {
                 // HACK: we are just going to bind the color pipeline
                 getVulkanContext().getColorPipeline().bind();
             }
+        } else {
+            // DELETE THIS
+            // HACK: we are just going to bind the color pipeline
+            getVulkanContext().getColorPipeline().bind();
         }
 
         // bind the vertex buffer

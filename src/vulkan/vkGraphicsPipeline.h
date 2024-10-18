@@ -31,6 +31,68 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
             throw std::runtime_error("failed to compile shader");
         }
 
+        // create the uniform buffer
+        VkBufferCreateInfo buffer_info = {};
+        buffer_info.sType              = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        buffer_info.size               = sizeof(T_UBO);
+        buffer_info.usage              = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+
+        VmaAllocationCreateInfo alloc_info = {};
+        alloc_info.usage                   = VMA_MEMORY_USAGE_CPU_TO_GPU;
+
+        vmaCreateBuffer(getVulkanContext().getVulkanAllocator(), &buffer_info,
+                        &alloc_info, &_uniform_buffer,
+                        &_uniform_buffer_allocation, nullptr);
+
+        // create the descriptor set layout
+        VkDescriptorSetLayoutBinding layout_binding = {};
+        layout_binding.binding         = 0; // binding = 0 in the shader
+        layout_binding.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        layout_binding.descriptorCount = 1; // 1 uniform buffer
+        layout_binding.stageFlags      = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayoutCreateInfo layout_info = {};
+        layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        layout_info.bindingCount = 1;
+        layout_info.pBindings    = &layout_binding;
+
+        if (vkCreateDescriptorSetLayout(
+                getVulkanContext().getVulkanLogicalDevice(), &layout_info,
+                nullptr, &_descriptor_set_layout) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create descriptor set layout");
+        }
+
+        VkDescriptorSetAllocateInfo desc_alloc_info = {};
+        desc_alloc_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        desc_alloc_info.descriptorPool =
+            getVulkanContext().getVulkanDescriptorPool();
+        desc_alloc_info.descriptorSetCount = 1;
+        desc_alloc_info.pSetLayouts        = &_descriptor_set_layout;
+
+        if (vkAllocateDescriptorSets(
+                getVulkanContext().getVulkanLogicalDevice(), &desc_alloc_info,
+                &_descriptor_set) != VK_SUCCESS) {
+            throw std::runtime_error("failed to allocate descriptor set");
+        }
+
+        VkDescriptorBufferInfo desc_buffer_info = {};
+        desc_buffer_info.buffer = _uniform_buffer;
+        desc_buffer_info.offset = 0;
+        desc_buffer_info.range  = sizeof(T_UBO);
+
+        VkWriteDescriptorSet descriptor_write = {};
+        descriptor_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptor_write.dstSet = _descriptor_set;
+        descriptor_write.dstBinding = 0;
+        descriptor_write.dstArrayElement = 0;
+        descriptor_write.descriptorType =
+            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptor_write.descriptorCount = 1;
+        descriptor_write.pBufferInfo    = &desc_buffer_info;
+
+        vkUpdateDescriptorSets(getVulkanContext().getVulkanLogicalDevice(), 1,
+                               &descriptor_write, 0, nullptr);
+
         // _pipeline = createPipeline(vertex_input_state);
         // if (_pipeline == VK_NULL_HANDLE) {
         //     throw std::runtime_error("failed to create pipeline");
@@ -45,6 +107,15 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         if (_fragment_shader_module != VK_NULL_HANDLE) {
             vkDestroyShaderModule(getVulkanContext().getVulkanLogicalDevice(),
                                   _fragment_shader_module, nullptr);
+        }
+        if (_uniform_buffer != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(),
+                             _uniform_buffer, _uniform_buffer_allocation);
+        }
+        if (_descriptor_set_layout != VK_NULL_HANDLE) {
+            vkDestroyDescriptorSetLayout(
+                getVulkanContext().getVulkanLogicalDevice(),
+                _descriptor_set_layout, nullptr);
         }
         if (_pipeline_layout != VK_NULL_HANDLE) {
             vkDestroyPipelineLayout(getVulkanContext().getVulkanLogicalDevice(),
@@ -61,6 +132,23 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
      *
      */
     virtual void bind() {
+        // update the uniform buffer
+        void *data;
+        vmaMapMemory(getVulkanContext().getVulkanAllocator(),
+                     _uniform_buffer_allocation, &data);
+        memcpy(data, &_ubo_data, sizeof(_ubo_data));
+        vmaUnmapMemory(getVulkanContext().getVulkanAllocator(),
+                       _uniform_buffer_allocation);
+        // to flush or not to flush?
+        // vmaFlushAllocation(getVulkanContext().getVulkanAllocator(),
+        //                    _uniform_buffer_allocation, 0, VK_WHOLE_SIZE);
+
+        vkCmdBindDescriptorSets(
+            getVulkanContext().getVulkanCommandBuffer(),
+            VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline_layout, 0, 1,
+            &_descriptor_set, 0, nullptr);
+
+
         vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
                           VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
     }
@@ -93,6 +181,12 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
 
     VkPipeline       _pipeline        = VK_NULL_HANDLE;
     VkPipelineLayout _pipeline_layout = VK_NULL_HANDLE;
+
+    // uniform buffer/descriptor set layout
+    VmaAllocation         _uniform_buffer_allocation = VK_NULL_HANDLE;
+    VkBuffer              _uniform_buffer            = VK_NULL_HANDLE;
+    VkDescriptorSetLayout _descriptor_set_layout     = VK_NULL_HANDLE;
+    VkDescriptorSet       _descriptor_set            = VK_NULL_HANDLE;
 
     /**
      * @brief Create a Pipeline object
@@ -173,8 +267,8 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         VkPipelineLayoutCreateInfo pipeline_layout_info = {};
         pipeline_layout_info.sType =
             VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipeline_layout_info.setLayoutCount         = 0;
-        pipeline_layout_info.pSetLayouts            = nullptr;
+        pipeline_layout_info.setLayoutCount         = 1;
+        pipeline_layout_info.pSetLayouts            = &_descriptor_set_layout;
         pipeline_layout_info.pushConstantRangeCount = 0;
         pipeline_layout_info.pPushConstantRanges    = nullptr;
 
