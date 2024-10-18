@@ -19,8 +19,11 @@ namespace MonkVG {
 
 class IFont : public BaseObject {
   public:
+    inline BaseObject::Type getType() const override {
+        return BaseObject::kFontType;
+    }
 
-    inline BaseObject::Type getType() const override { return BaseObject::kFontType; }
+    virtual ~IFont() = default;
 
     virtual void drawGlyph(VGuint index, VGfloat adj_x, VGfloat adj_y,
                            VGbitfield paintModes);
@@ -41,15 +44,13 @@ class IFont : public BaseObject {
     virtual void removeGlyph(VGuint index);
 
   protected:
-
-    IFont(IContext& context) : BaseObject(context) {}
-    virtual ~IFont() = default;
+    IFont(IContext &context) : BaseObject(context) {}
 
     struct Glyph {
         VGuint           index = 0;
         BaseObject::Type type; // type can be either: kPathType or kImageType
         VGfloat          glyphOrigin[2] = {0, 0};
-        VGfloat          escapement[2] = {0, 0};
+        VGfloat          escapement[2]  = {0, 0};
 
         Glyph(VGuint index_, VGfloat glyphOrigin_[2], VGfloat escapement_[2])
             : index(index_), type(BaseObject::kMAXIMUM_TYPE) {
@@ -109,7 +110,8 @@ class IFont : public BaseObject {
     };
 
     // glyph map, key is the glyph index. value is the glyph object.
-	// note: key is usually the ascii value of the character but can be any value
+    // note: key is usually the ascii value of the character but can be any
+    // value
     std::unordered_map<VGuint, std::unique_ptr<Glyph>> _glyphs;
 };
 

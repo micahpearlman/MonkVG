@@ -20,6 +20,9 @@ class IBatch : public BaseObject {
         return BaseObject::kBatchType;
     }
 
+    virtual ~IBatch() = default;
+
+
     //// parameter accessors/mutators ////
     virtual VGint   getParameteri(const VGint p) const override;
     virtual VGfloat getParameterf(const VGint f) const override;
@@ -35,7 +38,6 @@ class IBatch : public BaseObject {
 
   protected:
     IBatch(IContext &context) : BaseObject(context) {}
-    virtual ~IBatch() = default;
 };
 
 } // namespace MonkVG

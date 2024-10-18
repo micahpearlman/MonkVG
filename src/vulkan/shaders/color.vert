@@ -10,7 +10,8 @@ layout(location = 0) in vec2 coords2d;
 
 layout(location = 0) out vec4 out_color;
 
+
 void main() {
-    gl_Position = u_projection * u_model_view * vec4(coords2d, 1.0, 1.0);
+    gl_Position = u_projection * u_model_view * vec4(coords2d, 0.0, 1.0);
     out_color = u_color;
 }

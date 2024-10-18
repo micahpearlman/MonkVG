@@ -23,6 +23,8 @@ class IPath : public BaseObject {
         return BaseObject::kPathType;
     }
 
+    virtual ~IPath() = default;
+
     /// @brief Draw the path.  See: vgDrawPath
     /// @param paintModes VGbitfield of VG_FILL_PATH and/or VG_STROKE_PATH
     /// @return bool true if successful
@@ -64,23 +66,17 @@ class IPath : public BaseObject {
     inline void       setCapabilities(const VGbitfield c) { _capabilities = c; }
 
     inline bool getIsFillDirty() const { return _is_fill_dirty; }
-    inline void setFillDirty(bool b) {
-        _is_fill_dirty   = b;
-    }
+    inline void setFillDirty(bool b) { _is_fill_dirty = b; }
     inline bool getIsStrokeDirty() const { return _is_stroke_dirty; }
-    inline void setStrokeDirty(bool b) {
-        _is_stroke_dirty = b;
-    }
-
+    inline void setStrokeDirty(bool b) { _is_stroke_dirty = b; }
 
     // bounds
-    inline VGfloat getMinX() const { return _bounds.min_x; }
-    inline VGfloat getMinY() const { return _bounds.min_y; }
-    inline VGfloat getWidth() const { return _bounds.width; }
-    inline VGfloat getHeight() const { return _bounds.height; }
-    inline const bounding_box_t& getBounds() const { return _bounds; }
-    inline void setBounds(const bounding_box_t& bounds) { _bounds = bounds; }
-    
+    inline VGfloat               getMinX() const { return _bounds.min_x; }
+    inline VGfloat               getMinY() const { return _bounds.min_y; }
+    inline VGfloat               getWidth() const { return _bounds.width; }
+    inline VGfloat               getHeight() const { return _bounds.height; }
+    inline const bounding_box_t &getBounds() const { return _bounds; }
+    inline void setBounds(const bounding_box_t &bounds) { _bounds = bounds; }
 
     //// OpenVG parameter accessors/mutators ////
     virtual VGint   getParameteri(const VGint p) const override;
@@ -149,8 +145,6 @@ class IPath : public BaseObject {
         _bounds.min_x = _bounds.min_y = VG_MAX_FLOAT;
         _bounds.width = _bounds.height = -VG_MAX_FLOAT;
     }
-
-    virtual ~IPath() = default;
 
   protected:
     VGint          _format;       // VG_PATH_FORMAT

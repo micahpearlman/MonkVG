@@ -31,7 +31,7 @@ bool VulkanContext::Initialize() {
 bool VulkanContext::Terminate() {
     _color_pipeline.reset();
     _texture_pipeline.reset();
-    
+
     if (_allocator != VK_NULL_HANDLE) {
         vmaDestroyAllocator(_allocator);
         _allocator = VK_NULL_HANDLE;
@@ -58,26 +58,46 @@ IPath *VulkanContext::createPath(VGint path_format, VGPathDatatype datatype,
     return (IPath *)path;
 }
 
-void VulkanContext::destroyPath(IPath *path) {}
+void VulkanContext::destroyPath(IPath *path) {
+    if (path) {
+        delete path;
+    }
+}
 
 IPaint *VulkanContext::createPaint() { return nullptr; }
 
-void VulkanContext::destroyPaint(IPaint *paint) {}
+void VulkanContext::destroyPaint(IPaint *paint) {
+    if (paint) {
+        delete paint;
+    }
+}
 
 IImage *VulkanContext::createImage(VGImageFormat format, VGint width,
                                    VGint height, VGbitfield allowedQuality) {
     return nullptr;
 }
 
-void VulkanContext::destroyImage(IImage *image) {}
+void VulkanContext::destroyImage(IImage *image) {
+    if (image) {
+        delete image;
+    }
+}
 
 IBatch *VulkanContext::createBatch() { return nullptr; }
 
-void VulkanContext::destroyBatch(IBatch *batch) {}
+void VulkanContext::destroyBatch(IBatch *batch) {
+    if (batch) {
+        delete batch;
+    }
+}
 
 IFont *VulkanContext::createFont() { return nullptr; }
 
-void VulkanContext::destroyFont(IFont *font) {}
+void VulkanContext::destroyFont(IFont *font) {
+    if (font) {
+        delete font;
+    }
+}
 
 void VulkanContext::stroke() {}
 

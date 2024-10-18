@@ -20,6 +20,8 @@ class IPaint : public BaseObject {
   public:
     inline BaseObject::Type getType() const { return BaseObject::kPaintType; }
 
+    virtual ~IPaint() = default;
+
     //// parameter accessors/mutators ////
     virtual VGint   getParameteri(const VGint p) const;
     virtual VGfloat getParameterf(const VGint f) const;
@@ -43,7 +45,6 @@ class IPaint : public BaseObject {
           _paintType(VG_PAINT_TYPE_COLOR) // default paint type is color
           ,
           _isDirty(true) {}
-    virtual ~IPaint() = default;
 
     bool _isDirty = true;
 

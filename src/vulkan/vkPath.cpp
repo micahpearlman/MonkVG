@@ -95,6 +95,10 @@ void VulkanPath::buildFillIfDirty() {
         getContext().getTessellator().tessellate(_segments, _fcoords,
                                                  _fill_vertices, _bounds);
 
+        // uncomment to draw a triangle
+        // _fill_vertices.clear();
+        // _fill_vertices = {0.0, -0.5, 0.5, 0.5, -0.5, 0.5};
+
         // create the vertex buffer
         VkBufferCreateInfo buffer_info = {};
         buffer_info.sType              = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -104,9 +108,21 @@ void VulkanPath::buildFillIfDirty() {
         VmaAllocationCreateInfo alloc_info = {};
         alloc_info.usage                   = VMA_MEMORY_USAGE_CPU_TO_GPU;
 
-        vmaCreateBuffer(getVulkanContext().getVulkanAllocator(), &buffer_info,
-                        &alloc_info, &_fill_vertex_buffer,
-                        &_fill_vertex_buffer_allocation, nullptr);
+        if (vmaCreateBuffer(getVulkanContext().getVulkanAllocator(),
+                            &buffer_info, &alloc_info, &_fill_vertex_buffer,
+                            &_fill_vertex_buffer_allocation,
+                            nullptr) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create vertex buffer");
+        }
+
+        // copy the vertex data to the buffer
+        void *data;
+        vmaMapMemory(getVulkanContext().getVulkanAllocator(),
+                     _fill_vertex_buffer_allocation, &data);
+        memcpy(data, _fill_vertices.data(),
+                _fill_vertices.size() * sizeof(float));
+        vmaUnmapMemory(getVulkanContext().getVulkanAllocator(),
+                       _fill_vertex_buffer_allocation);
     }
     setFillDirty(false);
 }
