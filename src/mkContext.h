@@ -20,6 +20,9 @@
 #include "mkMath.h"
 #include "mkTessellator.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace MonkVG {
 
 /**
@@ -114,13 +117,13 @@ class IContext {
     inline VGMatrixMode getMatrixMode() const { return _matrix_mode; }
     inline Matrix33    &getActiveMatrix() { return *_active_matrix; }
 
-    virtual void setIdentity()                   = 0;
-    virtual void transform(VGfloat *t)           = 0;
-    virtual void scale(VGfloat sx, VGfloat sy)   = 0;
-    virtual void translate(VGfloat x, VGfloat y) = 0;
-    virtual void rotate(VGfloat angle)           = 0;
-    virtual void setTransform(const VGfloat *t)  = 0;
-    virtual void multiply(const VGfloat *t)      = 0;
+    virtual void setIdentity();
+    virtual void transform(VGfloat *t);
+    virtual void scale(VGfloat sx, VGfloat sy);
+    virtual void translate(VGfloat x, VGfloat y);
+    virtual void rotate(VGfloat angle);
+    virtual void setTransform(const VGfloat *t);
+    virtual void multiply(const VGfloat *t);
 
     //// error handling ////
     inline VGErrorCode getError() const { return _error; }
@@ -175,15 +178,41 @@ class IContext {
      * @brief push an orthographic projection onto the stack
      */
     virtual void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
-                                 VGfloat top, VGfloat near, VGfloat far) = 0;
+                                 VGfloat top, VGfloat near, VGfloat far) {
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, near, far);
+        _projection_stack.push(projection);
+    }
 
     /**
      * @brief pop the orthographic projection off the stack
      *
      */
-    virtual void popOrthoCamera() = 0;
+    virtual void popOrthoCamera() {
+        if (_projection_stack.size() > 0) {
+            _projection_stack.pop();
+        }
+    }
 
-    ITessellator& getTessellator() { return *_tessellator; }
+    /// OpenGL specific
+    /**
+     * @brief load an OpenVG 3x3 matrix into the current OpenGL 4x4 matrix
+     *
+     */
+    virtual void setGLActiveMatrix();
+
+    /**
+     * @brief get the current OpenGL modelview matrix
+     *
+     */
+    virtual const glm::mat4 &getGLActiveMatrix();
+    /**
+     * @brief get the current OpenGL projection matrix (the orthographic
+     * projection matrix)
+     *
+     */
+    virtual const glm::mat4 &getGLProjectionMatrix();
+
+    ITessellator &getTessellator() { return *_tessellator; }
 
   protected:
     // surface properties
@@ -197,6 +226,8 @@ class IContext {
     Matrix33     _glyph_user_to_surface;
     Matrix33    *_active_matrix = &_path_user_to_surface;
     VGMatrixMode _matrix_mode   = VG_MATRIX_PATH_USER_TO_SURFACE;
+    glm::mat4    _gl_active_matrix;
+    std::stack<glm::mat4> _projection_stack = {};
 
     // stroke properties
     VGfloat _stroke_line_width = 1.0; // VG_STROKE_LINE_WIDTH

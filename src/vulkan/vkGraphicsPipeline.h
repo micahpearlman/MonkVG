@@ -17,6 +17,7 @@
 #include "vkPlatform.h"
 #include <glm/glm.hpp>
 
+
 namespace MonkVG {
 
 template <typename T_UBO> class VulkanGraphicsPipeline {
@@ -132,7 +133,13 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
      *
      */
     virtual void bind() {
+
         // update the uniform buffer
+        // set the projection and modelview matrices
+        setProjectionMatrix(getVulkanContext().getGLProjectionMatrix());
+        setModelViewMatrix(getVulkanContext().getGLActiveMatrix());
+
+        // upload the uniform buffer to the GPU
         void *data;
         vmaMapMemory(getVulkanContext().getVulkanAllocator(),
                      _uniform_buffer_allocation, &data);
@@ -164,6 +171,11 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
     // and "u_model_view"
     virtual void setProjectionMatrix(const glm::mat4 &matrix) {
         _ubo_data.u_projection = matrix;
+
+        // vulkan clip space has inverted Y and half Z
+        // ??? This is not needed??
+        // _ubo_data.u_projection[1][1] *= -1;
+        // _ubo_data.u_projection[2][2] *= 0.5f;
     }
     virtual void setModelViewMatrix(const glm::mat4 &matrix) {
         _ubo_data.u_model_view = matrix;

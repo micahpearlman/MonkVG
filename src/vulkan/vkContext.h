@@ -55,22 +55,10 @@ class VulkanContext : public IContext {
 
     void resize() override;
 
-    void setIdentity() override;
-    void transform(VGfloat *t) override;
-    void scale(VGfloat sx, VGfloat sy) override;
-    void translate(VGfloat x, VGfloat y) override;
-    void rotate(VGfloat angle) override;
-    void setTransform(const VGfloat *t) override;
-    void multiply(const VGfloat *t) override;
-
     void startBatch(IBatch *batch) override;
     void dumpBatch(IBatch *batch, void **vertices, size_t *size) override;
     void endBatch(IBatch *batch) override;
 
-    void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
-                         VGfloat top, VGfloat near, VGfloat far) override;
-
-    void popOrthoCamera() override;
 
     // Vulkan specific
     /**

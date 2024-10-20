@@ -115,26 +115,18 @@ void VulkanContext::resize() {
     _viewport.y      = 0;
     _viewport.width  = getWidth();
     _viewport.height = getHeight();
+    _viewport.minDepth = 0.0f;
+    _viewport.maxDepth = 1.0f;
 
     // setup the Vulkan scissor
     _scissor.offset = {0, 0};
     _scissor.extent = {static_cast<uint32_t>(getWidth()),
                        static_cast<uint32_t>(getHeight())};
+
+    // set the orthographic projection
+    pushOrthoCamera(0, getWidth(), 0, getHeight(), -1, 1);
 }
 
-void VulkanContext::setIdentity() {}
-
-void VulkanContext::transform(VGfloat *t) {}
-
-void VulkanContext::scale(VGfloat sx, VGfloat sy) {}
-
-void VulkanContext::translate(VGfloat x, VGfloat y) {}
-
-void VulkanContext::rotate(VGfloat angle) {}
-
-void VulkanContext::setTransform(const VGfloat *t) {}
-
-void VulkanContext::multiply(const VGfloat *t) {}
 
 void VulkanContext::startBatch(IBatch *batch) {}
 
@@ -142,10 +134,6 @@ void VulkanContext::dumpBatch(IBatch *batch, void **vertices, size_t *size) {}
 
 void VulkanContext::endBatch(IBatch *batch) {}
 
-void VulkanContext::pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
-                                    VGfloat top, VGfloat near, VGfloat far) {}
-
-void VulkanContext::popOrthoCamera() {}
 
 bool VulkanContext::setVulkanContext(VkInstance       instance,
                                      VkPhysicalDevice physical_device,

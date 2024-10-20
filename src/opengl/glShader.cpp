@@ -1,6 +1,10 @@
 #include "glShader.h"
 #include <stdio.h>
 
+// // DEBUG
+// #define GLM_ENABLE_EXPERIMENTAL
+// #include <glm/gtx/string_cast.hpp>
+// #include <iostream>
 namespace MonkVG {
 OpenGLShader::OpenGLShader() {
     _program         = glCreateProgram();
@@ -100,6 +104,7 @@ GLuint OpenGLShader::getUniformLocation(const char *name) {
 
 void OpenGLShader::setProjectionMatrix(const glm::mat4 &matrix) {
     glUniformMatrix4fv(_u_projection, 1, GL_FALSE, &matrix[0][0]);
+    // std::cout << "OpenGLShader::setProjectionMatrix: " << glm::to_string(matrix) << std::endl;
 }
 void OpenGLShader::setModelViewMatrix(const glm::mat4 &matrix) {
     glUniformMatrix4fv(_u_model_view, 1, GL_FALSE, &matrix[0][0]);

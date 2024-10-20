@@ -20,7 +20,17 @@ VulkanPath::VulkanPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
     : IPath(pathFormat, datatype, scale, bias, segmentCapacityHint,
             coordCapacityHint, capabilities, context) {}
 
-VulkanPath::~VulkanPath() {}
+VulkanPath::~VulkanPath() {
+    if (_fill_vertex_buffer != VK_NULL_HANDLE) {
+        vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(),
+                         _fill_vertex_buffer, _fill_vertex_buffer_allocation);
+    }
+    if (_stroke_vertex_buffer != VK_NULL_HANDLE) {
+        vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(),
+                         _stroke_vertex_buffer,
+                         _stroke_vertex_buffer_allocation);
+    }
+}
 
 VulkanContext &VulkanPath::getVulkanContext() {
     return static_cast<VulkanContext &>(getContext());
@@ -95,9 +105,11 @@ void VulkanPath::buildFillIfDirty() {
         getContext().getTessellator().tessellate(_segments, _fcoords,
                                                  _fill_vertices, _bounds);
 
-        // uncomment to draw a triangle
-        // _fill_vertices.clear();
-        // _fill_vertices = {0.0, -0.5, 0.5, 0.5, -0.5, 0.5};
+        // DEBUG: uncomment to draw a triangle
+        // also may want to comment out the MVP matrix multiplication in the
+        // vertex shader 
+        // _fill_vertices.clear(); _fill_vertices = {0.0, -0.5,
+        // 0.5, 0.5, -0.5, 0.5};
 
         // create the vertex buffer
         VkBufferCreateInfo buffer_info = {};
@@ -120,7 +132,7 @@ void VulkanPath::buildFillIfDirty() {
         vmaMapMemory(getVulkanContext().getVulkanAllocator(),
                      _fill_vertex_buffer_allocation, &data);
         memcpy(data, _fill_vertices.data(),
-                _fill_vertices.size() * sizeof(float));
+               _fill_vertices.size() * sizeof(float));
         vmaUnmapMemory(getVulkanContext().getVulkanAllocator(),
                        _fill_vertex_buffer_allocation);
     }

@@ -240,7 +240,117 @@ void IContext::setMatrixMode(VGMatrixMode mode) {
         SetError(VG_ILLEGAL_ARGUMENT_ERROR);
         break;
     }
+    setGLActiveMatrix();
 }
 
 void SetError(const VGErrorCode e) { IContext::instance().setError(e); }
+
+/**
+ * @brief load an OpenVG 3x3 matrix into the current OpenGL 4x4 matrix
+ *
+ */
+void IContext::setGLActiveMatrix() {
+    Matrix33 &active = getActiveMatrix();
+
+    // set identity
+    _gl_active_matrix = glm::mat4(1.0f);
+
+    //		a, c, e,			// cos(a) -sin(a) tx
+    //		b, d, f,			// sin(a) cos(a)  ty
+    //		ff0, ff1, ff2;		// 0      0       1
+    _gl_active_matrix[0][0] = active.a;
+    _gl_active_matrix[0][1] = active.b;
+    _gl_active_matrix[1][0] = active.c;
+    _gl_active_matrix[1][1] = active.d;
+    _gl_active_matrix[3][0] = active.e;
+    _gl_active_matrix[3][1] = active.f;
+}
+
+void IContext::setIdentity() {
+    Matrix33 &active = getActiveMatrix();
+    active.setIdentity();
+    setGLActiveMatrix();
+}
+
+void IContext::transform(VGfloat *t) {
+    // a	b	0
+    // c	d	0
+    // tx	ty	1
+    Matrix33 &active = getActiveMatrix();
+    for (int i = 0; i < 9; i++)
+        t[i] = active.m[i];
+}
+
+void IContext::setTransform(const VGfloat *t) {
+    //	OpenVG:
+    //	sh	shx	tx
+    //	shy	sy	ty
+    //	0	0	1
+    //
+    // OpenGL
+    // a	b	0
+    // c	d	0
+    // tx	ty	1
+
+    Matrix33 &active = getActiveMatrix();
+    for (int i = 0; i < 9; i++)
+        active.m[i] = t[i];
+    setGLActiveMatrix();
+}
+
+void IContext::multiply(const VGfloat *t) {
+    Matrix33 m;
+    for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < 3; y++) {
+            m.set(y, x, t[(y * 3) + x]);
+        }
+    }
+    Matrix33 &active = getActiveMatrix();
+    active.postMultiply(m);
+    setGLActiveMatrix();
+}
+
+void IContext::scale(VGfloat sx, VGfloat sy) {
+    Matrix33 &active = getActiveMatrix();
+    Matrix33  scale;
+    scale.setIdentity();
+    scale.setScale(sx, sy);
+    Matrix33 tmp;
+    Matrix33::multiply(tmp, scale, active);
+    active.copy(tmp);
+    setGLActiveMatrix();
+}
+
+void IContext::translate(VGfloat x, VGfloat y) {
+
+    Matrix33 &active = getActiveMatrix();
+    Matrix33  translate;
+    translate.setTranslate(x, y);
+    Matrix33 tmp;
+    tmp.setIdentity();
+    Matrix33::multiply(tmp, translate, active);
+    active.copy(tmp);
+    setGLActiveMatrix();
+}
+
+void IContext::rotate(VGfloat angle) {
+    Matrix33 &active = getActiveMatrix();
+    Matrix33  rotate;
+    rotate.setRotation(radians(angle));
+    Matrix33 tmp;
+    tmp.setIdentity();
+    Matrix33::multiply(tmp, rotate, active);
+    active.copy(tmp);
+    setGLActiveMatrix();
+}
+
+const glm::mat4 &IContext::getGLActiveMatrix() {
+    return _gl_active_matrix;
+}
+
+const glm::mat4 &IContext::getGLProjectionMatrix() {
+    return _projection_stack.top();
+}
+
+
 } // namespace MonkVG

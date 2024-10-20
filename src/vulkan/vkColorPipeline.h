@@ -16,8 +16,8 @@
 
 namespace MonkVG {
 struct ColorPipeline_UBO {
-    glm::mat4 u_projection;
     glm::mat4 u_model_view;
+    glm::mat4 u_projection;
     glm::vec4 u_color;
 };
 
