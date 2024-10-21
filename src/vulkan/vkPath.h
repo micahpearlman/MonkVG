@@ -13,6 +13,7 @@
 #include "mkPath.h"
 #include "vkPaint.h"
 #include <vk_mem_alloc.h>
+
 namespace MonkVG {
 class VulkanContext;
 class VulkanPath : public IPath {

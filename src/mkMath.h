@@ -16,7 +16,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include <iomanip>
+#include <vector>
 #include "mkCommon.h"
+#include "mkTypes.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -257,6 +259,27 @@ inline void affineTransform(float result[2], const Matrix33 &m,
     result[0] = v[0] * m.get(0, 0) + v[1] * m.get(0, 1) + m.get(0, 2);
     result[1] = v[0] * m.get(1, 0) + v[1] * m.get(1, 1) + m.get(1, 2);
 }
+
+/// Gradient helper functions
+/**
+ * @brief Calculate the stops surrounding the given gradient position.
+ * @param stop0 stop before the position
+ * @param stop1 stop after the position
+ * @param g gradient position (between 0 and 1 inclusive)
+ */
+void calcStops(const std::vector<gradient_stop_t> &stops,
+               gradient_stop_t &stop0, gradient_stop_t &stop1, float g);
+
+/**
+ * @brief linearly interpolate between two stops
+ *
+ * @param dst the final color
+ * @param stop0 the first stop
+ * @param stop1 the second stop
+ * @param g the gradient position
+ */
+void lerpStops(color_t &dst, const gradient_stop_t &stop0,
+               const gradient_stop_t &stop1, const float g);
 
 } // namespace MonkVG
 

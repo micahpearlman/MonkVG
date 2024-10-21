@@ -144,10 +144,10 @@ bool OpenGLPath::draw(VGbitfield paint_modes) {
                     VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
                 _fill_paint->getPaintType() ==
                     VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
-        throw std::runtime_error(
-            "not implemented"); // TODO: do gradients in shader, implement
-                                // texture shaders
 
+        // TODO: implement gradient paint. This requires a texture shader
+        throw std::runtime_error(
+            "not implemented"); 
         gl_ctx.setImageMode(VG_DRAW_IMAGE_NORMAL);
     }
 
@@ -516,7 +516,7 @@ void OpenGLPath::buildOpenGLBuffers(VGbitfield paint_modes) {
                                        VG_PAINT_TYPE_RADIAL_2x3_GRADIENT ||
                                    _fill_paint->getPaintType() ==
                                        VG_PAINT_TYPE_LINEAR_2x3_GRADIENT)) {
-            throw std::runtime_error("Not implemented");
+            // throw std::runtime_error("Not implemented");
             std::vector<textured_vertex_t> texturedVertices;
             for (std::vector<float>::const_iterator it = _fill_vertices.begin();
                  it != _fill_vertices.end(); it++) {

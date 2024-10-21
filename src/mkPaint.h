@@ -11,6 +11,7 @@
 #define __mkPaint_h__
 
 #include "mkBaseObject.h"
+#include "mkTypes.h"
 #include <vector>
 #include <array>
 
@@ -20,7 +21,7 @@ class IPaint : public BaseObject {
   public:
     inline BaseObject::Type getType() const { return BaseObject::kPaintType; }
 
-    virtual ~IPaint() = default;
+    virtual ~IPaint();
 
     //// parameter accessors/mutators ////
     virtual VGint   getParameteri(const VGint p) const;
@@ -39,6 +40,25 @@ class IPaint : public BaseObject {
     virtual bool isDirty() const { return _isDirty; }
     virtual void setIsDirty(bool b) { _isDirty = b; }
 
+    const std::vector<gradient_stop_t> &getColorRampStops() const {
+        return _colorRampStops;
+    }
+    const VGColorRampSpreadMode getColorRampSpreadMode() const {
+        return _colorRampSpreadMode;
+    }
+    const std::array<VGfloat, 4> &getLinearGradient() const {
+        return _paintLinearGradient;
+    }
+    const std::array<VGfloat, 5> &getRadialGradient() const {
+        return _paintRadialGradient;
+    }
+    const std::array<VGfloat, 6> &get2x3Gradient() const {
+        return _paint2x3Gradient;
+    }
+
+    void buildGradientImage(VGfloat pathWidth, VGfloat pathHeight);
+    VGImage getGradientImage() { return _gradientImage; }
+
   protected:
     IPaint(IContext &context)
         : BaseObject(context),
@@ -52,17 +72,16 @@ class IPaint : public BaseObject {
     std::array<VGfloat, 4> _paintColor             = {1.0f, 1.0f, 1.0f, 1.0f};
     VGColorRampSpreadMode  _colorRampSpreadMode    = VG_COLOR_RAMP_SPREAD_PAD;
     VGboolean              _colorRampPremultiplied = VG_FALSE;
-    std::array<VGfloat, 4> _paintLinearGradient    = {0.0f, 0.0f, 0.0f, 0.0f};
-    std::array<VGfloat, 5> _paintRadialGradient    = {0.0f, 0.0f, 0.0f, 0.0f,
-                                                      0.0f};
-    std::array<VGfloat, 6> _paint2x3Gradient       = {0.0f, 0.0f, 0.0f,
-                                                      0.0f, 0.0f, 0.0f};
     VGTilingMode           _patternTilingMode      = VG_TILE_FILL;
 
-    struct Stop_t {
-        VGfloat a[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
-    };
-    std::vector<Stop_t> _colorRampStops = {};
+    // gradient specific parameters
+    std::array<VGfloat, 4> _paintLinearGradient  = {0.0f, 0.0f, 0.0f, 0.0f};
+    std::array<VGfloat, 5> _paintRadialGradient  = {0.0f, 0.0f, 0.0f, 0.0f,
+                                                    0.0f};
+    std::array<VGfloat, 6> _paint2x3Gradient     = {0.0f, 0.0f, 0.0f,
+                                                    0.0f, 0.0f, 0.0f};
+    std::vector<gradient_stop_t> _colorRampStops = {};
+    VGImage                      _gradientImage  = VG_INVALID_HANDLE;
 };
 
 } // namespace MonkVG

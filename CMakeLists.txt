@@ -142,6 +142,7 @@ set(COMMON_SOURCE ${COMMON_SOURCE}
     ./src/mkVGU.cpp
     ./src/mkBmpFnt.cpp
     ./src/mkTessellator.cpp
+    ./src/mkGradient.cpp
 )
 set(COMMON_INCLUDE ${COMMON_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
