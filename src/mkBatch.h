@@ -15,12 +15,13 @@ namespace MonkVG {
 
 class IBatch : public BaseObject {
   public:
-    IBatch() : BaseObject() {}
-    virtual ~IBatch() = default;
 
     inline BaseObject::Type getType() const override {
         return BaseObject::kBatchType;
     }
+
+    virtual ~IBatch() = default;
+
 
     //// parameter accessors/mutators ////
     virtual VGint   getParameteri(const VGint p) const override;
@@ -34,6 +35,9 @@ class IBatch : public BaseObject {
     virtual void draw()                              = 0;
     virtual void dump(void **vertices, size_t *size) = 0;
     virtual void finalize()                          = 0;
+
+  protected:
+    IBatch(IContext &context) : BaseObject(context) {}
 };
 
 } // namespace MonkVG

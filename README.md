@@ -4,7 +4,7 @@ MonkVG: An OpenVG implementation
 
 ## Overview
 
-MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an OpenGL 3.3 backend that should be compatible with any HW that supports OpenGL ES 3.3.
+MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an Vulkan or OpenGL 3.3 backend that should be compatible with any HW that supports Vulkan or OpenGL.
 
 This is an open source BSD licensed project that is in active development. Contributors and sponsors welcome.
 
@@ -152,37 +152,3 @@ void draw() {
 }
 ```
 
-
-## Android Build instructions
-
-**NOTE VERY VERY OLD**
-
-### Overview
-
-Tested with ndk r9d on ubuntu.
-
-There are 2 projects needed to build the example app: 
-
-1. MonkVG-Android builds the needed MonkVG libraries
-
-2. MonkVG-Test-Android wraps them and makes them accessible from an activity.
-
-### Build steps
-
-```bash
-ndk-build V=1
-```
-The `V=1` makes the output verbose.
-I used android-17 but any of the available targets should do.
-If ndk-build fails it may be helpful to import the projects in Eclipse and add the Native Tools (Right click on project name->**Android Tools-> Add Native Support**)
-make sure to `rm -rf obj/local/armeabi` on both projects for rebuilding, in order not to use old builds of the static libraries.
-
-### Deploy on device
-```bash
-android list targets
-android update project -p . --target android-17
-ant debug 
-ant debug install
-ant release install
-```
-If you imported the projects in Eclipse right click->Run As-> Android App will do.

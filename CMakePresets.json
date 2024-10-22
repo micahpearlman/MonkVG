@@ -1,0 +1,50 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "OpenGL Debug",
+            "hidden": false,
+            "description": "OpenGL Debug build",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "OpenGL Release",
+            "hidden": false,
+            "description": "OpenGL Release build",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "Vulkan Debug",
+            "hidden": false,
+            "description": "Vulkan Debug build",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "MKVG_DO_VULKAN_BACKEND": "ON",
+                "MKVG_DO_OPENGL_BACKEND": "OFF"
+            }
+        },
+        {
+            "name": "Vulkan Release",
+            "hidden": false,
+            "description": "Vulkan Release build",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "MKVG_DO_VULKAN_BACKEND": "ON",
+                "MKVG_DO_OPENGL_BACKEND": "OFF"
+            }
+        }
+
+    ]
+}

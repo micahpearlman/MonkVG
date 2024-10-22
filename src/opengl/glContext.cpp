@@ -134,9 +134,10 @@ IPath *OpenGLContext::createPath(VGint path_format, VGPathDatatype data_type,
 
     OpenGLPath *path = new OpenGLPath(
         path_format, data_type, scale, bias, segment_capacity_hint,
-        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL);
-    if (path == 0)
+        coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL, *this);
+    if (path == 0) {
         SetError(VG_OUT_OF_MEMORY_ERROR);
+    }
 
     return (IPath *)path;
 }
@@ -146,14 +147,14 @@ void OpenGLContext::destroyPath(IPath *path) { path->decRef(); }
 void OpenGLContext::destroyPaint(IPaint *paint) { paint->decRef(); }
 
 IPaint *OpenGLContext::createPaint() {
-    OpenGLPaint *paint = new OpenGLPaint();
+    OpenGLPaint *paint = new OpenGLPaint(*this);
     if (paint == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
     return (IPaint *)paint;
 }
 
 IBatch *OpenGLContext::createBatch() {
-    OpenGLBatch *batch = new OpenGLBatch();
+    OpenGLBatch *batch = new OpenGLBatch(*this);
     if (batch == 0)
         SetError(VG_OUT_OF_MEMORY_ERROR);
     return (IBatch *)batch;
@@ -167,7 +168,7 @@ void OpenGLContext::destroyBatch(IBatch *batch) {
 
 IImage *OpenGLContext::createImage(VGImageFormat format, VGint width,
                                    VGint height, VGbitfield allowedQuality) {
-    return new OpenGLImage(format, width, height, allowedQuality);
+    return new OpenGLImage(format, width, height, allowedQuality, *this);
 }
 
 void OpenGLContext::destroyImage(IImage *image) {
@@ -176,8 +177,9 @@ void OpenGLContext::destroyImage(IImage *image) {
     }
 }
 
-IFont *OpenGLContext::createFont() { return new OpenGLFont(); }
-void   OpenGLContext::destroyFont(IFont *font) {
+IFont *OpenGLContext::createFont() { return new OpenGLFont(*this); }
+
+void OpenGLContext::destroyFont(IFont *font) {
     if (font) {
         font->decRef();
     }
@@ -255,102 +257,6 @@ void OpenGLContext::clear(VGint x, VGint y, VGint width, VGint height) {
 void OpenGLContext::flush() { glFlush(); }
 void OpenGLContext::finish() { glFinish(); }
 
-/**
- * @brief load an OpenVG 3x3 matrix into the current OpenGL 4x4 matrix
- *
- */
-void OpenGLContext::setGLActiveMatrix() {
-    Matrix33 &active = getActiveMatrix();
-
-    // set identity
-    _gl_active_matrix = glm::mat4(1.0f);
-
-    //		a, c, e,			// cos(a) -sin(a) tx
-    //		b, d, f,			// sin(a) cos(a)  ty
-    //		ff0, ff1, ff2;		// 0      0       1
-    _gl_active_matrix[0][0] = active.a;
-    _gl_active_matrix[0][1] = active.b;
-    _gl_active_matrix[1][0] = active.c;
-    _gl_active_matrix[1][1] = active.d;
-    _gl_active_matrix[3][0] = active.e;
-    _gl_active_matrix[3][1] = active.f;
-}
-
-void OpenGLContext::setIdentity() {
-    Matrix33 &active = getActiveMatrix();
-    active.setIdentity();
-    setGLActiveMatrix();
-}
-
-void OpenGLContext::transform(VGfloat *t) {
-    // a	b	0
-    // c	d	0
-    // tx	ty	1
-    Matrix33 &active = getActiveMatrix();
-    for (int i = 0; i < 9; i++)
-        t[i] = active.m[i];
-}
-
-void OpenGLContext::setTransform(const VGfloat *t) {
-    //	OpenVG:
-    //	sh	shx	tx
-    //	shy	sy	ty
-    //	0	0	1
-    //
-    // OpenGL
-    // a	b	0
-    // c	d	0
-    // tx	ty	1
-
-    Matrix33 &active = getActiveMatrix();
-    for (int i = 0; i < 9; i++)
-        active.m[i] = t[i];
-    setGLActiveMatrix();
-}
-
-void OpenGLContext::multiply(const VGfloat *t) {
-    Matrix33 m;
-    for (int x = 0; x < 3; x++) {
-        for (int y = 0; y < 3; y++) {
-            m.set(y, x, t[(y * 3) + x]);
-        }
-    }
-    Matrix33 &active = getActiveMatrix();
-    active.postMultiply(m);
-    setGLActiveMatrix();
-}
-
-void OpenGLContext::scale(VGfloat sx, VGfloat sy) {
-    Matrix33 &active = getActiveMatrix();
-    Matrix33  scale;
-    scale.setIdentity();
-    scale.setScale(sx, sy);
-    Matrix33 tmp;
-    Matrix33::multiply(tmp, scale, active);
-    active.copy(tmp);
-    setGLActiveMatrix();
-}
-void OpenGLContext::translate(VGfloat x, VGfloat y) {
-
-    Matrix33 &active = getActiveMatrix();
-    Matrix33  translate;
-    translate.setTranslate(x, y);
-    Matrix33 tmp;
-    tmp.setIdentity();
-    Matrix33::multiply(tmp, translate, active);
-    active.copy(tmp);
-    setGLActiveMatrix();
-}
-void OpenGLContext::rotate(VGfloat angle) {
-    Matrix33 &active = getActiveMatrix();
-    Matrix33  rotate;
-    rotate.setRotation(radians(angle));
-    Matrix33 tmp;
-    tmp.setIdentity();
-    Matrix33::multiply(tmp, rotate, active);
-    active.copy(tmp);
-    setGLActiveMatrix();
-}
 
 void OpenGLContext::setImageMode(VGImageMode im) {
     IContext::setImageMode(im);
@@ -368,25 +274,7 @@ void OpenGLContext::setImageMode(VGImageMode im) {
     }
 }
 
-void OpenGLContext::pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
-                                    VGfloat top, VGfloat near, VGfloat far) {
-    glm::mat4 projection = glm::ortho(left, right, bottom, top, near, far);
-    _projection_stack.push(projection);
-}
 
-void OpenGLContext::popOrthoCamera() {
-    if (_projection_stack.size() > 0) {
-        _projection_stack.pop();
-    }
-}
-
-const glm::mat4 &OpenGLContext::getGLActiveMatrix() {
-    return _gl_active_matrix;
-}
-
-const glm::mat4 &OpenGLContext::getGLProjectionMatrix() {
-    return _projection_stack.top();
-}
 
 void OpenGLContext::bindShader(ShaderType shader) {
     if (_current_shader != shader) {

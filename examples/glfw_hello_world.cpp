@@ -73,8 +73,7 @@ int main(int argc, char **argv) {
     vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
 
     // create a simple box path
-    VGPath path;
-    path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0, 0,
+    VGPath path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1, 0, 0, 0,
                         VG_PATH_CAPABILITY_ALL);
     vguRect(path, 0.0f, 0.0f, 100.0f, 150.0f);
 
@@ -82,7 +81,7 @@ int main(int argc, char **argv) {
     int img_width, img_height, img_channels;
 
     // Load the image (JPEG, PNG, etc.)
-    const char    *filename = "roy.png"; // Replace with your image path
+    const char    *filename = "assets/roy.png"; // Replace with your image path
     unsigned char *img_data =
         stbi_load(filename, &img_width, &img_height, &img_channels, 0);
 
@@ -110,6 +109,36 @@ int main(int argc, char **argv) {
     // create a child image
     VGImage child_image =
         vgChildImage(vg_image, 0, 0, img_width / 2, img_height / 2);
+
+
+    // create gradients
+    // create a path for linear gradient
+    VGPath linear_grad_path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F,1,0,0,0, VG_PATH_CAPABILITY_ALL);
+    vguRect( linear_grad_path, 0, 0, 120.0f, 40.0f );
+    
+    // create a linear gradient paint to apply to the path
+    VGPaint linear_grad_paint = vgCreatePaint();
+    vgSetParameteri(linear_grad_paint, VG_PAINT_TYPE, VG_PAINT_TYPE_LINEAR_GRADIENT);
+    
+    // A linear gradient needs start and end points that describe orientation
+    // and length of the gradient.
+    float afLinearGradientPoints[4] = {
+        0.0f, 0.0f,
+        120.0f, 0.0f
+    };
+    vgSetParameterfv(linear_grad_paint, VG_PAINT_LINEAR_GRADIENT, 4, afLinearGradientPoints);
+    
+    // Now we have to specify the colour ramp. It is described by "stops" that
+    // are given as premultiplied sRGBA colour at a position between 0 and 1.
+    // Between these stops, the colour is linearly interpolated.
+    // This colour ramp goes from red to green to blue, all opaque.
+    float stops[3][5] = {
+        {0.0f,	1.0f, 0.0f, 0.0f, 1.0f},
+        {0.5f,	0.0f, 1.0f, 0.0f, 0.8f},
+        {1.0f,	0.0f, 0.0f, 1.0f, 0.4f}
+    };
+    vgSetParameterfv(linear_grad_paint, VG_PAINT_COLOR_RAMP_STOPS, 15, &stops[0][0]);
+
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -145,6 +174,14 @@ int main(int argc, char **argv) {
 
         // draw the path with fill and stroke
         vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
+
+        // draw the linear gradient
+        // vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        // vgLoadIdentity();
+        // vgTranslate(50, 400);
+        // vgSetPaint(linear_grad_paint, VG_FILL_PATH);
+        // vgDrawPath(linear_grad_path, VG_FILL_PATH);
+
 
         // draw the image
         vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);

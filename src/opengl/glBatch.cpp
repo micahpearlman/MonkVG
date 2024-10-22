@@ -12,7 +12,9 @@
 
 namespace MonkVG {
 
-OpenGLBatch::OpenGLBatch() : IBatch(), _vbo(-1), _vertexCount(0) {}
+OpenGLBatch::OpenGLBatch(IContext &context)
+    : IBatch(context), _vbo(-1), _vertexCount(0) {}
+    
 OpenGLBatch::~OpenGLBatch() {
     if (_vbo != -1) {
         glDeleteBuffers(1, &_vbo);
@@ -54,8 +56,8 @@ void OpenGLBatch::addPathVertexData(GLfloat *fill_verts, size_t fill_vert_cnt,
         vertex_t vert, start_vert, last_vert;
 
         // get the paint color
-        IPaint        *paint = IContext::instance().getStrokePaint();
-        const std::array<VGfloat,4> fc    = paint->getPaintColor();
+        IPaint *paint                   = IContext::instance().getStrokePaint();
+        const std::array<VGfloat, 4> fc = paint->getPaintColor();
 
         vert.color = (uint32_t(fc[3] * 255.0f) << 24)   // a
                      | (uint32_t(fc[2] * 255.0f) << 16) // b

@@ -17,7 +17,7 @@
 namespace MonkVG {
 class OpenGLBatch : public IBatch {
   public:
-    OpenGLBatch();
+    OpenGLBatch(IContext &context);
     virtual ~OpenGLBatch();
 
     virtual void draw();

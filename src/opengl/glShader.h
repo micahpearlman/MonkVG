@@ -19,8 +19,27 @@ class OpenGLShader {
   public:
     OpenGLShader();
     virtual ~OpenGLShader();
-    bool compile(const char *vertexSource, const char *fragmentSource);
+
+    /**
+     * @brief Compile a shader given the vertex and fragment source text.
+     * NOTE: NOT file path
+     * 
+     * @param vertex_src 
+     * @param fragment_src 
+     * @return true if successful
+     */
+    bool compile(const char *vertex_src, const char *fragment_src);
+
+    /**
+     * @brief Bind the shader program
+     * 
+     */
     void bind();
+
+    /**
+     * @brief Unbind the shader program
+     * 
+     */
     void unbind();
 
     // uniform setters

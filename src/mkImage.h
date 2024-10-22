@@ -19,14 +19,11 @@ namespace MonkVG {
  */
 class IImage : public BaseObject {
   public:
-    IImage(VGImageFormat format, VGint width, VGint height,
-           VGbitfield allowedQuality);
-    IImage(IImage &image);
-    virtual ~IImage() = default;
-
     /// @brief Get the type of the monk object type
     /// @return
     inline BaseObject::Type getType() const { return BaseObject::kImageType; }
+
+    virtual ~IImage() = default;
 
     /// @brief Create a child image
     /// @param x
@@ -92,6 +89,10 @@ class IImage : public BaseObject {
     inline IImage       *getParent() const { return _parent; }
 
   protected:
+    IImage(VGImageFormat format, VGint width, VGint height,
+           VGbitfield allowedQuality, IContext &context);
+    IImage(IImage &image);
+
     VGImageFormat _format          = VG_sRGBA_8888;
     VGint         _width           = 0;
     VGint         _height          = 0;

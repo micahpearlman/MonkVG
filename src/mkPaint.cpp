@@ -9,8 +9,16 @@
 
 #include "mkPaint.h"
 #include "mkContext.h"
+#include "mkGradient.h"
 
 namespace MonkVG { // Internal Implementation
+
+IPaint::~IPaint() {
+    if (_gradientImage != VG_INVALID_HANDLE) {
+        getContext().destroyImage((IImage *)_gradientImage);
+    }
+}
+
 VGint IPaint::getParameteri(const VGint p) const {
     switch (p) {
     default:
@@ -82,10 +90,11 @@ void IPaint::setParameter(const VGint p, const VGfloat *fv, const VGint cnt) {
         }
         break;
     case VG_PAINT_COLOR_RAMP_STOPS:
+        _colorRampStops.clear();
         for (int j = 0; j < cnt / 5; j++) {
-            Stop_t stop;
+            gradient_stop_t stop;
             for (int p = 0; p < 5; p++) {
-                stop.a[p] = fv[(j * 5) + p];
+                stop[p] = fv[(j * 5) + p];
             }
             _colorRampStops.push_back(stop);
         }
@@ -99,6 +108,29 @@ void IPaint::setParameter(const VGint p, const VGfloat *fv, const VGint cnt) {
     default:
         SetError(VG_ILLEGAL_ARGUMENT_ERROR);
         break;
+    }
+}
+
+void IPaint::buildGradientImage(VGfloat pathWidth, VGfloat pathHeight) {
+    if (_gradientImage != VG_INVALID_HANDLE) {
+        getContext().destroyImage((IImage *)_gradientImage);
+    }
+    if (getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT) {
+        _gradientImage = buildLinearGradientImage(
+            getLinearGradient(), getColorRampStops(), getColorRampSpreadMode(),
+            pathWidth, pathHeight);
+    } else if (getPaintType() == VG_PAINT_TYPE_RADIAL_GRADIENT) {
+        _gradientImage = buildRadialGradientImage(
+            getRadialGradient(), getColorRampStops(), getColorRampSpreadMode(),
+            pathWidth, pathHeight);
+    } else if (getPaintType() == VG_PAINT_TYPE_LINEAR_2x3_GRADIENT) {
+        _gradientImage = buildLinear2x3GradientImage(
+            get2x3Gradient(), getColorRampStops(), getColorRampSpreadMode(),
+            pathWidth, pathHeight);
+    } else if (getPaintType() == VG_PAINT_TYPE_RADIAL_2x3_GRADIENT) {
+        _gradientImage = buildRadial2x3GradientImage(
+            get2x3Gradient(), getColorRampStops(), getColorRampSpreadMode(),
+            pathWidth, pathHeight);
     }
 }
 

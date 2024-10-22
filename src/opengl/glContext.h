@@ -67,18 +67,6 @@ class OpenGLContext : public IContext {
     void flush() override;
     void finish() override;
 
-    //// platform specific implementation of transform ////
-    void setIdentity() override;
-    void transform(VGfloat *t) override;
-    void scale(VGfloat sx, VGfloat sy) override;
-    void translate(VGfloat x, VGfloat y) override;
-    void rotate(VGfloat angle) override;
-    void setTransform(const VGfloat *t) override;
-    void multiply(const VGfloat *t) override;
-    void setMatrixMode(VGMatrixMode mode) override {
-        IContext::setMatrixMode(mode);
-        setGLActiveMatrix();
-    }
 
     /// batch drawing override
     void startBatch(IBatch *batch) override;
@@ -88,40 +76,11 @@ class OpenGLContext : public IContext {
     /// image
     void setImageMode(VGImageMode im) override;
 
-    /// camera extension
-    /**
-     * @brief push an orthographic projection onto the stack
-     */
-    void pushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
-                         VGfloat top, VGfloat near, VGfloat far) override;
-
-    /**
-     * @brief pop the orthographic projection off the stack
-     *
-     */
-    void popOrthoCamera() override;
 
     void resize() override;
 
-    /// OpenGL specific
-    /**
-     * @brief load an OpenVG 3x3 matrix into the current OpenGL 4x4 matrix
-     *
-     */
-    void setGLActiveMatrix();
 
-    /**
-     * @brief get the current OpenGL modelview matrix
-     *
-     */
-    const glm::mat4 &getGLActiveMatrix();
-    /**
-     * @brief get the current OpenGL projection matrix (the orthographic
-     * projection matrix)
-     *
-     */
-    const glm::mat4 &getGLProjectionMatrix();
-
+    /// shader management
     enum ShaderType { ColorShader, TextureShader, GradientShader, None };
 
     /**
@@ -139,10 +98,6 @@ class OpenGLContext : public IContext {
   private:
     // restore values to play nice with other apps
     int _restore_viewport[4];
-
-    std::stack<glm::mat4> _projection_stack = {};
-    std::stack<glm::mat4> _modelview_stack  = {};
-    glm::mat4             _gl_active_matrix;
 
     std::unique_ptr<OpenGLShader> _color_shader;
     std::unique_ptr<OpenGLShader> _texture_shader;

@@ -10,13 +10,15 @@
 #ifndef __mkMath_h__
 #define __mkMath_h__
 
-#include "MonkVG/openvg.h"
+#include <MonkVG/openvg.h>
 #include <cmath>
 #include <cstdio>
 #include <stdlib.h>
 #include <iostream>
 #include <iomanip>
+#include <vector>
 #include "mkCommon.h"
+#include "mkTypes.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -29,6 +31,95 @@ static inline VGfloat radians(VGfloat degrees) {
 }
 static inline VGfloat degrees(VGfloat radians) {
     return (VGfloat)(radians * (180.0f / M_PI));
+}
+
+static inline VGfloat calcCubicBezier1d(VGfloat x0, VGfloat x1, VGfloat x2,
+                                        VGfloat x3, VGfloat t) {
+    // see openvg 1.0 spec section 8.3.2 Cubic Bezier Curves
+    VGfloat one_t = 1.0f - t;
+    VGfloat x = x0 * (one_t * one_t * one_t) + 3.0f * x1 * (one_t * one_t) * t +
+                3.0f * x2 * one_t * (t * t) + x3 * (t * t * t);
+    return x;
+}
+
+static inline VGfloat calcQuadBezier1d(VGfloat start, VGfloat control,
+                                       VGfloat end, VGfloat time) {
+    float inverse_time = 1.0f - time;
+    return (powf(inverse_time, 2.0f) * start) +
+           (2.0f * inverse_time * time * control) + (powf(time, 2.0f) * end);
+}
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+// Given: Points (x0, y0) and (x1, y1)
+// Return: TRUE if a solution exists, FALSE otherwise
+//	Circle centers are written to (cx0, cy0) and (cx1, cy1)
+static VGboolean findUnitCircles(VGfloat x0, VGfloat y0, VGfloat x1, VGfloat y1,
+                                 VGfloat *cx0, VGfloat *cy0, VGfloat *cx1,
+                                 VGfloat *cy1) {
+
+    // Compute differences and averages
+    VGfloat dx = x0 - x1;
+    VGfloat dy = y0 - y1;
+    VGfloat xm = (x0 + x1) / 2;
+    VGfloat ym = (y0 + y1) / 2;
+    VGfloat dsq, disc, s, sdx, sdy;
+    // Solve for intersecting unit circles
+    dsq = dx * dx + dy * dy;
+    if (dsq == 0.0)
+        return VG_FALSE; // Points are coincident
+    disc = 1.0f / dsq - 1.0f / 4.0f;
+    if (disc < 0.0)
+        return VG_FALSE; // Points are too far apart
+
+    s    = sqrt(disc);
+    sdx  = s * dx;
+    sdy  = s * dy;
+    *cx0 = xm + sdy;
+    *cy0 = ym - sdx;
+    *cx1 = xm - sdy;
+    *cy1 = ym + sdx;
+
+    return VG_TRUE;
+}
+
+// Given:
+// Return:
+// Ellipse parameters rh, rv, rot (in degrees), endpoints (x0, y0) and (x1, y1)
+// TRUE if a solution exists, FALSE otherwise. Ellipse centers are written to
+// (cx0, cy0) and (cx1, cy1)
+
+static VGboolean findEllipses(VGfloat rh, VGfloat rv, VGfloat rot, VGfloat x0,
+                              VGfloat y0, VGfloat x1, VGfloat y1, VGfloat *cx0,
+                              VGfloat *cy0, VGfloat *cx1, VGfloat *cy1) {
+    VGfloat COS, SIN, x0p, y0p, x1p, y1p, pcx0, pcy0, pcx1, pcy1;
+    // Convert rotation angle from degrees to radians
+    rot *= M_PI / 180.0;
+    // Pre-compute rotation matrix entries
+    COS = cos(rot);
+    SIN = sin(rot);
+    // Transform (x0, y0) and (x1, y1) into unit space
+    // using (inverse) rotate, followed by (inverse) scale
+    x0p = (x0 * COS + y0 * SIN) / rh;
+    y0p = (-x0 * SIN + y0 * COS) / rv;
+    x1p = (x1 * COS + y1 * SIN) / rh;
+    y1p = (-x1 * SIN + y1 * COS) / rv;
+    if (!findUnitCircles(x0p, y0p, x1p, y1p, &pcx0, &pcy0, &pcx1, &pcy1)) {
+        return VG_FALSE;
+    }
+    // Transform back to original coordinate space
+    // using (forward) scale followed by (forward) rotate
+    pcx0 *= rh;
+    pcy0 *= rv;
+    pcx1 *= rh;
+    pcy1 *= rv;
+    *cx0 = pcx0 * COS - pcy0 * SIN;
+    *cy0 = pcx0 * SIN + pcy0 * COS;
+    *cx1 = pcx1 * COS - pcy1 * SIN;
+    *cy1 = pcx1 * SIN + pcy1 * COS;
+
+    return VG_TRUE;
 }
 
 //	[ sx	shx	tx
@@ -169,65 +260,27 @@ inline void affineTransform(float result[2], const Matrix33 &m,
     result[1] = v[0] * m.get(1, 0) + v[1] * m.get(1, 1) + m.get(1, 2);
 }
 
+/// Gradient helper functions
+/**
+ * @brief Calculate the stops surrounding the given gradient position.
+ * @param stop0 stop before the position
+ * @param stop1 stop after the position
+ * @param g gradient position (between 0 and 1 inclusive)
+ */
+void calcStops(const std::vector<gradient_stop_t> &stops,
+               gradient_stop_t &stop0, gradient_stop_t &stop1, float g);
+
+/**
+ * @brief linearly interpolate between two stops
+ *
+ * @param dst the final color
+ * @param stop0 the first stop
+ * @param stop1 the second stop
+ * @param g the gradient position
+ */
+void lerpStops(color_t &dst, const gradient_stop_t &stop0,
+               const gradient_stop_t &stop1, const float g);
+
 } // namespace MonkVG
 
-#define RI_ASSERT(_)
-
-static inline int RI_ISNAN(float a) { return (a != a) ? 1 : 0; }
-
-static inline float RI_MAX(float a, float b) { return (a > b) ? a : b; }
-static inline float RI_MIN(float a, float b) { return (a < b) ? a : b; }
-static inline float RI_CLAMP(float a, float l, float h) {
-    if (RI_ISNAN(a))
-        return l;
-    RI_ASSERT(l <= h);
-    return (a < l) ? l : (a > h) ? h : a;
-}
-static inline float RI_SQR(float a) { return a * a; }
-static inline float RI_MOD(float a, float b) {
-    if (RI_ISNAN(a) || RI_ISNAN(b))
-        return 0.0f;
-
-    RI_ASSERT(b >= 0.0f);
-
-    if (b == 0.0f)
-        return 0.0f;
-
-    float f = (float)fmod(a, b);
-
-    if (f < 0.0f)
-        f += b;
-    RI_ASSERT(f >= 0.0f && f <= b);
-    return f;
-}
-
-static inline int      RI_INT_MAX(int a, int b) { return (a > b) ? a : b; }
-static inline int      RI_INT_MIN(int a, int b) { return (a < b) ? a : b; }
-static inline uint16_t RI_UINT16_MIN(uint16_t a, uint16_t b) {
-    return (a < b) ? a : b;
-}
-static inline uint32_t RI_UINT32_MIN(uint32_t a, uint32_t b) {
-    return (a < b) ? a : b;
-}
-static inline int RI_INT_MOD(int a, int b) {
-    RI_ASSERT(b >= 0);
-    if (!b)
-        return 0;
-    int i = a % b;
-    if (i < 0)
-        i += b;
-    RI_ASSERT(i >= 0 && i < b);
-    return i;
-}
-static inline int RI_INT_CLAMP(int a, int l, int h) {
-    RI_ASSERT(l <= h);
-    return (a < l) ? l : (a > h) ? h : a;
-}
-
-static inline int RI_FLOOR_TO_INT(float value) {
-    if (value < 0)
-        return (int)floor(value);
-
-    return (int)value;
-}
 #endif // __mkMath_h__

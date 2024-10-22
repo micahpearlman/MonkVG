@@ -68,14 +68,18 @@ typedef enum {
     VG_PARAM_TYPE_MNK_FORCE_SIZE = VG_MAX_ENUM
 } VGParamTypeMNK;
 
-/*
- * Rendering backend to use
+/**
+ * @brief Rendering backend types.
+ * NOTE: Need to compile with the correct backend type.
+ * See: CMakeLists.txt for details.
+ *
  */
 typedef enum {
     VG_RENDERING_BACKEND_TYPE_OPENGLES11 = 0,
     VG_RENDERING_BACKEND_TYPE_OPENGLES20 = 1,
     VG_RENDERING_BACKEND_TYPE_OPENGLES32 = 2,
     VG_RENDERING_BACKEND_TYPE_OPENGL33   = 3,
+    VG_RENDERING_BACKEND_TYPE_VULKAN     = 4,
     VG_RENDERING_BACKEND_TYPE_FORCE_SIZE = VG_MAX_ENUM
 } VGRenderingBackendTypeMNK;
 
@@ -92,16 +96,73 @@ VG_API_CALL void VG_API_ENTRY vgDrawBatchMNK(VGBatchMNK batch) VG_API_EXIT;
 VG_API_CALL void VG_API_ENTRY vgDumpBatchMNK(VGBatchMNK batch, void **vertices,
                                              size_t *size) VG_API_EXIT;
 
-/* context MonkVG */
+/**
+ * @brief Creates a MonkVG context with the specified rendering backend.
+ *
+ * @param width width of the rendering surface
+ * @param height height of the rendering surface
+ * @param backend the rendering backend type.  NOTE: Must be compiled with the
+ * correct backend type.
+ * @return VG_API_CALL
+ */
 VG_API_CALL VGboolean vgCreateContextMNK(VGint width, VGint height,
                                          VGRenderingBackendTypeMNK backend);
-VG_API_CALL void      vgResizeSurfaceMNK(VGint width, VGint height);
-VG_API_CALL void      vgDestroyContextMNK(void);
+
+/**
+ * @brief Handle surface resize events.
+ *
+ * @param width new surface width
+ * @param height new surface height
+ * @return * VG_API_CALL
+ */
+VG_API_CALL void vgResizeSurfaceMNK(VGint width, VGint height);
+
+/**
+ * @brief Cleans up MonkVG context.
+ *
+ * @return VG_API_CALL
+ */
+VG_API_CALL void vgDestroyContextMNK(void);
+
+/**
+ * @brief Set Vulkan context for MonkVG.
+ *
+ * @param instance The Vulkan instance
+ * @param physical_device The Vulkan physical device
+ * @param logical_device The Vulkan logical device
+ * @param render_pass The Vulkan render pass
+ * @param command_buffer The Vulkan command buffer
+ * @param descriptor_pool The Vulkan descriptor pool. If null handle then MonkVG
+ * will create one.
+ * @return VG_API_CALL
+ */
+VG_API_CALL VGboolean vgSetVulkanContextMNK(
+    void *instance, void *physical_device, void *logical_device,
+    void *render_pass, void *command_buffer, void *descriptor_pool);
 
 /* Helper function for things like camera
  */
+
+/**
+ * @brief Push an orthographic camera onto the matrix stack.
+ * NOTE: OpenVG has 0,0 as the bottom left corner.
+ *
+ * @param left
+ * @param right
+ * @param bottom
+ * @param top
+ * @param near
+ * @param far
+ * @return VG_API_CALL
+ */
 VG_API_CALL void vgPushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
                                    VGfloat top, VGfloat near, VGfloat far);
+
+/**
+ * @brief Pop the orthographic camera off the matrix stack.
+ *
+ * @return * VG_API_CALL
+ */
 VG_API_CALL void vgPopOrthoCamera();
 
 #ifdef __cplusplus

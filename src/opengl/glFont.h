@@ -15,11 +15,8 @@ namespace MonkVG {
 	class OpenGLFont : public IFont {
 	public:
 		
-		OpenGLFont();
-		
+		OpenGLFont(IContext& context);		
 		virtual ~OpenGLFont();
-		
-	private:
 		
 	};
 }

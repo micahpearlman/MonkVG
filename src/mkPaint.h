@@ -11,6 +11,7 @@
 #define __mkPaint_h__
 
 #include "mkBaseObject.h"
+#include "mkTypes.h"
 #include <vector>
 #include <array>
 
@@ -18,14 +19,9 @@ namespace MonkVG {
 
 class IPaint : public BaseObject {
   public:
-    IPaint()
-        : BaseObject(),
-          _paintType(VG_PAINT_TYPE_COLOR) // default paint type is color
-          ,
-          _isDirty(true) {}
-    virtual ~IPaint() = default;
-
     inline BaseObject::Type getType() const { return BaseObject::kPaintType; }
+
+    virtual ~IPaint();
 
     //// parameter accessors/mutators ////
     virtual VGint   getParameteri(const VGint p) const;
@@ -36,30 +32,56 @@ class IPaint : public BaseObject {
     virtual void    setParameter(const VGint p, const VGfloat *fv,
                                  const VGint cnt);
 
-    const std::array<VGfloat, 4> getPaintColor() const { return _paintColor; }
+    const color_t &getPaintColor() const { return _paintColor; }
 
-    VGPaintType  getPaintType() { return _paintType; }
+    VGPaintType  getPaintType() const { return _paintType; }
     virtual void setPaintType(VGPaintType t) { _paintType = t; }
 
-    virtual bool isDirty() { return _isDirty; }
+    virtual bool isDirty() const { return _isDirty; }
     virtual void setIsDirty(bool b) { _isDirty = b; }
 
+    const std::vector<gradient_stop_t> &getColorRampStops() const {
+        return _colorRampStops;
+    }
+    const VGColorRampSpreadMode getColorRampSpreadMode() const {
+        return _colorRampSpreadMode;
+    }
+    const std::array<VGfloat, 4> &getLinearGradient() const {
+        return _paintLinearGradient;
+    }
+    const std::array<VGfloat, 5> &getRadialGradient() const {
+        return _paintRadialGradient;
+    }
+    const std::array<VGfloat, 6> &get2x3Gradient() const {
+        return _paint2x3Gradient;
+    }
+
+    void    buildGradientImage(VGfloat pathWidth, VGfloat pathHeight);
+    VGImage getGradientImage() { return _gradientImage; }
+
   protected:
-    bool _isDirty;
+    IPaint(IContext &context)
+        : BaseObject(context),
+          _paintType(VG_PAINT_TYPE_COLOR) // default paint type is color
+          ,
+          _isDirty(true) {}
 
-    VGPaintType            _paintType;
-    std::array<VGfloat, 4> _paintColor;
-    VGColorRampSpreadMode  _colorRampSpreadMode;
-    VGboolean              _colorRampPremultiplied;
-    std::array<VGfloat, 4> _paintLinearGradient;
-    std::array<VGfloat, 5> _paintRadialGradient;
-    std::array<VGfloat, 6> _paint2x3Gradient;
-    VGTilingMode           _patternTilingMode;
+    bool _isDirty = true;
 
-    struct Stop_t {
-        VGfloat a[5];
-    };
-    std::vector<Stop_t> _colorRampStops;
+    VGPaintType           _paintType              = VG_PAINT_TYPE_COLOR;
+    color_t               _paintColor             = {1.0f, 1.0f, 1.0f, 1.0f};
+    VGColorRampSpreadMode _colorRampSpreadMode    = VG_COLOR_RAMP_SPREAD_PAD;
+    VGboolean             _colorRampPremultiplied = VG_FALSE;
+    VGTilingMode          _patternTilingMode      = VG_TILE_FILL;
+
+    // gradient specific parameters
+    std::array<VGfloat, 4> _paintLinearGradient  = {0.0f, 0.0f, 0.0f, 0.0f};
+    std::array<VGfloat, 5> _paintRadialGradient  = {0.0f, 0.0f, 0.0f, 0.0f,
+                                                    0.0f};
+    std::array<VGfloat, 6> _paint2x3Gradient     = {0.0f, 0.0f, 0.0f,
+                                                    0.0f, 0.0f, 0.0f};
+    std::vector<gradient_stop_t> _colorRampStops = {};
+    VGImage                      _gradientImage  = VG_INVALID_HANDLE;
 };
 
 } // namespace MonkVG
