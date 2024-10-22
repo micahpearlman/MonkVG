@@ -13,6 +13,7 @@
 #include "vkPath.h"
 #include "vkColorPipeline.h"
 #include "vkTexturePipeline.h"
+#include "vkPaint.h"
 
 namespace MonkVG {
 //// singleton implementation ////
@@ -51,7 +52,7 @@ IPath *VulkanContext::createPath(VGint path_format, VGPathDatatype datatype,
     VulkanPath *path = new VulkanPath(
         path_format, datatype, scale, bias, segment_capacity_hint,
         coord_capacity_hint, capabilities &= VG_PATH_CAPABILITY_ALL, *this);
-    if (path == 0) {
+    if (path == nullptr) {
         SetError(VG_OUT_OF_MEMORY_ERROR);
     }
 
@@ -64,7 +65,13 @@ void VulkanContext::destroyPath(IPath *path) {
     }
 }
 
-IPaint *VulkanContext::createPaint() { return nullptr; }
+IPaint *VulkanContext::createPaint() {
+    VulkanPaint *paint = new VulkanPaint(*this);
+    if (paint == nullptr) {
+        SetError(VG_OUT_OF_MEMORY_ERROR);
+    }
+    return (IPaint *)paint;
+}    
 
 void VulkanContext::destroyPaint(IPaint *paint) {
     if (paint) {
@@ -111,10 +118,10 @@ void VulkanContext::finish() {}
 
 void VulkanContext::resize() {
     // setup the Vulkan viewport
-    _viewport.x      = 0;
-    _viewport.y      = 0;
-    _viewport.width  = getWidth();
-    _viewport.height = getHeight();
+    _viewport.x        = 0;
+    _viewport.y        = 0;
+    _viewport.width    = getWidth();
+    _viewport.height   = getHeight();
     _viewport.minDepth = 0.0f;
     _viewport.maxDepth = 1.0f;
 
@@ -127,13 +134,11 @@ void VulkanContext::resize() {
     pushOrthoCamera(0, getWidth(), 0, getHeight(), -1, 1);
 }
 
-
 void VulkanContext::startBatch(IBatch *batch) {}
 
 void VulkanContext::dumpBatch(IBatch *batch, void **vertices, size_t *size) {}
 
 void VulkanContext::endBatch(IBatch *batch) {}
-
 
 bool VulkanContext::setVulkanContext(VkInstance       instance,
                                      VkPhysicalDevice physical_device,

@@ -48,6 +48,7 @@ bool VulkanPath::draw(VGbitfield paint_modes) {
         if (_fill_paint) {
             if (_fill_paint->getPaintType() == VG_PAINT_TYPE_COLOR) {
                 // get the color pipeline
+                getVulkanContext().getColorPipeline().setColor(_fill_paint->getPaintColor());
                 getVulkanContext().getColorPipeline().bind();
             } else if (_fill_paint->getPaintType() ==
                        VG_PAINT_TYPE_LINEAR_GRADIENT) {
@@ -95,6 +96,9 @@ void VulkanPath::clear(VGbitfield caps) {}
 
 void VulkanPath::buildFillIfDirty() {
     IPaint *current_fill_paint = getContext().getFillPaint();
+
+    // TODO: do not necessarily need to rebuild the fill if the paint only
+    // changed color
     if (current_fill_paint != _fill_paint) {
         _fill_paint = (VulkanPaint *)current_fill_paint;
         setFillDirty(true);

@@ -25,6 +25,12 @@ class ColorPipeline : public VulkanGraphicsPipeline<ColorPipeline_UBO> {
   public:
     ColorPipeline(VulkanContext &context);
     virtual ~ColorPipeline();
+
+    void setColor(const glm::vec4 &color) { _ubo_data.u_color = color; }
+    void setColor(const color_t& color) {
+        _ubo_data.u_color = glm::vec4(color[0], color[1], color[2], color[3]);
+    }
+    const glm::vec4 &getColor() const { return _ubo_data.u_color; }
 };
 } // namespace MonkVG
 #endif // __VK_COLOR_PIPELINE_H__

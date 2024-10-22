@@ -90,6 +90,7 @@ void IPaint::setParameter(const VGint p, const VGfloat *fv, const VGint cnt) {
         }
         break;
     case VG_PAINT_COLOR_RAMP_STOPS:
+        _colorRampStops.clear();
         for (int j = 0; j < cnt / 5; j++) {
             gradient_stop_t stop;
             for (int p = 0; p < 5; p++) {
@@ -112,7 +113,7 @@ void IPaint::setParameter(const VGint p, const VGfloat *fv, const VGint cnt) {
 
 void IPaint::buildGradientImage(VGfloat pathWidth, VGfloat pathHeight) {
     if (_gradientImage != VG_INVALID_HANDLE) {
-        getContext().destroyImage((IImage*)_gradientImage);
+        getContext().destroyImage((IImage *)_gradientImage);
     }
     if (getPaintType() == VG_PAINT_TYPE_LINEAR_GRADIENT) {
         _gradientImage = buildLinearGradientImage(

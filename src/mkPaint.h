@@ -32,7 +32,7 @@ class IPaint : public BaseObject {
     virtual void    setParameter(const VGint p, const VGfloat *fv,
                                  const VGint cnt);
 
-    const std::array<VGfloat, 4> getPaintColor() const { return _paintColor; }
+    const color_t &getPaintColor() const { return _paintColor; }
 
     VGPaintType  getPaintType() const { return _paintType; }
     virtual void setPaintType(VGPaintType t) { _paintType = t; }
@@ -56,7 +56,7 @@ class IPaint : public BaseObject {
         return _paint2x3Gradient;
     }
 
-    void buildGradientImage(VGfloat pathWidth, VGfloat pathHeight);
+    void    buildGradientImage(VGfloat pathWidth, VGfloat pathHeight);
     VGImage getGradientImage() { return _gradientImage; }
 
   protected:
@@ -68,11 +68,11 @@ class IPaint : public BaseObject {
 
     bool _isDirty = true;
 
-    VGPaintType            _paintType              = VG_PAINT_TYPE_COLOR;
-    std::array<VGfloat, 4> _paintColor             = {1.0f, 1.0f, 1.0f, 1.0f};
-    VGColorRampSpreadMode  _colorRampSpreadMode    = VG_COLOR_RAMP_SPREAD_PAD;
-    VGboolean              _colorRampPremultiplied = VG_FALSE;
-    VGTilingMode           _patternTilingMode      = VG_TILE_FILL;
+    VGPaintType           _paintType              = VG_PAINT_TYPE_COLOR;
+    color_t               _paintColor             = {1.0f, 1.0f, 1.0f, 1.0f};
+    VGColorRampSpreadMode _colorRampSpreadMode    = VG_COLOR_RAMP_SPREAD_PAD;
+    VGboolean             _colorRampPremultiplied = VG_FALSE;
+    VGTilingMode          _patternTilingMode      = VG_TILE_FILL;
 
     // gradient specific parameters
     std::array<VGfloat, 4> _paintLinearGradient  = {0.0f, 0.0f, 0.0f, 0.0f};
