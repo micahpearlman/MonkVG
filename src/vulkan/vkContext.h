@@ -140,16 +140,30 @@ class VulkanContext : public IContext {
     }
 
     /**
-     * @brief Get the color pipeline
+     * @brief Get the color triangle pipeline
      *
      */
-    ColorPipeline &getColorPipeline() const { return *_color_pipeline; }
+    ColorPipeline &getColorTrianglePipeline() const { return *_color_triangle_pipeline; }
 
     /**
-     * @brief Get the texture pipeline
+     * @brief Get the texture triangle pipeline
      *
      */
-    TexturePipeline &getTexturePipeline() const { return *_texture_pipeline; }
+    TexturePipeline &getTextureTrianglePipeline() const { return *_texture_triangle_pipeline; }
+
+    /**
+     * @brief Get the Color Triangle Strip Pipeline object
+     * 
+     * @return ColorPipeline& 
+     */
+    ColorPipeline &getColorTriangleStripPipeline() const { return *_color_tristrip_pipeline; }
+
+    /**
+     * @brief Get the Texture Triangle Strip Pipeline object
+     * 
+     * @return TexturePipeline& 
+     */
+    TexturePipeline &getTextureTriangleStripPipeline() const { return *_texture_tristrip_pipeline; }
 
   private: /// Vulkan state passed in by the application
     VkInstance       _instance        = VK_NULL_HANDLE;
@@ -163,8 +177,10 @@ class VulkanContext : public IContext {
 
   private: /// Internal Vulkan state
     // Graphics Pipelines
-    std::unique_ptr<ColorPipeline>   _color_pipeline   = nullptr;
-    std::unique_ptr<TexturePipeline> _texture_pipeline = nullptr;
+    std::unique_ptr<ColorPipeline>   _color_triangle_pipeline   = nullptr;
+    std::unique_ptr<ColorPipeline>   _color_tristrip_pipeline   = nullptr;
+    std::unique_ptr<TexturePipeline> _texture_triangle_pipeline = nullptr;
+    std::unique_ptr<TexturePipeline> _texture_tristrip_pipeline = nullptr;
 
     // Viewport & Scissor
     VkViewport _viewport = {};

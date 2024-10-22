@@ -23,7 +23,7 @@ struct ColorPipeline_UBO {
 
 class ColorPipeline : public VulkanGraphicsPipeline<ColorPipeline_UBO> {
   public:
-    ColorPipeline(VulkanContext &context);
+    ColorPipeline(VulkanContext &context, VkPrimitiveTopology topology);
     virtual ~ColorPipeline();
 
     void setColor(const glm::vec4 &color) { _ubo_data.u_color = color; }

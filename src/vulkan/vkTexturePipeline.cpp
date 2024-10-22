@@ -23,10 +23,10 @@ const static uint32_t texture_frag[] =
     ;
 
 namespace MonkVG {
-TexturePipeline::TexturePipeline(VulkanContext &context)
+TexturePipeline::TexturePipeline(VulkanContext &context, VkPrimitiveTopology topology)
     : VulkanGraphicsPipeline<TexturePipeline_UBO>(
           context, texture_vert, sizeof(texture_vert), texture_frag,
-          sizeof(texture_frag)) {
+          sizeof(texture_frag), topology) {
 
     // Define vertex input binding description
     VkVertexInputBindingDescription binding_desc = {};

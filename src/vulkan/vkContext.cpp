@@ -30,8 +30,8 @@ bool VulkanContext::Initialize() {
 }
 
 bool VulkanContext::Terminate() {
-    _color_pipeline.reset();
-    _texture_pipeline.reset();
+    _color_triangle_pipeline.reset();
+    _texture_triangle_pipeline.reset();
 
     if (_allocator != VK_NULL_HANDLE) {
         vmaDestroyAllocator(_allocator);
@@ -152,6 +152,7 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
     _phys_dev       = physical_device;
     _command_buffer = command_buffer;
 
+    
     // create the memory allocator
     VmaAllocatorCreateInfo allocator_info = {};
     allocator_info.physicalDevice         = physical_device;
@@ -213,37 +214,11 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
     color_vertex_state.pVertexAttributeDescriptions =
         vertex_input_attribs.data();
 
-    // _color_pipeline = std::make_unique<VulkanGraphicsPipeline>(
-    //     *this, color_vert, sizeof(color_vert), color_frag,
-    //     sizeof(color_frag), color_vertex_state);
-    _color_pipeline = std::make_unique<ColorPipeline>(*this);
+    _color_triangle_pipeline = std::make_unique<ColorPipeline>(*this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+    _color_tristrip_pipeline = std::make_unique<ColorPipeline>(*this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);    
 
-    /// Texture Pipeline
-    // for the texture pipeline the vertex type is a 2d position and a 2d uv
-    // VkVertexInputAttributeDescription uv_attrib = {};
-    // uv_attrib.binding                           = 0;
-    // uv_attrib.location                          = 1;
-    // uv_attrib.format                            = VK_FORMAT_R32G32_SFLOAT;
-    // uv_attrib.offset = offsetof(textured_vertex_2d_t, uv);
-    // vertex_input_attribs.push_back(uv_attrib);
-
-    // binding_desc.stride =
-    //     sizeof(textured_vertex_2d_t); // reset the stride to be the sizeof
-    //                                   // texture vertex
-
-    // VkPipelineVertexInputStateCreateInfo texture_vertex_state = {};
-    // texture_vertex_state.sType =
-    //     VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    // texture_vertex_state.vertexBindingDescriptionCount = 1;
-    // texture_vertex_state.pVertexBindingDescriptions    = &binding_desc;
-    // texture_vertex_state.vertexAttributeDescriptionCount =
-    //     vertex_input_attribs.size();
-    // texture_vertex_state.pVertexAttributeDescriptions =
-    //     vertex_input_attribs.data();
-
-    // _texture_pipeline = std::make_unique<VulkanGraphicsPipeline>(
-    //     *this, texture_vert, sizeof(texture_vert), texture_frag,
-    //     sizeof(texture_frag), texture_vertex_state);
+    // TODO: create the texture pipelines
+    
     return true;
 }
 

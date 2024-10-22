@@ -22,7 +22,7 @@ struct TexturePipeline_UBO {
 
 class TexturePipeline : public VulkanGraphicsPipeline<TexturePipeline_UBO> {
   public:
-    TexturePipeline(VulkanContext &context);
+    TexturePipeline(VulkanContext &context, VkPrimitiveTopology topology);
     virtual ~TexturePipeline();
 };
 

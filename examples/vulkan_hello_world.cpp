@@ -702,7 +702,7 @@ int main(int, char **) {
 
     VGPaint stroke_paint = vgCreatePaint();
     vgSetPaint(stroke_paint, VG_STROKE_PATH);
-    VGfloat stroke_color[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+    VGfloat stroke_color[4] = {0.0f, 0.0f, 1.0f, 1.0f};
     vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
 
     while (!glfwWindowShouldClose(vulkan_test_ctx.glfw_window)) {

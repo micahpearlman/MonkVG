@@ -11,7 +11,6 @@
 #include "vkColorPipeline.h"
 #include <glm/gtc/matrix_transform.hpp>
 
-
 const static uint32_t color_vert[] =
 #include "shaders/color.vert.h"
     ;
@@ -20,10 +19,8 @@ const static uint32_t color_frag[] =
 #include "shaders/color.frag.h"
     ;
 
-
-// DEBUG: if you uncomment the following code you should see a triangle rendered.
-// const static uint32_t color_vert[] =
-// #include "shaders/test.vert.h"
+// DEBUG: if you uncomment the following code you should see a triangle
+// rendered. const static uint32_t color_vert[] = #include "shaders/test.vert.h"
 //     ;
 
 // const static uint32_t color_frag[] =
@@ -32,10 +29,11 @@ const static uint32_t color_frag[] =
 
 namespace MonkVG {
 
-ColorPipeline::ColorPipeline(VulkanContext &context)
+ColorPipeline::ColorPipeline(VulkanContext      &context,
+                             VkPrimitiveTopology topology)
     : VulkanGraphicsPipeline<ColorPipeline_UBO>(context, color_vert,
                                                 sizeof(color_vert), color_frag,
-                                                sizeof(color_frag)) {
+                                                sizeof(color_frag), topology) {
 
     // Define vertex input binding description
     VkVertexInputBindingDescription binding_desc = {};
@@ -65,20 +63,18 @@ ColorPipeline::ColorPipeline(VulkanContext &context)
     color_vertex_state.pVertexAttributeDescriptions =
         vertex_input_attribs.data();
 
-
     _pipeline = createPipeline(color_vertex_state);
     if (_pipeline == VK_NULL_HANDLE) {
         throw std::runtime_error("failed to create pipeline");
     }
 
     // set some sane defaults
-    _ubo_data.u_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    _ubo_data.u_color      = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
     _ubo_data.u_projection = glm::ortho(0.0f, (float)context.getWidth(), 0.0f,
                                         (float)context.getHeight());
     // _ubo_data.u_model_view = glm::mat4(1.0f);
     // _ubo_data.u_model_view = glm::translate(_ubo_data.u_model_view,
     //                                         glm::vec3(1.0f, 1.0f, 0.0f));
-
 }
 
 ColorPipeline::~ColorPipeline() {}

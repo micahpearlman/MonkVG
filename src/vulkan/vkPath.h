@@ -28,12 +28,12 @@ class VulkanPath : public IPath {
     void buildFillIfDirty() override;
     void buildStrokeIfDirty() override;
 
-private:
-    VulkanContext& getVulkanContext();
+  private:
+    VulkanContext &getVulkanContext();
 
   private:
-    std::vector<float> _fill_vertices   = {};
-    std::vector<float> _stroke_vertices = {};
+    std::vector<float>       _fill_vertices   = {};
+    std::vector<vertex_2d_t> _stroke_vertices = {};
 
     VulkanPaint *_fill_paint   = nullptr;
     VulkanPaint *_stroke_paint = nullptr;

@@ -17,16 +17,16 @@
 #include "vkPlatform.h"
 #include <glm/glm.hpp>
 
-
 namespace MonkVG {
 
 template <typename T_UBO> class VulkanGraphicsPipeline {
   public:
     VulkanGraphicsPipeline(VulkanContext &context, const uint32_t *vertex_src,
-                           const size_t    vert_src_sz,
-                           const uint32_t *fragment_src,
-                           const size_t    frag_src_sz)
-        : _context(static_cast<VulkanContext &>(context)) {
+                           const size_t        vert_src_sz,
+                           const uint32_t     *fragment_src,
+                           const size_t        frag_src_sz,
+                           VkPrimitiveTopology topology)
+        : _context(static_cast<VulkanContext &>(context)), _topology(topology) {
 
         if (!compile(vertex_src, vert_src_sz, fragment_src, frag_src_sz)) {
             throw std::runtime_error("failed to compile shader");
@@ -77,19 +77,18 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         }
 
         VkDescriptorBufferInfo desc_buffer_info = {};
-        desc_buffer_info.buffer = _uniform_buffer;
-        desc_buffer_info.offset = 0;
-        desc_buffer_info.range  = sizeof(T_UBO);
+        desc_buffer_info.buffer                 = _uniform_buffer;
+        desc_buffer_info.offset                 = 0;
+        desc_buffer_info.range                  = sizeof(T_UBO);
 
         VkWriteDescriptorSet descriptor_write = {};
-        descriptor_write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descriptor_write.dstSet = _descriptor_set;
+        descriptor_write.sType      = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descriptor_write.dstSet     = _descriptor_set;
         descriptor_write.dstBinding = 0;
         descriptor_write.dstArrayElement = 0;
-        descriptor_write.descriptorType =
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descriptor_write.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         descriptor_write.descriptorCount = 1;
-        descriptor_write.pBufferInfo    = &desc_buffer_info;
+        descriptor_write.pBufferInfo     = &desc_buffer_info;
 
         vkUpdateDescriptorSets(getVulkanContext().getVulkanLogicalDevice(), 1,
                                &descriptor_write, 0, nullptr);
@@ -150,11 +149,10 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         // vmaFlushAllocation(getVulkanContext().getVulkanAllocator(),
         //                    _uniform_buffer_allocation, 0, VK_WHOLE_SIZE);
 
-        vkCmdBindDescriptorSets(
-            getVulkanContext().getVulkanCommandBuffer(),
-            VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline_layout, 0, 1,
-            &_descriptor_set, 0, nullptr);
-
+        vkCmdBindDescriptorSets(getVulkanContext().getVulkanCommandBuffer(),
+                                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                _pipeline_layout, 0, 1, &_descriptor_set, 0,
+                                nullptr);
 
         vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
                           VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
@@ -214,7 +212,7 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         VkPipelineInputAssemblyStateCreateInfo input_assembly = {};
         input_assembly.sType =
             VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-        input_assembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        input_assembly.topology = getTopology();
         input_assembly.primitiveRestartEnable = VK_FALSE;
 
         VkPipelineViewportStateCreateInfo viewport_state = {};
@@ -375,6 +373,11 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
 
         return shader_module;
     }
+
+    const VkPrimitiveTopology &getTopology() const { return _topology; }
+
+  protected:
+    VkPrimitiveTopology _topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 
 }; // VulkanGraphicsPipeline
 
