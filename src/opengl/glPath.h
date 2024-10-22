@@ -32,19 +32,18 @@ class OpenGLPath : public IPath {
     void buildStrokeIfDirty() override;
 
   private:
-    struct v2_t {
-        GLfloat x, y;
-    };
+    // struct v2_t {
+    //     GLfloat x, y;
+    // };
 
-
-    struct textured_vertex_t {
-        GLfloat v[2];
-        GLfloat uv[2];
-    };
+    // struct textured_vertex_t {
+    //     GLfloat v[2];
+    //     GLfloat uv[2];
+    // };
 
   private:
-    std::vector<GLfloat> _fill_vertices = {};
-    std::vector<v2_t>    _stroke_verts  = {};
+    std::vector<float>       _fill_vertices = {};
+    std::vector<vertex_2d_t> _stroke_verts  = {};
 
     GLuint _fill_vbo   = GL_UNDEFINED;
     GLuint _fill_vao   = GL_UNDEFINED;
@@ -57,13 +56,6 @@ class OpenGLPath : public IPath {
     OpenGLPaint *_stroke_paint     = nullptr;
 
     void buildOpenGLBuffers(VGbitfield paintModes);
-
-  private: // utility methods
-
-    // TODO: move this to tessellator
-    void buildStroke();
-    void buildFatLineSegment(std::vector<v2_t> &vertices, const v2_t &p0,
-                             const v2_t &p1, const float stroke_width);
 };
 } // namespace MonkVG
 

@@ -19,16 +19,18 @@
 namespace MonkVG {
 class GLUTessellator : public ITessellator {
   public:
-    GLUTessellator(IContext &context);
+    GLUTessellator();
     virtual ~GLUTessellator() = default;
 
     void tessellate(const std::vector<VGubyte> &segments,
                     const std::vector<VGfloat> &coords,
-                    std::vector<VGfloat>       &vertices,
-                    bounding_box_t             &bounding_box) override;
+                    const VGFillRule fill_rule, const uint32_t tess_iterations,
+                    std::vector<VGfloat> &vertices,
+                    bounding_box_t       &bounding_box) override;
 
-    void tessellate(IPath *path, std::vector<VGfloat> &vertices,
-                    bounding_box_t &bounding_box) override;
+    void tessellate(IPath *path, const uint32_t tess_iterations,
+                    std::vector<VGfloat> &vertices,
+                    bounding_box_t       &bounding_box) override;
 
   private:
     /**

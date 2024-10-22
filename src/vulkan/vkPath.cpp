@@ -12,6 +12,8 @@
 #include "vkContext.h"
 #include "vkColorPipeline.h"
 #include "vkTexturePipeline.h"
+
+#error "TODO: finish stroke implementation"
 namespace MonkVG {
 VulkanPath::VulkanPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,
                        VGfloat bias, VGint segmentCapacityHint,

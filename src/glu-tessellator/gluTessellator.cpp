@@ -14,7 +14,7 @@
 
 namespace MonkVG {
 
-GLUTessellator::GLUTessellator(IContext &context) : ITessellator(context) {
+GLUTessellator::GLUTessellator() : ITessellator() {
     // BUGBUG: wanted to avoid resizing as we pass a pointer to the data
     // in gluTessVertex
     // _tess_verts.reserve(1024);
@@ -22,6 +22,8 @@ GLUTessellator::GLUTessellator(IContext &context) : ITessellator(context) {
 
 void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
                                 const std::vector<VGfloat> &fcoords,
+                                const VGFillRule           fill_rule,
+                                const uint32_t              tess_iterations,
                                 std::vector<VGfloat>       &vertices,
                                 bounding_box_t             &bounding_box) {
 
@@ -31,8 +33,8 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
     // create the tesselator
     _glu_tessellator = gluNewTess();
     _tess_verts.clear();
-    _start_vert = {0,0};
-    _last_vert = {0,0};
+    _start_vert = {0, 0};
+    _last_vert  = {0, 0};
 
     // set the callback functions
     gluTessCallback(_glu_tessellator, GLU_TESS_BEGIN_DATA,
@@ -46,10 +48,10 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
     gluTessCallback(_glu_tessellator, GLU_TESS_ERROR,
                     (GLvoid(APIENTRY *)()) & GLUTessellator::tessError);
 
-    if (getContext().getFillRule() == VG_EVEN_ODD) {
+    if (fill_rule == VG_EVEN_ODD) {
         gluTessProperty(_glu_tessellator, GLU_TESS_WINDING_RULE,
                         GLU_TESS_WINDING_ODD);
-    } else if (getContext().getFillRule() == VG_NON_ZERO) {
+    } else {
         gluTessProperty(_glu_tessellator, GLU_TESS_WINDING_RULE,
                         GLU_TESS_WINDING_NONZERO);
     }
@@ -149,7 +151,7 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
             VGfloat cp1x = 2.0f * cp2x - p3x;
             VGfloat cp1y = 2.0f * cp2y - p3y;
 
-            VGfloat increment = 1.0f / getContext().getTessellationIterations();
+            VGfloat increment = 1.0f / float(tess_iterations);
             for (VGfloat t = increment; t < 1.0f + increment; t += increment) {
                 v3_t c;
                 c.x         = calcCubicBezier1d(coords.x, cp1x, cp2x, p3x, t);
@@ -186,7 +188,7 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
                 p3y += prev.y;
             }
 
-            VGfloat increment = 1.0f / getContext().getTessellationIterations();
+            VGfloat increment = 1.0f / float(tess_iterations);
             for (VGfloat t = increment; t < 1.0f + increment; t += increment) {
                 v3_t c;
                 c.x         = calcCubicBezier1d(coords.x, cp1x, cp2x, p3x, t);
@@ -218,7 +220,7 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
                 py += prev.y;
             }
 
-            VGfloat increment = 1.0f / getContext().getTessellationIterations();
+            VGfloat increment = 1.0f / float(tess_iterations);
             for (VGfloat t = increment; t < 1.0f + increment; t += increment) {
                 v3_t c;
                 c.x         = calcQuadBezier1d(coords.x, cpx, px, t);
@@ -264,10 +266,10 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
             if (success) {
                 // see:
                 // http://en.wikipedia.org/wiki/Ellipse#Ellipses_in_computer_graphics
-                const int steps   = getContext().getTessellationIterations();
-                VGfloat   beta    = 0; // angle. todo
-                VGfloat   sinbeta = sinf(beta);
-                VGfloat   cosbeta = cosf(beta);
+                const uint32_t steps   = tess_iterations;
+                VGfloat        beta    = 0; // angle. todo
+                VGfloat        sinbeta = sinf(beta);
+                VGfloat        cosbeta = cosf(beta);
 
                 // calculate the start and end angles
                 vertex_2d_t center;
@@ -351,7 +353,8 @@ void GLUTessellator::tessellate(const std::vector<VGubyte> &segments,
     _out_bounding_box = nullptr;
 }
 
-void GLUTessellator::tessellate(IPath *path, std::vector<VGfloat> &vertices,
+void GLUTessellator::tessellate(IPath *path, const uint32_t tess_iterations,
+                                std::vector<VGfloat> &vertices,
                                 bounding_box_t &bounding_box) {
     throw std::runtime_error("Not implemented");
 }
@@ -371,13 +374,14 @@ void GLUTessellator::tessEnd(GLvoid *user) {
  * in the tesselation. We use this to convert the 3D vertex to a 2D vertex
  * and add it to the vertex list. We also convert triangle fans and strips
  * to triangles.
- * 
- * @param vertex 
- * @param user 
+ *
+ * @param vertex
+ * @param user
  */
 void GLUTessellator::tessVertex(GLvoid *vertex, GLvoid *user) {
-    GLUTessellator *me = (GLUTessellator *)user;
-    std::array<GLdouble,2> v  = {((GLdouble *)vertex)[0], ((GLdouble *)vertex)[1]};
+    GLUTessellator         *me = (GLUTessellator *)user;
+    std::array<GLdouble, 2> v  = {((GLdouble *)vertex)[0],
+                                  ((GLdouble *)vertex)[1]};
 
     if (me->primType() == GL_TRIANGLE_FAN) {
         // break up fans and strips into triangles

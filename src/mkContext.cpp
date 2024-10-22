@@ -118,7 +118,7 @@ IContext::IContext() {
     setImageMode(_image_mode); 
 
 #if defined(MNKVG_GLU_TESSELATION)
-    _tessellator = std::make_unique<GLUTessellator>(*this);
+    _tessellator = std::make_unique<GLUTessellator>();
 #else
     static_assert(false, "No tessellator defined");
 #endif
