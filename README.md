@@ -4,7 +4,7 @@ MonkVG: An OpenVG implementation
 
 ## Overview
 
-MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an Vulkan or OpenGL 3.3 backend that should be compatible with any HW that supports Vulkan or OpenGL.
+MonkVG is an OpenVG 1.1 *like* vector graphics API implementation currently using an Vulkan 1.1 or OpenGL 3.3 backend that should be compatible with any HW that supports Vulkan or OpenGL.
 
 This is an open source BSD licensed project that is in active development. Contributors and sponsors welcome.
 
@@ -17,6 +17,7 @@ Projects using MonkVG include:
 
 ## Whats New
 
+- (10/22/2024) Added Vulkan 1.1 backend.  
 - (9/6/2024) Complete refactor of the code base.  Currently only OpenGL 3.3 backend is supported.
 - (2/17/2022) CMake build support and GLFW example.
 - (1/22/2012) Now supports OpenGL ES 1.1 *AND* 2.0 (NOTE: as of 9/6/2024 only OpenGL 3.3 is supported)
@@ -30,8 +31,6 @@ Use git to clone:
 git clone --recursive https://github.com/micahpearlman/MonkVG.git
 ```
 
-There are currently, GLFW (see `./examples` diectory).  Also, *VERY OLD* iOS and OSX XCode 4 projects as well as *VERY OLD* contributed Android projects (thanks Paul Holden)and Windows project (thanks Vincent Richomme).
-
 Examples requires the GLFW library to be installed.  On MacOS:
 
 ```
@@ -43,6 +42,13 @@ Debian/Ubuntu:
 ```
 sudo apt-get install libglfw3-dev
 ```
+
+For MacOS Vulkan support install MoltenVK:
+
+```
+brew install molten-vk
+```
+
 ### CMake Build
 
 ```

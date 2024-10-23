@@ -30,13 +30,18 @@ bool VulkanContext::Initialize() {
 }
 
 bool VulkanContext::Terminate() {
+    // destroy the pipelines
     _color_triangle_pipeline.reset();
+    _color_tristrip_pipeline.reset();
     _texture_triangle_pipeline.reset();
+    _texture_tristrip_pipeline.reset();
 
     if (_allocator != VK_NULL_HANDLE) {
         vmaDestroyAllocator(_allocator);
         _allocator = VK_NULL_HANDLE;
     }
+    
+    // if we own the descriptor pool then destroy it
     if (_own_descriptor_pool && _descriptor_pool != VK_NULL_HANDLE) {
         vkDestroyDescriptorPool(_logical_dev, _descriptor_pool, nullptr);
         _descriptor_pool = VK_NULL_HANDLE;
@@ -218,7 +223,7 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
     _color_tristrip_pipeline = std::make_unique<ColorPipeline>(*this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);    
 
     // TODO: create the texture pipelines
-    
+
     return true;
 }
 
