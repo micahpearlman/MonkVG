@@ -39,6 +39,11 @@ class BaseObject {
     BaseObject(IContext &context) : _context(context) { incRef(); }
     virtual ~BaseObject() = default;
 
+    /**
+     * @brief Get the Type object
+     * 
+     * @return BaseObject::Type 
+     */
     virtual BaseObject::Type getType() const = 0;
 
     //// parameter accessors/mutators ////
@@ -57,6 +62,11 @@ class BaseObject {
             delete this;
     }
 
+    /**
+     * @brief Get the global context.
+     * 
+     * @return IContext& 
+     */
     IContext &getContext() { return _context; }
 
   protected:

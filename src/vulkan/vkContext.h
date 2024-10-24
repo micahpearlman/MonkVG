@@ -59,7 +59,6 @@ class VulkanContext : public IContext {
     void dumpBatch(IBatch *batch, void **vertices, size_t *size) override;
     void endBatch(IBatch *batch) override;
 
-
     // Vulkan specific
     /**
      * @brief Setup the Vulkan context for MonkVG from the application Vulkan
@@ -70,12 +69,17 @@ class VulkanContext : public IContext {
      * @param logical_dev Vulkan logical device
      * @param render_pass Vulkan render pass
      * @param command_buffer Vulkan command buffer
+     * @param command_pool Vulkan command pool
+     * @param graphics_queue Vulkan graphics queue
+     * @param descriptor_pool Vulkan descriptor pool. If null handle then MonkVG
+     * will create one.
      * @return true
      * @return false
      */
     bool setVulkanContext(VkInstance instance, VkPhysicalDevice physical_device,
                           VkDevice logical_dev, VkRenderPass render_pass,
-                          VkCommandBuffer  command_buffer,
+                          VkCommandBuffer command_buffer,
+                          VkCommandPool command_pool, VkQueue graphics_queue,
                           VkDescriptorPool descriptor_pool);
 
     /**
@@ -143,27 +147,51 @@ class VulkanContext : public IContext {
      * @brief Get the color triangle pipeline
      *
      */
-    ColorPipeline &getColorTrianglePipeline() const { return *_color_triangle_pipeline; }
+    ColorPipeline &getColorTrianglePipeline() const {
+        return *_color_triangle_pipeline;
+    }
 
     /**
      * @brief Get the texture triangle pipeline
      *
      */
-    TexturePipeline &getTextureTrianglePipeline() const { return *_texture_triangle_pipeline; }
+    TexturePipeline &getTextureTrianglePipeline() const {
+        return *_texture_triangle_pipeline;
+    }
 
     /**
      * @brief Get the Color Triangle Strip Pipeline object
-     * 
-     * @return ColorPipeline& 
+     *
+     * @return ColorPipeline&
      */
-    ColorPipeline &getColorTriangleStripPipeline() const { return *_color_tristrip_pipeline; }
+    ColorPipeline &getColorTriangleStripPipeline() const {
+        return *_color_tristrip_pipeline;
+    }
 
     /**
      * @brief Get the Texture Triangle Strip Pipeline object
-     * 
-     * @return TexturePipeline& 
+     *
+     * @return TexturePipeline&
      */
-    TexturePipeline &getTextureTriangleStripPipeline() const { return *_texture_tristrip_pipeline; }
+    TexturePipeline &getTextureTriangleStripPipeline() const {
+        return *_texture_tristrip_pipeline;
+    }
+
+    /**
+     * @brief Begin a single time command buffer. used for one off commands
+     * like copying data to the GPU.
+     *
+     * @return VkCommandBuffer
+     */
+    VkCommandBuffer beginSingleTimeCommands();
+
+    /**
+     * @brief End a single time command buffer. used for one off commands
+     * like copying data to the GPU.
+     *
+     * @param commandBuffer
+     */
+    void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
   private: /// Vulkan state passed in by the application
     VkInstance       _instance        = VK_NULL_HANDLE;
@@ -171,6 +199,8 @@ class VulkanContext : public IContext {
     VkDevice         _logical_dev     = VK_NULL_HANDLE;
     VkRenderPass     _render_pass     = VK_NULL_HANDLE;
     VkCommandBuffer  _command_buffer  = VK_NULL_HANDLE;
+    VkCommandPool    _command_pool    = VK_NULL_HANDLE;
+    VkQueue          _graphics_queue  = VK_NULL_HANDLE;
     VkDescriptorPool _descriptor_pool = VK_NULL_HANDLE;
 
     bool _own_descriptor_pool = false;

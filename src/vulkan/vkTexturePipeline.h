@@ -15,15 +15,46 @@
 
 namespace MonkVG {
 
-struct TexturePipeline_UBO {
+struct TexturePipeline_VertUBO {
     glm::mat4 u_model_view;
     glm::mat4 u_projection;
 };
 
-class TexturePipeline : public VulkanGraphicsPipeline<TexturePipeline_UBO> {
+struct TexturePipeline_FragUBO {
+    glm::vec4 u_color;
+};
+
+class TexturePipeline : public VulkanGraphicsPipeline<TexturePipeline_VertUBO,
+                                                      TexturePipeline_FragUBO> {
   public:
     TexturePipeline(VulkanContext &context, VkPrimitiveTopology topology);
     virtual ~TexturePipeline();
+
+    void bind() override;
+
+    // this pipeline uses a texture so we need to pass in the image info
+    // VkDescriptorImageInfo *getDescriptorImageInfo() override {
+    //     return &_descriptor_image_info;
+    // }
+
+    /**
+     * @brief Set the Texture object. Will update the descriptor set
+     * with the new texture.
+     *
+     * @param texture
+     */
+    void setTexture(VkImageView texture);
+
+    /**
+     * @brief Get the Texture object
+     *
+     * @return VkImageView
+     */
+    VkImageView getTexture() const { return _texture; }
+
+  protected:
+    VkImageView _texture = VK_NULL_HANDLE;
+    VkSampler   _sampler = VK_NULL_HANDLE;
 };
 
 } // namespace MonkVG

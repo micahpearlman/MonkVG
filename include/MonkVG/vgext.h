@@ -124,22 +124,6 @@ VG_API_CALL void vgResizeSurfaceMNK(VGint width, VGint height);
  */
 VG_API_CALL void vgDestroyContextMNK(void);
 
-/**
- * @brief Set Vulkan context for MonkVG.
- *
- * @param instance The Vulkan instance
- * @param physical_device The Vulkan physical device
- * @param logical_device The Vulkan logical device
- * @param render_pass The Vulkan render pass
- * @param command_buffer The Vulkan command buffer
- * @param descriptor_pool The Vulkan descriptor pool. If null handle then MonkVG
- * will create one.
- * @return VG_API_CALL
- */
-VG_API_CALL VGboolean vgSetVulkanContextMNK(
-    void *instance, void *physical_device, void *logical_device,
-    void *render_pass, void *command_buffer, void *descriptor_pool);
-
 /* Helper function for things like camera
  */
 
@@ -164,6 +148,29 @@ VG_API_CALL void vgPushOrthoCamera(VGfloat left, VGfloat right, VGfloat bottom,
  * @return * VG_API_CALL
  */
 VG_API_CALL void vgPopOrthoCamera();
+
+#if defined(MNKVG_VULKAN_BACKEND)
+#include <vulkan/vulkan.h>
+/**
+ * @brief Set Vulkan context for MonkVG.
+ *
+ * @param instance The Vulkan instance
+ * @param physical_device The Vulkan physical device
+ * @param logical_device The Vulkan logical device
+ * @param render_pass The Vulkan render pass
+ * @param command_pool The Vulkan command pool
+ * @param graphics_queue The Vulkan graphics queue
+ * @param command_buffer The Vulkan command buffer
+ * @param descriptor_pool The Vulkan descriptor pool. If null handle then MonkVG
+ * will create one.
+ * @return VG_API_CALL
+ */
+VG_API_CALL VGboolean vgSetVulkanContextMNK(
+    VkInstance instance, VkPhysicalDevice physical_device, VkDevice logical_device,
+    VkRenderPass render_pass, VkCommandBuffer command_buffer,
+    VkCommandPool command_pool, VkQueue graphics_queue,
+    VkDescriptorPool descriptor_pool);
+#endif // MNKVG_VULKAN_BACKEND
 
 #ifdef __cplusplus
 } /* extern "C" */
