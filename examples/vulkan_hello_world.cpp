@@ -581,8 +581,8 @@ int main(int, char **) {
     stbi_image_free(img_data);
 
     // create a child image
-    VGImage child_image =
-        vgChildImage(vg_image, 0, 0, img_width / 2, img_height / 2);
+    // VGImage child_image =
+    //     vgChildImage(vg_image, 0, 0, img_width / 2, img_height / 2);
 
     while (!glfwWindowShouldClose(vulkan_test_ctx.glfw_window)) {
         uint32_t image_idx = start_render(vulkan_test_ctx);
@@ -616,11 +616,25 @@ int main(int, char **) {
         vgDrawImage(vg_image);
 
         // draw the child image
-        vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
-        vgLoadIdentity();
-        vgScale(0.25f, 0.25f);
-        vgTranslate(50, 200);
-        vgDrawImage(child_image);
+        // vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+        // vgLoadIdentity();
+        // vgScale(0.25f, 0.25f);
+        // vgTranslate(50, 200);
+        // vgDrawImage(child_image);
+
+        // vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        // vgLoadIdentity();
+        // vgTranslate(20, 20);
+
+        // // stroke wideth
+        // vgSetf(VG_STROKE_LINE_WIDTH, 5.0f);
+
+        // // fill and stroke paints
+        // vgSetPaint(stroke_paint, VG_FILL_PATH);
+        // vgSetPaint(fill_paint, VG_STROKE_PATH);
+
+        // draw the path with fill and stroke
+        // vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
 
         vgPopOrthoCamera();
 
@@ -633,7 +647,7 @@ int main(int, char **) {
     vgDestroyPath(path);
     vgDestroyPaint(fill_paint);
     vgDestroyPaint(stroke_paint);
-    vgDestroyImage(child_image);
+    // vgDestroyImage(child_image);
     vgDestroyImage(vg_image);
     vgDestroyContextMNK();
 

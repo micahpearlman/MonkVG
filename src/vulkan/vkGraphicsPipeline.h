@@ -42,20 +42,32 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
         alloc_info.usage                   = VMA_MEMORY_USAGE_CPU_TO_GPU;
 
         vmaCreateBuffer(getVulkanContext().getVulkanAllocator(), &buffer_info,
-                        &alloc_info, &_vert_ubo,
-                        &_uniform_buffer_allocation, nullptr);
+                        &alloc_info, &_vert_ubo, &_uniform_buffer_allocation,
+                        nullptr);
 
         // create the descriptor set layout
-        VkDescriptorSetLayoutBinding layout_binding = {};
-        layout_binding.binding         = 0; // binding = 0 in the shader
-        layout_binding.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        layout_binding.descriptorCount = 1; // 1 uniform buffer
-        layout_binding.stageFlags      = VK_SHADER_STAGE_VERTEX_BIT;
+        // TODO: remove the vert ubo binding as we are using push constants
+        VkDescriptorSetLayoutBinding vert_ubo_layout_binding = {};
+        vert_ubo_layout_binding.binding = 0; // binding = 0 in the shader
+        vert_ubo_layout_binding.descriptorType =
+            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        vert_ubo_layout_binding.descriptorCount = 1; // 1 uniform buffer
+        vert_ubo_layout_binding.stageFlags      = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayoutBinding frag_sampler_layout_binding = {};
+        frag_sampler_layout_binding.binding = 1; // binding = 1 in the shader
+        frag_sampler_layout_binding.descriptorType =
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        frag_sampler_layout_binding.descriptorCount = 1; // 1 sampler
+        frag_sampler_layout_binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+        std::array<VkDescriptorSetLayoutBinding, 2> bindings = {
+            vert_ubo_layout_binding, frag_sampler_layout_binding};
 
         VkDescriptorSetLayoutCreateInfo layout_info = {};
         layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        layout_info.bindingCount = 1;
-        layout_info.pBindings    = &layout_binding;
+        layout_info.bindingCount = static_cast<uint32_t>(bindings.size());
+        layout_info.pBindings    = bindings.data();
 
         if (vkCreateDescriptorSetLayout(
                 getVulkanContext().getVulkanLogicalDevice(), &layout_info,
@@ -87,8 +99,8 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
         descriptor_write.dstBinding = 0;
         descriptor_write.dstArrayElement = 0;
         descriptor_write.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descriptor_write.descriptorCount = 1;
-        descriptor_write.pBufferInfo     = &desc_buffer_info;
+        descriptor_write.descriptorCount = 0;       // 1;
+        descriptor_write.pBufferInfo     = nullptr; //&desc_buffer_info;
 
         vkUpdateDescriptorSets(getVulkanContext().getVulkanLogicalDevice(), 1,
                                &descriptor_write, 0, nullptr);
@@ -145,6 +157,12 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
                            _pipeline_layout, VK_SHADER_STAGE_VERTEX_BIT, 0,
                            sizeof(VERT_UBO), &_vert_ubo_data);
 
+        // bind the descriptor set
+        // NOTE: this is really only updating the texture sampler
+        vkCmdBindDescriptorSets(getVulkanContext().getVulkanCommandBuffer(),
+                                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                _pipeline_layout, 0, 1, &_descriptor_set, 0,
+                                nullptr);
     }
 
     // projection and modelview setters
@@ -260,9 +278,9 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
         color_blending.pAttachments    = &color_blend_attachment;
 
         VkPushConstantRange push_constant_range = {};
-        push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-        push_constant_range.offset     = 0;
-        push_constant_range.size       = sizeof(VERT_UBO);
+        push_constant_range.stageFlags          = VK_SHADER_STAGE_VERTEX_BIT;
+        push_constant_range.offset              = 0;
+        push_constant_range.size                = sizeof(VERT_UBO);
 
         VkPipelineLayoutCreateInfo pipeline_layout_info = {};
         pipeline_layout_info.sType =
@@ -320,7 +338,6 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
 
         return _pipeline;
     }
-
     /**
      * @brief Compile a shader given the vertex and fragment.
      * NOTE: NOT file path

@@ -8,9 +8,9 @@ layout(push_constant) uniform PushConstants {
 layout (location = 0) in vec2 in_position;
 layout (location = 1) in vec2 in_tex_coords;
 
-layout (location = 0) out vec2 tex_coord_out;
+layout (location = 0) out vec2 out_tex_coords;
 
 void main() {
     gl_Position = push_constants.u_projection * push_constants.u_model_view * vec4(in_position, 0.0, 1.0);
-    tex_coord_out = in_tex_coords;
+    out_tex_coords = in_tex_coords;
 }

@@ -72,8 +72,8 @@ VulkanImage::VulkanImage(VGImageFormat format, VGint width, VGint height,
     view_info.subresourceRange.baseArrayLayer = 0;
     view_info.subresourceRange.layerCount     = 1;
 
-    if (vkCreateImageView(getVulkanContext().getVulkanLogicalDevice(), &view_info,
-                          nullptr, &_image_view) != VK_SUCCESS) {
+    if (vkCreateImageView(getVulkanContext().getVulkanLogicalDevice(),
+                          &view_info, nullptr, &_image_view) != VK_SUCCESS) {
         throw std::runtime_error("failed to create image view");
     }
 
@@ -215,6 +215,33 @@ void VulkanImage::setSubData(const void *data, VGint dataStride,
     // cleanup buffers
     vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(), staging_buffer,
                      staging_buffer_allocation);
+
+    // {
+    //     const float w = (float)_width;
+    //     const float h = (float)_height;
+    //     const float x = 0;
+    //     const float y = 0;
+
+    //     std::array<textured_vertex_2d_t, 4> vertices = {{
+    //         {x, y, _s[0], _t[1]},        // left, bottom
+    //         {x + w, y, _s[1], _t[1]},    // right, bottom
+    //         {x, y + h, _s[0], _t[0]},    // left, top
+    //         {x + w, y + h, _s[1], _t[0]} // right, top
+    //     }};
+
+    //     // clang-format on
+
+    //     // copy the vertex data to the buffer
+    //     void *data;
+    //     vmaMapMemory(getVulkanContext().getVulkanAllocator(),
+    //                  _vertex_buffer_allocation, &data);
+    //     memcpy(data, vertices.data(),
+    //            vertices.size() * sizeof(textured_vertex_2d_t));
+    //     vmaUnmapMemory(getVulkanContext().getVulkanAllocator(),
+    //                    _vertex_buffer_allocation);
+    // }
+    // getVulkanContext().getTextureTriangleStripPipeline().setTexture(
+    //     _image_view);
 }
 
 void VulkanImage::draw() {
@@ -226,32 +253,62 @@ void VulkanImage::draw() {
 
     // NOTE: openvg coordinate system is bottom, left is 0,0
     // clang-format off
-    std::array<float,16> vertices = {
-			x,     y,      _s[0], _t[1],  	// left, bottom
-			x + w, y,      _s[1], _t[1],	// right, bottom
-			x,     y + h,  _s[0], _t[0],	// left, top
-			x + w, y + h,  _s[1], _t[0] 	// right, top
-	};
+    // std::array<float,16> vertices = {
+	// 		x,     y,      _s[0], _t[1],  	// left, bottom
+	// 		x + w, y,      _s[1], _t[1],	// right, bottom
+	// 		x,     y + h,  _s[0], _t[0],	// left, top
+	// 		x + w, y + h,  _s[1], _t[0] 	// right, top
+	// };
+    // std::array<textured_vertex_2d_t,4> vertices = {{
+	// 		{x,     y,      _s[0], _t[1]},  	// left, bottom
+	// 		{x + w, y,      _s[1], _t[1]},	// right, bottom
+	// 		{x,     y + h,  _s[0], _t[0]},	// left, top
+	// 		{x + w, y + h,  _s[1], _t[0]} 	// right, top
+    // }};
+
+    std::array<textured_vertex_2d_t,4> vertices = {{
+			{x,     y,      _s[0], _t[1]},  	// left, bottom
+			{x + w, y,      _s[1], _t[1]},	// right, bottom
+			{x,     y + h,  _s[0], _t[0]},	// left, top
+			{x + w, y + h,  _s[1], _t[0]} 	// right, top
+    }};
+
+    // std::array<textured_vertex_2d_t,6> vertices = {{
+	// 		{x,     y,      _s[0], _t[1]},  // left, bottom
+	// 		{x + w, y,      _s[1], _t[1]},	// right, bottom
+	// 		{x,     y + h,  _s[0], _t[0]},	// left, top
+
+    //         {x,     y + h,  _s[0], _t[0]},	// left, top
+    //         {x + w, y,      _s[1], _t[1]},	// right, bottom
+	// 		{x + w, y + h,  _s[1], _t[0]} 	// right, top
+    // }};
+
     // clang-format on
 
     // bind texture triangle strip graphics pipeline
-    // getVulkanContext().getTextureTriangleStripPipeline().bind();
+    getVulkanContext().getTextureTriangleStripPipeline().bind();
+    // getVulkanContext().getTextureTrianglePipeline().bind();
 
     // copy the vertex data to the buffer
     void *data;
     vmaMapMemory(getVulkanContext().getVulkanAllocator(),
                  _vertex_buffer_allocation, &data);
-    memcpy(data, vertices.data(), vertices.size() * sizeof(float));
+    memcpy(data, vertices.data(), vertices.size() *
+    sizeof(textured_vertex_2d_t));
     vmaUnmapMemory(getVulkanContext().getVulkanAllocator(),
                    _vertex_buffer_allocation);
 
-    // glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    // glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat),
-    //                 vertices.data());
+    getVulkanContext().getTextureTriangleStripPipeline().setTexture(
+        _image_view);
 
-    // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    // bind the vertex buffer
+    VkDeviceSize offset = 0;
+    vkCmdBindVertexBuffers(getVulkanContext().getVulkanCommandBuffer(), 0, 1,
+                           &_vertex_buffer, &offset);
 
-    // unbind();
+    // draw the image
+    vkCmdDraw(getVulkanContext().getVulkanCommandBuffer(), vertices.size(), 1,
+              0, 0);
 }
 
 void VulkanImage::drawSubRect(VGint ox, VGint oy, VGint w, VGint h,

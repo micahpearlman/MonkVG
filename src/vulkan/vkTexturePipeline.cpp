@@ -21,6 +21,14 @@ const static uint32_t texture_frag[] =
 #include "shaders/texture.frag.h"
     ;
 
+// const static uint32_t texture_vert[] =
+// #include "shaders/test.vert.h"
+//     ;
+
+// const static uint32_t texture_frag[] =
+// #include "shaders/test.frag.h"
+//     ;
+
 namespace MonkVG {
 TexturePipeline::TexturePipeline(VulkanContext      &context,
                                  VkPrimitiveTopology topology)
@@ -41,10 +49,11 @@ TexturePipeline::TexturePipeline(VulkanContext      &context,
 
     std::vector<VkVertexInputAttributeDescription> vertex_input_attribs = {};
     VkVertexInputAttributeDescription              vertex_attrib        = {};
-    vertex_attrib.binding                                               = 0;
-    vertex_attrib.location                                              = 0;
-    vertex_attrib.format = VK_FORMAT_R32G32_SFLOAT;
-    vertex_attrib.offset = offsetof(textured_vertex_2d_t, v);
+
+    vertex_attrib.binding  = 0;
+    vertex_attrib.location = 0;
+    vertex_attrib.format   = VK_FORMAT_R32G32_SFLOAT;
+    vertex_attrib.offset   = offsetof(textured_vertex_2d_t, vert);
     vertex_input_attribs.push_back(vertex_attrib);
 
     vertex_attrib.binding  = 0;
@@ -116,7 +125,8 @@ void TexturePipeline::setTexture(VkImageView texture) {
 }
 
 void TexturePipeline::bind() {
-    VulkanGraphicsPipeline<TexturePipeline_VertUBO, TexturePipeline_FragUBO>::bind();
+    VulkanGraphicsPipeline<TexturePipeline_VertUBO,
+                           TexturePipeline_FragUBO>::bind();
 
     // bind the texture
     // vkCmdBindDescriptorSets(_command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
