@@ -147,13 +147,20 @@ void VulkanPath::buildFillIfDirty() {
         // tessellate the path
         getContext().getTessellator().tessellate(
             _segments, _fcoords, getContext().getFillRule(),
-            getContext().getTessellationIterations(), _fill_vertices, _bounds);
+            getContext().getTessellationIterations(), _fill_vertices, _bounds);            
 
         // DEBUG: uncomment to draw a triangle
         // also may want to comment out the MVP matrix multiplication in the
         // vertex shader
         // _fill_vertices.clear(); _fill_vertices = {0.0, -0.5,
         // 0.5, 0.5, -0.5, 0.5};
+        if (_fill_vertex_buffer != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(),
+                             _fill_vertex_buffer,
+                             _fill_vertex_buffer_allocation);
+            _fill_vertex_buffer              = VK_NULL_HANDLE;
+            _fill_vertex_buffer_allocation   = VK_NULL_HANDLE;
+        }
 
         // create the vertex buffer
         VkBufferCreateInfo buffer_info = {};
@@ -195,6 +202,14 @@ void VulkanPath::buildStrokeIfDirty() {
         getContext().getTessellator().buildStroke(
             _segments, _fcoords, getContext().getStrokeLineWidth(),
             getContext().getTessellationIterations(), _stroke_vertices);
+
+        if (_stroke_vertex_buffer != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(),
+                             _stroke_vertex_buffer,
+                             _stroke_vertex_buffer_allocation);
+            _stroke_vertex_buffer            = VK_NULL_HANDLE;
+            _stroke_vertex_buffer_allocation = VK_NULL_HANDLE;
+        }
 
         // create the vertex buffer
         VkBufferCreateInfo buffer_info = {};

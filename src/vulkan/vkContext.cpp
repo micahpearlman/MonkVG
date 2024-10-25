@@ -14,6 +14,7 @@
 #include "vkColorPipeline.h"
 #include "vkTexturePipeline.h"
 #include "vkPaint.h"
+#include "vkImage.h"
 
 namespace MonkVG {
 //// singleton implementation ////
@@ -30,13 +31,18 @@ bool VulkanContext::Initialize() {
 }
 
 bool VulkanContext::Terminate() {
+    // destroy the pipelines
     _color_triangle_pipeline.reset();
+    _color_tristrip_pipeline.reset();
     _texture_triangle_pipeline.reset();
+    _texture_tristrip_pipeline.reset();
 
     if (_allocator != VK_NULL_HANDLE) {
         vmaDestroyAllocator(_allocator);
         _allocator = VK_NULL_HANDLE;
     }
+
+    // if we own the descriptor pool then destroy it
     if (_own_descriptor_pool && _descriptor_pool != VK_NULL_HANDLE) {
         vkDestroyDescriptorPool(_logical_dev, _descriptor_pool, nullptr);
         _descriptor_pool = VK_NULL_HANDLE;
@@ -71,7 +77,7 @@ IPaint *VulkanContext::createPaint() {
         SetError(VG_OUT_OF_MEMORY_ERROR);
     }
     return (IPaint *)paint;
-}    
+}
 
 void VulkanContext::destroyPaint(IPaint *paint) {
     if (paint) {
@@ -81,7 +87,7 @@ void VulkanContext::destroyPaint(IPaint *paint) {
 
 IImage *VulkanContext::createImage(VGImageFormat format, VGint width,
                                    VGint height, VGbitfield allowedQuality) {
-    return nullptr;
+    return new VulkanImage(format, width, height, allowedQuality, *this);
 }
 
 void VulkanContext::destroyImage(IImage *image) {
@@ -140,19 +146,19 @@ void VulkanContext::dumpBatch(IBatch *batch, void **vertices, size_t *size) {}
 
 void VulkanContext::endBatch(IBatch *batch) {}
 
-bool VulkanContext::setVulkanContext(VkInstance       instance,
-                                     VkPhysicalDevice physical_device,
-                                     VkDevice         logical_dev,
-                                     VkRenderPass     render_pass,
-                                     VkCommandBuffer  command_buffer,
-                                     VkDescriptorPool descriptor_pool) {
+bool VulkanContext::setVulkanContext(
+    VkInstance instance, VkPhysicalDevice physical_device, VkDevice logical_dev,
+    VkRenderPass render_pass, VkCommandBuffer command_buffer,
+    VkCommandPool command_pool, VkQueue graphics_queue,
+    VkDescriptorPool descriptor_pool) {
     _logical_dev    = logical_dev;
     _render_pass    = render_pass;
     _instance       = instance;
     _phys_dev       = physical_device;
     _command_buffer = command_buffer;
+    _command_pool   = command_pool;
+    _graphics_queue = graphics_queue;
 
-    
     // create the memory allocator
     VmaAllocatorCreateInfo allocator_info = {};
     allocator_info.physicalDevice         = physical_device;
@@ -214,25 +220,68 @@ bool VulkanContext::setVulkanContext(VkInstance       instance,
     color_vertex_state.pVertexAttributeDescriptions =
         vertex_input_attribs.data();
 
-    _color_triangle_pipeline = std::make_unique<ColorPipeline>(*this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-    _color_tristrip_pipeline = std::make_unique<ColorPipeline>(*this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);    
+    _color_triangle_pipeline = std::make_unique<ColorPipeline>(
+        *this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+    _color_tristrip_pipeline = std::make_unique<ColorPipeline>(
+        *this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 
-    // TODO: create the texture pipelines
-    
+    _texture_triangle_pipeline = std::make_unique<TexturePipeline>(
+        *this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+    _texture_tristrip_pipeline = std::make_unique<TexturePipeline>(
+        *this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
+
     return true;
+}
+
+VkCommandBuffer VulkanContext::beginSingleTimeCommands() {
+    VkCommandBufferAllocateInfo alloc_info = {};
+    alloc_info.sType       = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    alloc_info.level       = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    alloc_info.commandPool = _command_pool;
+    alloc_info.commandBufferCount = 1;
+
+    VkCommandBuffer command_buffer;
+    vkAllocateCommandBuffers(_logical_dev, &alloc_info, &command_buffer);
+
+    VkCommandBufferBeginInfo begin_info = {};
+    begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(command_buffer, &begin_info);
+
+    return command_buffer;
+}
+
+void VulkanContext::endSingleTimeCommands(VkCommandBuffer command_buffer) {
+    vkEndCommandBuffer(command_buffer);
+
+    VkSubmitInfo submit_info       = {};
+    submit_info.sType              = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers    = &command_buffer;
+
+    if (vkQueueSubmit(_graphics_queue, 1, &submit_info, VK_NULL_HANDLE) !=
+        VK_SUCCESS) {
+        throw std::runtime_error(
+            "failed to submit command buffer for single time command");
+    }
+    vkQueueWaitIdle(_graphics_queue);
+
+    vkFreeCommandBuffers(_logical_dev, _command_pool, 1, &command_buffer);
 }
 
 } // namespace MonkVG
 
 VG_API_CALL VGboolean vgSetVulkanContextMNK(
-    void *instance, void *physical_device, void *logical_device,
-    void *render_pass, void *command_buffer, void *descriptor_pool) {
+    VkInstance instance, VkPhysicalDevice physical_device,
+    VkDevice logical_device, VkRenderPass render_pass,
+    VkCommandBuffer command_buffer, VkCommandPool command_pool,
+    VkQueue graphics_queue, VkDescriptorPool descriptor_pool) {
     MonkVG::VulkanContext &vk_ctx =
         (MonkVG::VulkanContext &)MonkVG::IContext::instance();
-    vk_ctx.setVulkanContext(
-        (VkInstance)instance, (VkPhysicalDevice)physical_device,
-        (VkDevice)logical_device, (VkRenderPass)render_pass,
-        (VkCommandBuffer)command_buffer, (VkDescriptorPool)descriptor_pool);
+    vk_ctx.setVulkanContext(instance, physical_device, logical_device,
+                            render_pass, command_buffer, command_pool,
+                            graphics_queue, descriptor_pool);
 
     return VG_TRUE;
 }

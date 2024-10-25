@@ -82,10 +82,10 @@ class IImage : public BaseObject {
                             VGint width, VGint height) = 0;
 
     /// accessors
-    inline VGImageFormat getFormat() const { return _format; }
-    inline VGint         getWidth() const { return _width; }
-    inline VGint         getHeight() const { return _height; }
-    inline VGbitfield    getAllowedQuality() const { return _allowed_quality; }
+    inline const VGImageFormat getFormat() const { return _format; }
+    inline const VGint         getWidth() const { return _width; }
+    inline const VGint         getHeight() const { return _height; }
+    inline const VGbitfield    getAllowedQuality() const { return _allowed_quality; }
     inline IImage       *getParent() const { return _parent; }
 
   protected:

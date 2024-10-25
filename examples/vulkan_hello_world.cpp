@@ -17,11 +17,16 @@
 
 /// MonkVG
 #include <MonkVG/openvg.h>
+#define MNKVG_VULKAN_BACKEND
 #include <MonkVG/vgext.h>
 #include <MonkVG/vgu.h>
 
 /// vulkan
 #include <vulkan/vulkan.h>
+
+// STB image loader
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 struct vulkan_test_ctx_t {
     GLFWwindow                 *glfw_window;
@@ -314,51 +319,6 @@ void init_vulkan(vulkan_test_ctx_t &ctx) {
         }
     }
 
-    /// Create The Shaders
-    std::ifstream     vert_is("assets/shaders/test.vert.spv",
-                              std::ios::ate | std::ios::binary);
-    std::vector<char> vert_shader_bin(vert_is.tellg());
-    vert_is.seekg(0);
-    vert_is.read(vert_shader_bin.data(), vert_shader_bin.size());
-
-    VkShaderModuleCreateInfo vert_shader_create_info{
-        .sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-        .codeSize = vert_shader_bin.size(),
-        .pCode    = reinterpret_cast<const uint32_t *>(vert_shader_bin.data())};
-    if (vkCreateShaderModule(ctx.logical_device, &vert_shader_create_info,
-                             nullptr, &ctx.vert_shader_module) != VK_SUCCESS) {
-        throw std::runtime_error("Could not create vertex shader module");
-    }
-
-    VkPipelineShaderStageCreateInfo vert_shader_stage_info = {
-        .sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-        .stage  = VK_SHADER_STAGE_VERTEX_BIT,
-        .module = ctx.vert_shader_module,
-        .pName  = "main"};
-
-    std::ifstream     frag_is("assets/shaders/test.frag.spv",
-                              std::ios::ate | std::ios::binary);
-    std::vector<char> frag_shader_bin(frag_is.tellg());
-    frag_is.seekg(0);
-    frag_is.read(frag_shader_bin.data(), frag_shader_bin.size());
-    VkShaderModuleCreateInfo frag_shader_create_info{
-        .sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
-        .codeSize = frag_shader_bin.size(),
-        .pCode    = reinterpret_cast<const uint32_t *>(frag_shader_bin.data())};
-    if (vkCreateShaderModule(ctx.logical_device, &frag_shader_create_info,
-                             nullptr, &ctx.frag_shader_module) != VK_SUCCESS) {
-        throw std::runtime_error("Could not create fragment shader module");
-    }
-
-    VkPipelineShaderStageCreateInfo frag_shader_stage_info = {
-        .sType  = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-        .stage  = VK_SHADER_STAGE_FRAGMENT_BIT,
-        .module = ctx.frag_shader_module,
-        .pName  = "main"};
-
-    VkPipelineShaderStageCreateInfo shader_stages[] = {vert_shader_stage_info,
-                                                       frag_shader_stage_info};
-
     /// Create Render Pass
     VkAttachmentDescription color_attachment = {
         .format         = swapchain_create_info.imageFormat,
@@ -388,119 +348,6 @@ void init_vulkan(vulkan_test_ctx_t &ctx) {
     if (vkCreateRenderPass(ctx.logical_device, &render_pass_create_info,
                            nullptr, &ctx.render_pass) != VK_SUCCESS) {
         throw std::runtime_error("Could not create render pass");
-    }
-
-    /// Create pipeline object
-    VkPipelineVertexInputStateCreateInfo vertex_input_info = {
-        .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-        .vertexBindingDescriptionCount   = 0,
-        .pVertexBindingDescriptions      = nullptr,
-        .vertexAttributeDescriptionCount = 0,
-        .pVertexAttributeDescriptions    = nullptr};
-
-    VkPipelineInputAssemblyStateCreateInfo input_assembly = {
-        .sType    = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
-        .topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-        .primitiveRestartEnable = VK_FALSE};
-
-    VkViewport viewport = {
-        .x        = 0,
-        .y        = 0,
-        .width    = (float)swapchain_create_info.imageExtent.width,
-        .height   = (float)swapchain_create_info.imageExtent.height,
-        .minDepth = 0.0f,
-        .maxDepth = 1.0f};
-
-    VkRect2D scissor = {.offset = {0, 0},
-                        .extent = swapchain_create_info.imageExtent};
-
-    VkPipelineViewportStateCreateInfo viewport_state = {
-        .sType         = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-        .viewportCount = 1,
-        .pViewports    = &viewport,
-        .scissorCount  = 1,
-        .pScissors     = &scissor};
-
-    VkPipelineRasterizationStateCreateInfo rasterizer = {
-        .sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-        .depthClampEnable        = VK_FALSE,
-        .rasterizerDiscardEnable = VK_FALSE,
-        .polygonMode             = VK_POLYGON_MODE_FILL,
-        .cullMode                = VK_CULL_MODE_BACK_BIT,
-        .frontFace               = VK_FRONT_FACE_CLOCKWISE,
-        .depthBiasEnable         = VK_FALSE,
-        .depthBiasConstantFactor = 0.0f,
-        .depthBiasClamp          = 0.0f,
-        .depthBiasSlopeFactor    = 0.0f,
-        .lineWidth               = 1.0f};
-
-    VkPipelineMultisampleStateCreateInfo multisampling = {
-        .sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
-        .rasterizationSamples  = VK_SAMPLE_COUNT_1_BIT,
-        .sampleShadingEnable   = VK_FALSE,
-        .minSampleShading      = 1.0f,
-        .pSampleMask           = nullptr,
-        .alphaToCoverageEnable = VK_FALSE,
-        .alphaToOneEnable      = VK_FALSE};
-
-    VkPipelineColorBlendAttachmentState color_blend_attachment = {
-        .blendEnable         = VK_FALSE,
-        .srcColorBlendFactor = VK_BLEND_FACTOR_ONE,
-        .dstColorBlendFactor = VK_BLEND_FACTOR_ZERO,
-        .colorBlendOp        = VK_BLEND_OP_ADD,
-        .srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE,
-        .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO,
-        .alphaBlendOp        = VK_BLEND_OP_ADD,
-        .colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
-                          VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT
-
-    };
-
-    VkPipelineColorBlendStateCreateInfo color_blending_create_info = {
-        .sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-        .logicOpEnable   = VK_FALSE,
-        .logicOp         = VK_LOGIC_OP_COPY,
-        .attachmentCount = 1,
-        .pAttachments    = &color_blend_attachment,
-        .blendConstants  = {0, 0, 0, 0}};
-
-    std::array<VkDynamicState, 2> dynamic_states = {
-        VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_LINE_WIDTH};
-
-    VkPipelineLayoutCreateInfo pipeline_layout_create_info = {
-        .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-        .setLayoutCount         = 0,
-        .pSetLayouts            = nullptr,
-        .pushConstantRangeCount = 0,
-        .pPushConstantRanges    = nullptr};
-
-    if (vkCreatePipelineLayout(ctx.logical_device, &pipeline_layout_create_info,
-                               nullptr, &ctx.pipeline_layout) != VK_SUCCESS) {
-        throw std::runtime_error("Could not create pipeline layout");
-    }
-
-    VkGraphicsPipelineCreateInfo pipeline_create_info = {
-        .sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-        .stageCount          = 2,
-        .pStages             = shader_stages,
-        .pVertexInputState   = &vertex_input_info,
-        .pInputAssemblyState = &input_assembly,
-        .pViewportState      = &viewport_state,
-        .pRasterizationState = &rasterizer,
-        .pMultisampleState   = &multisampling,
-        .pDepthStencilState  = nullptr,
-        .pColorBlendState    = &color_blending_create_info,
-        .pDynamicState       = nullptr,
-        .layout              = ctx.pipeline_layout,
-        .renderPass          = ctx.render_pass,
-        .subpass             = 0,
-        .basePipelineHandle  = VK_NULL_HANDLE,
-        .basePipelineIndex   = -1};
-
-    if (vkCreateGraphicsPipelines(ctx.logical_device, VK_NULL_HANDLE, 1,
-                                  &pipeline_create_info, nullptr,
-                                  &ctx.graphics_pipeline) != VK_SUCCESS) {
-        throw std::runtime_error("Could not create pipeline");
     }
 
     /// Create the framebuffers
@@ -595,7 +442,6 @@ uint32_t start_render(vulkan_test_ctx_t &ctx) {
                          VK_SUBPASS_CONTENTS_INLINE);
 
     return image_idx;
-
 }
 void end_render(vulkan_test_ctx_t &ctx, uint32_t image_idx) {
 
@@ -687,7 +533,9 @@ int main(int, char **) {
     vgSetVulkanContextMNK(
         vulkan_test_ctx.instance, vulkan_test_ctx.physical_device,
         vulkan_test_ctx.logical_device, vulkan_test_ctx.render_pass,
-        vulkan_test_ctx.command_buffer, 0);
+        vulkan_test_ctx.command_buffer, vulkan_test_ctx.command_pool,
+        vulkan_test_ctx.graphics_queue, VK_NULL_HANDLE);
+
 
     // create a simple box path
     VGPath path = vgCreatePath(VG_PATH_FORMAT_STANDARD, VG_PATH_DATATYPE_F, 1,
@@ -704,6 +552,37 @@ int main(int, char **) {
     vgSetPaint(stroke_paint, VG_STROKE_PATH);
     VGfloat stroke_color[4] = {0.0f, 0.0f, 1.0f, 1.0f};
     vgSetParameterfv(stroke_paint, VG_PAINT_COLOR, 4, &stroke_color[0]);
+
+    // Load the test image
+    int            img_width, img_height, img_channels;
+    const char    *filename = "assets/roy.png"; // Replace with your image path
+    unsigned char *img_data =
+        stbi_load(filename, &img_width, &img_height, &img_channels, 0);
+
+    if (img_data == nullptr) {
+        std::cerr << "Failed to load image: " << filename << std::endl;
+        return -1;
+    }
+
+    // Display image info
+    std::cout << "Loaded image: " << filename << std::endl;
+    std::cout << "Width: " << img_width << ", Height: " << img_height
+              << ", Channels: " << img_channels << std::endl;
+    assert(img_channels == 4);
+    // Create an OpenVG image with the appropriate format
+    VGImage vg_image = vgCreateImage(VG_sRGBA_8888, img_width, img_height,
+                                     VG_IMAGE_QUALITY_BETTER);
+
+    // Copy the image data to the OpenVG image
+    vgImageSubData(vg_image, img_data, img_width * 4, VG_sRGBA_8888, 0, 0,
+                   img_width, img_height);
+
+    // Free image memory
+    stbi_image_free(img_data);
+
+    // create a child image
+    // VGImage child_image =
+    //     vgChildImage(vg_image, 0, 0, img_width / 2, img_height / 2);
 
     while (!glfwWindowShouldClose(vulkan_test_ctx.glfw_window)) {
         uint32_t image_idx = start_render(vulkan_test_ctx);
@@ -729,6 +608,34 @@ int main(int, char **) {
         // draw the path with fill and stroke
         vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
 
+        // draw the image
+        vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+        vgLoadIdentity();
+        vgScale(0.25f, 0.25f);
+        vgTranslate(50, 50);
+        vgDrawImage(vg_image);
+
+        // draw the child image
+        // vgSeti(VG_MATRIX_MODE, VG_MATRIX_IMAGE_USER_TO_SURFACE);
+        // vgLoadIdentity();
+        // vgScale(0.25f, 0.25f);
+        // vgTranslate(50, 200);
+        // vgDrawImage(child_image);
+
+        // vgSeti(VG_MATRIX_MODE, VG_MATRIX_PATH_USER_TO_SURFACE);
+        // vgLoadIdentity();
+        // vgTranslate(20, 20);
+
+        // // stroke wideth
+        // vgSetf(VG_STROKE_LINE_WIDTH, 5.0f);
+
+        // // fill and stroke paints
+        // vgSetPaint(stroke_paint, VG_FILL_PATH);
+        // vgSetPaint(fill_paint, VG_STROKE_PATH);
+
+        // draw the path with fill and stroke
+        // vgDrawPath(path, VG_FILL_PATH | VG_STROKE_PATH);
+
         vgPopOrthoCamera();
 
         end_render(vulkan_test_ctx, image_idx);
@@ -738,6 +645,10 @@ int main(int, char **) {
     }
 
     vgDestroyPath(path);
+    vgDestroyPaint(fill_paint);
+    vgDestroyPaint(stroke_paint);
+    // vgDestroyImage(child_image);
+    vgDestroyImage(vg_image);
     vgDestroyContextMNK();
 
     terminate_vulkan(vulkan_test_ctx);

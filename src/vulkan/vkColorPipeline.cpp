@@ -31,7 +31,7 @@ namespace MonkVG {
 
 ColorPipeline::ColorPipeline(VulkanContext      &context,
                              VkPrimitiveTopology topology)
-    : VulkanGraphicsPipeline<ColorPipeline_UBO>(context, color_vert,
+    : VulkanGraphicsPipeline<ColorPipeline_VertUBO, ColorPipeline_FragUBO>(context, color_vert,
                                                 sizeof(color_vert), color_frag,
                                                 sizeof(color_frag), topology) {
 
@@ -69,11 +69,11 @@ ColorPipeline::ColorPipeline(VulkanContext      &context,
     }
 
     // set some sane defaults
-    _ubo_data.u_color      = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-    _ubo_data.u_projection = glm::ortho(0.0f, (float)context.getWidth(), 0.0f,
+    _vert_ubo_data.u_color      = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    _vert_ubo_data.u_projection = glm::ortho(0.0f, (float)context.getWidth(), 0.0f,
                                         (float)context.getHeight());
-    // _ubo_data.u_model_view = glm::mat4(1.0f);
-    // _ubo_data.u_model_view = glm::translate(_ubo_data.u_model_view,
+    // _vert_ubo_data.u_model_view = glm::mat4(1.0f);
+    // _vert_ubo_data.u_model_view = glm::translate(_vert_ubo_data.u_model_view,
     //                                         glm::vec3(1.0f, 1.0f, 0.0f));
 }
 

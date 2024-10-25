@@ -19,7 +19,7 @@
 
 namespace MonkVG {
 
-template <typename T_UBO> class VulkanGraphicsPipeline {
+template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
   public:
     VulkanGraphicsPipeline(VulkanContext &context, const uint32_t *vertex_src,
                            const size_t        vert_src_sz,
@@ -35,27 +35,39 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         // create the uniform buffer
         VkBufferCreateInfo buffer_info = {};
         buffer_info.sType              = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        buffer_info.size               = sizeof(T_UBO);
+        buffer_info.size               = sizeof(VERT_UBO);
         buffer_info.usage              = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 
         VmaAllocationCreateInfo alloc_info = {};
         alloc_info.usage                   = VMA_MEMORY_USAGE_CPU_TO_GPU;
 
         vmaCreateBuffer(getVulkanContext().getVulkanAllocator(), &buffer_info,
-                        &alloc_info, &_uniform_buffer,
-                        &_uniform_buffer_allocation, nullptr);
+                        &alloc_info, &_vert_ubo, &_uniform_buffer_allocation,
+                        nullptr);
 
         // create the descriptor set layout
-        VkDescriptorSetLayoutBinding layout_binding = {};
-        layout_binding.binding         = 0; // binding = 0 in the shader
-        layout_binding.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        layout_binding.descriptorCount = 1; // 1 uniform buffer
-        layout_binding.stageFlags      = VK_SHADER_STAGE_VERTEX_BIT;
+        // TODO: remove the vert ubo binding as we are using push constants
+        VkDescriptorSetLayoutBinding vert_ubo_layout_binding = {};
+        vert_ubo_layout_binding.binding = 0; // binding = 0 in the shader
+        vert_ubo_layout_binding.descriptorType =
+            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        vert_ubo_layout_binding.descriptorCount = 1; // 1 uniform buffer
+        vert_ubo_layout_binding.stageFlags      = VK_SHADER_STAGE_VERTEX_BIT;
+
+        VkDescriptorSetLayoutBinding frag_sampler_layout_binding = {};
+        frag_sampler_layout_binding.binding = 1; // binding = 1 in the shader
+        frag_sampler_layout_binding.descriptorType =
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        frag_sampler_layout_binding.descriptorCount = 1; // 1 sampler
+        frag_sampler_layout_binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+
+        std::array<VkDescriptorSetLayoutBinding, 2> bindings = {
+            vert_ubo_layout_binding, frag_sampler_layout_binding};
 
         VkDescriptorSetLayoutCreateInfo layout_info = {};
         layout_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        layout_info.bindingCount = 1;
-        layout_info.pBindings    = &layout_binding;
+        layout_info.bindingCount = static_cast<uint32_t>(bindings.size());
+        layout_info.pBindings    = bindings.data();
 
         if (vkCreateDescriptorSetLayout(
                 getVulkanContext().getVulkanLogicalDevice(), &layout_info,
@@ -77,9 +89,9 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         }
 
         VkDescriptorBufferInfo desc_buffer_info = {};
-        desc_buffer_info.buffer                 = _uniform_buffer;
+        desc_buffer_info.buffer                 = _vert_ubo;
         desc_buffer_info.offset                 = 0;
-        desc_buffer_info.range                  = sizeof(T_UBO);
+        desc_buffer_info.range                  = sizeof(VERT_UBO);
 
         VkWriteDescriptorSet descriptor_write = {};
         descriptor_write.sType      = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -87,16 +99,11 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         descriptor_write.dstBinding = 0;
         descriptor_write.dstArrayElement = 0;
         descriptor_write.descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descriptor_write.descriptorCount = 1;
-        descriptor_write.pBufferInfo     = &desc_buffer_info;
+        descriptor_write.descriptorCount = 0;       // 1;
+        descriptor_write.pBufferInfo     = nullptr; //&desc_buffer_info;
 
         vkUpdateDescriptorSets(getVulkanContext().getVulkanLogicalDevice(), 1,
                                &descriptor_write, 0, nullptr);
-
-        // _pipeline = createPipeline(vertex_input_state);
-        // if (_pipeline == VK_NULL_HANDLE) {
-        //     throw std::runtime_error("failed to create pipeline");
-        // }
     }
 
     virtual ~VulkanGraphicsPipeline() {
@@ -108,9 +115,13 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
             vkDestroyShaderModule(getVulkanContext().getVulkanLogicalDevice(),
                                   _fragment_shader_module, nullptr);
         }
-        if (_uniform_buffer != VK_NULL_HANDLE) {
-            vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(),
-                             _uniform_buffer, _uniform_buffer_allocation);
+        if (_vert_ubo != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(), _vert_ubo,
+                             _uniform_buffer_allocation);
+        }
+        if (_frag_ubo != VK_NULL_HANDLE) {
+            vmaDestroyBuffer(getVulkanContext().getVulkanAllocator(), _frag_ubo,
+                             _uniform_buffer_allocation);
         }
         if (_descriptor_set_layout != VK_NULL_HANDLE) {
             vkDestroyDescriptorSetLayout(
@@ -133,54 +144,50 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
      */
     virtual void bind() {
 
+        vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
+                          VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
+
         // update the uniform buffer
         // set the projection and modelview matrices
         setProjectionMatrix(getVulkanContext().getGLProjectionMatrix());
         setModelViewMatrix(getVulkanContext().getGLActiveMatrix());
 
-        // upload the uniform buffer to the GPU
-        void *data;
-        vmaMapMemory(getVulkanContext().getVulkanAllocator(),
-                     _uniform_buffer_allocation, &data);
-        memcpy(data, &_ubo_data, sizeof(_ubo_data));
-        vmaUnmapMemory(getVulkanContext().getVulkanAllocator(),
-                       _uniform_buffer_allocation);
-        // to flush or not to flush?
-        // vmaFlushAllocation(getVulkanContext().getVulkanAllocator(),
-        //                    _uniform_buffer_allocation, 0, VK_WHOLE_SIZE);
+        // upload the push constants to the GPU
+        vkCmdPushConstants(getVulkanContext().getVulkanCommandBuffer(),
+                           _pipeline_layout, VK_SHADER_STAGE_VERTEX_BIT, 0,
+                           sizeof(VERT_UBO), &_vert_ubo_data);
 
+        // bind the descriptor set
+        // NOTE: this is really only updating the texture sampler
         vkCmdBindDescriptorSets(getVulkanContext().getVulkanCommandBuffer(),
                                 VK_PIPELINE_BIND_POINT_GRAPHICS,
                                 _pipeline_layout, 0, 1, &_descriptor_set, 0,
                                 nullptr);
-
-        vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
-                          VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
     }
-
-    /**
-     * @brief Unbind the shader program
-     *
-     */
-    virtual void unbind() {}
 
     // projection and modelview setters
     // NOTE: this assumes there is a uniform in the shader called "u_projection"
     // and "u_model_view"
     virtual void setProjectionMatrix(const glm::mat4 &matrix) {
-        _ubo_data.u_projection = matrix;
+        // convert from OpenGL to Vulkan
+        // in opengl the y axis is up and in vulkan the y axis is down so we
+        // need to flip the y axis
+        // in opengl the z axis is -1 to 1 and in vulkan the z axis is 0 to 1
+        // so we need to scale and translate the z axis
+        glm::mat4 vk_trans = glm::mat4(1.0f);
+        vk_trans[1][1]     = -1.0f; // flip y axis
+        vk_trans[2][2]     = 0.5f;  // scale z range
+        vk_trans[3][2]     = 0.5f;  // shift z range
 
-        // vulkan clip space has inverted Y and half Z
-        // ??? This is not needed??
-        // _ubo_data.u_projection[1][1] *= -1;
-        // _ubo_data.u_projection[2][2] *= 0.5f;
+        _vert_ubo_data.u_projection = vk_trans * matrix;
     }
     virtual void setModelViewMatrix(const glm::mat4 &matrix) {
-        _ubo_data.u_model_view = matrix;
+        _vert_ubo_data.u_model_view = matrix;
     }
 
   protected:
-    T_UBO _ubo_data = {};
+    VERT_UBO _vert_ubo_data = {};
+    FRAG_UBO _frag_ubo_data = {};
 
     VulkanContext &_context;
 
@@ -194,7 +201,8 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
 
     // uniform buffer/descriptor set layout
     VmaAllocation         _uniform_buffer_allocation = VK_NULL_HANDLE;
-    VkBuffer              _uniform_buffer            = VK_NULL_HANDLE;
+    VkBuffer              _vert_ubo                  = VK_NULL_HANDLE;
+    VkBuffer              _frag_ubo                  = VK_NULL_HANDLE;
     VkDescriptorSetLayout _descriptor_set_layout     = VK_NULL_HANDLE;
     VkDescriptorSet       _descriptor_set            = VK_NULL_HANDLE;
 
@@ -212,7 +220,7 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         VkPipelineInputAssemblyStateCreateInfo input_assembly = {};
         input_assembly.sType =
             VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-        input_assembly.topology = getTopology();
+        input_assembly.topology               = getTopology();
         input_assembly.primitiveRestartEnable = VK_FALSE;
 
         VkPipelineViewportStateCreateInfo viewport_state = {};
@@ -274,13 +282,18 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
         color_blending.attachmentCount = 1;
         color_blending.pAttachments    = &color_blend_attachment;
 
+        VkPushConstantRange push_constant_range = {};
+        push_constant_range.stageFlags          = VK_SHADER_STAGE_VERTEX_BIT;
+        push_constant_range.offset              = 0;
+        push_constant_range.size                = sizeof(VERT_UBO);
+
         VkPipelineLayoutCreateInfo pipeline_layout_info = {};
         pipeline_layout_info.sType =
             VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipeline_layout_info.setLayoutCount         = 1;
         pipeline_layout_info.pSetLayouts            = &_descriptor_set_layout;
-        pipeline_layout_info.pushConstantRangeCount = 0;
-        pipeline_layout_info.pPushConstantRanges    = nullptr;
+        pipeline_layout_info.pushConstantRangeCount = 1;
+        pipeline_layout_info.pPushConstantRanges    = &push_constant_range;
 
         if (vkCreatePipelineLayout(getVulkanContext().getVulkanLogicalDevice(),
                                    &pipeline_layout_info, nullptr,
@@ -330,7 +343,6 @@ template <typename T_UBO> class VulkanGraphicsPipeline {
 
         return _pipeline;
     }
-
     /**
      * @brief Compile a shader given the vertex and fragment.
      * NOTE: NOT file path
