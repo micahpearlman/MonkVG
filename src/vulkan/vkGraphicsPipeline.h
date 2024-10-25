@@ -132,29 +132,19 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
      */
     virtual void bind() {
 
+        vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
+                          VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
+
         // update the uniform buffer
         // set the projection and modelview matrices
         setProjectionMatrix(getVulkanContext().getGLProjectionMatrix());
         setModelViewMatrix(getVulkanContext().getGLActiveMatrix());
 
-        // upload the uniform buffer to the GPU
-        void *data;
-        vmaMapMemory(getVulkanContext().getVulkanAllocator(),
-                     _uniform_buffer_allocation, &data);
-        memcpy(data, &_vert_ubo_data, sizeof(_vert_ubo_data));
-        vmaUnmapMemory(getVulkanContext().getVulkanAllocator(),
-                       _uniform_buffer_allocation);
-        // to flush or not to flush?
-        // vmaFlushAllocation(getVulkanContext().getVulkanAllocator(),
-        //                    _uniform_buffer_allocation, 0, VK_WHOLE_SIZE);
+        // upload the push constants to the GPU
+        vkCmdPushConstants(getVulkanContext().getVulkanCommandBuffer(),
+                           _pipeline_layout, VK_SHADER_STAGE_VERTEX_BIT, 0,
+                           sizeof(VERT_UBO), &_vert_ubo_data);
 
-        vkCmdBindDescriptorSets(getVulkanContext().getVulkanCommandBuffer(),
-                                VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                _pipeline_layout, 0, 1, &_descriptor_set, 0,
-                                nullptr);
-
-        vkCmdBindPipeline(getVulkanContext().getVulkanCommandBuffer(),
-                          VK_PIPELINE_BIND_POINT_GRAPHICS, _pipeline);
     }
 
     // projection and modelview setters
@@ -269,13 +259,18 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
         color_blending.attachmentCount = 1;
         color_blending.pAttachments    = &color_blend_attachment;
 
+        VkPushConstantRange push_constant_range = {};
+        push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+        push_constant_range.offset     = 0;
+        push_constant_range.size       = sizeof(VERT_UBO);
+
         VkPipelineLayoutCreateInfo pipeline_layout_info = {};
         pipeline_layout_info.sType =
             VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipeline_layout_info.setLayoutCount         = 1;
         pipeline_layout_info.pSetLayouts            = &_descriptor_set_layout;
-        pipeline_layout_info.pushConstantRangeCount = 0;
-        pipeline_layout_info.pPushConstantRanges    = nullptr;
+        pipeline_layout_info.pushConstantRangeCount = 1;
+        pipeline_layout_info.pPushConstantRanges    = &push_constant_range;
 
         if (vkCreatePipelineLayout(getVulkanContext().getVulkanLogicalDevice(),
                                    &pipeline_layout_info, nullptr,

@@ -225,7 +225,10 @@ bool VulkanContext::setVulkanContext(
     _color_tristrip_pipeline = std::make_unique<ColorPipeline>(
         *this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 
-    // TODO: create the texture pipelines
+    _texture_triangle_pipeline = std::make_unique<TexturePipeline>(
+        *this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+    _texture_tristrip_pipeline = std::make_unique<TexturePipeline>(
+        *this, VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP);
 
     return true;
 }
@@ -270,17 +273,15 @@ void VulkanContext::endSingleTimeCommands(VkCommandBuffer command_buffer) {
 } // namespace MonkVG
 
 VG_API_CALL VGboolean vgSetVulkanContextMNK(
-    VkInstance instance, VkPhysicalDevice physical_device, VkDevice logical_device,
-    VkRenderPass render_pass, VkCommandBuffer command_buffer,
-    VkCommandPool command_pool, VkQueue graphics_queue,
-    VkDescriptorPool descriptor_pool) {
+    VkInstance instance, VkPhysicalDevice physical_device,
+    VkDevice logical_device, VkRenderPass render_pass,
+    VkCommandBuffer command_buffer, VkCommandPool command_pool,
+    VkQueue graphics_queue, VkDescriptorPool descriptor_pool) {
     MonkVG::VulkanContext &vk_ctx =
         (MonkVG::VulkanContext &)MonkVG::IContext::instance();
-    vk_ctx.setVulkanContext(
-        instance, physical_device,
-        logical_device, render_pass,
-        command_buffer, command_pool,
-        graphics_queue, descriptor_pool);
+    vk_ctx.setVulkanContext(instance, physical_device, logical_device,
+                            render_pass, command_buffer, command_pool,
+                            graphics_queue, descriptor_pool);
 
     return VG_TRUE;
 }
