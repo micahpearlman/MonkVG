@@ -169,12 +169,17 @@ template <typename VERT_UBO, typename FRAG_UBO> class VulkanGraphicsPipeline {
     // NOTE: this assumes there is a uniform in the shader called "u_projection"
     // and "u_model_view"
     virtual void setProjectionMatrix(const glm::mat4 &matrix) {
-        _vert_ubo_data.u_projection = matrix;
+        // convert from OpenGL to Vulkan
+        // in opengl the y axis is up and in vulkan the y axis is down so we
+        // need to flip the y axis
+        // in opengl the z axis is -1 to 1 and in vulkan the z axis is 0 to 1
+        // so we need to scale and translate the z axis
+        glm::mat4 vk_trans = glm::mat4(1.0f);
+        vk_trans[1][1]     = -1.0f; // flip y axis
+        vk_trans[2][2]     = 0.5f;  // scale z range
+        vk_trans[3][2]     = 0.5f;  // shift z range
 
-        // vulkan clip space has inverted Y and half Z
-        // ??? This is not needed??
-        // _vert_ubo_data.u_projection[1][1] *= -1;
-        // _vert_ubo_data.u_projection[2][2] *= 0.5f;
+        _vert_ubo_data.u_projection = vk_trans * matrix;
     }
     virtual void setModelViewMatrix(const glm::mat4 &matrix) {
         _vert_ubo_data.u_model_view = matrix;
