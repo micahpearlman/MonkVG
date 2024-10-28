@@ -13,6 +13,8 @@
 #include "opengl/glContext.h"
 #elif defined(MNKVG_VULKAN_BACKEND)
 #include "vulkan/vkContext.h"
+#include "vulkan/vkTexturePipeline.h"
+#include "vulkan/vkColorPipeline.h"
 #endif
 
 #if defined(MNKVG_GLU_TESSELATION)

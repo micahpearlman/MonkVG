@@ -8,9 +8,8 @@ endif()
 # Platform Specific  librarys like GLX on Linux
 set(PLATFORM_LIBS )
 if (${CMAKE_SYSTEM_NAME} MATCHES Linux)
-    set(PLATFORM_LIBS ${PLATFORM_LIBS} OpenGL::GLX)
+    # set(PLATFORM_LIBS ${PLATFORM_LIBS} OpenGL::GLX)
     find_package(glfw3 REQUIRED)
-
 endif()
 
 

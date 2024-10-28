@@ -11,7 +11,8 @@
 #include "vkImage.h"
 #include "vkContext.h"
 #include "vkTexturePipeline.h"
-
+#include "vkColorPipeline.h"
+#include <cstring>
 namespace MonkVG {
 
 VulkanImage::VulkanImage(VGImageFormat format, VGint width, VGint height,

@@ -28,7 +28,7 @@ class TexturePipeline : public VulkanGraphicsPipeline<TexturePipeline_VertUBO,
                                                       TexturePipeline_FragUBO> {
   public:
     TexturePipeline(VulkanContext &context, VkPrimitiveTopology topology);
-    virtual ~TexturePipeline();
+    ~TexturePipeline();
 
     void bind() override;
 

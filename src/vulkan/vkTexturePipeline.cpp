@@ -9,8 +9,9 @@
  *
  */
 
-#include "vkTexturePipeline.h"
 #include "vkContext.h"
+#include "vkTexturePipeline.h"
+#include "vkColorPipeline.h"
 #include "mkTypes.h"
 
 const static uint32_t texture_vert[] =

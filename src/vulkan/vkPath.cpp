@@ -13,6 +13,8 @@
 #include "vkColorPipeline.h"
 #include "vkTexturePipeline.h"
 
+#include <cstring>
+
 namespace MonkVG {
 
 VulkanPath::VulkanPath(VGint pathFormat, VGPathDatatype datatype, VGfloat scale,

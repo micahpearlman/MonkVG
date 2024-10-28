@@ -28,7 +28,7 @@ struct ColorPipeline_FragUBO {
 class ColorPipeline : public VulkanGraphicsPipeline<ColorPipeline_VertUBO, ColorPipeline_FragUBO> {
   public:
     ColorPipeline(VulkanContext &context, VkPrimitiveTopology topology);
-    virtual ~ColorPipeline();
+    ~ColorPipeline();
 
     void setColor(const glm::vec4 &color) { _vert_ubo_data.u_color = color; }
     void setColor(const color_t& color) {

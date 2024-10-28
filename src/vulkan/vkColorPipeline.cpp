@@ -9,6 +9,7 @@
  *
  */
 #include "vkColorPipeline.h"
+#include "vkTexturePipeline.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 const static uint32_t color_vert[] =
