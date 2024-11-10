@@ -37,13 +37,22 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+if (MKVG_DO_OPENGL_BACKEND)
+    set(MKVG_BACKEND_LIBS ${MKVG_BACKEND_LIBS} OpenGL::GL)
+endif()
+
 ## add pybind11
 add_subdirectory(${CMAKE_SOURCE_DIR}/thirdparty/pybind ${CMAKE_BINARY_DIR}/thirdparty/pybind_build)
 pybind11_add_module(monkvg_py ${CMAKE_CURRENT_SOURCE_DIR}/python/monkvg_py.cpp)
 
 target_include_directories(monkvg_py PRIVATE ${PYTHON_INCLUDE_DIR})
 target_link_directories(monkvg_py PRIVATE ${PYTHON_LIBRARY_DIR})
-target_link_libraries(monkvg_py PRIVATE monkvg pybind11::module)
+target_link_libraries(monkvg_py PRIVATE monkvg pybind11::module ${MKVG_BACKEND_LIBS})
+
+# if we are also building examples add pygl to the venv
+if (MKVG_DO_EXAMPLES)
+    execute_process(COMMAND ${VENV_PATH}/bin/pip install PyOpenGL pygame)
+endif()
 
 # add_library(monkvg_py MODULE ${CMAKE_CURRENT_SOURCE_DIR}/python/monkvg_py.cpp)
 # target_link_libraries(monkvg_py PRIVATE monkvg pybind11::module)

@@ -9,7 +9,8 @@
  * 
  */
 #include <pybind11/pybind11.h>
-
+#include <MonkVG/openvg.h>
+#include <MonkVG/vgext.h>
 
 namespace py = pybind11;
 
@@ -19,4 +20,7 @@ int add(int i, int j) {
 
 PYBIND11_MODULE(monkvg_py, m) {
     m.def("add", &add, "A function that adds two numbers");
+
+    // wrap vgCreateContextMNK
+    m.def("vgCreateContextMNK", &vgCreateContextMNK, "Create MonkVG context");
 }
