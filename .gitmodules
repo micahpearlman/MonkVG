@@ -7,3 +7,6 @@
 [submodule "thirdparty/vma"]
 	path = thirdparty/vma
 	url = git@github.com:GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
+[submodule "thirdparty/pybind"]
+	path = thirdparty/pybind
+	url = git@github.com:pybind/pybind11.git

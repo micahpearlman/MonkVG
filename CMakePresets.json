@@ -44,7 +44,30 @@
                 "MKVG_DO_VULKAN_BACKEND": "ON",
                 "MKVG_DO_OPENGL_BACKEND": "OFF"
             }
+        },
+        {
+            "name": "Python OpenGL Debug",
+            "hidden": false,
+            "description": "Python OpenGL Debug build",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "MKVG_DO_PYTHON_BINDINGS": "ON"
+            }
+        },
+        {
+            "name": "Python OpenGL Release",
+            "hidden": false,
+            "description": "Python OpenGL Release build",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/release",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "MKVG_DO_PYTHON_BINDINGS": "ON"
+            }
         }
+
 
     ]
 }

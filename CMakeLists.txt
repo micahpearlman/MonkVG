@@ -9,6 +9,7 @@ option(MKVG_DO_OPENGLES_BACKEND "Use OpenGL ES as the rendering backend. NOT IMP
 option(MKVG_DO_OPENGL_BACKEND "Use OpenGL as the rendering backend." ON)
 option(MKVG_DO_GLU_TESSELATION "Use GLU tesselator" ON)
 option(MKVG_DO_EXAMPLES "Build examples in the ./examples directory" ON)
+option(MKVG_DO_PYTHON_BINDINGS "Build Python Bindings" OFF)
 
 # if (MKVG_DO_VULKAN_BACKEND)
 #     message(WARNING "Vulkan Backend Not Fully Implemented Yet")
@@ -169,6 +170,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
     # Disable annoying warnings from vulkan memory allocator with -Wno-nullability-completeness
     # Disable annoying warnings from OpenVG with -Wno-deprecated-enum-enum-conversion
     target_compile_options(monkvg PUBLIC -Wno-deprecated-enum-enum-conversion -Wno-nullability-completeness)
+endif()
+
+### Language Bindings
+if (MKVG_DO_PYTHON_BINDINGS)
+    add_subdirectory(bindings)
 endif()
 
 
