@@ -80,7 +80,9 @@ VG_API_CALL void VG_API_ENTRY vgScale(VGfloat sx, VGfloat sy) VG_API_EXIT {
     IContext::instance().scale(sx, sy);
 }
 
-// VG_API_CALL void VG_API_ENTRY vgShear(VGfloat shx, VGfloat shy) VG_API_EXIT;
+VG_API_CALL void VG_API_ENTRY vgShear(VGfloat shx, VGfloat shy) VG_API_EXIT {
+    IContext::instance().shear(shx, shy);
+}
 
 VG_API_CALL void VG_API_ENTRY vgRotate(VGfloat angle) VG_API_EXIT {
     IContext::instance().rotate(angle);

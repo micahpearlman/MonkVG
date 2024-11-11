@@ -150,7 +150,10 @@ PYBIND11_MODULE(monkvg_py, m) {
         .value("VG_STROKE_PATH", VG_STROKE_PATH)
         .value("VG_FILL_PATH", VG_FILL_PATH)
         .export_values()
-        .def("__or__", [](VGPaintMode a, VGPaintMode b) { return static_cast<VGPaintMode>(static_cast<int>(a) | static_cast<int>(b)); });
+        .def("__or__", [](VGPaintMode a, VGPaintMode b) {
+            return static_cast<VGPaintMode>(static_cast<int>(a) |
+                                            static_cast<int>(b));
+        });
 
     py::enum_<VGPathDatatype>(m, "VGPathDatatype")
         .value("VG_PATH_DATATYPE_S_8", VG_PATH_DATATYPE_S_8)
@@ -158,7 +161,6 @@ PYBIND11_MODULE(monkvg_py, m) {
         .value("VG_PATH_DATATYPE_S_32", VG_PATH_DATATYPE_S_32)
         .value("VG_PATH_DATATYPE_F", VG_PATH_DATATYPE_F)
         .export_values();
-
 
     py::enum_<VGPathCapabilities>(m, "VGPathCapabilities")
         .value("VG_PATH_CAPABILITY_APPEND_FROM", VG_PATH_CAPABILITY_APPEND_FROM)
@@ -172,17 +174,65 @@ PYBIND11_MODULE(monkvg_py, m) {
                VG_PATH_CAPABILITY_INTERPOLATE_FROM)
         .value("VG_PATH_CAPABILITY_INTERPOLATE_TO",
                VG_PATH_CAPABILITY_INTERPOLATE_TO)
-        .value("VG_PATH_CAPABILITY_PATH_LENGTH",
-               VG_PATH_CAPABILITY_PATH_LENGTH)
+        .value("VG_PATH_CAPABILITY_PATH_LENGTH", VG_PATH_CAPABILITY_PATH_LENGTH)
         .value("VG_PATH_CAPABILITY_POINT_ALONG_PATH",
                VG_PATH_CAPABILITY_POINT_ALONG_PATH)
         .value("VG_PATH_CAPABILITY_TANGENT_ALONG_PATH",
                VG_PATH_CAPABILITY_TANGENT_ALONG_PATH)
-        .value("VG_PATH_CAPABILITY_PATH_BOUNDS",
-               VG_PATH_CAPABILITY_PATH_BOUNDS)
+        .value("VG_PATH_CAPABILITY_PATH_BOUNDS", VG_PATH_CAPABILITY_PATH_BOUNDS)
         .value("VG_PATH_CAPABILITY_PATH_TRANSFORMED_BOUNDS",
                VG_PATH_CAPABILITY_PATH_TRANSFORMED_BOUNDS)
         .value("VG_PATH_CAPABILITY_ALL", VG_PATH_CAPABILITY_ALL)
+        .export_values();
+
+    py::enum_<VGImageFormat>(m, "VGImageFormat")
+        .value("VG_sRGBX_8888", VG_sRGBX_8888)
+        .value("VG_sRGBA_8888", VG_sRGBA_8888)
+        .value("VG_sRGBA_8888_PRE", VG_sRGBA_8888_PRE)
+        .value("VG_sRGB_565", VG_sRGB_565)
+        .value("VG_sRGBA_5551", VG_sRGBA_5551)
+        .value("VG_sRGBA_4444", VG_sRGBA_4444)
+        .value("VG_sL_8", VG_sL_8)
+        .value("VG_lRGBX_8888", VG_lRGBX_8888)
+        .value("VG_lRGBA_8888", VG_lRGBA_8888)
+        .value("VG_lRGBA_8888_PRE", VG_lRGBA_8888_PRE)
+        .value("VG_lL_8", VG_lL_8)
+        .value("VG_A_8", VG_A_8)
+        .value("VG_BW_1", VG_BW_1)
+        .value("VG_A_1", VG_A_1)
+        .value("VG_A_4", VG_A_4)
+        .value("VG_sXRGB_8888", VG_sXRGB_8888)
+        .value("VG_sARGB_8888", VG_sARGB_8888)
+        .value("VG_sARGB_8888_PRE", VG_sARGB_8888_PRE)
+        .value("VG_sARGB_1555", VG_sARGB_1555)
+        .value("VG_sARGB_4444", VG_sARGB_4444)
+        .value("VG_lXRGB_8888", VG_lXRGB_8888)
+        .value("VG_lARGB_8888", VG_lARGB_8888)
+        .value("VG_lARGB_8888_PRE", VG_lARGB_8888_PRE)
+        .value("VG_sBGRX_8888", VG_sBGRX_8888)
+        .value("VG_sBGRA_8888", VG_sBGRA_8888)
+        .value("VG_sBGRA_8888_PRE", VG_sBGRA_8888_PRE)
+        .value("VG_sBGR_565", VG_sBGR_565)
+        .value("VG_sBGRA_5551", VG_sBGRA_5551)
+        .value("VG_sBGRA_4444", VG_sBGRA_4444)
+        .value("VG_lBGRX_8888", VG_lBGRX_8888)
+        .value("VG_lBGRA_8888", VG_lBGRA_8888)
+        .value("VG_lBGRA_8888_PRE", VG_lBGRA_8888_PRE)
+        .value("VG_sXBGR_8888", VG_sXBGR_8888)
+        .value("VG_sABGR_8888", VG_sABGR_8888)
+        .value("VG_sABGR_8888_PRE", VG_sABGR_8888_PRE)
+        .value("VG_sABGR_1555", VG_sABGR_1555)
+        .value("VG_sABGR_4444", VG_sABGR_4444)
+        .value("VG_lXBGR_8888", VG_lXBGR_8888)
+        .value("VG_lABGR_8888", VG_lABGR_8888)
+        .value("VG_lABGR_8888_PRE", VG_lABGR_8888_PRE)
+        .export_values();
+
+    py::enum_<VGImageQuality>(m, "VGImageQuality")
+        .value("VG_IMAGE_QUALITY_NONANTIALIASED",
+               VG_IMAGE_QUALITY_NONANTIALIASED)
+        .value("VG_IMAGE_QUALITY_FASTER", VG_IMAGE_QUALITY_FASTER)
+        .value("VG_IMAGE_QUALITY_BETTER", VG_IMAGE_QUALITY_BETTER)
         .export_values();
 
     // #define VG_PATH_FORMAT_STANDARD 0
@@ -191,10 +241,12 @@ PYBIND11_MODULE(monkvg_py, m) {
     /// Functions
     m.def("vgCreateContextMNK", &vgCreateContextMNK, "Create MonkVG context");
 
+    // paint
     m.def("vgCreatePaint", &vgCreatePaint, "Create a paint");
+    m.def("vgDestroyPaint", &vgDestroyPaint, "Destroy a paint");
     m.def("vgSetPaint", &vgSetPaint, "Set a paint");
 
-
+    // parameters
     m.def("vgSetParameterf", &vgSetParameterf, "Set a parameter as a float");
     m.def("vgSetParameteri", &vgSetParameteri, "Set a parameter as an integer");
     m.def(
@@ -210,16 +262,69 @@ PYBIND11_MODULE(monkvg_py, m) {
     m.def("vgSeti", &vgSeti, "Set an integer parameter");
     m.def("vgSetf", &vgSetf, "Set a float parameter");
 
-
+    // path
     m.def("vgCreatePath", &vgCreatePath, "Create a path");
+    m.def("vgDestroyPath", &vgDestroyPath, "Destroy a path");
     m.def("vgDrawPath", &vgDrawPath, "Draw a path");
 
+    // matrix
     m.def("vgLoadIdentity", &vgLoadIdentity, "Load the identity matrix");
     m.def("vgTranslate", &vgTranslate, "Translate the matrix");
+    m.def("vgScale", &vgScale, "Scale the matrix");
+    m.def("vgRotate", &vgRotate, "Rotate the matrix");
+    m.def("vgShear", &vgShear, "Shear the matrix");
+    m.def(
+        "vgLoadMatrix",
+        [](py::list m) {
+            std::vector<VGfloat> v;
+            for (auto value : m) {
+                v.push_back(value.cast<VGfloat>());
+            }
+            vgLoadMatrix(v.data());
+        },
+        "Load the matrix");
+    m.def(
+        "vgGetMatrix",
+        [](py::list &m) {
+            std::vector<VGfloat> v(9);
+            vgGetMatrix(v.data());
+            for (int i = 0; i < 9; i++) {
+                m.append(v[i]);
+            }
+        },
+        "Get the matrix");
+    m.def(
+        "vgMultMatrix",
+        [](py::list m) {
+            std::vector<VGfloat> v;
+            for (auto value : m) {
+                v.push_back(value.cast<VGfloat>());
+            }
+            vgMultMatrix(v.data());
+        },
+        "Multiply the matrix");
 
+    // camera
+    m.def("vgPushOrthoCamera", &vgPushOrthoCamera,
+          "Push an orthographic camera onto the matrix stack");
+    m.def("vgPopOrthoCamera", &vgPopOrthoCamera,
+          "Pop the orthographic camera off the matrix stack");
 
-    m.def("vgPushOrthoCamera", &vgPushOrthoCamera, "Push an orthographic camera onto the matrix stack");
-    m.def("vgPopOrthoCamera", &vgPopOrthoCamera, "Pop the orthographic camera off the matrix stack");
+    // image
+    m.def("vgCreateImage", &vgCreateImage, "Create an image");
+    m.def(
+        "vgImageSubData",
+        [](VGImage image, py::buffer data, VGint dataStride,
+           VGImageFormat dataFormat, VGint x, VGint y, VGint width,
+           VGint height) {
+            py::buffer_info info = data.request();
+            vgImageSubData(image, info.ptr, dataStride, dataFormat, x, y, width,
+                           height);
+        },
+        "Copy the image data to the OpenVG image");
+    m.def("vgDestroyImage", &vgDestroyImage, "Destroy an image");
+    m.def("vgDrawImage", &vgDrawImage, "Draw an image");
+    m.def("vgChildImage", &vgChildImage, "Create a child image");
 
     /// vgu
     py::enum_<VGUErrorCode>(m, "VGUErrorCode")

@@ -346,6 +346,17 @@ void IContext::rotate(VGfloat angle) {
     setGLActiveMatrix();
 }
 
+void IContext::shear(VGfloat shx, VGfloat shy) {
+    Matrix33 &active = getActiveMatrix();
+    Matrix33  shear;
+    shear.setShear(shx, shy);
+    Matrix33 tmp;
+    tmp.setIdentity();
+    Matrix33::multiply(tmp, shear, active);
+    active.copy(tmp);
+    setGLActiveMatrix();
+}
+
 const glm::mat4 &IContext::getGLActiveMatrix() {
     return _gl_active_matrix;
 }

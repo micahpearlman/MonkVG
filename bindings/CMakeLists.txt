@@ -51,7 +51,8 @@ target_link_libraries(monkvg_py PRIVATE monkvg pybind11::module ${MKVG_BACKEND_L
 
 # if we are also building examples add pygl to the venv
 if (MKVG_DO_EXAMPLES)
-    execute_process(COMMAND ${VENV_PATH}/bin/pip install PyOpenGL pygame)
+    # install python libraries for examples
+    execute_process(COMMAND ${VENV_PATH}/bin/pip install PyOpenGL pygame pillow)
 endif()
 
 # add_library(monkvg_py MODULE ${CMAKE_CURRENT_SOURCE_DIR}/python/monkvg_py.cpp)
