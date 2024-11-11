@@ -124,6 +124,7 @@ class IContext {
     virtual void scale(VGfloat sx, VGfloat sy);
     virtual void translate(VGfloat x, VGfloat y);
     virtual void rotate(VGfloat angle);
+    virtual void shear(VGfloat shx, VGfloat shy);
     virtual void setTransform(const VGfloat *t);
     virtual void multiply(const VGfloat *t);
 

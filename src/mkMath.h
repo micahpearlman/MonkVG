@@ -189,6 +189,12 @@ class Matrix33 {
     float angle() const { return acosf(a); }
     void  setAngle(float ang) { setRotation(ang); }
 
+    void setShear(float shx, float shy) {
+        a = d = 1.0f;
+        b = shx;
+        c = shy;
+    }
+
     void lookAt(float la[2]) const {
         la[0] = a;
         la[1] = b;
