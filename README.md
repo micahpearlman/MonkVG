@@ -17,6 +17,7 @@ Projects using MonkVG include:
 
 ## Whats New
 
+- (11/11/2024) Added Python Bindings.  See `examples/python_opengl.py` for an example.
 - (10/22/2024) Added Vulkan 1.1 backend.  
 - (9/6/2024) Complete refactor of the code base.  Currently only OpenGL 3.3 backend is supported.
 - (2/17/2022) CMake build support and GLFW example.
@@ -61,6 +62,21 @@ cmake --build .
 # run the GLFW example
 ./glfw_hello_world 
 ```
+
+### Python Wheel
+
+```
+# first run the cmake build
+cmake --preset="Python OpenGL Debug" -S . -B ./build && cmake --build ./build
+
+# activate the virtual environment 
+source build/venv/bin/activate
+
+# build the wheel
+python3 setup.py sdist bdist_wheel
+```
+
+Wheel will be in `dist/` directory.
 
 #### MacOS Arm Notes
 

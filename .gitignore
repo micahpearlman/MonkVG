@@ -4,6 +4,11 @@
 # vscode
 .vscode/
 
+# python
+dist/
+__pycache__/
+*.egg-info/
+
 # XCode (and ancestors) per-user config (very noisy, and not relevant)
 *.mode1
 *.mode1v3

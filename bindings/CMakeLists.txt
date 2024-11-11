@@ -24,6 +24,9 @@ endif()
 # install pybind11 in the virtual environment
 execute_process(COMMAND ${VENV_PATH}/bin/pip install pybind11)
 
+# install setuptools in the virtual environment
+execute_process(COMMAND ${VENV_PATH}/bin/pip install setuptools)
+
 # Add the virtual environment to the path
 set(PYTHON_EXECUTABLE ${VENV_PATH}/bin/python)
 execute_process(
