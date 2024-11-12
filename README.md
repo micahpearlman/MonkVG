@@ -63,20 +63,13 @@ cmake --build .
 ./glfw_hello_world 
 ```
 
-### Python Wheel
+
+### Python Build
 
 ```
-# first run the cmake build
-cmake --preset="Python OpenGL Debug" -S . -B ./build && cmake --build ./build
-
-# activate the virtual environment 
-source build/venv/bin/activate
-
-# build the wheel
-python3 setup.py sdist bdist_wheel
+pip install git+https://github.com/micahpearlman/MonkVG.git
 ```
 
-Wheel will be in `dist/` directory.
 
 #### MacOS Arm Notes
 
