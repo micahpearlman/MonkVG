@@ -28,7 +28,7 @@ execute_process(COMMAND ${VENV_PATH}/bin/pip install pybind11)
 execute_process(COMMAND ${VENV_PATH}/bin/pip install setuptools)
 
 # Add the virtual environment to the path
-set(PYTHON_EXECUTABLE ${VENV_PATH}/bin/python)
+# set(PYTHON_EXECUTABLE ${VENV_PATH}/bin/python)
 execute_process(
     COMMAND ${PYTHON_EXECUTABLE} -c "import sysconfig; print(sysconfig.get_path('include'))"
     OUTPUT_VARIABLE PYTHON_INCLUDE_DIR
