@@ -13,6 +13,7 @@
 #include <MonkVG/openvg.h>
 #include "mkTypes.h"
 #include <vector>
+#include <cstdint>
 namespace MonkVG {
 class IPath;
 class IContext;

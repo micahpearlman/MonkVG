@@ -16,6 +16,7 @@
 #include <list>
 #include <functional>
 #include <array>
+#include <cstdint>
 namespace MonkVG {
 class GLUTessellator : public ITessellator {
   public:

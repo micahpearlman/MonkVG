@@ -12,6 +12,7 @@
 #define __MK_TYPES_H__
 
 #include <algorithm>
+#include <array>
 #include <MonkVG/openvg.h>
 
 namespace MonkVG {
